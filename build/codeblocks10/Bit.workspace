@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="VML workspace">
+		<Project filename="vml-audio.cbp" />
+		<Project filename="vml-graphics.cbp" />
+		<Project filename="vml-network.cbp" />
+		<Project filename="vml-system.cbp" />
+		<Project filename="vml-window.cbp" active="1" />
+	</Workspace>
+</CodeBlocks_workspace_file>

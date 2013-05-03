@@ -1,0 +1,31 @@
+# Directories #
+Obj
+obj
+Lib
+lib
+Bin
+bin
+
+# Compiled #
+*.obj
+*.exe
+
+# Build #
+*.ncb
+*.suo
+*.user
+*.pdb
+*.sdf
+*.opensdf
+*.layout
+*.depend
+
+# Extra #
+*.tga
+*.png
+*.bmp
+*.wav
+*.ogg
+*.mp3
+*.zip
+*.rar
