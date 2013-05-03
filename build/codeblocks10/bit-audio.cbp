@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="vml-audio" />
+		<Option title="bit-audio" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../../lib/Linux/32/vml-audio_d" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/Linux/32/bit-audio-d" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../obj/Linux/32/codeblocks10/vml-audio/Debug" />
+				<Option object_output="../../obj/Linux/32/codeblocks10/bit-audio/Debug" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -27,9 +27,9 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="Release">
-				<Option output="../../lib/Linux/32/vml-audio" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/Linux/32/bit-audio" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../obj/Linux/32/codeblocks10/vml-audio/Release" />
+				<Option object_output="../../obj/Linux/32/codeblocks10/bit-audio/Release" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -46,8 +46,8 @@
 				</ResourceCompiler>
 			</Target>
 		</Build>
-		<Unit filename="../../include/VML/Audio.hpp" />
-		<Unit filename="../../source/VML/Audio.cpp" />
+		<Unit filename="../../include/Bit/Audio.hpp" />
+		<Unit filename="../../source/Bit/Audio.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

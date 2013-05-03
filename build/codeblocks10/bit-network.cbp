@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="vml-network" />
+		<Option title="bit-network" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../../lib/Linux/32/vml-network_d" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/Linux/32/bit-network-d" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../obj/Linux/32/codeblocks10/vml-network/Debug" />
+				<Option object_output="../../obj/Linux/32/codeblocks10/bit-network/Debug" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -27,9 +27,9 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="Release">
-				<Option output="../../lib/Linux/32/vml-network" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/Linux/32/bit-network" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../obj/Linux/32/codeblocks10/vml-network/Release" />
+				<Option object_output="../../obj/Linux/32/codeblocks10/bit-network/Release" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -46,8 +46,8 @@
 				</ResourceCompiler>
 			</Target>
 		</Build>
-		<Unit filename="../../include/VML/Network.hpp" />
-		<Unit filename="../../source/VML/Network.cpp" />
+		<Unit filename="../../include/Bit/Network.hpp" />
+		<Unit filename="../../source/Bit/Network.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

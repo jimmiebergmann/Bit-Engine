@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="vml-system" />
+		<Option title="bit-system" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../../lib/Linux/32/vml-system_d" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/Linux/32/bit-system-d" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../obj/Linux/32/codeblocks10/vml-system/Debug" />
+				<Option object_output="../../obj/Linux/32/codeblocks10/bit-system/Debug" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -27,9 +27,9 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="Release">
-				<Option output="../../lib/Linux/32/vml-system" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/Linux/32/bit-system" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../obj/Linux/32/codeblocks10/vml-system/Release" />
+				<Option object_output="../../obj/Linux/32/codeblocks10/bit-system/Release" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -46,8 +46,8 @@
 				</ResourceCompiler>
 			</Target>
 		</Build>
-		<Unit filename="../../include/VML/System.hpp" />
-		<Unit filename="../../source/VML/System.cpp" />
+		<Unit filename="../../include/Bit/System.hpp" />
+		<Unit filename="../../source/Bit/System.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
