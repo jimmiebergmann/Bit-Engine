@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vml-audio", "bit-audio.vcproj", "{F59721E1-AFD0-4FCD-AB8D-5DBA9D5B7426}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit-audio", "bit-audio.vcproj", "{F59721E1-AFD0-4FCD-AB8D-5DBA9D5B7426}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vml-graphics", "bit-graphics.vcproj", "{3773E6DD-764B-4109-9D38-09D3B50B975B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit-graphics", "bit-graphics.vcproj", "{3773E6DD-764B-4109-9D38-09D3B50B975B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vml-network", "bit-network.vcproj", "{1B04F253-D860-43B5-B721-C4917A3D7002}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit-network", "bit-network.vcproj", "{1B04F253-D860-43B5-B721-C4917A3D7002}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vml-system", "bit-system.vcproj", "{DBC0DA24-68C8-4DC8-A2EC-CE562D4DEF6B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit-system", "bit-system.vcproj", "{DBC0DA24-68C8-4DC8-A2EC-CE562D4DEF6B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vml-window", "bit-window.vcproj", "{E4B131DC-B097-47EF-8B3F-64C43E945C89}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit-window", "bit-window.vcproj", "{E4B131DC-B097-47EF-8B3F-64C43E945C89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

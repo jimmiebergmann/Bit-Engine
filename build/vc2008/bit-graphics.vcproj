@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="vml-graphics"
+	Name="bit-graphics"
 	ProjectGUID="{3773E6DD-764B-4109-9D38-09D3B50B975B}"
-	RootNamespace="vmlgraphics"
+	RootNamespace="bitgraphics"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="vml-audio"
+	Name="bit-audio"
 	ProjectGUID="{F59721E1-AFD0-4FCD-AB8D-5DBA9D5B7426}"
-	RootNamespace="vmlaudio"
+	RootNamespace="bitaudio"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
