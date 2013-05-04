@@ -32,25 +32,27 @@
 namespace Bit
 {
 
-	BIT_FLOAT64 DegreesToRadians( BIT_FLOAT64 p_Degrees)
+	BIT_INLINE BIT_FLOAT64 DegreesToRadians( BIT_FLOAT64 p_Degrees)
 	{
 		return  p_Degrees * BIT_PI / 180.0f;
 	}
-	BIT_FLOAT64 RadiansToDegrees( BIT_FLOAT64 p_Radians )
+
+	BIT_INLINE BIT_FLOAT64 RadiansToDegrees( BIT_FLOAT64 p_Radians )
 	{
 		return p_Radians * 180.0f / BIT_PI;
 	}
 
-	BIT_FLOAT64 SinDegrees( BIT_FLOAT64 p_angle )
+	BIT_INLINE BIT_FLOAT64 SinDegrees( BIT_FLOAT64 p_angle )
 	{
 		return sin( DegreesToRadians( p_angle ) );
 	}
 
-	BIT_FLOAT64 CosDegrees( BIT_FLOAT64 p_angle )
+	BIT_INLINE BIT_FLOAT64 CosDegrees( BIT_FLOAT64 p_angle )
 	{
 		return cos( DegreesToRadians( p_angle ) );
 	}
-	BIT_FLOAT64 TanDegrees( BIT_FLOAT64 p_angle )
+
+	BIT_INLINE BIT_FLOAT64 TanDegrees( BIT_FLOAT64 p_angle )
 	{
 		return tan( DegreesToRadians( p_angle ) );
 	}

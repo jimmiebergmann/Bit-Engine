@@ -30,8 +30,9 @@
 
 #ifdef PLATFORM_WINDOWS
 #include <windows.h>
-#define vsnprintf _vsnprintf_s
+
 #elif PLATFORM_LINUX
+#define  _vsnprintf_s vsnprintf
 #include <iostream>
 #endif
 
@@ -57,7 +58,7 @@ namespace Bit
 		va_list ArgPtr;
 
 		va_start( ArgPtr, p_pMessage );
-		ReturnVal = vsnprintf( CompleteMessage, 1024, p_pMessage, ArgPtr );
+		ReturnVal = _vsnprintf_s( CompleteMessage, 1024, p_pMessage, ArgPtr );
 		va_end( ArgPtr );
 
 		// Output the message
