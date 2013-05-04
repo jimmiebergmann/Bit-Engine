@@ -35,8 +35,8 @@ namespace Bit
 	void SeedRandomizer( BIT_SINT32 p_Seed );
 	void SeedRandomizer( std::string p_Seed );
 	BIT_UINT32 GetRandomizerSeed( );
-	BIT_SINT32 Randomize( BIT_SINT32 p_To );
-	BIT_SINT32 Randomize( BIT_SINT32 p_From, BIT_SINT32 p_To );
+	BIT_SINT32 RandomizeNumber( BIT_SINT32 p_To );
+	BIT_SINT32 RandomizeNumber( BIT_SINT32 p_From, BIT_SINT32 p_To );
 
 }
 
