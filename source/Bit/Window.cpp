@@ -49,25 +49,67 @@ namespace Bit
 	}
 
 	// Public general functions
-	BIT_UINT32 Window::Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, BIT_UINT32 p_Bits )
+	BIT_UINT32 Window::Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits )
 	{
+		// Make sure the window isn't already created
+		if( IsCreated( ) )
+		{
+			return BIT_ERROR;
+		}
+
+		// Allocate the window platoform base class.
 		m_pWindowBase = new WindowPlatformType( );
 
+		// Let's create the window
+		BIT_UINT32 Error;
+		if( ( Error = m_pWindowBase->Create( p_Width, p_Height, p_Bits, "Bit Engine" ) ) != BIT_OK )
+		{
+			// Delete the allocated base platfor class
+			delete m_pWindowBase;
+			m_pWindowBase = BIT_NULL;
+
+			// Return the error
+			return Error;
+		}
+
+		// Everything went ok. The window is created.
 		return BIT_OK;
 	}
 
-	BIT_UINT32 Window::Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, BIT_UINT32 p_Bits,
+	BIT_UINT32 Window::Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits,
 		const std::string p_Title )
 	{
+		// Make sure the window isn't already created
+		if( IsCreated( ) )
+		{
+			return BIT_ERROR;
+		}
+
+		// Allocate the window platoform base class.
 		m_pWindowBase = new WindowPlatformType( );
 
+		// Let's create the window
+		BIT_UINT32 Error;
+		if( ( Error = m_pWindowBase->Create( p_Width, p_Height, p_Bits, p_Title ) ) != BIT_OK )
+		{
+			// Delete the allocated base platfor class
+			delete m_pWindowBase;
+			m_pWindowBase = BIT_NULL;
+
+			// Return the error
+			return Error;
+		}
+
+		// Everything went ok. The window is created.
 		return BIT_OK;
 	}
 
 	BIT_UINT32 Window::Destroy( )
 	{
+		// Delete the window platform base class if it's allocated.
 		if( m_pWindowBase )
 		{
+			m_pWindowBase->Destroy( );
 			delete m_pWindowBase;
 			m_pWindowBase = BIT_NULL;
 		}
@@ -75,13 +117,26 @@ namespace Bit
 		return BIT_OK;
 	}
 
+	BIT_UINT32 Window::DoEvents( )
+	{
+		// Make sure the window is created
+		if( !IsCreated( ) )
+		{
+			return BIT_ERROR;
+		}
+
+		return m_pWindowBase->DoEvents( );
+	}
+
 	BIT_BOOL Window::IsCreated( ) const
 	{
+		// The window is allocated if the base class pointer isn't NULL(it's allocated)
 		return m_pWindowBase != BIT_NULL;
 	}
 
 	BIT_BOOL Window::PollEvent( Event & p_Event )
 	{
+		// Make sure the window is created
 		if( !IsCreated( ) )
 		{
 			return BIT_FALSE;
@@ -91,9 +146,23 @@ namespace Bit
 		if( m_pWindowBase->m_EventQueue.size( ) )
 		{
 			p_Event = m_pWindowBase->m_EventQueue.front( );
-			m_pWindowBase->m_EventQueue.pop( );
+			m_pWindowBase->m_EventQueue.pop_front( );
 			return BIT_TRUE;
 		}
+
+		return BIT_FALSE;
+	}
+
+	// Set functions
+	BIT_UINT32 Window::SetTitle( std::string p_Title )
+	{
+		// Make sure the window is created
+		if( !IsCreated( ) )
+		{
+			return BIT_ERROR;
+		}
+
+		return m_pWindowBase->SetTitle( p_Title );
 	}
 
 };

@@ -151,6 +151,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\System\Debugger.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Debugger.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\System.cpp"
 			>
 		</File>

@@ -28,7 +28,7 @@
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Event.hpp>
 #include <string>
-#include <queue>
+#include <list>
 
 namespace Bit
 {
@@ -37,12 +37,19 @@ namespace Bit
 
 	public:
 
+		// Public functions
+		virtual BIT_UINT32 Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits,
+			const std::string p_Title ) = 0;
+		virtual BIT_UINT32 Destroy( ) = 0;
+		virtual BIT_UINT32 DoEvents( ) = 0;
+		virtual BIT_UINT32 SetTitle( std::string p_Title ) = 0;
+
 		// Public variables
 		BIT_UINT32 m_Width;
 		BIT_UINT32 m_Height;
 		BIT_UINT32 m_Bits;
 		std::string m_Title;
-		std::queue< Event > m_EventQueue;
+		std::list< Event > m_EventQueue;
 
 	};
 

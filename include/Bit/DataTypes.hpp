@@ -23,7 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 // Note:
-// The original data type headers was written by Stuart ( teh_programerer@interactivelaboratories.com )
+// The original header was written by Stuart ( teh_programerer@interactivelaboratories.com )
 
 #ifndef __BIT_SYSTEM_DATATYPES_HPP__
 #define __BIT_SYSTEM_DATATYPES_HPP__
