@@ -356,6 +356,11 @@ namespace Bit
 
 		return BIT_OK;
 	}
+	
+	void WindowLinux::Show( const BIT_BOOL p_State )
+	{
+		// No code here yet.
+	}
 
 	// Set functions
 	BIT_UINT32 WindowLinux::SetTitle( std::string p_Title )

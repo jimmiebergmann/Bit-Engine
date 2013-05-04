@@ -44,6 +44,7 @@ namespace Bit
 			const std::string p_Title, const BIT_UINT32 p_Style ) = 0;
 		virtual BIT_UINT32 Destroy( ) = 0;
 		virtual BIT_UINT32 DoEvents( ) = 0;
+		virtual void Show( const BIT_BOOL p_State ) = 0;
 
 		// Get functions
 		// ...
@@ -52,9 +53,11 @@ namespace Bit
 		virtual BIT_UINT32 SetTitle( std::string p_Title ) = 0;
 
 		// Public variables
+		BIT_BOOL m_Created;
 		Vector2_ui32 m_Size;
 		BIT_UINT32 m_Bits;
 		std::string m_Title;
+		BIT_UINT32 m_Style;
 		std::list< Event > m_EventQueue;
 
 	};

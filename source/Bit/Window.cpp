@@ -118,7 +118,7 @@ namespace Bit
 	BIT_BOOL Window::IsCreated( ) const
 	{
 		// The window is allocated if the base class pointer isn't NULL(it's allocated)
-		return m_pWindowBase != BIT_NULL;
+		return ( m_pWindowBase != BIT_NULL ) && m_pWindowBase->m_Created;
 	}
 
 	BIT_BOOL Window::PollEvent( Event & p_Event )
@@ -138,6 +138,17 @@ namespace Bit
 		}
 
 		return BIT_FALSE;
+	}
+
+	void Window::Show( const BIT_BOOL p_State )
+	{
+		// Make sure the window is created
+		if( !IsCreated( ) )
+		{
+			return;
+		}
+
+		m_pWindowBase->Show( p_State );
 	}
 
 	// Set functions

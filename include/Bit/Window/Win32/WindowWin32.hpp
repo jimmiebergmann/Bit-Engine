@@ -47,6 +47,7 @@ namespace Bit
 			const std::string p_Title, const BIT_UINT32 p_Style );
 		virtual BIT_UINT32 Destroy( );
 		virtual BIT_UINT32 DoEvents( );
+		virtual void Show( const BIT_BOOL p_State );
 
 		// Get functions
 		// ...

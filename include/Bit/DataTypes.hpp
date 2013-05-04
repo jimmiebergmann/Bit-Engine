@@ -63,7 +63,7 @@ typedef signed long long	BIT_SINT64;
 typedef float				BIT_FLOAT32;
 typedef double				BIT_FLOAT64;
 typedef BIT_UCHAR8			BIT_BYTE;
-typedef BIT_UCHAR8			BIT_BOOL;
+typedef bool				BIT_BOOL;
 typedef std::size_t			BIT_MEMSIZE;
 #define BIT_TRUE	1
 #define BIT_FALSE	0

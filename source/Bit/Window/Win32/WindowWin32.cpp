@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Window/Win32/WindowWin32.hpp>
+#include <Bit/Window.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -36,6 +37,7 @@ namespace Bit
 		m_Window( BIT_NULL ),
 		m_RegisteredClass( BIT_FALSE )
 	{
+		m_Created = BIT_FALSE;
 	}
 
 
@@ -85,8 +87,32 @@ namespace Bit
 		WindowRect.top = ( long )0;
 		WindowRect.bottom = ( long )p_Size.y;
 
-		ExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-		Style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+		ExStyle = 0;
+		Style = 0;
+
+		// Set the window decoration style
+		if( p_Style == Bit::Window::Style_All )
+		{
+			ExStyle = WS_EX_APPWINDOW;
+			Style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_BORDER;
+		}
+		else
+		{
+			if( p_Style & Bit::Window::Style_Minimize )
+			{
+				Style |=  WS_MINIMIZEBOX;
+			}
+
+			if( p_Style & Bit::Window::Style_Resize )
+			{
+				Style |= WS_MAXIMIZEBOX | WS_SIZEBOX;
+			}
+
+			if( p_Style & Bit::Window::Style_TitleBar )
+			{
+				Style |= WS_CAPTION | WS_SYSMENU | WS_BORDER;
+			}
+		}
 
 		// Apply yhe style
 		AdjustWindowRectEx( &WindowRect, Style, FALSE, ExStyle );
@@ -116,6 +142,15 @@ namespace Bit
 			return BIT_ERROR;
 		}
 
+		// Did we disable the [X] button?
+		// We have to apply this property after the window creation. So here it comes.
+		if( !( p_Style & Bit::Window::Style_Close ) && ( m_Style != Bit::Window::Style_All ) )
+		{
+			UINT dwExtra = MF_DISABLED | MF_GRAYED;
+			HMENU hMenu = GetSystemMenu( m_Window, false );
+			EnableMenuItem( hMenu, SC_CLOSE, MF_BYCOMMAND | dwExtra );
+		}
+
 		// Get the device context
 		m_DeviceContext = GetDC( m_Window );
 
@@ -125,9 +160,11 @@ namespace Bit
 		SetFocus( m_Window );
 
 		// Finally set the base class attributes
+		m_Created = BIT_TRUE;
 		m_Size = p_Size;
 		m_Bits = p_Bits;
 		m_Title = p_Title;
+		m_Style = p_Style;
 
 		return BIT_OK;
 	}
@@ -158,6 +195,7 @@ namespace Bit
 		}
 
 		// Null the attributes
+		m_Created = BIT_FALSE;
 		m_DeviceContext = NULL;
 		m_Window = NULL;
 		m_RegisteredClass = BIT_FALSE;
@@ -178,6 +216,11 @@ namespace Bit
 		}
 
 		return BIT_OK;
+	}
+
+	void WindowWin32::Show( const BIT_BOOL p_State )
+	{
+		ShowWindow( m_Window, p_State );
 	}
 
 	// Set functions
@@ -220,6 +263,11 @@ namespace Bit
 		{
 			case(WM_CLOSE):
 				{
+					Destroy( );
+					/*if( !( m_Style & Bit::Window::Style_Close ) && ( m_Style != Bit::Window::Style_All ) )
+					{
+						return true;
+					}*/
 					//m_EventQueue.push( Event( Window::Close ) );
 				}
 				break;
@@ -235,6 +283,7 @@ namespace Bit
 				break;
 			case(WM_SIZE):
 				{
+					//Destroy( );
 					//m_EventQueue.push( Event( Window::Resize ) );
 				}
 				break;

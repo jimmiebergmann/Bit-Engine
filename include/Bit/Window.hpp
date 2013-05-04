@@ -58,6 +58,7 @@ namespace Bit
 		BIT_UINT32 DoEvents( );
 		BIT_BOOL IsCreated( ) const;
 		BIT_BOOL PollEvent( Event & p_Event );
+		void Show( const BIT_BOOL p_State );
 
 		// Get functions
 		// ...
