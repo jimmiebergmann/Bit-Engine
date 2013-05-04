@@ -46,6 +46,7 @@
 				</ResourceCompiler>
 			</Target>
 		</Build>
+		<Unit filename="../../include/Bit/DataTypes.hpp" />
 		<Unit filename="../../include/Bit/System.hpp" />
 		<Unit filename="../../source/Bit/System.cpp" />
 		<Extensions>
