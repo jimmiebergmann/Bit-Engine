@@ -34,7 +34,7 @@ namespace Bit
 	}
 
 	// Public functions
-	BIT_UINT32 WindowLinux::Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits,
+	BIT_UINT32 WindowLinux::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 		const std::string p_Title )
 	{
 

@@ -18,7 +18,7 @@
 					<Add option="-W" />
 					<Add option="-O0" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DPLATFORM_WINDOWS" />
+					<Add option="-DPLATFORM_LINUX" />
 					<Add option="-DBUILD_DEBUG" />
 					<Add directory="../../include" />
 				</Compiler>
@@ -37,7 +37,7 @@
 					<Add option="-O2" />
 					<Add option="-W" />
 					<Add option="-DNDEBUG" />
-					<Add option="-DPLATFORM_WINDOWS" />
+					<Add option="-DPLATFORM_LINUX" />
 					<Add option="-DBUILD_RELEASE" />
 					<Add directory="../../include" />
 				</Compiler>

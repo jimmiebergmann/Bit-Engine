@@ -27,6 +27,7 @@
 #define __BIT_SYSTEM_VECTOR2_HPP__
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/System/Math.hpp>
 #include <cmath>
 #include <float.h>
 
@@ -185,17 +186,17 @@ namespace Bit
 			{
 				return 0.0f;
 			}
-			
+
 			return Dot;
 		}
 
 		void Rotate( BIT_FLOAT32 p_Angle )
 		{
-			const BIT_FLOAT32 AngleSin = Sin( p_Angle );
-			const BIT_FLOAT32 AngleCos = Cos( p_Angle ); 
+			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
+			const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
 
 			// Store the new x and y in tempory variables
-			T tx = ( x * AngleCos ) - ( y * AngleSin ); 
+			T tx = ( x * AngleCos ) - ( y * AngleSin );
 			T ty = ( x * AngleSin ) + ( y * AngleCos );
 
 			x = tx;

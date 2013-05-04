@@ -42,7 +42,7 @@ namespace Bit
 		WindowLinux( );
 
 		// Public functions
-		virtual BIT_UINT32 Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits,
+		virtual BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 			const std::string p_Title );
 		virtual BIT_UINT32 Destroy( );
 		virtual BIT_UINT32 DoEvents( );

@@ -28,13 +28,15 @@
 #include <Bit/System/Debugger.hpp>
 #include <Bit/DataTypes.hpp>
 
-#ifdef PLATFORM_WINDOWS	
+#ifdef PLATFORM_WINDOWS
 #include <windows.h>
+#define vsnprintf _vsnprintf_s
 #elif PLATFORM_LINUX
 #include <iostream>
 #endif
 
 #include <cstdio>
+#include <stdarg.h>
 #include <Bit/System/MemoryLeak.hpp>
 
 
@@ -55,14 +57,14 @@ namespace Bit
 		va_list ArgPtr;
 
 		va_start( ArgPtr, p_pMessage );
-		ReturnVal = _vsnprintf_s( CompleteMessage, 1024, p_pMessage, ArgPtr );
+		ReturnVal = vsnprintf( CompleteMessage, 1024, p_pMessage, ArgPtr );
 		va_end( ArgPtr );
 
 		// Output the message
 		#ifdef PLATFORM_WINDOWS
 
 			OutputDebugStringA( CompleteMessage );
-		
+
 		#elif PLATFORM_LINUX
 
 			std::cout << CompleteMessage << std::endl;

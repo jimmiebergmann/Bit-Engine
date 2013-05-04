@@ -48,7 +48,19 @@
 		</Build>
 		<Unit filename="../../include/Bit/DataTypes.hpp" />
 		<Unit filename="../../include/Bit/System.hpp" />
+		<Unit filename="../../include/Bit/System/Debugger.hpp" />
+		<Unit filename="../../include/Bit/System/Math.hpp" />
+		<Unit filename="../../include/Bit/System/MemoryLeak.hpp" />
+		<Unit filename="../../include/Bit/System/Randomizer.hpp" />
+		<Unit filename="../../include/Bit/System/Timer.hpp" />
+		<Unit filename="../../include/Bit/System/Vector2.hpp" />
+		<Unit filename="../../include/Bit/System/Vector3.hpp" />
 		<Unit filename="../../source/Bit/System.cpp" />
+		<Unit filename="../../source/Bit/System/Debugger.cpp" />
+		<Unit filename="../../source/Bit/System/Math.cpp" />
+		<Unit filename="../../source/Bit/System/MemoryLeak.cpp" />
+		<Unit filename="../../source/Bit/System/Randomizer.cpp" />
+		<Unit filename="../../source/Bit/System/Timer.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
