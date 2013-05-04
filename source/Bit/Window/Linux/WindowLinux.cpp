@@ -58,73 +58,13 @@ namespace Bit
          m_pDisplay( BIT_NULL ),
          m_Screen( 0 )
 	{
+        m_Created = BIT_FALSE;
 	}
 
 	// Public functions
 	BIT_UINT32 WindowLinux::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 		const std::string p_Title, const BIT_UINT32 p_Style )
 	{
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-    if(!(m_pDisplay=XOpenDisplay(NULL)))
-    {
-      bitTrace("ERROR: could not open display\n");
-      return 1;
-    }
-
-  m_Screen = DefaultScreen(m_pDisplay);*/
-  //::Window rootwind = RootWindow(m_pDisplay, m_Screen);
- /* Colormap cmap = DefaultColormap(m_pDisplay, m_Screen);
-  Atom wmDeleteMessage = XInternAtom(m_pDisplay, "WM_DELETE_WINDOW", False);
-
-  int blackColor = BlackPixel(m_pDisplay, m_Screen);
-  int whiteColor = WhitePixel(m_pDisplay, m_Screen);
-
-    m_Window= XCreateSimpleWindow( m_pDisplay, RootWindow( m_pDisplay, m_Screen ), 0, 0, 200, 100, 0, blackColor, blackColor);
-  XMapWindow(m_pDisplay, m_Window);*/
- // XSetWMProtocols(m_pDisplay, m_Window, &wmDeleteMessage, 1);
-  /*bool running = true;
-  while(running)
-  {
-    XEvent e;
-    XNextEvent(m_pDisplay, &e);
-    switch  (e.type)
-    {
-      case ClientMessage:
-        if(e.xclient.data.l[0] == wmDeleteMessage)
-        {
-           bitTrace("Shutting down");
-          //XDestroyWindow(m_pDisplay,e.xclient.window);
-          running=false;
-          break;
-        }
-        break;
-    }
-  }
-
-    XCloseDisplay( m_pDisplay);
-
-*/
-
-
-
-
-
-
-
-
 
         // open a connection with X server
 	    if( ( m_pDisplay = XOpenDisplay( BIT_NULL ) ) == BIT_NULL )
@@ -135,11 +75,6 @@ namespace Bit
 
 	    // Get the screen
 	    m_Screen = DefaultScreen( m_pDisplay );
-
-
-
-
-
 
 
         // LIST OF THE MASKS WE CAN USE
@@ -174,8 +109,6 @@ namespace Bit
 
         // Creat the window attricutes
         XSetWindowAttributes WindowAttributes;
-        WindowAttributes.border_pixel = 0;
-        WindowAttributes.border_pixmap = None;
         WindowAttributes.event_mask =   KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask |
                                         EnterWindowMask | LeaveWindowMask | PointerMotionMask | VisibilityChangeMask |
                                         FocusChangeMask | ExposureMask | StructureNotifyMask;
@@ -267,7 +200,7 @@ namespace Bit
             */
 
             // Apply the changes
-            XChangeProperty( m_pDisplay, m_Window, PropertyAtom, PropertyAtom, 32, PropModeReplace, (unsigned char *) &Hints, 5 );
+           // XChangeProperty( m_pDisplay, m_Window, PropertyAtom, PropertyAtom, 32, PropModeReplace, (unsigned char *) &Hints, 5 );
 
         }
         else
@@ -279,41 +212,46 @@ namespace Bit
         XMapWindow( m_pDisplay, m_Window );
         XFlush( m_pDisplay );
 
+
+        // Finally set the base class attributes
+		m_Created = BIT_TRUE;
+		m_Size = p_Size;
+		m_Bits = p_Bits;
+		m_Title = p_Title;
+		m_Style = p_Style;
+
 		return BIT_OK;
 	}
 
 	BIT_UINT32 WindowLinux::Destroy( )
 	{
-	    XDestroyWindow( m_pDisplay, m_Window );
+	    if( m_pDisplay )
+	    {
+            XDestroyWindow( m_pDisplay, m_Window );
 	    //XFreeColormap( m_pDisplay, m_ColorMap );
 
 	    // Clost the display
-	    if( m_pDisplay )
-	    {
+
 	        XCloseDisplay( m_pDisplay );
             m_pDisplay = BIT_NULL;
 	    }
 
+        m_Created = BIT_FALSE;
 		return BIT_ERROR;
 	}
 
 	BIT_UINT32 WindowLinux::DoEvents( )
 	{
-
-
-        // !NOTE!
-		// Experimental code!
 		if( m_pDisplay == BIT_NULL )
 		{
 		    return BIT_ERROR;
 		}
 
-
         // Declare an x server event.
 		XEvent Event;
 
 		// Loop through all the events
-		while( XPending( m_pDisplay ) > 0 )
+		while( XPending( m_pDisplay ) > 0 & m_Created )
 		{
 		    // Get the next event
 		    XNextEvent( m_pDisplay, &Event );
@@ -323,10 +261,17 @@ namespace Bit
 
                 case ClientMessage:
 		        {
+
 		            if( *XGetAtomName( m_pDisplay, Event.xclient.message_type ) == *"WM_PROTOCOLS" )
 		            {
-                        return BIT_ERROR;
+		                Destroy( );
+                        return BIT_OK;
 		            }
+		        }
+		        break;
+		        case KeyPress:
+		        {
+		            bitTrace("Key press.\n");
 		        }
 		        break;
                 //case blablabla:
@@ -356,7 +301,7 @@ namespace Bit
 
 		return BIT_OK;
 	}
-	
+
 	void WindowLinux::Show( const BIT_BOOL p_State )
 	{
 		// No code here yet.
