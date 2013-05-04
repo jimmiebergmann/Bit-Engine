@@ -54,35 +54,19 @@ namespace Bit
 	// Public general functions
 	BIT_UINT32 Window::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits )
 	{
-		// Make sure the window isn't already created
-		if( IsCreated( ) )
-		{
-			return BIT_ERROR;
-		}
-
-		// Allocate the window platoform base class.
-		m_pWindowBase = new WindowPlatformType( );
-
-		// Let's create the window
-		BIT_UINT32 Error;
-		if( ( Error = m_pWindowBase->Create( p_Size, p_Bits, "Bit Engine" ) ) != BIT_OK )
-		{
-			// Delete the allocated base platfor class
-			delete m_pWindowBase;
-			m_pWindowBase = BIT_NULL;
-
-			// Return the error
-			return Error;
-		}
-
-		// Everything went ok. The window is created.
-		return BIT_OK;
+		return Create( p_Size, p_Bits, "Bit Engine", 0 );
 	}
 
 	BIT_UINT32 Window::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 		const std::string p_Title )
 	{
-		// Make sure the window isn't already created
+		return Create( p_Size, p_Bits, p_Title, 0 );
+	}
+
+	BIT_UINT32 Window::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
+        const BIT_UINT32 p_Style )
+    {
+       // Make sure the window isn't already created
 		if( IsCreated( ) )
 		{
 			return BIT_ERROR;
@@ -93,7 +77,7 @@ namespace Bit
 
 		// Let's create the window
 		BIT_UINT32 Error;
-		if( ( Error = m_pWindowBase->Create( p_Size, p_Bits, p_Title ) ) != BIT_OK )
+		if( ( Error = m_pWindowBase->Create( p_Size, p_Bits, p_Title, p_Style ) ) != BIT_OK )
 		{
 			// Delete the allocated base platfor class
 			delete m_pWindowBase;
@@ -105,7 +89,7 @@ namespace Bit
 
 		// Everything went ok. The window is created.
 		return BIT_OK;
-	}
+    }
 
 	BIT_UINT32 Window::Destroy( )
 	{

@@ -23,12 +23,36 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Window/Linux/WindowLinux.hpp>
+#include <Bit/Window.hpp>
+
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
+// Motif window hints
+#define MWM_HINTS_FUNCTIONS (1L << 0)
+#define MWM_HINTS_DECORATIONS (1L << 1)
+#define MWM_HINTS_INPUT_MODE (1L << 2)
+#define MWM_HINTS_STATUS (1L << 3)
+
+// bit definitions for MwmHints.functions
+#define MWM_FUNC_ALL (1L << 0)
+#define MWM_FUNC_RESIZE (1L << 1)
+#define MWM_FUNC_MOVE (1L << 2)
+#define MWM_FUNC_MINIMIZE (1L << 3)
+#define MWM_FUNC_MAXIMIZE (1L << 4)
+#define MWM_FUNC_CLOSE (1L << 5)
+
+// bit definitions for MwmHints.decorations
+#define MWM_DECOR_ALL (1L << 0)
+#define MWM_DECOR_BORDER (1L << 1)
+#define MWM_DECOR_RESIZEH (1L << 2)
+#define MWM_DECOR_TITLE (1L << 3)
+#define MWM_DECOR_MENU (1L << 4)
+#define MWM_DECOR_MINIMIZE (1L << 5)
+#define MWM_DECOR_MAXIMIZE (1L << 6)
+
 namespace Bit
 {
-
 	// Constructors/destructors
 	WindowLinux::WindowLinux( ) :
          m_pDisplay( BIT_NULL ),
@@ -38,9 +62,71 @@ namespace Bit
 
 	// Public functions
 	BIT_UINT32 WindowLinux::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
-		const std::string p_Title )
+		const std::string p_Title, const BIT_UINT32 p_Style )
 	{
-	    // open a connection with X server
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+    if(!(m_pDisplay=XOpenDisplay(NULL)))
+    {
+      bitTrace("ERROR: could not open display\n");
+      return 1;
+    }
+
+  m_Screen = DefaultScreen(m_pDisplay);*/
+  //::Window rootwind = RootWindow(m_pDisplay, m_Screen);
+ /* Colormap cmap = DefaultColormap(m_pDisplay, m_Screen);
+  Atom wmDeleteMessage = XInternAtom(m_pDisplay, "WM_DELETE_WINDOW", False);
+
+  int blackColor = BlackPixel(m_pDisplay, m_Screen);
+  int whiteColor = WhitePixel(m_pDisplay, m_Screen);
+
+    m_Window= XCreateSimpleWindow( m_pDisplay, RootWindow( m_pDisplay, m_Screen ), 0, 0, 200, 100, 0, blackColor, blackColor);
+  XMapWindow(m_pDisplay, m_Window);*/
+ // XSetWMProtocols(m_pDisplay, m_Window, &wmDeleteMessage, 1);
+  /*bool running = true;
+  while(running)
+  {
+    XEvent e;
+    XNextEvent(m_pDisplay, &e);
+    switch  (e.type)
+    {
+      case ClientMessage:
+        if(e.xclient.data.l[0] == wmDeleteMessage)
+        {
+           bitTrace("Shutting down");
+          //XDestroyWindow(m_pDisplay,e.xclient.window);
+          running=false;
+          break;
+        }
+        break;
+    }
+  }
+
+    XCloseDisplay( m_pDisplay);
+
+*/
+
+
+
+
+
+
+
+
+
+        // open a connection with X server
 	    if( ( m_pDisplay = XOpenDisplay( BIT_NULL ) ) == BIT_NULL )
         {
             bitTrace( "[WindowLinux::Create] Can not connect to X server." );
@@ -49,6 +135,10 @@ namespace Bit
 
 	    // Get the screen
 	    m_Screen = DefaultScreen( m_pDisplay );
+
+
+
+
 
 
 
@@ -84,30 +174,110 @@ namespace Bit
 
         // Creat the window attricutes
         XSetWindowAttributes WindowAttributes;
+        WindowAttributes.border_pixel = 0;
+        WindowAttributes.border_pixmap = None;
         WindowAttributes.event_mask =   KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask |
                                         EnterWindowMask | LeaveWindowMask | PointerMotionMask | VisibilityChangeMask |
-                                        FocusChangeMask;
+                                        FocusChangeMask | ExposureMask | StructureNotifyMask;
 
         // Create the window
         m_Window = XCreateWindow( m_pDisplay,
                                  DefaultRootWindow( m_pDisplay ),
                                  0, 0, p_Size.x, p_Size.y,
                                  0,
-                                 CopyFromParent,
-                                 CopyFromParent,
+                                 DefaultDepth( m_pDisplay, m_Screen ),
+                                 InputOutput,
                                  DefaultVisual( m_pDisplay, m_Screen ),
-                                 0,
+                                 CWBorderPixel | CWEventMask,
                                  &WindowAttributes );
 
-        // Set the window title
-        XStoreName( m_pDisplay, m_Window, p_Title.c_str( ) );
+        // It's very important to set the delete message. Else we wont be able to close the window.
+        ::Atom wmDeleteMessage = XInternAtom( m_pDisplay, "WM_DELETE_WINDOW", false );
+        XSetWMProtocols( m_pDisplay, m_Window, &wmDeleteMessage, 1 );
 
+        // Set the window title
+        SetTitle( p_Title.c_str( ) );
+
+        // Let's set up the window decoration and the functionality
+        ::Atom PropertyAtom = XInternAtom( m_pDisplay, "_MOTIF_WM_HINTS", false );
+        if( PropertyAtom )
+        {
+            struct HintsStruct
+            {
+                BIT_UINT32 Flags;
+                BIT_UINT32 Functions;
+                BIT_UINT32 Decorations;
+                BIT_SINT32 InputMode;
+                BIT_UINT32 State;
+            };
+
+            HintsStruct Hints;
+            Hints.Flags = MWM_HINTS_FUNCTIONS | MWM_HINTS_FUNCTIONS;
+            Hints.Functions = 0;
+            Hints.Decorations = 0;
+
+            // Go through all the styles we want to apply to the window
+            if( p_Style == Bit::Window::Style_All )
+            {
+                Hints.Functions |= MWM_FUNC_ALL;
+                Hints.Decorations |= MWM_DECOR_ALL;
+            }
+            else
+            {
+                if( p_Style & Bit::Window::Style_Close )
+                {
+                     Hints.Functions |= MWM_FUNC_CLOSE;
+                }
+
+                if( p_Style & Bit::Window::Style_Minimize )
+                {
+                     Hints.Functions |= MWM_FUNC_MINIMIZE;
+                     Hints.Decorations |= MWM_DECOR_MINIMIZE;
+                }
+
+                if( p_Style & Bit::Window::Style_Resize )
+                {
+                     Hints.Functions |= MWM_FUNC_RESIZE | MWM_FUNC_MAXIMIZE;
+                     Hints.Decorations |= MWM_DECOR_RESIZEH | MWM_DECOR_MAXIMIZE;
+                }
+
+                if( p_Style & Bit::Window::Style_TitleBar )
+                {
+                     Hints.Functions |= MWM_FUNC_MOVE;
+                     Hints.Decorations |= MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MENU;
+                }
+            }
+
+            /*
+            #define MWM_FUNC_ALL (1L << 0)
+            #define MWM_FUNC_RESIZE (1L << 1)
+            #define MWM_FUNC_MOVE (1L << 2)
+            #define MWM_FUNC_MINIMIZE (1L << 3)
+            #define MWM_FUNC_MAXIMIZE (1L << 4)
+            #define MWM_FUNC_CLOSE (1L << 5)
+
+            // bit definitions for MwmHints.decorations
+            #define MWM_DECOR_ALL (1L << 0)
+            #define MWM_DECOR_BORDER (1L << 1)
+            #define MWM_DECOR_RESIZEH (1L << 2)
+            #define MWM_DECOR_TITLE (1L << 3)
+            #define MWM_DECOR_MENU (1L << 4)
+            #define MWM_DECOR_MINIMIZE (1L << 5)
+            #define MWM_DECOR_MAXIMIZE (1L << 6)
+            */
+
+            // Apply the changes
+            XChangeProperty( m_pDisplay, m_Window, PropertyAtom, PropertyAtom, 32, PropModeReplace, (unsigned char *) &Hints, 5 );
+
+        }
+        else
+        {
+            bitTrace( "[WindowLinux::Create] Can not get the property atom \"_MOTIF_WM_HINTS\"." );
+        }
 
         // Display the window.
         XMapWindow( m_pDisplay, m_Window );
         XFlush( m_pDisplay );
-
-
 
 		return BIT_OK;
 	}
@@ -130,12 +300,14 @@ namespace Bit
 	BIT_UINT32 WindowLinux::DoEvents( )
 	{
 
+
         // !NOTE!
 		// Experimental code!
 		if( m_pDisplay == BIT_NULL )
 		{
 		    return BIT_ERROR;
 		}
+
 
         // Declare an x server event.
 		XEvent Event;
@@ -148,9 +320,35 @@ namespace Bit
 
 		    switch( Event.type )
 		    {
+
+                case ClientMessage:
+		        {
+		            if( *XGetAtomName( m_pDisplay, Event.xclient.message_type ) == *"WM_PROTOCOLS" )
+		            {
+                        return BIT_ERROR;
+		            }
+		        }
+		        break;
                 //case blablabla:
 		        //break;
+              /*  case DestroyNotify:
+                {
+                    bitTrace( "Destroying window! 1" );
+                    XDestroyWindow( m_pDisplay, m_Window );
+                }
+                break;
 
+		        case ClientMessage:
+		        {
+		            bitTrace( "Destroying window! 2" );
+                    if( (::Atom)Event.xclient.data.l[ 0 ] == XInternAtom( m_pDisplay, "WM_DELETE_WINDOW", false ) )
+                    {
+                        bitTrace( "Destroying window!  3" );
+                        XDestroyWindow( m_pDisplay, Event.xclient.window );
+                    }
+		        }
+		        break;
+*/
 		        default:
 		        break;
 		    }
@@ -162,12 +360,6 @@ namespace Bit
 	// Set functions
 	BIT_UINT32 WindowLinux::SetTitle( std::string p_Title )
 	{
-        if( m_pDisplay == BIT_NULL )
-	    {
-	        bitTrace( "CAn not set the title ");
-	        return BIT_ERROR;
-	    }
-
         // Set the window title
         XStoreName( m_pDisplay, m_Window, p_Title.c_str( ) );
         return BIT_OK;

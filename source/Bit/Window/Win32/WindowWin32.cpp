@@ -41,7 +41,7 @@ namespace Bit
 
 	// Public functions
 	BIT_UINT32 WindowWin32::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
-		const std::string p_Title )
+		const std::string p_Title, const BIT_UINT32 p_Style )
 	{
 		// Convert the title into the right format
 		std::wstring STemp = StringToWideString( p_Title ); // Temporary buffer is required

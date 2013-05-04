@@ -68,7 +68,7 @@ namespace Bit
 
 		#elif PLATFORM_LINUX
 
-			std::cout << CompleteMessage << std::endl;
+			std::cout << CompleteMessage;
 
 		#endif
 

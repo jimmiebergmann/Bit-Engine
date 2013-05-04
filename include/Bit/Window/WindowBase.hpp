@@ -33,6 +33,7 @@
 
 namespace Bit
 {
+
 	class WindowBase
 	{
 
@@ -40,7 +41,7 @@ namespace Bit
 
 		// Public functions
 		virtual BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
-			const std::string p_Title ) = 0;
+			const std::string p_Title, const BIT_UINT32 p_Style ) = 0;
 		virtual BIT_UINT32 Destroy( ) = 0;
 		virtual BIT_UINT32 DoEvents( ) = 0;
 

@@ -44,7 +44,7 @@ namespace Bit
 
 		// Public functions
 		virtual BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
-			const std::string p_Title );
+			const std::string p_Title, const BIT_UINT32 p_Style );
 		virtual BIT_UINT32 Destroy( );
 		virtual BIT_UINT32 DoEvents( );
 
