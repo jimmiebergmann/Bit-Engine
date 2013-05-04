@@ -29,6 +29,7 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/WindowBase.hpp>
+#include <X11/Xlib.h>
 
 namespace Bit
 {
@@ -64,6 +65,10 @@ namespace Bit
 */
 
 		// Private variables
+		::Display * m_pDisplay;
+		int m_Screen;
+		::Window m_Window;
+		:: Colormap m_ColorMap;
 		/*HDC		m_DeviceContext;
 		HWND	m_Window;
 		BIT_BOOL m_RegisteredClass;
