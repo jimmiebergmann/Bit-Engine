@@ -23,5 +23,21 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#include <Bit/System.hpp>
-#include <Bit/System/MemoryLeak.hpp>
+#ifndef __BIT_SYSTEM_RANDOMIZER_HPP__
+#define __BIT_SYSTEM_RANDOMIZER_HPP__
+
+#include <Bit/DataTypes.hpp>
+#include <string>
+
+namespace Bit
+{
+
+	void SeedRandomizer( BIT_SINT32 p_Seed );
+	void SeedRandomizer( std::string p_Seed );
+	BIT_UINT32 GetRandomizerSeed( );
+	BIT_SINT32 Randomize( BIT_SINT32 p_To );
+	BIT_SINT32 Randomize( BIT_SINT32 p_From, BIT_SINT32 p_To );
+
+}
+
+#endif

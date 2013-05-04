@@ -23,5 +23,46 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#include <Bit/System.hpp>
+#include <Bit/System/Randomizer.hpp>
 #include <Bit/System/MemoryLeak.hpp>
+
+
+static BIT_UINT32 s_RandomSeed = 0;
+
+
+namespace Bit
+{
+
+	void SeedRandomizer( BIT_SINT32 p_Seed )
+	{
+		s_RandomSeed = p_Seed;
+	}
+
+	void SeedRandomizer( std::string p_Seed )
+	{
+		s_RandomSeed = 0;
+
+		for( BIT_MEMSIZE i = 0; i < p_Seed.size(); i++ )
+		{
+			s_RandomSeed += p_Seed[i] * ( i + 1 );
+		}
+	}
+
+	BIT_UINT32 GetRandomizerSeed( )
+	{
+		return s_RandomSeed;
+	}
+
+	BIT_SINT32 Randomize( BIT_SINT32 p_To )
+	{
+		s_RandomSeed = ( 214013 * s_RandomSeed + 2531011 );
+		return ( ( s_RandomSeed >> 16 ) & 0x0000FFFF ) % ( p_To +1 );
+	}
+
+	BIT_SINT32 Randomize( BIT_SINT32 p_From, BIT_SINT32 p_To )
+	{
+		s_RandomSeed = ( 214013 * s_RandomSeed + 2531011 );
+		return p_From + ( ( s_RandomSeed >> 16 ) & 0x0000FFFF ) % ( p_To - ( p_From - 1 ) );
+	}
+
+}

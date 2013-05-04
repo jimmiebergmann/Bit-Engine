@@ -159,11 +159,51 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\System\Math.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Math.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\MemoryLeak.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\MemoryLeak.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\Randomizer.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Randomizer.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\System.cpp"
 			>
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\System.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\Timer.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Timer.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Vector2.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Vector3.hpp"
 			>
 		</File>
 	</Files>

@@ -33,6 +33,8 @@
 	typedef Bit::WindowLinux WindowPlatformType;
 #endif
 
+#include <Bit/System/MemoryLeak.hpp>
+
 namespace Bit
 {
 
@@ -49,7 +51,7 @@ namespace Bit
 	}
 
 	// Public general functions
-	BIT_UINT32 Window::Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits )
+	BIT_UINT32 Window::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits )
 	{
 		// Make sure the window isn't already created
 		if( IsCreated( ) )
@@ -62,7 +64,7 @@ namespace Bit
 
 		// Let's create the window
 		BIT_UINT32 Error;
-		if( ( Error = m_pWindowBase->Create( p_Width, p_Height, p_Bits, "Bit Engine" ) ) != BIT_OK )
+		if( ( Error = m_pWindowBase->Create( p_Size, p_Bits, "Bit Engine" ) ) != BIT_OK )
 		{
 			// Delete the allocated base platfor class
 			delete m_pWindowBase;
@@ -76,7 +78,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 Window::Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits,
+	BIT_UINT32 Window::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 		const std::string p_Title )
 	{
 		// Make sure the window isn't already created
@@ -90,7 +92,7 @@ namespace Bit
 
 		// Let's create the window
 		BIT_UINT32 Error;
-		if( ( Error = m_pWindowBase->Create( p_Width, p_Height, p_Bits, p_Title ) ) != BIT_OK )
+		if( ( Error = m_pWindowBase->Create( p_Size, p_Bits, p_Title ) ) != BIT_OK )
 		{
 			// Delete the allocated base platfor class
 			delete m_pWindowBase;

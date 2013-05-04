@@ -41,9 +41,8 @@ namespace Bit
 		~Window( );
 
 		// Public general functions
-		BIT_UINT32 Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits );
-		BIT_UINT32 Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits,
-			const std::string p_Title );
+		BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );
+		BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title );
 		BIT_UINT32 Destroy( );
 		BIT_UINT32 DoEvents( );
 		BIT_BOOL IsCreated( ) const;

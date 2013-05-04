@@ -23,5 +23,11 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#include <Bit/System.hpp>
+#include <Bit/System/Math.hpp>
 #include <Bit/System/MemoryLeak.hpp>
+
+
+namespace Bit
+{
+
+}

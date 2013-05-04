@@ -35,6 +35,8 @@
 #endif
 
 #include <cstdio>
+#include <Bit/System/MemoryLeak.hpp>
+
 
 namespace Bit
 {

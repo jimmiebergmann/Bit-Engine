@@ -22,6 +22,70 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+#include <Bit/System/Timer.hpp>
+#include <ctime>
 
-#include <Bit/System.hpp>
+#ifdef PLATFORM_WINDOWS
+	#include <windows.h>
+#elif PLATFORM_LINUX
+	#include <sys/time.h>
+#endif
+
 #include <Bit/System/MemoryLeak.hpp>
+
+
+namespace Bit
+{
+
+	Timer::Timer( ) :
+		m_StartTime( 0.0f ),
+		m_Time( 0.0f )
+	{
+	}
+
+	void Timer::Start( )
+	{
+		m_StartTime = GetSystemTime( );
+	}
+
+	void Timer::Stop( )
+	{
+		BIT_FLOAT64 CurrentTime = GetSystemTime( );
+		m_Time = ( CurrentTime - m_StartTime );
+	}
+
+	BIT_FLOAT64 Timer::GetTime( )
+	{
+		return m_Time;
+	}
+
+	BIT_FLOAT64 Timer::GetLapsedTime( )
+	{
+		Stop( );
+		return m_Time;
+	}
+
+	BIT_FLOAT64 Timer::GetSystemTime( )
+	{
+		#ifdef PLATFORM_WINDOWS
+
+			static BIT_SINT64 Counter = 0;
+			static BIT_SINT64 Frequency = 0;
+
+			QueryPerformanceCounter( (LARGE_INTEGER*)&Counter );
+			QueryPerformanceFrequency( (LARGE_INTEGER*)&Frequency );
+
+			return ( static_cast< BIT_FLOAT64 >( Counter ) /
+				static_cast< BIT_FLOAT64 >( Frequency ) );
+
+		#elif PLATFORM_LINUX
+
+			timeval Time;
+			gettimeofday( &Time, 0 );
+			return Time.tv_sec + ( Time.tv_usec * 0.000001 );
+
+		#endif
+	}
+
+}
+

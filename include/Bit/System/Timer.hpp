@@ -22,6 +22,32 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+#ifndef __BIT_SYSTEM_TIMER_HPP__
+#define __BIT_SYSTEM_TIMER_HPP__
 
-#include <Bit/System.hpp>
-#include <Bit/System/MemoryLeak.hpp>
+#include <Bit/DataTypes.hpp>
+
+namespace Bit
+{
+
+	class Timer
+	{
+	public:
+
+		Timer( );
+		void Start( );
+		void Stop( );
+		BIT_FLOAT64 GetTime( );
+		BIT_FLOAT64 GetLapsedTime( );
+		static BIT_FLOAT64 GetSystemTime( );
+
+	private:
+
+		BIT_FLOAT64 m_StartTime;
+		BIT_FLOAT64 m_Time;
+
+	};
+}
+
+
+#endif

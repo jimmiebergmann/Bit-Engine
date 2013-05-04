@@ -24,6 +24,8 @@
 
 #include <Bit/Window/Win32/WindowWin32.hpp>
 #include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
+
 
 namespace Bit
 {
@@ -36,8 +38,9 @@ namespace Bit
 	{
 	}
 
+
 	// Public functions
-	BIT_UINT32 WindowWin32::Create( const BIT_UINT32 p_Width, const BIT_UINT32 p_Height, const BIT_UINT32 p_Bits,
+	BIT_UINT32 WindowWin32::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 		const std::string p_Title )
 	{
 		// Convert the title into the right format
@@ -78,9 +81,9 @@ namespace Bit
 		ReleaseDC( DesktopWindow, DesktopDC );
 
 		WindowRect.left = ( long )0;
-		WindowRect.right = ( long )p_Width;
+		WindowRect.right = ( long )p_Size.x;
 		WindowRect.top = ( long )0;
-		WindowRect.bottom = ( long )p_Height;
+		WindowRect.bottom = ( long )p_Size.y;
 
 		ExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
 		Style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
@@ -122,8 +125,7 @@ namespace Bit
 		SetFocus( m_Window );
 
 		// Finally set the base class attributes
-		m_Width = p_Width;
-		m_Height = p_Height;
+		m_Size = p_Size;
 		m_Bits = p_Bits;
 		m_Title = p_Title;
 
@@ -252,7 +254,6 @@ namespace Bit
 
 		return DefWindowProc( p_HWND, p_Message, p_WParam, p_LParam );
 	}
-
 
 	std::wstring WindowWin32::StringToWideString( const std::string & p_String )
 	{
