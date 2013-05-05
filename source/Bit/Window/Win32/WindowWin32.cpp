@@ -37,12 +37,25 @@ namespace Bit
 		m_Window( BIT_NULL ),
 		m_RegisteredClass( BIT_FALSE )
 	{
-		m_Created = BIT_FALSE;
+		m_Open = BIT_FALSE;
 	}
 
+	WindowWin32::~WindowWin32( )
+	{
+	}
 
 	// Public functions
-	BIT_UINT32 WindowWin32::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
+	BIT_UINT32 WindowWin32::Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits )
+	{
+		return Open( p_Size, p_Bits, "Bit Engine Application", Bit::Window::Style_All );
+	}
+
+	BIT_UINT32 WindowWin32::Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title )
+	{
+		return Open( p_Size, p_Bits, p_Title, Bit::Window::Style_All );
+	}
+
+	BIT_UINT32 WindowWin32::Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 		const std::string p_Title, const BIT_UINT32 p_Style )
 	{
 		// Convert the title into the right format
@@ -160,7 +173,7 @@ namespace Bit
 		SetFocus( m_Window );
 
 		// Finally set the base class attributes
-		m_Created = BIT_TRUE;
+		m_Open = BIT_TRUE;
 		m_Size = p_Size;
 		m_Bits = p_Bits;
 		m_Title = p_Title;
@@ -169,7 +182,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 WindowWin32::Destroy( )
+	BIT_UINT32 WindowWin32::Close( )
 	{
 		// Get the module handler.
 		HINSTANCE Hinstance = GetModuleHandle( BIT_NULL );
@@ -195,7 +208,7 @@ namespace Bit
 		}
 
 		// Null the attributes
-		m_Created = BIT_FALSE;
+		m_Open = BIT_FALSE;
 		m_DeviceContext = NULL;
 		m_Window = NULL;
 		m_RegisteredClass = BIT_FALSE;
@@ -218,9 +231,10 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	void WindowWin32::Show( const BIT_BOOL p_State )
+	BIT_BOOL WindowWin32::Show( const BIT_BOOL p_State )
 	{
 		ShowWindow( m_Window, p_State );
+		return BIT_OK;
 	}
 
 	// Set functions
@@ -263,7 +277,7 @@ namespace Bit
 		{
 			case(WM_CLOSE):
 				{
-					Destroy( );
+					Close( );
 					/*if( !( m_Style & Bit::Window::Style_Close ) && ( m_Style != Bit::Window::Style_All ) )
 					{
 						return true;

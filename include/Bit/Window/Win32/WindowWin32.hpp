@@ -28,26 +28,29 @@
 #ifdef PLATFORM_WINDOWS
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Window/WindowBase.hpp>
+#include <Bit/Window.hpp>
 #include <windows.h>
 
 namespace Bit
 {
 
-	class WindowWin32 : public WindowBase
+	class WindowWin32 : public Window
 	{
 
 	public:
 
 		// Constructors/destructors
 		WindowWin32( );
+		~WindowWin32( );
 
-		// Public functions
-		virtual BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
-			const std::string p_Title, const BIT_UINT32 p_Style );
-		virtual BIT_UINT32 Destroy( );
+		// Public general functions
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title );
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
+                    const BIT_UINT32 p_Style );
+		virtual BIT_UINT32 Close( );
 		virtual BIT_UINT32 DoEvents( );
-		virtual void Show( const BIT_BOOL p_State );
+		virtual BIT_BOOL Show( const BIT_BOOL p_State );
 
 		// Get functions
 		// ...

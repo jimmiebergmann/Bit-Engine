@@ -146,12 +146,44 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="OpenGL"
+			>
+			<File
+				RelativePath="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Win32"
+			>
+			<File
+				RelativePath="..\..\source\Bit\Graphics\Win32\RendererWin32.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\Win32\RendererWin32.hpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\source\Bit\Graphics.cpp"
 			>
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\Graphics.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\Graphics\Renderer.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\Graphics\Renderer.hpp"
 			>
 		</File>
 	</Files>

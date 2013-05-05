@@ -26,7 +26,11 @@
 #define __VML_WINDOW_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Window/WindowBase.hpp>
+#include <Bit/Window/Event.hpp>
+#include <Bit/System/Vector2.hpp>
+#include <string>
+#include <list>
+//#include <Bit/Window/WindowBase.hpp>
 
 namespace Bit
 {
@@ -36,6 +40,7 @@ namespace Bit
 
 	public:
 
+		// Public enums
         enum eStyle
         {
             Style_All = 0,
@@ -46,32 +51,43 @@ namespace Bit
         };
 
 		// Constructors/destructors
-		Window( );
-		~Window( );
+		virtual ~Window( ) {}
 
-		// Public general functions
-		BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );
-		BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title );
-		BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
-                    const BIT_UINT32 p_Style );
-		BIT_UINT32 Destroy( );
-		BIT_UINT32 DoEvents( );
-		BIT_BOOL IsCreated( ) const;
+		// Public virtual functions
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits ) = 0;
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title ) = 0;
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
+                    const BIT_UINT32 p_Style ) = 0;
+		virtual BIT_UINT32 Close( ) = 0;
+		virtual BIT_UINT32 DoEvents( ) = 0;
+		virtual BIT_BOOL Show( const BIT_BOOL p_State ) = 0;
+
+		// Private functions
+		BIT_BOOL IsOpen( ) const;
 		BIT_BOOL PollEvent( Event & p_Event );
-		void Show( const BIT_BOOL p_State );
+		
 
 		// Get functions
 		// ...
 
 		// Set functions
-		BIT_UINT32 SetTitle( std::string p_Title );
+		virtual BIT_UINT32 SetTitle( std::string p_Title ) = 0;
 
-	private:
+	protected:
 
-		// Private variables
-		WindowBase * m_pWindowBase;
-
+		// Protected variables
+		BIT_BOOL m_Open;
+		Vector2_ui32 m_Size;
+		BIT_UINT32 m_Bits;
+		std::string m_Title;
+		BIT_UINT32 m_Style;
+		std::list< Event > m_EventQueue;
 	};
+
+
+	// Use this function for window creation!
+	// Function for Window allocation
+	Window * CreateWindow( );
 
 }
 
