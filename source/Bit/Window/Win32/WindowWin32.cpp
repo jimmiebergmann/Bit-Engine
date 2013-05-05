@@ -318,7 +318,7 @@ namespace Bit
 			case WM_KEYDOWN:
 			{
 				Bit::Event Event;
-				Event.Type = Bit::Event::KeyPress;
+				Event.Type = Bit::Event::KeyPressed;
 				Event.Key = LOWORD( p_WParam );
 				m_EventQueue.push_back( Event );
 			}
@@ -326,7 +326,7 @@ namespace Bit
 			case WM_KEYUP:
 			{
 				Bit::Event Event;
-				Event.Type = Bit::Event::KeyRelease;
+				Event.Type = Bit::Event::KeyReleased;
 				Event.Key = LOWORD( p_WParam );
 				m_EventQueue.push_back( Event );
 			}

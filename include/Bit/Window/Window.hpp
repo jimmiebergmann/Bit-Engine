@@ -77,6 +77,7 @@ namespace Bit
 		// Protected variables
 		BIT_BOOL m_Open;
 		Vector2_ui32 m_Size;
+		Vector2_si32 m_Position;
 		BIT_UINT32 m_Bits;
 		std::string m_Title;
 		BIT_UINT32 m_Style;

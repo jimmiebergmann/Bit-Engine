@@ -91,41 +91,11 @@ namespace Bit
 	    // Get the screen
 	    m_Screen = DefaultScreen( m_pDisplay );
 
-
-        // LIST OF THE MASKS WE CAN USE
-        /*
-        #define NoEventMask			0L
-        #define KeyPressMask			(1L<<0)
-        #define KeyReleaseMask			(1L<<1)
-        #define ButtonPressMask			(1L<<2)
-        #define ButtonReleaseMask		(1L<<3)
-        #define EnterWindowMask			(1L<<4)
-        #define LeaveWindowMask			(1L<<5)
-        #define PointerMotionMask		(1L<<6)
-        #define PointerMotionHintMask		(1L<<7)
-        #define Button1MotionMask		(1L<<8)
-        #define Button2MotionMask		(1L<<9)
-        #define Button3MotionMask		(1L<<10)
-        #define Button4MotionMask		(1L<<11)
-        #define Button5MotionMask		(1L<<12)
-        #define ButtonMotionMask		(1L<<13)
-        #define KeymapStateMask			(1L<<14)
-        #define ExposureMask			(1L<<15)
-        #define VisibilityChangeMask		(1L<<16)
-        #define StructureNotifyMask		(1L<<17)
-        #define ResizeRedirectMask		(1L<<18)
-        #define SubstructureNotifyMask		(1L<<19)
-        #define SubstructureRedirectMask	(1L<<20)
-        #define FocusChangeMask			(1L<<21)
-        #define PropertyChangeMask		(1L<<22)
-        #define ColormapChangeMask		(1L<<23)
-        #define OwnerGrabButtonMask		(1L<<24)
-        */
-
         // Creat the window attricutes
         XSetWindowAttributes WindowAttributes;
-        WindowAttributes.event_mask =   KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask |
-                                        EnterWindowMask | LeaveWindowMask | PointerMotionMask | VisibilityChangeMask |
+        WindowAttributes.event_mask =   KeyPressMask | KeyReleaseMask |
+                                        ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask |
+                                        EnterWindowMask | LeaveWindowMask | VisibilityChangeMask |
                                         FocusChangeMask | ExposureMask | StructureNotifyMask;
 
         // Create the window
@@ -196,24 +166,6 @@ namespace Bit
                 }
             }
 
-            /*
-            #define MWM_FUNC_ALL (1L << 0)
-            #define MWM_FUNC_RESIZE (1L << 1)
-            #define MWM_FUNC_MOVE (1L << 2)
-            #define MWM_FUNC_MINIMIZE (1L << 3)
-            #define MWM_FUNC_MAXIMIZE (1L << 4)
-            #define MWM_FUNC_CLOSE (1L << 5)
-
-            // bit definitions for MwmHints.decorations
-            #define MWM_DECOR_ALL (1L << 0)
-            #define MWM_DECOR_BORDER (1L << 1)
-            #define MWM_DECOR_RESIZEH (1L << 2)
-            #define MWM_DECOR_TITLE (1L << 3)
-            #define MWM_DECOR_MENU (1L << 4)
-            #define MWM_DECOR_MINIMIZE (1L << 5)
-            #define MWM_DECOR_MAXIMIZE (1L << 6)
-            */
-
             // Apply the changes
             XChangeProperty( m_pDisplay, m_Window, PropertyAtom, PropertyAtom, 32, PropModeReplace, (unsigned char *) &Hints, 5 );
 
@@ -263,53 +215,125 @@ namespace Bit
 		}
 
         // Declare an x server event.
-		XEvent Event;
+		XEvent E;
 
 		// Loop through all the events
 		while( XPending( m_pDisplay ) > 0 & m_Open )
 		{
 		    // Get the next event
-		    XNextEvent( m_pDisplay, &Event );
+		    XNextEvent( m_pDisplay, &E );
 
-		    switch( Event.type )
+		    switch( E.type )
 		    {
 
                 case ClientMessage:
 		        {
-
-		            if( *XGetAtomName( m_pDisplay, Event.xclient.message_type ) == *"WM_PROTOCOLS" )
+                    // This is ahacky way of checking if we closed the window
+		            if( *XGetAtomName( m_pDisplay, E.xclient.message_type ) == *"WM_PROTOCOLS" )
 		            {
+		                Bit::Event Event;
+		                Event.Type = Bit::Event::Closed;
+		                m_EventQueue.push_back( Event );
+
+		                // Remember to actually close the window
 		                Close( );
                         return BIT_OK;
 		            }
 		        }
 		        break;
+                case ConfigureNotify: // Resized and moved event
+		        {
+
+		            // Resizing
+		            if( E.xconfigure.width != m_Size.x || E.xconfigure.height != m_Size.y )
+		            {
+		                m_Size = Bit::Vector2_ui32( E.xconfigure.width, E.xconfigure.height );
+
+                        Bit::Event Event;
+                        Event.Type = Bit::Event::Resized;
+                        Event.Size = m_Size;
+                        m_EventQueue.push_back( Event );
+		            }
+
+		            // Moving
+		            if( E.xconfigure.x != m_Position.x || E.xconfigure.x != m_Position.y )
+		            {
+		                m_Position = Bit::Vector2_si32( E.xconfigure.x, E.xconfigure.y );
+
+                        Bit::Event Event;
+                        Event.Type = Bit::Event::Moved;
+                        Event.Position = m_Position;
+                        m_EventQueue.push_back( Event );
+		            }
+
+		        }
+		        break;
+		        case FocusIn:
+		        {
+		            Bit::Event Event;
+                    Event.Type = Bit::Event::GainedFocus;
+                    m_EventQueue.push_back( Event );
+		        }
+		        break;
+		        case FocusOut:
+		        {
+		            Bit::Event Event;
+                    Event.Type = Bit::Event::LostFocus;
+                    m_EventQueue.push_back( Event );
+		        }
+		        break;
 		        case KeyPress:
 		        {
-		            bitTrace("Key press.\n");
-		        }
-		        break;
-                //case blablabla:
-		        //break;
-              /*  case DestroyNotify:
-                {
-                    bitTrace( "Destroying window! 1" );
-                    XDestroyWindow( m_pDisplay, m_Window );
-                }
-                break;
+                    // Get the right key index
+                    KeySym Key = XLookupKeysym( &E.xkey, 0 );
 
-		        case ClientMessage:
-		        {
-		            bitTrace( "Destroying window! 2" );
-                    if( (::Atom)Event.xclient.data.l[ 0 ] == XInternAtom( m_pDisplay, "WM_DELETE_WINDOW", false ) )
-                    {
-                        bitTrace( "Destroying window!  3" );
-                        XDestroyWindow( m_pDisplay, Event.xclient.window );
-                    }
+		            Bit::Event Event;
+                    Event.Type = Bit::Event::KeyPressed;
+                    Event.Key = Key;
+                    m_EventQueue.push_back( Event );
 		        }
 		        break;
-*/
+                case KeyRelease:
+		        {
+		            // Get the right key index
+                    KeySym Key = XLookupKeysym( &E.xkey, 0 );
+
+		            Bit::Event Event;
+                    Event.Type = Bit::Event::KeyReleased;
+                    Event.Key = Key;
+                    m_EventQueue.push_back( Event );
+		        }
+		        break;
+                case MotionNotify:
+		        {
+		            Bit::Event Event;
+                    Event.Type = Bit::Event::MouseMoved;
+                    Event.MousePosition = Bit::Vector2_si32( E.xmotion.x, E.xmotion.y );
+                    m_EventQueue.push_back( Event );
+		        }
+		        break;
+		        case ButtonPress:
+		        {
+		            Bit::Event Event;
+                    Event.Type = Bit::Event::MouseButtonPressed;
+                    Event.Button = E.xbutton.button;
+                    Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
+                    m_EventQueue.push_back( Event );
+		        }
+		        break;
+                case ButtonRelease:
+		        {
+		            Bit::Event Event;
+                    Event.Type = Bit::Event::MouseButtonReleased;
+                    Event.Button = E.xbutton.button;
+                    Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
+                    m_EventQueue.push_back( Event );
+		        }
+		        break;
 		        default:
+		        {
+                    // ...
+		        }
 		        break;
 		    }
 		}
