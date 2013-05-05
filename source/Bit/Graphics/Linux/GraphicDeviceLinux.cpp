@@ -22,54 +22,65 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_LINUX_HPP__
-#define __BIT_WINDOW_LINUX_HPP__
-
-#ifdef PLATFORM_LINUX
-
-#include <Bit/DataTypes.hpp>
-#include <Bit/Window/Window.hpp>
-#include <X11/Xlib.h>
+#include <Bit/Graphics/Linux/GraphicDeviceLinux.hpp>
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	class WindowLinux : public Window
+
+	// Constructors/destructors
+	GraphicDeviceLinux::GraphicDeviceLinux( )
+	{
+	}
+
+	GraphicDeviceLinux::~GraphicDeviceLinux( )
+	{
+	}
+
+
+	// Public general functions
+	BIT_UINT32 GraphicDeviceLinux::Open( const Window & p_Window, const BIT_UINT32 p_Devices )
+	{
+		return BIT_ERROR;
+	}
+
+	BIT_UINT32 GraphicDeviceLinux::Close( )
+	{
+		return BIT_ERROR;
+	}
+
+	void GraphicDeviceLinux::Present( )
 	{
 
-	public:
+	}
 
-		// Constructors/destructors
-		WindowLinux( );
-		~WindowLinux( );
+	// Clear functions
+	void GraphicDeviceLinux::ClearBuffers( const BIT_UINT32 p_ClearBits )
+	{
 
-		// Public general functions
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
-                    const BIT_UINT32 p_Style );
-		virtual BIT_UINT32 Close( );
-		virtual BIT_UINT32 DoEvents( );
-		virtual BIT_BOOL Show( const BIT_BOOL p_State );
+	}
 
-		// Get functions
-		// ...
+	void GraphicDeviceLinux::ClearColor( )
+	{
 
-		// Set functions
-		virtual BIT_UINT32 SetTitle( std::string p_Title );
+	}
 
-	private:
+	void GraphicDeviceLinux::ClearDepth( )
+	{
 
-		// Private variables
-		::Display * m_pDisplay;
-		int m_Screen;
-		::Window m_Window;
-		//:: Colormap m_ColorMap;
+	}
 
-	};
+	// Create functions for different renderer elements
+	// ..
+
+
+	// Get functions
+
+
+	// Set functions
+
+
 
 }
-
-#endif
-
-#endif

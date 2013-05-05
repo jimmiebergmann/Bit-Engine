@@ -46,8 +46,12 @@
 				</ResourceCompiler>
 			</Target>
 		</Build>
-		<Unit filename="../../include/Bit/Graphics.hpp" />
-		<Unit filename="../../source/Bit/Graphics.cpp" />
+		<Unit filename="../../include/Bit/Graphics/GraphicDevice.hpp" />
+		<Unit filename="../../include/Bit/Graphics/Linux/GraphicDeviceLinux.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGL.hpp" />
+		<Unit filename="../../source/Bit/Graphics/GraphicDevice.cpp" />
+		<Unit filename="../../source/Bit/Graphics/Linux/GraphicDeviceLinux.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGL.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

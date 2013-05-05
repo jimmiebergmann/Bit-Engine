@@ -22,54 +22,52 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_LINUX_HPP__
-#define __BIT_WINDOW_LINUX_HPP__
 
-#ifdef PLATFORM_LINUX
+#ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP__
+#define __BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP__
 
+#include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/DataTypes.hpp>
-#include <Bit/Window/Window.hpp>
-#include <X11/Xlib.h>
 
 namespace Bit
 {
-
-	class WindowLinux : public Window
+	class GraphicDeviceLinux : public GraphicDevice
 	{
 
 	public:
 
 		// Constructors/destructors
-		WindowLinux( );
-		~WindowLinux( );
+		GraphicDeviceLinux( );
+		~GraphicDeviceLinux( );
 
 		// Public general functions
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
-                    const BIT_UINT32 p_Style );
+		virtual BIT_UINT32 Open( const Window & p_Window, const BIT_UINT32 p_Devices );
 		virtual BIT_UINT32 Close( );
-		virtual BIT_UINT32 DoEvents( );
-		virtual BIT_BOOL Show( const BIT_BOOL p_State );
+		virtual void Present( );
+
+		// Clear functions
+		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits );
+		virtual void ClearColor( );
+		virtual void ClearDepth( );
+
+		// Create functions for different renderer elements
+		// ..
 
 		// Get functions
-		// ...
 
 		// Set functions
-		virtual BIT_UINT32 SetTitle( std::string p_Title );
+
 
 	private:
 
-		// Private variables
-		::Display * m_pDisplay;
-		int m_Screen;
-		::Window m_Window;
-		//:: Colormap m_ColorMap;
 
 	};
+
 
 }
 
 #endif
 
-#endif
+
+
+

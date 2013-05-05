@@ -46,11 +46,11 @@
 				</ResourceCompiler>
 			</Target>
 		</Build>
-		<Unit filename="../../include/Bit/Window.hpp" />
 		<Unit filename="../../include/Bit/Window/Event.hpp" />
 		<Unit filename="../../include/Bit/Window/Linux/WindowLinux.hpp" />
-		<Unit filename="../../source/Bit/Window.cpp" />
+		<Unit filename="../../include/Bit/Window/Window.hpp" />
 		<Unit filename="../../source/Bit/Window/Linux/WindowLinux.cpp" />
+		<Unit filename="../../source/Bit/Window/Window.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
