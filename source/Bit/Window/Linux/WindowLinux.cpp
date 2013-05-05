@@ -248,6 +248,8 @@ namespace Bit
 		            if( E.xconfigure.width != m_Size.x || E.xconfigure.height != m_Size.y )
 		            {
 		                m_Size = Bit::Vector2_ui32( E.xconfigure.width, E.xconfigure.height );
+		                // Make sure to calculate the position as well size it may change when you resize the window
+                        m_Position = Bit::Vector2_si32( E.xconfigure.x, E.xconfigure.y );
 
                         Bit::Event Event;
                         Event.Type = Bit::Event::Resized;
@@ -256,7 +258,8 @@ namespace Bit
 		            }
 
 		            // Moving
-		            if( E.xconfigure.x != m_Position.x || E.xconfigure.x != m_Position.y )
+		            if( ( E.xconfigure.x != 0 || E.xconfigure.y != 0 ) &&
+                        ( E.xconfigure.x != m_Position.x || E.xconfigure.x != m_Position.y ) )
 		            {
 		                m_Position = Bit::Vector2_si32( E.xconfigure.x, E.xconfigure.y );
 
