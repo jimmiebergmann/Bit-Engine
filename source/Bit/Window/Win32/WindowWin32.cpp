@@ -42,6 +42,7 @@ namespace Bit
 
 	WindowWin32::~WindowWin32( )
 	{
+		Close( );
 	}
 
 	// Public functions

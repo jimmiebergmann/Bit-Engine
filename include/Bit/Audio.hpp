@@ -1,6 +1,3 @@
-#ifndef __BIT_AUDIO_HPP__
-#define __BIT_AUDIO_HPP__
-
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
 // 
@@ -24,5 +21,9 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
+
+#ifndef __BIT_AUDIO_HPP__
+#define __BIT_AUDIO_HPP__
+
 
 #endif

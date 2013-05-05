@@ -22,60 +22,52 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_WIN32_HPP__
-#define __BIT_WINDOW_WIN32_HPP__
 
-#ifdef PLATFORM_WINDOWS
+#ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP__
+#define __BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP__
 
+#include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/DataTypes.hpp>
-#include <Bit/Window/Window.hpp>
-#include <windows.h>
 
 namespace Bit
 {
-
-	class WindowWin32 : public Window
+	class GraphicDeviceWin32 : public GraphicDevice
 	{
 
 	public:
 
 		// Constructors/destructors
-		WindowWin32( );
-		~WindowWin32( );
+		GraphicDeviceWin32( );
+		~GraphicDeviceWin32( );
 
 		// Public general functions
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
-                    const BIT_UINT32 p_Style );
+		virtual BIT_UINT32 Open( const Window & p_Window, const BIT_UINT32 p_Devices );
 		virtual BIT_UINT32 Close( );
-		virtual BIT_UINT32 DoEvents( );
-		virtual BIT_BOOL Show( const BIT_BOOL p_State );
+		virtual void Present( );
+
+		// Clear functions
+		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits );
+		virtual void ClearColor( );
+		virtual void ClearDepth( );
+
+		// Create functions for different renderer elements
+		// ..
 
 		// Get functions
-		// ...
 
 		// Set functions
-		virtual BIT_UINT32 SetTitle( std::string p_Title );
+		
 
 	private:
 
-		// Private functions
-		static LRESULT WindowProcStatic( HWND p_HWND, UINT p_Message,
-			WPARAM p_WParam, LPARAM p_LParam );
-		LRESULT WindowProc( HWND p_HWND, UINT p_Message,
-			WPARAM p_WParam, LPARAM p_LParam );
-		static std::wstring StringToWideString( const std::string& p_String );
-
-		// Private variables
-		HDC		m_DeviceContext;
-		HWND	m_Window;
-		BIT_BOOL m_RegisteredClass;
 
 	};
+
 
 }
 
 #endif
 
-#endif
+
+
+

@@ -162,28 +162,20 @@
 			Name="Win32"
 			>
 			<File
-				RelativePath="..\..\source\Bit\Graphics\Win32\RendererWin32.cpp"
+				RelativePath="..\..\source\Bit\Graphics\Win32\GraphicDeviceWin32.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\include\Bit\Graphics\Win32\RendererWin32.hpp"
+				RelativePath="..\..\include\Bit\Graphics\Win32\GraphicDeviceWin32.hpp"
 				>
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\..\source\Bit\Graphics.cpp"
+			RelativePath="..\..\source\Bit\Graphics\GraphicDevice.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\include\Bit\Graphics.hpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\Bit\Graphics\Renderer.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\include\Bit\Graphics\Renderer.hpp"
+			RelativePath="..\..\include\Bit\Graphics\GraphicDevice.hpp"
 			>
 		</File>
 	</Files>

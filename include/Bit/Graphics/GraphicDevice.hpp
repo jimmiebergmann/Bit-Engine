@@ -22,60 +22,67 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_WIN32_HPP__
-#define __BIT_WINDOW_WIN32_HPP__
-
-#ifdef PLATFORM_WINDOWS
+#ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_HPP__
+#define __BIT_GRAPHICS_GRAPHIC_DEVICE_HPP__
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Window.hpp>
-#include <windows.h>
 
 namespace Bit
 {
-
-	class WindowWin32 : public Window
+	class GraphicDevice
 	{
 
 	public:
 
+		// Public enums
+		enum eDevices
+		{
+			Device_Any = 0,			// Picking the most fitting and newest one.
+			Device_OpenGL_2_1 = 1,	// OpenGL 2.1 context
+			Device_OpenGL_3_1 = 2,	// OpenGL 3.1 context
+		};
+
+
 		// Constructors/destructors
-		WindowWin32( );
-		~WindowWin32( );
+		virtual ~GraphicDevice( ) { }
 
 		// Public general functions
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
-                    const BIT_UINT32 p_Style );
-		virtual BIT_UINT32 Close( );
-		virtual BIT_UINT32 DoEvents( );
-		virtual BIT_BOOL Show( const BIT_BOOL p_State );
+		virtual BIT_UINT32 Open( const Window & p_Window, const BIT_UINT32 p_Devices ) = 0;
+		virtual BIT_UINT32 Close( ) = 0;
+		virtual void Present( ) = 0;
+
+		// Public functions
+		BIT_BOOL IsOpen( ) const;
+
+		// Clear functions
+		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits ) = 0;
+		virtual void ClearColor( ) = 0;
+		virtual void ClearDepth( ) = 0;
+
+		// Create functions for different renderer elements
+		// ..
 
 		// Get functions
-		// ...
+		BIT_UINT32 GetDeviceType( ) const;
 
 		// Set functions
-		virtual BIT_UINT32 SetTitle( std::string p_Title );
+		// ..
 
-	private:
 
-		// Private functions
-		static LRESULT WindowProcStatic( HWND p_HWND, UINT p_Message,
-			WPARAM p_WParam, LPARAM p_LParam );
-		LRESULT WindowProc( HWND p_HWND, UINT p_Message,
-			WPARAM p_WParam, LPARAM p_LParam );
-		static std::wstring StringToWideString( const std::string& p_String );
+	protected:
 
-		// Private variables
-		HDC		m_DeviceContext;
-		HWND	m_Window;
-		BIT_BOOL m_RegisteredClass;
+		// Protected functions
+		BIT_BOOL m_Open;
+		BIT_UINT32 m_DeviceType;
+		Vector2_si32 m_ViewPortLow;
+		Vector2_si32 m_ViewPortHigh;
 
 	};
 
-}
+	// Create a cross platform renderer via this function
+	GraphicDevice * CreateGraphicDevice( );
 
-#endif
+}
 
 #endif

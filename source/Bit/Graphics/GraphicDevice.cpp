@@ -22,8 +22,41 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_NETWORK_HPP__
-#define __BIT_NETWORK_HPP__
+#include <Bit/Graphics/GraphicDevice.hpp>
 
-
+// Platform independent
+#ifdef PLATFORM_WINDOWS
+	#include <Bit/Graphics/Win32/GraphicDeviceWin32.hpp>
+	typedef Bit::GraphicDeviceWin32 GraphicDevicePlatformType;
+	#undef CreateWindow
+#elif PLATFORM_LINUX
+	//#include <Bit/Window/Linux/WindowLinux.hpp>
+	typedef Bit::GraphicDeviceLinux GraphicDevicePlatformType;
 #endif
+
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
+
+namespace Bit
+{
+
+	// Public functions
+	BIT_BOOL GraphicDevice::IsOpen( ) const
+	{
+		return m_Open;
+	}
+
+	// Get functions
+	BIT_UINT32 GraphicDevice::GetDeviceType( ) const
+	{
+		return m_DeviceType;
+	}
+
+
+	// Create a cross platform renderer via this function
+	GraphicDevice * CreateGraphicDevice( )
+	{
+		return new GraphicDevicePlatformType( );
+	}
+
+}

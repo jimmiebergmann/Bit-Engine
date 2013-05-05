@@ -22,8 +22,65 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_NETWORK_HPP__
-#define __BIT_NETWORK_HPP__
+#include <Bit/Graphics/Win32/GraphicDeviceWin32.hpp>
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
+
+namespace Bit
+{
 
 
-#endif
+	// Constructors/destructors
+	GraphicDeviceWin32::GraphicDeviceWin32( )
+	{
+	}
+
+	GraphicDeviceWin32::~GraphicDeviceWin32( )
+	{
+	}
+
+
+	// Public general functions
+	BIT_UINT32 GraphicDeviceWin32::Open( const Window & p_Window, const BIT_UINT32 p_Devices )
+	{
+		return BIT_ERROR;
+	}
+
+	BIT_UINT32 GraphicDeviceWin32::Close( )
+	{
+		return BIT_ERROR;
+	}
+
+	void GraphicDeviceWin32::Present( )
+	{
+
+	}
+
+	// Clear functions
+	void GraphicDeviceWin32::ClearBuffers( const BIT_UINT32 p_ClearBits )
+	{
+
+	}
+
+	void GraphicDeviceWin32::ClearColor( )
+	{
+
+	}
+
+	void GraphicDeviceWin32::ClearDepth( )
+	{
+
+	}
+
+	// Create functions for different renderer elements
+	// ..
+
+
+	// Get functions
+
+
+	// Set functions
+
+
+
+}
