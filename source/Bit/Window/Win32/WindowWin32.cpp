@@ -278,7 +278,7 @@ namespace Bit
 			case WM_CLOSE:
 			{
 				Bit::Event Event;
-				Event.Type = Bit::Event::Close;
+				Event.Type = Bit::Event::Closed;
 				m_EventQueue.push_back( Event );
 
 				// Make sure to close the window as well.
@@ -302,7 +302,7 @@ namespace Bit
 			case WM_SIZE:
 			{
 				Bit::Event Event;
-				Event.Type = Bit::Event::Resize;
+				Event.Type = Bit::Event::Resized;
 				Event.Size = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
 				m_EventQueue.push_back( Event );
 			}
@@ -310,7 +310,7 @@ namespace Bit
 			case WM_MOVE:
 			{
 				Bit::Event Event;
-				Event.Type = Bit::Event::Move;
+				Event.Type = Bit::Event::Moved;
 				Event.Position = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
 				m_EventQueue.push_back( Event );
 			}
@@ -335,6 +335,62 @@ namespace Bit
 			{
 				Bit::Event Event;
 				Event.Type = Bit::Event::MouseMoved;
+				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+
+			case WM_LBUTTONDOWN:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::MouseButtonPressed;
+				Event.Button = 1;
+				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_MBUTTONDOWN:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::MouseButtonPressed;
+				Event.Button = 2;
+				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_RBUTTONDOWN:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::MouseButtonPressed;
+				Event.Button = 3;
+				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+
+			case WM_LBUTTONUP:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::MouseButtonReleased;
+				Event.Button = 1;
+				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_MBUTTONUP:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::MouseButtonReleased;
+				Event.Button = 2;
+				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_RBUTTONUP:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::MouseButtonReleased;
+				Event.Button = 3;
 				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
 				m_EventQueue.push_back( Event );
 			}
