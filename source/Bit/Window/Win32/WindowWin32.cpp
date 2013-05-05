@@ -23,7 +23,6 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Window/Win32/WindowWin32.hpp>
-#include <Bit/Window.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
