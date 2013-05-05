@@ -170,10 +170,6 @@
 			RelativePath="..\..\include\Bit\Window.hpp"
 			>
 		</File>
-		<File
-			RelativePath="..\..\include\Bit\Window\WindowBase.hpp"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
