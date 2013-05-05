@@ -26,23 +26,37 @@
 #define __BIT_WINDOW_EVENT_HPP__
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/System/Vector2.hpp>
 
 namespace Bit
 {
 
-	enum eEventType
-	{
-		None = 0,
-		Close = 1,
-		Move = 2,
-		Resize = 3,
-		GainedFocus = 4,
-		LostFocus = 5
-	};
-
 	struct Event
 	{
+
+		enum eEventType
+		{
+			None = 0,
+			Close = 1,
+			Move = 2,
+			Resize = 3,
+			GainedFocus = 4,
+			LostFocus = 5,
+			KeyPress = 6,
+			KeyRelease = 7,
+			MouseMoved = 8,
+			MouseButtonPress = 9,
+			MouseButtonRelease = 10
+
+		};
+
 		eEventType Type;
+
+		Bit::Vector2_si32 Size;
+		Bit::Vector2_si32 Position;
+		Bit::Vector2_si32 MousePosition;
+		BIT_UINT32 Key;
+		
 	};
 
 }

@@ -275,37 +275,70 @@ namespace Bit
 	{
 		switch(p_Message)
 		{
-			case(WM_CLOSE):
-				{
-					Close( );
-					/*if( !( m_Style & Bit::Window::Style_Close ) && ( m_Style != Bit::Window::Style_All ) )
-					{
-						return true;
-					}*/
-					//m_EventQueue.push( Event( Window::Close ) );
-				}
-				break;
-			case(WM_SETFOCUS):
-				{
-					//m_EventQueue.push( Event( Window::GainedFocus ) );
-				}
-				break;
-			case(WM_KILLFOCUS):
-				{
-					//m_EventQueue.push( Event( Window::LostFocus ) );
-				}
-				break;
-			case(WM_SIZE):
-				{
-					//Destroy( );
-					//m_EventQueue.push( Event( Window::Resize ) );
-				}
-				break;
-			case(WM_MOVE):
-				{
-					//m_EventQueue.push( Event( Window::Move ) );
-				}
-				break;
+			case WM_CLOSE:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::Close;
+				m_EventQueue.push_back( Event );
+
+				// Make sure to close the window as well.
+				Close( );
+			}
+			break;
+			case WM_SETFOCUS:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::GainedFocus;
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_KILLFOCUS:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::LostFocus;
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_SIZE:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::Resize;
+				Event.Size = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_MOVE:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::Move;
+				Event.Position = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_KEYDOWN:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::KeyPress;
+				Event.Key = LOWORD( p_WParam );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_KEYUP:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::KeyRelease;
+				Event.Key = LOWORD( p_WParam );
+				m_EventQueue.push_back( Event );
+			}
+			break;
+			case WM_MOUSEMOVE:
+			{
+				Bit::Event Event;
+				Event.Type = Bit::Event::MouseMoved;
+				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_EventQueue.push_back( Event );
+			}
+			break;
 
 			// No matching cases?
 			default:
@@ -313,6 +346,7 @@ namespace Bit
 				// Call the input callback function
 				//return m_Input.Callback( p_HWND, p_Message, p_WParam, p_LParam );
 			}
+			break;
 		}
 
 		return DefWindowProc( p_HWND, p_Message, p_WParam, p_LParam );
