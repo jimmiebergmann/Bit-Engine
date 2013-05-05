@@ -28,26 +28,29 @@
 #ifdef PLATFORM_LINUX
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Window/WindowBase.hpp>
+#include <Bit/Window.hpp>
 #include <X11/Xlib.h>
 
 namespace Bit
 {
 
-	class WindowLinux : public WindowBase
+	class WindowLinux : public Window
 	{
 
 	public:
 
 		// Constructors/destructors
 		WindowLinux( );
+		~WindowLinux( );
 
-		// Public functions
-		virtual BIT_UINT32 Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
-			const std::string p_Title, const BIT_UINT32 p_Style );
-		virtual BIT_UINT32 Destroy( );
+		// Public general functions
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title );
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
+                    const BIT_UINT32 p_Style );
+		virtual BIT_UINT32 Close( );
 		virtual BIT_UINT32 DoEvents( );
-		virtual void Show( const BIT_BOOL p_State );
+		virtual BIT_BOOL Show( const BIT_BOOL p_State );
 
 		// Get functions
 		// ...
@@ -57,24 +60,11 @@ namespace Bit
 
 	private:
 
-		// Private functions
-		/*static LRESULT WindowProcStatic( HWND p_HWND, UINT p_Message,
-			WPARAM p_WParam, LPARAM p_LParam );
-		LRESULT WindowProc( HWND p_HWND, UINT p_Message,
-			WPARAM p_WParam, LPARAM p_LParam );
-		static std::wstring StringToWideString( const std::string& p_String );
-*/
-
 		// Private variables
 		::Display * m_pDisplay;
 		int m_Screen;
 		::Window m_Window;
-		:: Colormap m_ColorMap;
-		/*HDC		m_DeviceContext;
-		HWND	m_Window;
-		BIT_BOOL m_RegisteredClass;
-
-		*/
+		//:: Colormap m_ColorMap;
 
 	};
 

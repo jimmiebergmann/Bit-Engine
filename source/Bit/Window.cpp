@@ -63,11 +63,7 @@ namespace Bit
 	// Function for Window allocation
 	Window * CreateWindow( )
 	{
-		#ifdef PLATFORM_WINDOWS
-			return new WindowPlatformType( );
-		#elif PLATFORM_LINUX
-			return BIT_NULL;
-		#endif
+        return new WindowPlatformType( );
 	}
 
 }

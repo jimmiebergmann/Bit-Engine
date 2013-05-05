@@ -58,11 +58,27 @@ namespace Bit
          m_pDisplay( BIT_NULL ),
          m_Screen( 0 )
 	{
-        m_Created = BIT_FALSE;
+        m_Open = BIT_FALSE;
+	}
+
+	WindowLinux::~WindowLinux( )
+	{
+
 	}
 
 	// Public functions
-	BIT_UINT32 WindowLinux::Create( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
+	BIT_UINT32 WindowLinux::Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits )
+	{
+	    return Open( p_Size, p_Bits, "Bit Engine Application", Bit::Window::Style_All );
+	}
+
+    BIT_UINT32 WindowLinux::Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
+		const std::string p_Title)
+	{
+	    return Open( p_Size, p_Bits, p_Title, Bit::Window::Style_All );
+	}
+
+	BIT_UINT32 WindowLinux::Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 		const std::string p_Title, const BIT_UINT32 p_Style )
 	{
 
@@ -214,7 +230,7 @@ namespace Bit
 
 
         // Finally set the base class attributes
-		m_Created = BIT_TRUE;
+		m_Open = BIT_TRUE;
 		m_Size = p_Size;
 		m_Bits = p_Bits;
 		m_Title = p_Title;
@@ -223,7 +239,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 WindowLinux::Destroy( )
+	BIT_UINT32 WindowLinux::Close( )
 	{
 	    if( m_pDisplay )
 	    {
@@ -236,7 +252,7 @@ namespace Bit
             m_pDisplay = BIT_NULL;
 	    }
 
-        m_Created = BIT_FALSE;
+        m_Open = BIT_FALSE;
 		return BIT_ERROR;
 	}
 
@@ -251,7 +267,7 @@ namespace Bit
 		XEvent Event;
 
 		// Loop through all the events
-		while( XPending( m_pDisplay ) > 0 & m_Created )
+		while( XPending( m_pDisplay ) > 0 & m_Open )
 		{
 		    // Get the next event
 		    XNextEvent( m_pDisplay, &Event );
@@ -264,7 +280,7 @@ namespace Bit
 
 		            if( *XGetAtomName( m_pDisplay, Event.xclient.message_type ) == *"WM_PROTOCOLS" )
 		            {
-		                Destroy( );
+		                Close( );
                         return BIT_OK;
 		            }
 		        }
@@ -302,9 +318,11 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	void WindowLinux::Show( const BIT_BOOL p_State )
+	BIT_BOOL WindowLinux::Show( const BIT_BOOL p_State )
 	{
 		// No code here yet.
+
+		return BIT_ERROR;
 	}
 
 	// Set functions
@@ -314,10 +332,5 @@ namespace Bit
         XStoreName( m_pDisplay, m_Window, p_Title.c_str( ) );
         return BIT_OK;
 	}
-
-
-	// Private functions
-
-
 
 }

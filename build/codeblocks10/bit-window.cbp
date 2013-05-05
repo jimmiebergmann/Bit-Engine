@@ -49,7 +49,6 @@
 		<Unit filename="../../include/Bit/Window.hpp" />
 		<Unit filename="../../include/Bit/Window/Event.hpp" />
 		<Unit filename="../../include/Bit/Window/Linux/WindowLinux.hpp" />
-		<Unit filename="../../include/Bit/Window/WindowBase.hpp" />
 		<Unit filename="../../source/Bit/Window.cpp" />
 		<Unit filename="../../source/Bit/Window/Linux/WindowLinux.cpp" />
 		<Extensions>

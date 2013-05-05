@@ -30,7 +30,6 @@
 #include <Bit/System/Vector2.hpp>
 #include <string>
 #include <list>
-//#include <Bit/Window/WindowBase.hpp>
 
 namespace Bit
 {
@@ -65,7 +64,7 @@ namespace Bit
 		// Private functions
 		BIT_BOOL IsOpen( ) const;
 		BIT_BOOL PollEvent( Event & p_Event );
-		
+
 
 		// Get functions
 		// ...
