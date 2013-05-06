@@ -35,13 +35,17 @@
 
 		// Define as export or import depending on if BIT_EXPORTS is defined
 		#ifdef PLATFORM_WINDOWS
+
 			#ifdef BIT_EXPORTS
 				#define BIT_API __declspec(dllexport)
 			#else
 				#define BIT_API __declspec(dllimport)
 			#endif
+
 		#elif PLATFORM_LINUX
+
 			#define BIT_API
+
 		#endif
 
 	#else

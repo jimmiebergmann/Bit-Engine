@@ -12,7 +12,7 @@
 
         namespace Bit
         {
-            void BIT_API InitMemoryLeak( void * p_pParam);
+            BIT_API void InitMemoryLeak( void * p_pParam);
         }
 
         #define bitInitMemoryLeak Bit::InitMemoryLeak
