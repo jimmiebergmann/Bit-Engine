@@ -26,3 +26,18 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #endif
+
+// Include the required headers to run opengl
+#ifdef PLATFORM_WINDOWS
+	#include <Windows.h>
+	#include <GL/gl.h>
+	#include <GL/glext.h>
+	#include <GL/wglext.h>
+#elif PLATFORM_LINUX
+	/*#include <X11/Xlib.h>
+	#include <GL/gl.h>
+	#include <GL/glx.h>
+	#include <GL/glext.h>
+	#include <GL/glxext.h>*/
+#endif
+

@@ -44,7 +44,7 @@
 namespace Bit
 {
 
-	void Trace( const char * p_pMessage, ... )
+	void BIT_API Trace( const char * p_pMessage, ... )
 	{
 		// No message
 		if(p_pMessage == BIT_NULL)

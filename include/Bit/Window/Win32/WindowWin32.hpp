@@ -34,7 +34,7 @@
 namespace Bit
 {
 
-	class WindowWin32 : public Window
+	class BIT_API WindowWin32 : public Window
 	{
 
 	public:
@@ -53,7 +53,7 @@ namespace Bit
 		virtual BIT_BOOL Show( const BIT_BOOL p_State );
 
 		// Get functions
-		// ...
+		HDC GetDeviceContext( ) const;
 
 		// Set functions
 		virtual BIT_UINT32 SetTitle( std::string p_Title );

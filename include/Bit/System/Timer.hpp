@@ -30,7 +30,7 @@
 namespace Bit
 {
 
-	class Timer
+	class BIT_API Timer
 	{
 	public:
 

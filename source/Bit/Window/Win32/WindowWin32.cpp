@@ -237,6 +237,12 @@ namespace Bit
 		return BIT_OK;
 	}
 
+	// Get functions
+	HDC WindowWin32::GetDeviceContext( ) const
+	{
+		return m_DeviceContext;
+	}
+
 	// Set functions
 	BIT_UINT32 WindowWin32::SetTitle( std::string p_Title )
 	{

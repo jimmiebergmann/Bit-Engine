@@ -28,6 +28,8 @@
 #ifndef __BIT_SYSTEM_DEBUGGER_HPP__
 #define __BIT_SYSTEM_DEBUGGER_HPP__
 
+#include <Bit/DataTypes.hpp>
+
 #ifdef BUILD_DEBUG
 #define bitTrace Bit::Trace
 #else
@@ -38,7 +40,7 @@
 namespace Bit
 {
 
-	void Trace( const char * p_pMessage, ... ); 
+	void BIT_API Trace( const char * p_pMessage, ... ); 
 
 }
 

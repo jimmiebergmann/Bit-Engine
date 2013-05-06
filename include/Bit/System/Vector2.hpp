@@ -39,7 +39,7 @@ namespace Bit
 {
 
 	template <typename T>
-	class Vector2
+	class BIT_API Vector2
 	{
 
 	public:

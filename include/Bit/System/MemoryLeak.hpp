@@ -4,6 +4,7 @@
 #ifdef BUILD_DEBUG
     #ifdef PLATFORM_WINDOWS
 
+		#include <Bit/DataTypes.hpp>
         #include <stdlib.h>
         #include <crtdbg.h>
 
@@ -11,7 +12,7 @@
 
         namespace Bit
         {
-            void InitMemoryLeak( void * p_pParam);
+            void BIT_API InitMemoryLeak( void * p_pParam);
         }
 
         #define bitInitMemoryLeak Bit::InitMemoryLeak

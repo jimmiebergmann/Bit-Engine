@@ -61,7 +61,7 @@ namespace Bit
 
 	// Use this function for window creation!
 	// Function for Window allocation
-	Window * CreateWindow( )
+	BIT_API Window * CreateWindow( )
 	{
         return new WindowPlatformType( );
 	}

@@ -30,7 +30,7 @@
 
 namespace Bit
 {
-	class GraphicDevice
+	class BIT_API GraphicDevice
 	{
 
 	public:
@@ -81,7 +81,7 @@ namespace Bit
 	};
 
 	// Create a cross platform renderer via this function
-	GraphicDevice * CreateGraphicDevice( );
+	BIT_API GraphicDevice * CreateGraphicDevice( );
 
 }
 

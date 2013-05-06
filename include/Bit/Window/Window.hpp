@@ -34,7 +34,7 @@
 namespace Bit
 {
 
-	class Window
+	class BIT_API Window
 	{
 
 	public:
@@ -87,7 +87,10 @@ namespace Bit
 
 	// Use this function for window creation!
 	// Function for Window allocation
-	Window * CreateWindow( );
+	BIT_API Window * CreateWindow( );
+
+
+
 
 }
 

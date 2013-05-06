@@ -33,12 +33,12 @@ static BIT_UINT32 s_RandomSeed = 0;
 namespace Bit
 {
 
-	void SeedRandomizer( BIT_SINT32 p_Seed )
+	void BIT_API SeedRandomizer( BIT_SINT32 p_Seed )
 	{
 		s_RandomSeed = p_Seed;
 	}
 
-	void SeedRandomizer( std::string p_Seed )
+	void BIT_API SeedRandomizer( std::string p_Seed )
 	{
 		s_RandomSeed = 0;
 
@@ -48,18 +48,18 @@ namespace Bit
 		}
 	}
 
-	BIT_UINT32 GetRandomizerSeed( )
+	BIT_UINT32 BIT_API GetRandomizerSeed( )
 	{
 		return s_RandomSeed;
 	}
 
-	BIT_SINT32 RandomizeNumber( BIT_SINT32 p_To )
+	BIT_SINT32 BIT_API RandomizeNumber( BIT_SINT32 p_To )
 	{
 		s_RandomSeed = ( 214013 * s_RandomSeed + 2531011 );
 		return ( ( s_RandomSeed >> 16 ) & 0x0000FFFF ) % ( p_To +1 );
 	}
 
-	BIT_SINT32 RandomizeNumber( BIT_SINT32 p_From, BIT_SINT32 p_To )
+	BIT_SINT32 BIT_API RandomizeNumber( BIT_SINT32 p_From, BIT_SINT32 p_To )
 	{
 		s_RandomSeed = ( 214013 * s_RandomSeed + 2531011 );
 		return p_From + ( ( s_RandomSeed >> 16 ) & 0x0000FFFF ) % ( p_To - ( p_From - 1 ) );

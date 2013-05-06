@@ -17,9 +17,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
+			Name="Static Debug|Win32"
 			OutputDirectory="$(SolutionDir)/../../lib/Windows/32"
-			IntermediateDirectory="$(SolutionDir)/../../obj/Windows/32/vc2008/bit-window/Debug"
+			IntermediateDirectory="$(SolutionDir)/../../obj/Windows/32/vc2008/bit-window/Static_Debug"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="WIN32;_DEBUG;PLATFORM_WINDOWS;BUILD_DEBUG"
+				PreprocessorDefinitions="WIN32;_DEBUG;PLATFORM_WINDOWS;BUILD_DEBUG;BIT_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName)-d.lib"
+				OutputFile="$(OutDir)\$(ProjectName)-s-d.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -80,9 +80,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Static Release|Win32"
 			OutputDirectory="$(SolutionDir)/../../lib/Windows/32"
-			IntermediateDirectory="$(SolutionDir)/../../obj/Windows/32/vc2008/bit-window/Release"
+			IntermediateDirectory="$(SolutionDir)/../../obj/Windows/32/vc2008/bit-window/Static_Release"
 			ConfigurationType="4"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -107,7 +107,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="WIN32;NDEBUG;PLATFORM_WINDOWS;BUILD_RELEASE"
+				PreprocessorDefinitions="WIN32;NDEBUG;PLATFORM_WINDOWS;BUILD_RELEASE;BIT_STATIC"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -125,6 +125,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\$(ProjectName)-s.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -137,6 +138,76 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Dynamic Debug|Win32"
+			OutputDirectory="$(SolutionDir)/../../lib/Windows/32/"
+			IntermediateDirectory="$(SolutionDir)/../../obj/Windows/32/vc2008/bit-window/Dynamic_Debug/"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="../../include"
+				PreprocessorDefinitions="WIN32;_DEBUG;PLATFORM_WINDOWS;BUILD_DEBUG;BIT_EXPORTS"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="../../lib/Windows/32/bit-system-d.lib"
+				OutputFile="$(OutDir)\$(ProjectName)-d.dll"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

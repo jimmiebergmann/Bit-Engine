@@ -27,11 +27,12 @@
 #define __BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP__
 
 #include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Window/Win32/WindowWin32.hpp>
 #include <Bit/DataTypes.hpp>
 
 namespace Bit
 {
-	class GraphicDeviceWin32 : public GraphicDevice
+	class BIT_API GraphicDeviceWin32 : public GraphicDevice
 	{
 
 	public:
@@ -59,6 +60,10 @@ namespace Bit
 		
 
 	private:
+
+		// Private variables
+		::HGLRC m_Context;
+		::HDC m_DeviceContext;
 
 
 	};

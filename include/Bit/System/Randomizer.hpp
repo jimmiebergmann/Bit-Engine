@@ -32,11 +32,11 @@
 namespace Bit
 {
 
-	void SeedRandomizer( BIT_SINT32 p_Seed );
-	void SeedRandomizer( std::string p_Seed );
-	BIT_UINT32 GetRandomizerSeed( );
-	BIT_SINT32 RandomizeNumber( BIT_SINT32 p_To );
-	BIT_SINT32 RandomizeNumber( BIT_SINT32 p_From, BIT_SINT32 p_To );
+	void BIT_API SeedRandomizer( BIT_SINT32 p_Seed );
+	void BIT_API SeedRandomizer( std::string p_Seed );
+	BIT_UINT32 BIT_API GetRandomizerSeed( );
+	BIT_SINT32 BIT_API RandomizeNumber( BIT_SINT32 p_To );
+	BIT_SINT32 BIT_API RandomizeNumber( BIT_SINT32 p_From, BIT_SINT32 p_To );
 
 }
 

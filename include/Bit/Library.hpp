@@ -22,41 +22,33 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Graphics/GraphicDevice.hpp>
+#ifndef __BIT_LIBRARY_HPP__
+#define __BIT_LIBRARY_HPP__
 
-// Platform independent
-#ifdef PLATFORM_WINDOWS
-	#include <Bit/Graphics/Win32/GraphicDeviceWin32.hpp>
-	typedef Bit::GraphicDeviceWin32 GraphicDevicePlatformType;
-	#undef CreateWindow
-#elif PLATFORM_LINUX
-	#include <Bit/Graphics/Linux/GraphicDeviceLinux.hpp>
-	typedef Bit::GraphicDeviceLinux GraphicDevicePlatformType;
+	// If this build is not a static library build
+	#ifndef BIT_STATIC
+
+		// Turn off microsoft vsc warning
+		#ifdef _MSC_VER
+            #pragma warning(disable : 4251)
+        #endif
+
+		// Define as export or import depending on if BIT_EXPORTS is defined
+		#ifdef PLATFORM_WINDOWS
+			#ifdef BIT_EXPORTS
+				#define BIT_API __declspec(dllexport)
+			#else
+				#define BIT_API __declspec(dllimport)
+			#endif
+		#elif PLATFORM_LINUX
+			#define BIT_API
+		#endif
+
+	#else
+
+		// Define it as nothing
+		#define BIT_API
+
+	#endif
+
 #endif
-
-#include <Bit/System/Debugger.hpp>
-#include <Bit/System/MemoryLeak.hpp>
-
-namespace Bit
-{
-
-	// Public functions
-	BIT_BOOL GraphicDevice::IsOpen( ) const
-	{
-		return m_Open;
-	}
-
-	// Get functions
-	BIT_UINT32 GraphicDevice::GetDeviceType( ) const
-	{
-		return m_DeviceType;
-	}
-
-
-	// Create a cross platform renderer via this function
-	BIT_API GraphicDevice * CreateGraphicDevice( )
-	{
-		return new GraphicDevicePlatformType( );
-	}
-
-}

@@ -25,8 +25,8 @@
 // Note:
 // The original header was written by Stuart ( teh_programerer@interactivelaboratories.com )
 
-#ifndef __BIT_SYSTEM_DATATYPES_HPP__
-#define __BIT_SYSTEM_DATATYPES_HPP__
+#ifndef __BIT_DATATYPES_HPP__
+#define __BIT_DATATYPES_HPP__
 
 // Make sure any platform is defined.
 #ifndef PLATFORM_WINDOWS
@@ -42,7 +42,7 @@
 	#endif
 #endif
 
-
+#include <Bit/Library.hpp>
 #include <cstddef>
 
 #define BIT_INLINE	inline
