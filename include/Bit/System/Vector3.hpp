@@ -37,7 +37,7 @@ namespace Bit
 {
 
 	template <typename T>
-	class BIT_API Vector3
+	class Vector3
 	{
 
 	public:
