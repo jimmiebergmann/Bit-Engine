@@ -28,12 +28,11 @@
 #include <Bit/System/Debugger.hpp>
 #include <Bit/DataTypes.hpp>
 
-#ifdef PLATFORM_WINDOWS
-#include <windows.h>
-
-#elif PLATFORM_LINUX
-#define  _vsnprintf_s vsnprintf
-#include <iostream>
+#ifdef BIT_PLATFORM_WIN32
+	#include <windows.h>
+#elif BIT_PLATFORM_LINUX
+	#define  _vsnprintf_s vsnprintf
+	#include <iostream>
 #endif
 
 #include <cstdio>
@@ -62,11 +61,11 @@ namespace Bit
 		va_end( ArgPtr );
 
 		// Output the message
-		#ifdef PLATFORM_WINDOWS
+		#ifdef BIT_PLATFORM_WIN32
 
 			OutputDebugStringA( CompleteMessage );
 
-		#elif PLATFORM_LINUX
+		#elif BIT_PLATFORM_LINUX
 
 			std::cout << CompleteMessage;
 

@@ -67,7 +67,8 @@ namespace Bit
 		BIT_UINT32 GetDeviceType( ) const;
 
 		// Set functions
-		// ..
+		virtual void SetClearColor( const BIT_FLOAT32 p_R, const BIT_FLOAT32 p_G,
+			const BIT_FLOAT32 p_B, const BIT_FLOAT32 p_A ) = 0;
 
 
 	protected:

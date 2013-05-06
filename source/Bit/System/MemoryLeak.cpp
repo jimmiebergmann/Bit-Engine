@@ -1,7 +1,7 @@
 #include <Bit/System/MemoryLeak.hpp>
 
-#ifdef BUILD_DEBUG
-#ifdef PLATFORM_WINDOWS
+#ifdef BIT_BUILD_DEBUG
+#ifdef BIT_PLATFORM_WIN32
 
 namespace Bit
 {

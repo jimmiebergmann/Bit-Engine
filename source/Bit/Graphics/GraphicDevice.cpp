@@ -25,11 +25,11 @@
 #include <Bit/Graphics/GraphicDevice.hpp>
 
 // Platform independent
-#ifdef PLATFORM_WINDOWS
+#ifdef BIT_PLATFORM_WIN32
 	#include <Bit/Graphics/Win32/GraphicDeviceWin32.hpp>
 	typedef Bit::GraphicDeviceWin32 GraphicDevicePlatformType;
 	#undef CreateWindow
-#elif PLATFORM_LINUX
+#elif BIT_PLATFORM_LINUX
 	#include <Bit/Graphics/Linux/GraphicDeviceLinux.hpp>
 	typedef Bit::GraphicDeviceLinux GraphicDevicePlatformType;
 #endif

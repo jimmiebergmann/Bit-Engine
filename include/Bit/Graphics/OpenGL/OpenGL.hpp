@@ -28,12 +28,12 @@
 #endif
 
 // Include the required headers to run opengl
-#ifdef PLATFORM_WINDOWS
+#ifdef BIT_PLATFORM_WIN32
 	#include <Windows.h>
 	#include <GL/gl.h>
 	#include <GL/glext.h>
 	#include <GL/wglext.h>
-#elif PLATFORM_LINUX
+#elif BIT_PLATFORM_LINUX
 	/*#include <X11/Xlib.h>
 	#include <GL/gl.h>
 	#include <GL/glx.h>

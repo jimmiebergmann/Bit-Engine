@@ -1,10 +1,11 @@
 #ifndef __BIT_MEMORY_LEAK_HPP__
 #define __BIT_MEMORY_LEAK_HPP__
 
-#ifdef BUILD_DEBUG
-    #ifdef PLATFORM_WINDOWS
+#include <Bit/DataTypes.hpp>
 
-		#include <Bit/DataTypes.hpp>
+#ifdef BIT_BUILD_DEBUG
+    #ifdef BIT_PLATFORM_WIN32
+
         #include <stdlib.h>
         #include <crtdbg.h>
 

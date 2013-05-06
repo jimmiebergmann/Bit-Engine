@@ -30,10 +30,10 @@
 
 #include <Bit/DataTypes.hpp>
 
-#ifdef BUILD_DEBUG
-#define bitTrace Bit::Trace
+#ifdef BIT_BUILD_DEBUG
+	#define bitTrace Bit::Trace
 #else
-#define bitTrace sizeof
+	#define bitTrace sizeof
 #endif
 
 

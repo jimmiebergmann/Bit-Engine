@@ -261,12 +261,12 @@ namespace Bit
 
 	void GraphicDeviceWin32::ClearColor( )
 	{
-
+		glClear( GL_COLOR_BUFFER_BIT );
 	}
 
 	void GraphicDeviceWin32::ClearDepth( )
 	{
-
+		glClear( GL_DEPTH_BUFFER_BIT );
 	}
 
 	// Create functions for different renderer elements
@@ -277,7 +277,11 @@ namespace Bit
 
 
 	// Set functions
-
+	void GraphicDeviceWin32::SetClearColor( const BIT_FLOAT32 p_R, const BIT_FLOAT32 p_G,
+			const BIT_FLOAT32 p_B, const BIT_FLOAT32 p_A )
+	{
+		glClearColor( p_R, p_G, p_B, p_A );
+	}
 
 
 }

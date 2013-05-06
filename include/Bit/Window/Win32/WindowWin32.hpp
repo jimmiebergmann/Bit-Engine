@@ -25,9 +25,10 @@
 #ifndef __BIT_WINDOW_WIN32_HPP__
 #define __BIT_WINDOW_WIN32_HPP__
 
-#ifdef PLATFORM_WINDOWS
-
 #include <Bit/DataTypes.hpp>
+
+#ifdef BIT_PLATFORM_WIN32
+
 #include <Bit/Window/Window.hpp>
 #include <windows.h>
 

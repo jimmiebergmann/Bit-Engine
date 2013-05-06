@@ -28,23 +28,54 @@
 #ifndef __BIT_DATATYPES_HPP__
 #define __BIT_DATATYPES_HPP__
 
-// Make sure any platform is defined.
-#ifndef PLATFORM_WINDOWS
-	#ifndef PLATFORM_LINUX
-		#error No platform is defined
-	#endif
+// Define the bit engine version
+#define BIT_VERSION_MAJOR 0
+#define BIT_VERSION_MINOR 0
+
+// Define the platform
+#if defined( _WIN32 ) || defined( __WIN32__ )
+	#define BIT_PLATFORM_WIN32
+#elif defined( linux ) || defined( __linux )
+	#define BIT_PLATFORM_LINUX
+#else
+	#error No platform is defined
 #endif
 
-// Make sure any build is defined
-#ifndef BUILD_DEBUG
-	#ifndef BUILD_RELEASE
-		#error No build is defined
-	#endif
+// Define the build type ( release / debug )
+#if defined( NDEBUG )
+	#define BIT_BUILD_RELEASE
+#else
+	#define BIT_BUILD_DEBUG
 #endif
 
-#include <Bit/Library.hpp>
+// Define BIT_API
+// If this build is not a static library build
+#ifndef BIT_STATIC_LIB
+	// Turn off microsoft vsc warning
+	#ifdef _MSC_VER
+        #pragma warning(disable : 4251)
+    #endif
+	// Define as export or import depending on if BIT_EXPORTS is defined
+	#ifdef BIT_PLATFORM_WIN32
+		#ifdef BIT_EXPORTS
+			#define BIT_API __declspec(dllexport)
+		#else
+			#define BIT_API __declspec(dllimport)
+		#endif
+	#elif BIT_PLATFORM_LINUX
+		#define BIT_API
+	#endif
+#else
+	// Define it as nothing
+	#define BIT_API
+#endif
+
+
+
+// Finally some data types
 #include <cstddef>
 
+// inline
 #define BIT_INLINE	inline
 
 // Standard types
@@ -74,6 +105,7 @@ const BIT_UINT32 BIT_OK					= 0x00000000;
 const BIT_UINT32 BIT_ERROR				= 0x00000001;
 const BIT_UINT32 BIT_ERROR_OPEN_FILE	= 0x00000002;
 
+// Constants
 const BIT_FLOAT64 BIT_PI = 3.141592653589793238f;
 const BIT_FLOAT32 BIT_EPSILON = 1.0e-6f;
 const BIT_FLOAT32 BIT_HALFEPSILON = 1.0e-3f;

@@ -25,9 +25,9 @@
 #include <Bit/System/Timer.hpp>
 #include <ctime>
 
-#ifdef PLATFORM_WINDOWS
+#ifdef BIT_PLATFORM_WIN32
 	#include <windows.h>
-#elif PLATFORM_LINUX
+#elif BIT_PLATFORM_LINUX
 	#include <sys/time.h>
 #endif
 
@@ -67,7 +67,7 @@ namespace Bit
 
 	BIT_FLOAT64 Timer::GetSystemTime( )
 	{
-		#ifdef PLATFORM_WINDOWS
+		#ifdef BIT_PLATFORM_WIN32
 
 			static BIT_SINT64 Counter = 0;
 			static BIT_SINT64 Frequency = 0;
@@ -78,7 +78,7 @@ namespace Bit
 			return ( static_cast< BIT_FLOAT64 >( Counter ) /
 				static_cast< BIT_FLOAT64 >( Frequency ) );
 
-		#elif PLATFORM_LINUX
+		#elif BIT_PLATFORM_LINUX
 
 			timeval Time;
 			gettimeofday( &Time, 0 );

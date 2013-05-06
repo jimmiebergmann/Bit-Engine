@@ -25,11 +25,11 @@
 #include <Bit/Window/Window.hpp>
 
 // Platform independent
-#ifdef PLATFORM_WINDOWS
+#ifdef BIT_PLATFORM_WIN32
 	#include <Bit/Window/Win32/WindowWin32.hpp>
 	typedef Bit::WindowWin32 WindowPlatformType;
 	#undef CreateWindow
-#elif PLATFORM_LINUX
+#elif BIT_PLATFORM_LINUX
 	#include <Bit/Window/Linux/WindowLinux.hpp>
 	typedef Bit::WindowLinux WindowPlatformType;
 #endif

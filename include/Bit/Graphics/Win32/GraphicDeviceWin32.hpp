@@ -26,9 +26,9 @@
 #ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP__
 #define __BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP__
 
+#include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/Window/Win32/WindowWin32.hpp>
-#include <Bit/DataTypes.hpp>
 
 namespace Bit
 {
@@ -57,6 +57,8 @@ namespace Bit
 		// Get functions
 
 		// Set functions
+		virtual void SetClearColor( const BIT_FLOAT32 p_R, const BIT_FLOAT32 p_G,
+			const BIT_FLOAT32 p_B, const BIT_FLOAT32 p_A );
 		
 
 	private:

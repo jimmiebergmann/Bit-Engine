@@ -25,9 +25,10 @@
 #ifndef __BIT_WINDOW_LINUX_HPP__
 #define __BIT_WINDOW_LINUX_HPP__
 
-#ifdef PLATFORM_LINUX
-
 #include <Bit/DataTypes.hpp>
+
+#ifdef BIT_PLATFORM_LINUX
+
 #include <Bit/Window/Window.hpp>
 #include <X11/Xlib.h>
 
