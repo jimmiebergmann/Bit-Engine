@@ -14,6 +14,7 @@ Installation
 git clone https://github.com/jimmiebergmann/Bit-Engine.git
 ```
 **Windows:** Open and build the Visual Studio 2008 solution.
+
 **Linux:** Open and build the Code::Blocks 10 workspace.
 
 Usage
