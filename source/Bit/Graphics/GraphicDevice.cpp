@@ -40,19 +40,6 @@
 namespace Bit
 {
 
-	// Public functions
-	BIT_BOOL GraphicDevice::IsOpen( ) const
-	{
-		return m_Open;
-	}
-
-	// Get functions
-	BIT_UINT32 GraphicDevice::GetDeviceType( ) const
-	{
-		return m_DeviceType;
-	}
-
-
 	// Create a cross platform renderer via this function
 	BIT_API GraphicDevice * CreateGraphicDevice( )
 	{

@@ -65,12 +65,11 @@ namespace Bit
 		BIT_BOOL IsOpen( ) const;
 		BIT_BOOL PollEvent( Event & p_Event );
 
+		// Set functions
+		virtual BIT_UINT32 SetTitle( std::string p_Title ) = 0;
 
 		// Get functions
 		// ...
-
-		// Set functions
-		virtual BIT_UINT32 SetTitle( std::string p_Title ) = 0;
 
 	protected:
 

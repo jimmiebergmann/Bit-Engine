@@ -53,11 +53,11 @@ namespace Bit
 		virtual BIT_UINT32 DoEvents( );
 		virtual BIT_BOOL Show( const BIT_BOOL p_State );
 
-		// Get functions
-		HDC GetDeviceContext( ) const;
-
 		// Set functions
 		virtual BIT_UINT32 SetTitle( std::string p_Title );
+
+		// Get functions
+		HDC GetDeviceContext( ) const;
 
 	private:
 

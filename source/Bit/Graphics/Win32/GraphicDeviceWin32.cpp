@@ -35,6 +35,15 @@ namespace Bit
 	GraphicDeviceWin32::GraphicDeviceWin32( )
 	{
 		m_Open = BIT_FALSE;
+
+		// Enable / Disable statuses
+		m_TextureStatus = BIT_FALSE;
+		m_AlphaStatus = BIT_FALSE;
+		m_DepthTestStatus = BIT_FALSE;
+		m_StencilTestStatus = BIT_FALSE;
+		m_FaceCullingStatus = BIT_FALSE;
+		m_FaceCullingType = 0;
+		m_SmoothLinesStatus = BIT_FALSE;
 	}
 
 	GraphicDeviceWin32::~GraphicDeviceWin32( )
@@ -252,6 +261,11 @@ namespace Bit
 
 		SwapBuffers( m_DeviceContext );
 	}
+	
+	// Create functions for different renderer elements
+	// ..
+
+
 
 	// Clear functions
 	void GraphicDeviceWin32::ClearBuffers( const BIT_UINT32 p_ClearBits )
@@ -269,12 +283,98 @@ namespace Bit
 		glClear( GL_DEPTH_BUFFER_BIT );
 	}
 
-	// Create functions for different renderer elements
-	// ..
+	// Enable functions
+	void GraphicDeviceWin32::EnableTexture( )
+	{
+		glEnable( GL_TEXTURE_2D );
+		m_TextureStatus = BIT_TRUE;
+	}
 
+	void GraphicDeviceWin32::EnableAlpha( )
+	{
+		// We have to make this function customizable.
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glEnable( GL_BLEND );
+		glAlphaFunc( GL_GREATER, 0 );
+		glEnable( GL_ALPHA_TEST );
+		m_AlphaStatus = BIT_TRUE;
+	}
 
-	// Get functions
+	void GraphicDeviceWin32::EnableDepthTest( )
+	{
+		glEnable( GL_DEPTH_TEST );
+		m_DepthTestStatus = BIT_TRUE;
+	}
 
+	void GraphicDeviceWin32::EnableStencilTest( )
+	{
+		glEnable( GL_STENCIL_TEST );
+		m_StencilTestStatus = BIT_TRUE;
+	}
+
+	void GraphicDeviceWin32::EnableFaceCulling( BIT_UINT32 p_FaceCulling )
+	{
+		/*GLenum Mode = GL_FRONT;
+		if( p_FaceCulling == BIT_RENDERER_BACKFACE_CULLING )
+		{
+			Mode = GL_BACK;
+		}
+		// else if the culling isn't front face culling, return ( failed )
+		else if( p_FaceCulling != BIT_RENDERER_FRONTFACE_CULLING )
+		{
+			return;
+		}
+
+		glEnable( GL_CULL_FACE );
+		glCullFace( Mode );
+		m_FaceCullingStatus = BIT_TRUE;
+		m_FaceCullingType = p_FaceCulling;*/
+	}
+
+	void GraphicDeviceWin32::EnableSmoothLines( )
+	{
+		glEnable( GL_LINE_SMOOTH );
+		m_SmoothLinesStatus = BIT_TRUE;
+	}
+
+	// Disable functions
+	void GraphicDeviceWin32::DisableTexture( )
+	{
+		glDisable( GL_TEXTURE_2D );
+		m_TextureStatus = BIT_FALSE;
+	}
+
+	void GraphicDeviceWin32::DisableAlpha( )
+	{
+		glDisable( GL_BLEND );
+		glDisable( GL_ALPHA_TEST );
+		m_AlphaStatus = BIT_FALSE;
+	}
+
+	void GraphicDeviceWin32::DisableDepthTest( )
+	{
+		glDisable( GL_DEPTH_TEST );
+		m_DepthTestStatus = BIT_FALSE;
+	}
+
+	void GraphicDeviceWin32::DisableStencilTest( )
+	{
+		glDisable( GL_STENCIL_TEST );
+		m_StencilTestStatus = BIT_FALSE;
+	}
+
+	void GraphicDeviceWin32::DisableFaceCulling( )
+	{
+		glDisable( GL_CULL_FACE );
+		m_FaceCullingStatus = BIT_FALSE;
+		m_FaceCullingType = 0;
+	}
+
+	void GraphicDeviceWin32::DisableSmoothLines( )
+	{
+		glDisable( GL_LINE_SMOOTH );
+		m_SmoothLinesStatus = BIT_FALSE;
+	}
 
 	// Set functions
 	void GraphicDeviceWin32::SetClearColor( const BIT_FLOAT32 p_R, const BIT_FLOAT32 p_G,
@@ -283,5 +383,30 @@ namespace Bit
 		glClearColor( p_R, p_G, p_B, p_A );
 	}
 
+	void GraphicDeviceWin32::SetClearDepth( BIT_FLOAT32 p_Depth )
+	{
+		glClearDepth( p_Depth );
+	}
+
+	void GraphicDeviceWin32::SetClearStencil( BIT_UINT32 p_Stencil )
+	{
+		glClearStencil( p_Stencil );
+	}
+
+	void GraphicDeviceWin32::SetViewport( const BIT_UINT32 p_LX, const BIT_UINT32 p_LY,
+		const BIT_UINT32 p_HX, const BIT_UINT32 p_HY )
+	{
+		glViewport( p_LX, p_LY, p_HX, p_HY );
+		m_ViewportLow = Vector2_si32( p_LX, p_LY );
+		m_ViewportHigh = Vector2_si32( p_HX, p_HY );
+	}
+
+	void GraphicDeviceWin32::SetLineWidth( const BIT_FLOAT32 p_Width )
+	{
+		glLineWidth( p_Width );
+	}
+
+	// Get functions
+	// ...
 
 }
