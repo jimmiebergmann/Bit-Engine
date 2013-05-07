@@ -1,6 +1,3 @@
-#ifndef __BIT_GRAPHICS_OPENGL_HPP__
-#define __BIT_GRAPHICS_OPENGL_HPP__
-
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
 // 
@@ -25,7 +22,10 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#endif
+#ifndef __BIT_GRAPHICS_OPENGL_HPP__
+#define __BIT_GRAPHICS_OPENGL_HPP__
+
+#include <Bit/DataTypes.hpp>
 
 // Include the required headers to run opengl
 #ifdef BIT_PLATFORM_WIN32
@@ -41,3 +41,25 @@
 	#include <GL/glxext.h>*/
 #endif
 
+// Function for grabbing the opengl functions
+#ifdef BIT_PLATFORM_WIN32
+	#define glGetProcAddress( p_Ext ) wglGetProcAddress( p_Ext );
+#elif BIT_PLATFORM_LINUX
+	#error glGetProcAddress function is defined
+#endif
+
+// Opengl "private" extensions
+static PFNGLGETSTRINGIPROC __glGetStringi = BIT_NULL;
+
+// Opengl extensions, use these
+#define glGetStringi __glGetStringi
+
+namespace Bit
+{
+	
+	BIT_API BIT_UINT32 BindOpenGLExtensions( );
+	
+}
+
+
+#endif

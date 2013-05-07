@@ -175,6 +175,7 @@ namespace Bit
 
 		if( TemporaryContext == BIT_NULL )
 		{
+			bitTrace( "[GraphicDeviceWin32::Open] Can not create a regular OpenGL context.\n" );
 			return BIT_ERROR;
 		}
 
@@ -237,6 +238,11 @@ namespace Bit
 
 
 
+		if( BindOpenGLExtensions( ) != BIT_OK )
+		{
+			bitTrace( "[GraphicDeviceWin32::Open] Can not bind the OpenGL extensions.\n" );
+			return BIT_ERROR;
+		}
 
 
 

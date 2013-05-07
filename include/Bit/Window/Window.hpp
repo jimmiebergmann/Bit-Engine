@@ -58,7 +58,7 @@ namespace Bit
 		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
                     const BIT_UINT32 p_Style ) = 0;
 		virtual BIT_UINT32 Close( ) = 0;
-		virtual BIT_UINT32 DoEvents( ) = 0;
+		virtual BIT_UINT32 Update( ) = 0;
 		virtual BIT_BOOL Show( const BIT_BOOL p_State ) = 0;
 
 		// Public functions

@@ -23,3 +23,35 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <list>
+#include <string>
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
+
+namespace Bit
+{
+	
+	BIT_API BIT_UINT32 BindOpenGLExtensions( )
+	{
+		// Get all the available extensions
+		std::list< std::string > AvailableExtensions;
+		GLint AvailableExtensionCount = 0;
+
+		// Get the available extension count
+		glGetIntegerv( GL_NUM_EXTENSIONS, &AvailableExtensionCount );
+
+
+		// Get the proc address for glGetStringi
+		__glGetStringi = (PFNGLGETSTRINGIPROC)glGetProcAddress( "glGetStringi" );
+
+		// Get all the available extensions
+		for( BIT_MEMSIZE i = 0; i < AvailableExtensionCount; i++ )
+		{
+			bitTrace( "%s\n", glGetStringi( GL_EXTENSIONS, i ) );
+		}
+
+
+		return BIT_OK;
+	}
+	
+}

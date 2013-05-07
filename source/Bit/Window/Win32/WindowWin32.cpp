@@ -225,7 +225,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 WindowWin32::DoEvents( )
+	BIT_UINT32 WindowWin32::Update( )
 	{
 		m_EventQueue.clear( );
 
