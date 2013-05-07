@@ -100,12 +100,14 @@ namespace Bit
 		WindowRect.top = ( long )0;
 		WindowRect.bottom = ( long )p_Size.y;
 
+		m_Style = 0; // Do not directly copy the param style, clear out errors
 		ExStyle = 0;
 		Style = 0;
 
 		// Set the window decoration style
 		if( p_Style == Bit::Window::Style_All )
 		{
+			m_Style |= Bit::Window::Style_All; 
 			ExStyle = WS_EX_APPWINDOW;
 			Style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_BORDER;
 		}
@@ -113,16 +115,19 @@ namespace Bit
 		{
 			if( p_Style & Bit::Window::Style_Minimize )
 			{
+				m_Style |= Bit::Window::Style_Minimize;
 				Style |=  WS_MINIMIZEBOX;
 			}
 
 			if( p_Style & Bit::Window::Style_Resize )
 			{
+				m_Style |= Bit::Window::Style_Resize;
 				Style |= WS_MAXIMIZEBOX | WS_SIZEBOX;
 			}
 
 			if( p_Style & Bit::Window::Style_TitleBar )
 			{
+				m_Style |= Bit::Window::Style_TitleBar;
 				Style |= WS_CAPTION | WS_SYSMENU | WS_BORDER;
 			}
 		}
@@ -162,6 +167,10 @@ namespace Bit
 			UINT dwExtra = MF_DISABLED | MF_GRAYED;
 			HMENU hMenu = GetSystemMenu( m_Window, false );
 			EnableMenuItem( hMenu, SC_CLOSE, MF_BYCOMMAND | dwExtra );
+		}
+		else
+		{
+			m_Style |= Bit::Window::Style_Close;
 		}
 
 		// Get the device context
@@ -245,7 +254,14 @@ namespace Bit
 		LPCWSTR ConvertedTitle = STemp.c_str();
 
 		// Change the title
-		return ( SetWindowText( m_Window, ConvertedTitle ) ? BIT_OK : BIT_ERROR );
+		BIT_UINT32 Status = ( SetWindowText( m_Window, ConvertedTitle ) ? BIT_OK : BIT_ERROR );
+
+		if( Status == BIT_OK )
+		{
+			m_Title = p_Title;
+		}
+
+		return Status;
 	}
 
 	// Get functions
