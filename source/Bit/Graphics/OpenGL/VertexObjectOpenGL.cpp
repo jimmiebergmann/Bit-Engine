@@ -28,7 +28,55 @@
 
 namespace Bit
 {
-	// Static private variables(etg
+	/*
+	GL_BYTE
+	GL_UNSIGNED_BYTE
+	GL_SHORT
+	GL_UNSIGNED_SHORT
+	GL_INT
+	GL_UNSIGNED_INT 
+	GL_HALF_FLOAT
+	GL_FLOAT
+	GL_DOUBLE
+	GL_FIXED
+	GL_INT_2_10_10_10_REV
+	GL_UNSIGNED_INT_2_10_10_10_REV
+
+	const BIT_UINT32 BIT_TYPE_NONE = 0;
+	const BIT_UINT32 BIT_TYPE_UCHAR8 = 1;
+	const BIT_UINT32 BIT_TYPE_SCHAR8 = 2;
+	const BIT_UINT32 BIT_TYPE_UCHAR16 = 3;
+	const BIT_UINT32 BIT_TYPE_SCHAR16 = 4;
+	const BIT_UINT32 BIT_TYPE_UINT8 = 5;
+	const BIT_UINT32 BIT_TYPE_SINT8 = 6;
+	const BIT_UINT32 BIT_TYPE_UINT16 = 7;
+	const BIT_UINT32 BIT_TYPE_SINT16 = 8;
+	const BIT_UINT32 BIT_TYPE_UINT32 = 9;
+	const BIT_UINT32 BIT_TYPE_SINT32 = 10;
+	const BIT_UINT32 BIT_TYPE_UINT64 = 11;
+	const BIT_UINT32 BIT_TYPE_SINT64 = 12;
+	const BIT_UINT32 BIT_TYPE_FLOAT32 = 13;
+	const BIT_UINT32 BIT_TYPE_FLOAT64 = 14;
+	const BIT_UINT32 BIT_TYPE_BYTE = 15;
+	const BIT_UINT32 BIT_TYPE_BOOL = 16;
+
+*/
+
+	static const GLenum OpenGLTypes[ 17 ] = 
+	{
+		0, GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT,
+		GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT,
+		GL_UNSIGNED_INT, GL_INT, 0, 0, GL_FLOAT, GL_DOUBLE, GL_BYTE, 0
+	};
+	static const BIT_UINT32 OpenGLTypeSize[ 17 ] =
+	{
+		0, sizeof( BIT_UCHAR8 ), sizeof( BIT_SCHAR8 ), sizeof( BIT_SCHAR8 ),  sizeof( BIT_UCHAR8 ),
+		sizeof( BIT_UINT8 ), sizeof( BIT_SINT8 ), sizeof( BIT_UINT16 ), sizeof( BIT_SINT16 ),
+		sizeof( BIT_UINT32 ), sizeof( BIT_SINT32 ), 0, 0, sizeof( BIT_FLOAT32 ), sizeof( BIT_FLOAT64 ),
+		sizeof( BIT_BYTE ), 0
+	};
+
+	// Static private variables
 	GLenum VertexObjectOpenGL::s_RenderModes[ 3 ] = { GL_TRIANGLES, GL_TRIANGLES, GL_TRIANGLES };
 
 
@@ -48,9 +96,9 @@ namespace Bit
 	// Virtual public functions
 	BIT_UINT32 VertexObjectOpenGL::Load( BIT_UINT32 p_PieceCount, BIT_UINT32 p_PieceSize )
 	{
-		if( m_Loaded || !m_BufferVector.size( ) )
+		if( m_Loaded || !m_Buffers.size( ) )
 		{
-			bitTrace( "[ VertexObjectOpenGL::AddVertexBuffer] Already loaded or no buffers available.\n" );
+			bitTrace( "[ VertexObjectOpenGL::Load] Already loaded or no buffers are available.\n" );
 			return BIT_ERROR;
 		}
 
@@ -59,7 +107,7 @@ namespace Bit
 		glBindVertexArray( m_VertexArrayObject );
  
 		// Allocate memory for the VBOs
-		m_VertexBufferObjectCount = m_BufferVector.size( );
+		m_VertexBufferObjectCount = m_Buffers.size( );
 		m_pVertexBufferObjects = new GLuint [ m_VertexBufferObjectCount ];
 		
 		// Generate the VBOs
@@ -69,12 +117,12 @@ namespace Bit
 		for( BIT_MEMSIZE i = 0; i < m_VertexBufferObjectCount; i++ )
 		{
 			// Let's load it
-			BIT_UINT32 ElementCount = m_BufferVector[ i ].DimensionCount;
-			BIT_UINT32 TotalBufferSize = p_PieceCount * p_PieceSize * ElementCount * sizeof( BIT_FLOAT32 );
+			BIT_UINT32 ElementCount = m_Buffers[ i ].DimensionCount;
+			BIT_UINT32 TotalBufferSize = p_PieceCount * p_PieceSize * ElementCount * m_Buffers[ i ].TypeSize;
 			
 			glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObjects[ i ] );
-			glBufferData( GL_ARRAY_BUFFER, (GLsizeiptr)TotalBufferSize, m_BufferVector[i].pBuffer, GL_STATIC_DRAW );
-			glVertexAttribPointer( (GLuint)i, ElementCount, GL_FLOAT, GL_FALSE, 0, 0 ); 
+			glBufferData( GL_ARRAY_BUFFER, (GLsizeiptr)TotalBufferSize, m_Buffers[i].pBuffer, GL_STATIC_DRAW );
+			glVertexAttribPointer( (GLuint)i, ElementCount, m_Buffers[ i ].Type, GL_FALSE, 0, 0 ); 
 			glEnableVertexAttribArray( i );
 		}
 
@@ -83,9 +131,6 @@ namespace Bit
 
 		// Calculate the total piece size
 		m_TotalPieceSize = p_PieceCount * p_PieceSize;
-
-		// Clear the buffer vector, we don't need it anymore
-		m_BufferVector.clear( );
 
 		// We are done, everything is fine
 		m_Loaded = BIT_TRUE;
@@ -115,11 +160,27 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 VertexObjectOpenGL::AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions )
+	BIT_UINT32 VertexObjectOpenGL::AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, BIT_UINT32 p_DataType )
 	{
 		if( m_Loaded )
 		{
 			bitTrace( "[ VertexObjectOpenGL::AddVertexBuffer] Already loaded.\n" );
+			return BIT_ERROR;
+		}
+
+		// Find the most fitting OpenGL data type
+		if( p_DataType == 0 || p_DataType > 16 )
+		{
+			bitTrace( "[ VertexObjectOpenGL::AddVertexBuffer] Wrong data type.\n" );
+			return BIT_ERROR;
+		}
+		GLenum Type = OpenGLTypes[ p_DataType ];
+		BIT_UINT32 TypeSize = OpenGLTypeSize[ p_DataType ];
+
+		// Make sure the data type is an accepted data type for vertex object( m_Type != 0 )
+		if( Type == 0 )
+		{
+			bitTrace( "[ VertexObjectOpenGL::AddVertexBuffer] Wrong data type.\n" );
 			return BIT_ERROR;
 		}
 		
@@ -127,8 +188,35 @@ namespace Bit
 		BufferStruct BufferData;
 		BufferData.pBuffer = p_pBuffer;
 		BufferData.DimensionCount = p_VertexDimensions;
-		m_BufferVector.push_back( BufferData );
+		BufferData.Type = Type;
+		BufferData.TypeSize = TypeSize;
+		m_Buffers.push_back( BufferData );
 		
+		return BIT_OK;
+	}
+
+	BIT_UINT32 VertexObjectOpenGL::UpdateVertexBuffer( const BIT_UINT32 p_Index, void * p_pBuffer,
+		const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize )
+	{
+		if( !m_Loaded )
+		{
+			bitTrace( "[ VertexObjectOpenGL::AddVertexBuffer] Not loaded yet.\n" );
+			return BIT_ERROR;
+		}
+
+		// Make sure the index isn't outside the array bound
+		if( p_Index >= m_Buffers.size( ) )
+		{
+			bitTrace( "[ VertexObjectOpenGL::AddVertexBuffer] Index is out of bound.\n" );
+			return BIT_ERROR;
+		}
+		
+		// Bind and update the buffer
+		glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObjects[ p_Index ] );
+
+		glBufferSubData( GL_ARRAY_BUFFER, p_Offset * m_Buffers[ p_Index ].TypeSize,
+			p_DataSize * m_Buffers[ p_Index ].TypeSize, p_pBuffer );
+
 		return BIT_OK;
 	}
 

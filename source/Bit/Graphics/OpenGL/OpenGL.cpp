@@ -155,7 +155,6 @@ namespace Bit
 				Ret |= ( __glGenBuffers = ( PFNGLGENBUFFERSPROC )
 					( glGetProcAddress( "glGenBuffers" ) ) ) == BIT_NULL;
 
-
 				if( !Ret )
 				{
 					s_GeneralBuffersFunctions = BIT_TRUE;

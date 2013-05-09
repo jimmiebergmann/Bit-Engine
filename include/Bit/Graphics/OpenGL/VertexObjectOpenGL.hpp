@@ -46,7 +46,9 @@ namespace Bit
 		// Virtual public functions
 		virtual BIT_UINT32 Load( BIT_UINT32 p_PieceCount, BIT_UINT32 p_PieceSize ) ;
 		virtual BIT_UINT32 Unload( );
-		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions );
+		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, BIT_UINT32 p_DataType );
+		virtual BIT_UINT32 UpdateVertexBuffer( const BIT_UINT32 p_Index, void * p_pBuffer,
+		const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize );
 		virtual void Render(eRenderMode p_Mode);
 
 	private:
@@ -54,20 +56,22 @@ namespace Bit
 		// Private constructor. We are just letting the graphic device initialize this class.
 		VertexObjectOpenGL( );
 
-		// Private main variables
+		// Private OpenGL variables
 		GLuint m_VertexArrayObject;
 		GLuint * m_pVertexBufferObjects;
 		BIT_UINT32 m_VertexBufferObjectCount;
 
-		// Private loading variables
+		// Private variables
 		struct BufferStruct
 		{
 			void * pBuffer;
 			BIT_UINT32 DimensionCount;
+			GLenum Type;
+			BIT_UINT32 TypeSize;
 		};
 
 		BIT_UINT32 m_TotalPieceSize;	// PieceCount + PieceSize
-		std::vector< BufferStruct > m_BufferVector;
+		std::vector< BufferStruct > m_Buffers;
 
 		// Static private variables(etg
 		static GLenum s_RenderModes[ 3 ];
