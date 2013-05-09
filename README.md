@@ -9,16 +9,19 @@ Required libraries
  - <del>OpenAL</del> ( Not yet )
  - <del>Freetype</del> ( Not yet )
 
-
 Installation
 ---
 ```sh
 git clone https://github.com/jimmiebergmann/Bit-Engine.git
 ```
-**Windows:** Open and build the Visual Studio 2008 solution.
-
-**Linux:** Open and build the Code::Blocks 10 workspace.
+<br>**Windows:** Open and build the Visual Studio 2008 solution.
+<br>**Linux:** Open and build the Code::Blocks 10 workspace.
 
 Usage
 ---
 Add BIT_STATIC_LIB to your preprocessor if you are using the static libraries and<br>do not forget to link all the external libraries by yourself.
+
+
+Examples
+---
+ - [Bit-Engine-Examples](https://github.com/jimmiebergmann/Bit-Engine-Examples/ "Bit-Engine-Examples")
