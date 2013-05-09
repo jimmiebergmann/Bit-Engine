@@ -47,8 +47,7 @@ namespace Bit
 		virtual void Present( );
 
 		// Create functions for different renderer elements
-		// ..
-
+		virtual VertexObject * CreateVertexObject( ) const;
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits );

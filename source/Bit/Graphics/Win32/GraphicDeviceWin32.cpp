@@ -24,6 +24,7 @@
 
 #include <Bit/Graphics/Win32/GraphicDeviceWin32.hpp>
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -238,7 +239,7 @@ namespace Bit
 
 
 
-		if( BindOpenGLExtensions( ) != BIT_OK )
+		if( OpenGL::BindOpenGLExtensions( GLVersionMajor, GLVersionMinor ) != BIT_OK )
 		{
 			bitTrace( "[GraphicDeviceWin32::Open] Can not bind the OpenGL extensions.\n" );
 			return BIT_ERROR;
@@ -269,8 +270,20 @@ namespace Bit
 	}
 	
 	// Create functions for different renderer elements
-	// ..
+	VertexObject * GraphicDeviceWin32::CreateVertexObject( ) const
+	{
+		// Make sure we support OpenGL vertex objects
+		if( !OpenGL::GetGeneralBufferAvailability( ) ||
+			!OpenGL::GetVertexObjectAvailability( ) ||
+			!OpenGL::GetShaderAvailability( ) )
+		{
+			bitTrace( "[ GraphicDeviceWin32::CreateVertexObject] Not supporting the required functions.\n" );
+			return BIT_NULL;
+		}
 
+		// Allocate a ne vertex object
+		return new VertexObjectOpenGL( );
+	}
 
 
 	// Clear functions

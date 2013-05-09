@@ -27,6 +27,7 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Window.hpp>
+#include <Bit/Graphics/VertexObject.hpp>
 
 namespace Bit
 {
@@ -56,8 +57,7 @@ namespace Bit
 		BIT_INLINE BIT_BOOL IsOpen( ) const { return m_Open; }
 
 		// Create functions for different renderer elements
-		// ..
-
+		virtual VertexObject * CreateVertexObject( ) const = 0;
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits ) = 0;

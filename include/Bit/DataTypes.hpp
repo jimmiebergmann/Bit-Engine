@@ -63,7 +63,11 @@
 			#define BIT_API __declspec(dllimport)
 		#endif
 	#elif BIT_PLATFORM_LINUX
-		#define BIT_API
+		#ifdef BIT_EXPORTS
+			#define BIT_API
+		#else
+			#define BIT_API
+		#endif
 	#endif
 #else
 	// Define it as nothing
@@ -78,7 +82,7 @@
 // inline
 #define BIT_INLINE	inline
 
-// Standard types
+// Standard data types
 typedef unsigned char		BIT_UCHAR8;
 typedef signed char			BIT_SCHAR8;
 typedef unsigned short		BIT_UCHAR16;
@@ -100,10 +104,29 @@ typedef std::size_t			BIT_MEMSIZE;
 #define BIT_FALSE	0
 #define BIT_NULL	NULL
 
+// Type enums
+const BIT_UINT32 BIT_TYPE_NONE = 0;
+const BIT_UINT32 BIT_TYPE_UCHAR8 = 1;
+const BIT_UINT32 BIT_TYPE_SCHAR8 = 2;
+const BIT_UINT32 BIT_TYPE_UCHAR16 = 3;
+const BIT_UINT32 BIT_TYPE_SCHAR16 = 4;
+const BIT_UINT32 BIT_TYPE_UINT8 = 5;
+const BIT_UINT32 BIT_TYPE_SINT8 = 6;
+const BIT_UINT32 BIT_TYPE_UINT16 = 7;
+const BIT_UINT32 BIT_TYPE_SINT16 = 8;
+const BIT_UINT32 BIT_TYPE_UINT32 = 9;
+const BIT_UINT32 BIT_TYPE_SINT32 = 10;
+const BIT_UINT32 BIT_TYPE_UINT64 = 11;
+const BIT_UINT32 BIT_TYPE_SINT64 = 12;
+const BIT_UINT32 BIT_TYPE_FLOAT32 = 13;
+const BIT_UINT32 BIT_TYPE_FLOAT64 = 14;
+const BIT_UINT32 BIT_TYPE_BYTE = 15;
+const BIT_UINT32 BIT_TYPE_BOOL = 16;
+
 // Return codes
-const BIT_UINT32 BIT_OK					= 0x00000000;
-const BIT_UINT32 BIT_ERROR				= 0x00000001;
-const BIT_UINT32 BIT_ERROR_OPEN_FILE	= 0x00000002;
+const BIT_UINT32 BIT_OK					= 0;
+const BIT_UINT32 BIT_ERROR				= 1;
+const BIT_UINT32 BIT_ERROR_OPEN_FILE	= 2;
 
 // Constants
 const BIT_FLOAT64 BIT_PI = 3.141592653589793238f;

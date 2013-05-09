@@ -299,6 +299,14 @@
 				RelativePath="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp"
 				>
 			</File>
+			<File
+				RelativePath="..\..\source\Bit\Graphics\OpenGL\VertexObjectOpenGL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\OpenGL\VertexObjectOpenGL.hpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Win32"
@@ -318,6 +326,10 @@
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\Graphics\GraphicDevice.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\Graphics\VertexObject.hpp"
 			>
 		</File>
 	</Files>

@@ -19,4 +19,4 @@ git clone https://github.com/jimmiebergmann/Bit-Engine.git
 
 Usage
 ---
-Add BIT_STATIC_LIB to your preprocessor if you are using the static libraries.
+Add BIT_STATIC_LIB to your preprocessor if you are using the static libraries and do not forget to link all the external libraries by yourself
