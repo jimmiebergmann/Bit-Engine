@@ -136,16 +136,8 @@ namespace Bit
             return BIT_ERROR;
 		}
 
-        XSetWindowColormap( m_pDisplay, m_Window, m_Colormap );
-
-
-
-        //XSetWindowColormap( m_pDisplay, m_Window, m_Colormap );
         // Set the new color map
-		/*XSetWindowAttributes WindowAttributes;
-		WindowAttributes.colormap = m_Colormap;
-		XChangeWindowAttributes( m_pDisplay, m_Window, CWColormap, &WindowAttributes );
-*/
+        XSetWindowColormap( m_pDisplay, m_Window, m_Colormap );
 
         // Create a regual context for now
         if( !(m_DeviceContext = glXCreateContext( m_pDisplay, pVisualInfo, NULL, GL_TRUE ) ) )
@@ -160,6 +152,14 @@ namespace Bit
         // Clear the visual info since we are done with it.
         XFree( pVisualInfo );
 
+        // Bind the OpenGL extensions
+        BIT_UINT32 GLVersionMajor = 3;
+        BIT_UINT32 GLVersionMinor = 1;
+        if( OpenGL::BindOpenGLExtensions( GLVersionMajor, GLVersionMinor ) != BIT_OK )
+        {
+            bitTrace( "[GraphicDeviceLinux::Open] Can not bind the OpeNGL extensions.\n" );
+            return BIT_ERROR;
+        }
 
 		m_Open = BIT_TRUE;
 		return BIT_OK;
