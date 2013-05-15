@@ -59,14 +59,14 @@ namespace Bit
 		if( m_Open )
 		{
 			bitTrace( "[GraphicDeviceWin32::Open] Already open.\n" );
-			return BIT_FALSE;
+			return BIT_ERROR;
 		}
 
 		// Make sure the window is open
 		if( !p_Window.IsOpen( ) )
 		{
 			bitTrace( "[GraphicDeviceWin32::Open] The window is not open.\n" );
-			return BIT_FALSE;
+			return BIT_ERROR;
 		}
 
 		// Get the Win32 window by casting the Window class

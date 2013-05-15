@@ -29,7 +29,7 @@
 	#include <Bit/Graphics/Win32/GraphicDeviceWin32.hpp>
 	typedef Bit::GraphicDeviceWin32 GraphicDevicePlatformType;
 	#undef CreateWindow
-#elif BIT_PLATFORM_LINUX
+#elif defined( BIT_PLATFORM_LINUX )
 	#include <Bit/Graphics/Linux/GraphicDeviceLinux.hpp>
 	typedef Bit::GraphicDeviceLinux GraphicDevicePlatformType;
 #endif

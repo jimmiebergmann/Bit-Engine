@@ -27,6 +27,8 @@
 #define __BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP__
 
 #include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Window/Linux/WindowLinux.hpp>
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
 #include <Bit/DataTypes.hpp>
 
 namespace Bit
@@ -45,21 +47,53 @@ namespace Bit
 		virtual BIT_UINT32 Close( );
 		virtual void Present( );
 
+		// Create functions for different renderer elements
+		virtual VertexObject * CreateVertexObject( ) const;
+
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits );
 		virtual void ClearColor( );
 		virtual void ClearDepth( );
 
-		// Create functions for different renderer elements
-		// ..
+		// Enable functions
+		virtual void EnableTexture( );
+		virtual void EnableAlpha( );
+		virtual void EnableDepthTest( );
+		virtual void EnableStencilTest( );
+		virtual void EnableFaceCulling( BIT_UINT32 p_FaceCulling );
+		virtual void EnableSmoothLines( );
 
-		// Get functions
+		// Disable functions
+		virtual void DisableTexture( );
+		virtual void DisableAlpha( );
+		virtual void DisableDepthTest( );
+		virtual void DisableStencilTest( );
+		virtual void DisableFaceCulling( );
+		virtual void DisableSmoothLines( );
 
 		// Set functions
+		virtual void SetClearColor( const BIT_FLOAT32 p_R, const BIT_FLOAT32 p_G,
+			const BIT_FLOAT32 p_B, const BIT_FLOAT32 p_A );
+		virtual void SetClearDepth( BIT_FLOAT32 p_Depth );
+		virtual void SetClearStencil( BIT_UINT32 p_Stencil );
+		virtual void SetViewport( const BIT_UINT32 p_LX, const BIT_UINT32 p_LY,
+			const BIT_UINT32 p_HX, const BIT_UINT32 p_HY ); // Lower and higher coordinates
+		virtual void SetLineWidth( const BIT_FLOAT32 p_Width );
+
+		// Get functions
+		// ...
 
 
 	private:
 
+        // Private variables from the window class
+        WindowLinux * m_pWindowLinux;
+	    ::Display * m_pDisplay;
+		::Window m_Window;
+
+		// Private variables in general
+		::GLXContext m_DeviceContext;
+		::Colormap m_Colormap;
 
 	};
 

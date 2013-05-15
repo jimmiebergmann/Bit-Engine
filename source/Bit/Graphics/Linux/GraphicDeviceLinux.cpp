@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/Linux/GraphicDeviceLinux.hpp>
+#include <Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -31,8 +32,22 @@ namespace Bit
 
 
 	// Constructors/destructors
-	GraphicDeviceLinux::GraphicDeviceLinux( )
+	GraphicDeviceLinux::GraphicDeviceLinux( ) :
+        m_pWindowLinux( BIT_NULL ),
+        m_pDisplay( BIT_NULL ),
+        m_Window( BIT_NULL ),
+        m_DeviceContext( BIT_NULL )
 	{
+	    m_Open = BIT_FALSE;
+
+		// Enable / Disable statuses
+		m_TextureStatus = BIT_FALSE;
+		m_AlphaStatus = BIT_FALSE;
+		m_DepthTestStatus = BIT_FALSE;
+		m_StencilTestStatus = BIT_FALSE;
+		m_FaceCullingStatus = BIT_FALSE;
+		m_FaceCullingType = 0;
+		m_SmoothLinesStatus = BIT_FALSE;
 	}
 
 	GraphicDeviceLinux::~GraphicDeviceLinux( )
@@ -43,18 +58,159 @@ namespace Bit
 	// Public general functions
 	BIT_UINT32 GraphicDeviceLinux::Open( const Window & p_Window, const BIT_UINT32 p_Devices )
 	{
-		return BIT_ERROR;
+	    // Make sure the graphic device is not already open
+		if( m_Open )
+		{
+			bitTrace( "[GraphicDeviceLinux::Open] Already open.\n" );
+			return BIT_ERROR;
+		}
+
+
+		/*
+                // Private variables from the window class
+                ::Display * m_pDisplay;
+                ::Window m_Window;
+
+                // Private variables in general
+                ::GLXContext m_DeviceContext;
+                ::XVisualInfo * m_pVisualInfo;
+                ::Colormap m_Colormap;
+		*/
+
+
+
+        // Make sure the window is open
+		if( !p_Window.IsOpen( ) )
+		{
+			bitTrace( "[GraphicDeviceLinux::Open] The window is not open.\n" );
+			return BIT_ERROR;
+		}
+
+		// Get the Linux window by casting the Window class
+		const WindowLinux * pWindow = reinterpret_cast<const WindowLinux *>( &p_Window );
+		m_pWindowLinux = const_cast<WindowLinux *>( pWindow );
+
+        // Get the window and display devices
+		if( ( m_Window = pWindow->GetWindowDevice( ) ) == BIT_NULL )
+		{
+		    bitTrace( "[GraphicDeviceLinux::Open] The window is NULL.\n" );
+			return BIT_ERROR;
+		}
+
+		if( (m_pDisplay = pWindow->GetDisplayDevice( ) ) == BIT_NULL )
+		{
+		    bitTrace( "[GraphicDeviceLinux::Open] The display is NULL.\n" );
+			return BIT_ERROR;
+		}
+
+		int Screen =  pWindow->GetScreenDevice( );
+
+
+
+
+		// Create the visual information
+		//GLint Att[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+		GLint Att[] =
+		{
+		    GLX_RGBA, GLX_DOUBLEBUFFER,
+		    GLX_RED_SIZE, 8,
+		    GLX_GREEN_SIZE, 8,
+		    GLX_BLUE_SIZE, 8,
+            GLX_DEPTH_SIZE, 16,
+            GLX_STENCIL_SIZE, 8,
+            None
+        };
+
+		::XVisualInfo * pVisualInfo = BIT_NULL;
+        if( (pVisualInfo = glXChooseVisual( m_pDisplay, 0, Att ) ) == BIT_NULL )
+		{
+		    bitTrace( "[GraphicDeviceLinux::Open] Can not choose visual information.\n" );
+			return BIT_ERROR;
+		}
+
+		// Create the color map and set it
+		if( !(m_Colormap = XCreateColormap( m_pDisplay, RootWindow( m_pDisplay, Screen), pVisualInfo->visual, AllocNone ) ) )
+		{
+		    bitTrace( "[GraphicDeviceLinux::Open] Can not create the colormap.\n" );
+            XFree( pVisualInfo );
+            return BIT_ERROR;
+		}
+
+        XSetWindowColormap( m_pDisplay, m_Window, m_Colormap );
+
+
+
+        //XSetWindowColormap( m_pDisplay, m_Window, m_Colormap );
+        // Set the new color map
+		/*XSetWindowAttributes WindowAttributes;
+		WindowAttributes.colormap = m_Colormap;
+		XChangeWindowAttributes( m_pDisplay, m_Window, CWColormap, &WindowAttributes );
+*/
+
+        // Create a regual context for now
+        if( !(m_DeviceContext = glXCreateContext( m_pDisplay, pVisualInfo, NULL, GL_TRUE ) ) )
+        {
+            bitTrace( "[GraphicDeviceLinux::Open] Can not create the OpenGL context.\n" );
+            XFree( pVisualInfo );
+            return BIT_ERROR;
+
+        }
+        glXMakeCurrent( m_pDisplay, m_Window, m_DeviceContext );
+
+        // Clear the visual info since we are done with it.
+        XFree( pVisualInfo );
+
+
+		m_Open = BIT_TRUE;
+		return BIT_OK;
 	}
 
 	BIT_UINT32 GraphicDeviceLinux::Close( )
 	{
+	    // Destroy the OpenGL context
+        if( m_DeviceContext )
+        {
+            // Release the context from this thread
+            if( !glXMakeCurrent( m_pDisplay, m_Window, m_DeviceContext ) )
+            {
+                bitTrace( "[GraphicDeviceLinux::Close] Can release the OpenGL context.\n" );
+                return BIT_ERROR;
+            }
+
+            glXDestroyContext( m_pDisplay, m_DeviceContext );
+            m_DeviceContext = BIT_NULL;
+        }
+
+	    m_Open = BIT_FALSE;
 		return BIT_ERROR;
 	}
 
 	void GraphicDeviceLinux::Present( )
 	{
+        if( !m_Open || !m_pWindowLinux->IsOpen( ) )
+		{
+			return;
+		}
 
+
+		glXSwapBuffers( m_pDisplay, m_Window );
 	}
+
+	// Create functions for different renderer elements
+    VertexObject * GraphicDeviceLinux::CreateVertexObject( ) const
+    {
+        // Make sure we support OpenGL vertex objects
+		if( !OpenGL::GetGeneralBufferAvailability( ) ||
+			!OpenGL::GetVertexObjectAvailability( ) ||
+			!OpenGL::GetShaderAvailability( ) )
+		{
+			bitTrace( "[ GraphicDeviceLinux::CreateVertexObject] Not supporting the required functions.\n" );
+			return BIT_NULL;
+		}
+
+		// Allocate a ne vertex object
+		return new VertexObjectOpenGL( );
+    }
 
 	// Clear functions
 	void GraphicDeviceLinux::ClearBuffers( const BIT_UINT32 p_ClearBits )
@@ -64,23 +220,142 @@ namespace Bit
 
 	void GraphicDeviceLinux::ClearColor( )
 	{
-
+        glClear( GL_COLOR_BUFFER_BIT );
 	}
 
 	void GraphicDeviceLinux::ClearDepth( )
 	{
-
+        glClear( GL_DEPTH_BUFFER_BIT );
 	}
 
-	// Create functions for different renderer elements
-	// ..
+	// Enable functions
+    void GraphicDeviceLinux::EnableTexture( )
+    {
+        glEnable( GL_TEXTURE_2D );
+		m_TextureStatus = BIT_TRUE;
+    }
+
+    void GraphicDeviceLinux::EnableAlpha( )
+    {
+        // We have to make this function customizable.
+		glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+		glEnable( GL_BLEND );
+		glAlphaFunc( GL_GREATER, 0 );
+		glEnable( GL_ALPHA_TEST );
+		m_AlphaStatus = BIT_TRUE;
+    }
+
+    void GraphicDeviceLinux::EnableDepthTest( )
+    {
+        glEnable( GL_DEPTH_TEST );
+		m_DepthTestStatus = BIT_TRUE;
+    }
+
+    void GraphicDeviceLinux::EnableStencilTest( )
+    {
+        glEnable( GL_STENCIL_TEST );
+		m_StencilTestStatus = BIT_TRUE;
+    }
+
+    void GraphicDeviceLinux::EnableFaceCulling( BIT_UINT32 p_FaceCulling )
+    {
+        /*GLenum Mode = GL_FRONT;
+		if( p_FaceCulling == BIT_RENDERER_BACKFACE_CULLING )
+		{
+			Mode = GL_BACK;
+		}
+		// else if the culling isn't front face culling, return ( failed )
+		else if( p_FaceCulling != BIT_RENDERER_FRONTFACE_CULLING )
+		{
+			return;
+		}
+
+		glEnable( GL_CULL_FACE );
+		glCullFace( Mode );
+		m_FaceCullingStatus = BIT_TRUE;
+		m_FaceCullingType = p_FaceCulling;*/
+    }
+
+    void GraphicDeviceLinux::EnableSmoothLines( )
+    {
+        glEnable( GL_LINE_SMOOTH );
+		m_SmoothLinesStatus = BIT_TRUE;
+    }
 
 
-	// Get functions
+    // Disable functions
+    void GraphicDeviceLinux::DisableTexture( )
+    {
+        glDisable( GL_TEXTURE_2D );
+		m_TextureStatus = BIT_FALSE;
+    }
+
+    void GraphicDeviceLinux::DisableAlpha( )
+    {
+        glDisable( GL_BLEND );
+		glDisable( GL_ALPHA_TEST );
+		m_AlphaStatus = BIT_FALSE;
+    }
+
+    void GraphicDeviceLinux::DisableDepthTest( )
+    {
+        glDisable( GL_DEPTH_TEST );
+		m_DepthTestStatus = BIT_FALSE;
+    }
+
+    void GraphicDeviceLinux::DisableStencilTest( )
+    {
+        glDisable( GL_STENCIL_TEST );
+		m_StencilTestStatus = BIT_FALSE;
+    }
+
+    void GraphicDeviceLinux::DisableFaceCulling( )
+    {
+        glDisable( GL_CULL_FACE );
+		m_FaceCullingStatus = BIT_FALSE;
+		m_FaceCullingType = 0;
+    }
+
+    void GraphicDeviceLinux::DisableSmoothLines( )
+    {
+        glDisable( GL_LINE_SMOOTH );
+		m_SmoothLinesStatus = BIT_FALSE;
+    }
 
 
-	// Set functions
+    // Set functions
+    void GraphicDeviceLinux::SetClearColor( const BIT_FLOAT32 p_R, const BIT_FLOAT32 p_G,
+        const BIT_FLOAT32 p_B, const BIT_FLOAT32 p_A )
+    {
+        glClearColor( p_R, p_G, p_B, p_A );
+    }
 
+    void GraphicDeviceLinux::SetClearDepth( BIT_FLOAT32 p_Depth )
+    {
+        glClearDepth( p_Depth );
+    }
+
+    void GraphicDeviceLinux::SetClearStencil( BIT_UINT32 p_Stencil )
+    {
+        glClearStencil( p_Stencil );
+    }
+
+    void GraphicDeviceLinux::SetViewport( const BIT_UINT32 p_LX, const BIT_UINT32 p_LY,
+        const BIT_UINT32 p_HX, const BIT_UINT32 p_HY ) // Lower and higher coordinates
+    {
+        glViewport( p_LX, p_LY, p_HX, p_HY );
+		m_ViewportLow = Vector2_si32( p_LX, p_LY );
+		m_ViewportHigh = Vector2_si32( p_HX, p_HY );
+    }
+
+    void GraphicDeviceLinux::SetLineWidth( const BIT_FLOAT32 p_Width )
+    {
+        glLineWidth( p_Width );
+    }
+
+
+    // Get functions
+    // ...
 
 
 }

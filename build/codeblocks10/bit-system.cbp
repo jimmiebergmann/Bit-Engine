@@ -18,8 +18,7 @@
 					<Add option="-W" />
 					<Add option="-O0" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DPLATFORM_LINUX" />
-					<Add option="-DBUILD_DEBUG" />
+					<Add option="-DBIT_STATIC_LIB" />
 					<Add directory="../../include" />
 				</Compiler>
 				<ResourceCompiler>
@@ -37,8 +36,7 @@
 					<Add option="-O2" />
 					<Add option="-W" />
 					<Add option="-DNDEBUG" />
-					<Add option="-DPLATFORM_LINUX" />
-					<Add option="-DBUILD_RELEASE" />
+					<Add option="-DBIT_STATIC_LIB" />
 					<Add directory="../../include" />
 				</Compiler>
 				<ResourceCompiler>

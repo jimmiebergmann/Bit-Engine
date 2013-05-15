@@ -18,9 +18,9 @@
 					<Add option="-W" />
 					<Add option="-O0" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DPLATFORM_LINUX" />
-					<Add option="-DBUILD_DEBUG" />
+					<Add option="-DBIT_STATIC_LIB" />
 					<Add directory="../../include" />
+					<Add directory="../../extlibs/include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="../../include" />
@@ -37,9 +37,9 @@
 					<Add option="-O2" />
 					<Add option="-W" />
 					<Add option="-DNDEBUG" />
-					<Add option="-DPLATFORM_LINUX" />
-					<Add option="-DBUILD_RELEASE" />
+					<Add option="-DBIT_STATIC_LIB" />
 					<Add directory="../../include" />
+					<Add directory="../../extlibs/include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="../../include" />
@@ -49,9 +49,12 @@
 		<Unit filename="../../include/Bit/Graphics/GraphicDevice.hpp" />
 		<Unit filename="../../include/Bit/Graphics/Linux/GraphicDeviceLinux.hpp" />
 		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGL.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp" />
+		<Unit filename="../../include/Bit/Graphics/VertexObject.hpp" />
 		<Unit filename="../../source/Bit/Graphics/GraphicDevice.cpp" />
 		<Unit filename="../../source/Bit/Graphics/Linux/GraphicDeviceLinux.cpp" />
 		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGL.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/VertexObjectOpenGL.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

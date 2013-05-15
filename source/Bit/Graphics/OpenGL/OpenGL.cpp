@@ -1,23 +1,23 @@
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-// 
+//
 // This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
-// 
+//
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute
 // it freely, subject to the following restrictions:
-// 
+//
 // 1. The origin of this software must not be misrepresented;
 //    you must not claim that you wrote the original software.
 //    If you use this software in a product, an acknowledgment
 //    in the product documentation would be appreciated but
 //    is not required.
-// 
+//
 // 2. Altered source versions must be plainly marked as such,
 //    and must not be misrepresented as being the original software.
-// 
+//
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
@@ -190,6 +190,7 @@ namespace Bit
 
 			// Load the shader functions if the shader extenstions are available
 			// and we are using the right verison of OpenGL
+			// WARNING: comparison of unsigned expression >= 0 is always true [-Wtype-limits]|
 			if( p_Major > 1 || ( p_Major == 2 && p_Major >= 0 ) )
 			{
 
@@ -239,7 +240,7 @@ namespace Bit
 				Ret |= ( ( __bglGetShaderiv =
 					( PFNGLGETSHADERIVPROC )glGetProcAddress(
 						"glGetShaderiv" ) ) == BIT_NULL );
-					
+
 				Ret |= ( ( __bglGetUniformLocation =
 					( PFNGLGETUNIFORMLOCATIONPROC )glGetProcAddress(
 						"glGetUniformLocation" ) ) == BIT_NULL );
@@ -303,7 +304,7 @@ namespace Bit
 				Ret |= ( ( __bglUniform4f =
 					( PFNGLUNIFORM4FPROC )glGetProcAddress(
 						"glUniform4f" ) ) == BIT_NULL );
-				
+
 				Ret |= ( ( __bglUniform4fv =
 					( PFNGLUNIFORM4FVPROC )glGetProcAddress(
 						"glUniform4fv" ) ) == BIT_NULL );
@@ -360,7 +361,7 @@ namespace Bit
 				}
 			}
 			/*
-			
+
 */
 
 
@@ -388,5 +389,5 @@ namespace Bit
 		}
 
 	}
-	
+
 }

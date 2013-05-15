@@ -29,8 +29,8 @@
 #include <cmath>
 #include <float.h>
 
-#ifdef PLATFORM_LINUX
-#define _isnan isnan
+#ifdef BIT_PLATFORM_LINUX
+    #define _isnan isnan
 #endif
 
 namespace Bit
@@ -194,7 +194,7 @@ namespace Bit
 			{
 				return 0.0f;
 			}
-			
+
 			return Dot;
 		}
 
@@ -209,11 +209,11 @@ namespace Bit
 
 		void RotateX( BIT_FLOAT64 p_Angle )
 		{
-			const BIT_FLOAT32 AngleSin = Sin( p_Angle );
-			const BIT_FLOAT32 AngleCos = Cos( p_Angle ); 
+			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
+			const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
 
 			// Store the new y and z in tempory variables
-			T ty = ( y * AngleCos ) - ( z * AngleSin ); 
+			T ty = ( y * AngleCos ) - ( z * AngleSin );
 			T tz = ( y * AngleSin ) + ( z * AngleCos );
 
 			y = ty;
@@ -222,11 +222,11 @@ namespace Bit
 
 		void RotateY( BIT_FLOAT64 p_Angle )
 		{
-			const BIT_FLOAT32 AngleSin = Sin( p_Angle );
-			const BIT_FLOAT32 AngleCos = Cos( p_Angle ); 
+			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
+			const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
 
 			// Store the new x and z in tempory variables
-			T tx = ( x * AngleCos ) - ( z * AngleSin ); 
+			T tx = ( x * AngleCos ) - ( z * AngleSin );
 			T tz = ( x * AngleSin ) + ( z * AngleCos );
 
 			x = tx;
@@ -235,17 +235,17 @@ namespace Bit
 
 		void RotateZ( BIT_FLOAT64 p_Angle )
 		{
-			const BIT_FLOAT32 AngleSin = Sin( p_Angle );
-			const BIT_FLOAT32 AngleCos = Cos( p_Angle ); 
+			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
+			const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
 
 			// Store the new x and y in tempory variables
-			T tx = ( x * AngleCos ) - ( y * AngleSin ); 
+			T tx = ( x * AngleCos ) - ( y * AngleSin );
 			T ty = ( x * AngleSin ) + ( y * AngleCos );
 
 			x = tx;
 			y = ty;
 		}
-		
+
 
 		// Static functions
 		static Vector3< T > Cross(Vector3< T > p_Vector1, Vector3< T > p_Vector2)
@@ -262,7 +262,7 @@ namespace Bit
 			return Bit::RadiansToDegrees( acos( p_Vec1.Dot( p_Vec2 ) ) );
 		}
 
-		
+
 		// Public variable members
 		T x;
 		T y;

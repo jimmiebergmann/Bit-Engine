@@ -30,7 +30,7 @@
 
 #ifdef BIT_PLATFORM_WIN32
 	#include <windows.h>
-#elif BIT_PLATFORM_LINUX
+#elif defined( BIT_PLATFORM_LINUX )
 	#define  _vsnprintf_s vsnprintf
 	#include <iostream>
 #endif
@@ -65,7 +65,7 @@ namespace Bit
 
 			OutputDebugStringA( CompleteMessage );
 
-		#elif BIT_PLATFORM_LINUX
+		#elif defined( BIT_PLATFORM_LINUX )
 
 			std::cout << CompleteMessage;
 

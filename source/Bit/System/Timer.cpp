@@ -27,7 +27,7 @@
 
 #ifdef BIT_PLATFORM_WIN32
 	#include <windows.h>
-#elif BIT_PLATFORM_LINUX
+#elif defined( BIT_PLATFORM_LINUX )
 	#include <sys/time.h>
 #endif
 
@@ -78,7 +78,7 @@ namespace Bit
 			return ( static_cast< BIT_FLOAT64 >( Counter ) /
 				static_cast< BIT_FLOAT64 >( Frequency ) );
 
-		#elif BIT_PLATFORM_LINUX
+		#elif defined( BIT_PLATFORM_LINUX )
 
 			timeval Time;
 			gettimeofday( &Time, 0 );

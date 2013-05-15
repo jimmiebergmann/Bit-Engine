@@ -62,7 +62,7 @@
 		#else
 			#define BIT_API __declspec(dllimport)
 		#endif
-	#elif BIT_PLATFORM_LINUX
+	#elif defined( BIT_PLATFORM_LINUX )
 		#ifdef BIT_EXPORTS
 			#define BIT_API
 		#else

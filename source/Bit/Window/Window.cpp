@@ -29,7 +29,7 @@
 	#include <Bit/Window/Win32/WindowWin32.hpp>
 	typedef Bit::WindowWin32 WindowPlatformType;
 	#undef CreateWindow
-#elif BIT_PLATFORM_LINUX
+#elif defined( BIT_PLATFORM_LINUX )
 	#include <Bit/Window/Linux/WindowLinux.hpp>
 	typedef Bit::WindowLinux WindowPlatformType;
 #endif

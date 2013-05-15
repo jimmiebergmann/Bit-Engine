@@ -93,6 +93,7 @@ namespace Bit
 
         // Creat the window attricutes
         XSetWindowAttributes WindowAttributes;
+        WindowAttributes.colormap = DefaultColormap( m_pDisplay, m_Screen );
         WindowAttributes.event_mask =   KeyPressMask | KeyReleaseMask |
                                         ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask |
                                         EnterWindowMask | LeaveWindowMask | VisibilityChangeMask |
@@ -106,8 +107,10 @@ namespace Bit
                                  DefaultDepth( m_pDisplay, m_Screen ),
                                  InputOutput,
                                  DefaultVisual( m_pDisplay, m_Screen ),
-                                 CWBorderPixel | CWEventMask,
+                                 CWBorderPixel | CWEventMask | CWColormap,
                                  &WindowAttributes );
+
+
 
         // It's very important to set the delete message. Else we wont be able to close the window.
         ::Atom wmDeleteMessage = XInternAtom( m_pDisplay, "WM_DELETE_WINDOW", false );
@@ -179,7 +182,6 @@ namespace Bit
         XMapWindow( m_pDisplay, m_Window );
         XFlush( m_pDisplay );
 
-
         // Finally set the base class attributes
 		m_Open = BIT_TRUE;
 		m_Size = p_Size;
@@ -207,7 +209,7 @@ namespace Bit
 		return BIT_ERROR;
 	}
 
-	BIT_UINT32 WindowLinux::DoEvents( )
+	BIT_UINT32 WindowLinux::Update( )
 	{
 		if( m_pDisplay == BIT_NULL )
 		{
@@ -358,5 +360,22 @@ namespace Bit
         XStoreName( m_pDisplay, m_Window, p_Title.c_str( ) );
         return BIT_OK;
 	}
+
+	// Get functions
+    ::Window WindowLinux::GetWindowDevice( ) const
+    {
+        return m_Window;
+    }
+
+    ::Display * WindowLinux::GetDisplayDevice( ) const
+    {
+        return m_pDisplay;
+    }
+
+    int WindowLinux::GetScreenDevice( ) const
+    {
+        return m_Screen;
+    }
+
 
 }
