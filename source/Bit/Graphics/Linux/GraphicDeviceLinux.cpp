@@ -52,6 +52,7 @@ namespace Bit
 
 	GraphicDeviceLinux::~GraphicDeviceLinux( )
 	{
+	    Close( );
 	}
 
 
@@ -179,6 +180,12 @@ namespace Bit
 
             glXDestroyContext( m_pDisplay, m_DeviceContext );
             m_DeviceContext = BIT_NULL;
+        }
+
+        // Free the color map
+        if( m_Colormap )
+        {
+            XFreeColormap( m_pDisplay, m_Colormap );
         }
 
 	    m_Open = BIT_FALSE;

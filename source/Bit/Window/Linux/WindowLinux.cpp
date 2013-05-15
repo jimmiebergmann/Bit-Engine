@@ -88,6 +88,10 @@ namespace Bit
             return BIT_ERROR;
         }
 
+        // Initialize the X thread
+        // Should we?!?!
+        XInitThreads( );
+
 	    // Get the screen
 	    m_Screen = DefaultScreen( m_pDisplay );
 
@@ -196,11 +200,10 @@ namespace Bit
 	{
 	    if( m_pDisplay )
 	    {
+	        // Destroy the display
             XDestroyWindow( m_pDisplay, m_Window );
-	    //XFreeColormap( m_pDisplay, m_ColorMap );
 
-	    // Clost the display
-
+            // Clost the display
 	        XCloseDisplay( m_pDisplay );
             m_pDisplay = BIT_NULL;
 	    }
@@ -238,7 +241,7 @@ namespace Bit
 		                m_EventQueue.push_back( Event );
 
 		                // Remember to actually close the window
-		                Close( );
+		                //Close( );
                         return BIT_OK;
 		            }
 		        }
