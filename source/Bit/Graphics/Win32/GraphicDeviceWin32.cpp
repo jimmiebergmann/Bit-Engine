@@ -257,6 +257,18 @@ namespace Bit
 
 	BIT_UINT32 GraphicDeviceWin32::Close( )
 	{
+		// Release the context from the current thread
+		if( !wglMakeCurrent( NULL, NULL ) )
+		{
+			bitTrace( "[GraphicDeviceWin32::Close] Can not release the context.\n" );
+		}
+
+		// Delete the context
+		if( !wglDeleteContext( m_Context ))
+		{
+			bitTrace( "[GraphicDeviceWin32::Close] Can not delete the context.\n" );
+		}
+		m_Context = BIT_NULL;
 
 		m_Open = BIT_FALSE;
 		return BIT_ERROR;

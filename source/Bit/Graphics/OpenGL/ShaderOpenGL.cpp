@@ -51,7 +51,7 @@ namespace Bit
 		const GLcharARB * pTextSource = m_ShaderSource.c_str( );
 
 		// Might be a silly erorr check. But I'm doing it anyway.
-		if(pTextSource == NULL)
+		if( pTextSource == BIT_NULL )
 		{
 			bitTrace( BIT_NULL, "[Bit::ShaderOGL::Compile] <ERROR> "
 				"Silly pointer error!" );
@@ -75,8 +75,7 @@ namespace Bit
 			{
 				char *pLog = new char[ LogLength ];
 				glGetShaderInfoLog( m_ShaderObject, LogLength, BIT_NULL, pLog );
-				bitTrace( BIT_NULL, "[ShaderOpenGL::Compile] "
-					"Shader compiler error:\n%s\n", pLog );
+				bitTrace( BIT_NULL, "[ShaderOpenGL::Compile] Shader compiler error:\n%s\n", pLog );
 				delete [ ] pLog;
 			}
 
