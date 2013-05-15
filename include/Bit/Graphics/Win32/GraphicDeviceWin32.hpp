@@ -22,7 +22,6 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
 #ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP__
 #define __BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP__
 
@@ -39,7 +38,7 @@ namespace Bit
 
 		// Constructors/destructors
 		GraphicDeviceWin32( );
-		~GraphicDeviceWin32( );
+		virtual ~GraphicDeviceWin32( );
 
 		// Public general functions
 		virtual BIT_UINT32 Open( const Window & p_Window, const BIT_UINT32 p_Devices );
@@ -48,6 +47,8 @@ namespace Bit
 
 		// Create functions for different renderer elements
 		virtual VertexObject * CreateVertexObject( ) const;
+		virtual ShaderProgram * CreateShaderProgram( ) const;
+		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const;
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits );

@@ -42,7 +42,7 @@ namespace Bit
 
 		// Constructors/destructors
 		WindowWin32( );
-		~WindowWin32( );
+		virtual ~WindowWin32( );
 
 		// Public general functions
 		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );

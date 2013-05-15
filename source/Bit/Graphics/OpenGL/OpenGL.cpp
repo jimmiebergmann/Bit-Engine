@@ -45,12 +45,22 @@ PFNGLDELETEBUFFERSPROC __glDeleteBuffers = BIT_NULL;
 PFNGLGENBUFFERSPROC __glGenBuffers = BIT_NULL;
 
 // Shader functions
+PFNGLENABLEVERTEXATTRIBARRAYPROC __glEnableVertexAttribArray = BIT_NULL;
+PFNGLVERTEXATTRIBPOINTERPROC __glVertexAttribPointer = BIT_NULL;
 PFNGLATTACHSHADERPROC __glAttachShader = BIT_NULL;
 PFNGLCOMPILESHADERPROC __glCompileShader = BIT_NULL;
 PFNGLCREATEPROGRAMPROC __glCreateProgram = BIT_NULL;
 PFNGLCREATESHADERPROC __glCreateShader = BIT_NULL;
-PFNGLENABLEVERTEXATTRIBARRAYPROC __glEnableVertexAttribArray = BIT_NULL;
-PFNGLVERTEXATTRIBPOINTERPROC __glVertexAttribPointer = BIT_NULL;
+PFNGLDELETEPROGRAMPROC __glDeleteProgram = BIT_NULL;
+PFNGLDELETESHADERPROC __glDeleteShader = BIT_NULL;
+PFNGLGETPROGRAMINFOLOGPROC __glGetProgramInfoLog = BIT_NULL;
+PFNGLGETPROGRAMIVPROC __glGetProgramiv = BIT_NULL;
+PFNGLGETSHADERINFOLOGPROC __glGetShaderInfoLog = BIT_NULL;
+PFNGLGETSHADERIVPROC __glGetShaderiv = BIT_NULL;
+PFNGLGETUNIFORMLOCATIONPROC __glGetUniformLocation = BIT_NULL;
+PFNGLLINKPROGRAMPROC __glLinkProgram = BIT_NULL;
+PFNGLSHADERSOURCEPROC __glShaderSource = BIT_NULL;
+
 
 // Static opengl extension variable availability
 static BIT_BOOL BIT_ARB_vertex_buffer_object = BIT_FALSE;
@@ -141,19 +151,19 @@ namespace Bit
 			{
 
 				Ret |= ( __glBindBuffer = ( PFNGLBINDBUFFERPROC )
-					( glGetProcAddress( "glBindBuffer" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glBindBuffer" ) ) == BIT_NULL;
 
 				Ret |= ( __glBufferData = ( PFNGLBUFFERDATAPROC )
-					( glGetProcAddress( "glBufferData" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glBufferData" ) ) == BIT_NULL;
 
 				Ret |= ( __glBufferSubData = ( PFNGLBUFFERSUBDATAPROC )
-					( glGetProcAddress( "glBufferSubData" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glBufferSubData" ) ) == BIT_NULL;
 
 				Ret |= ( __glDeleteBuffers = ( PFNGLDELETEBUFFERSPROC )
-					( glGetProcAddress( "glDeleteBuffers" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glDeleteBuffers" ) ) == BIT_NULL;
 
 				Ret |= ( __glGenBuffers = ( PFNGLGENBUFFERSPROC )
-					( glGetProcAddress( "glGenBuffers" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glGenBuffers" ) ) == BIT_NULL;
 
 				if( !Ret )
 				{
@@ -168,16 +178,16 @@ namespace Bit
 			if( BIT_ARB_vertex_array_object )
 			{
 				Ret |= ( __glBindVertexArray = ( PFNGLBINDVERTEXARRAYPROC )
-					( glGetProcAddress( "glBindVertexArray" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glBindVertexArray" ) ) == BIT_NULL;
 
 				Ret |= ( __glDeleteVertexArrays = ( PFNGLDELETEVERTEXARRAYSPROC )
-					( glGetProcAddress( "glDeleteVertexArrays" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glDeleteVertexArrays" ) ) == BIT_NULL;
 
 				Ret |= ( __glGenVertexArrays = ( PFNGLGENVERTEXARRAYSPROC )
-					( glGetProcAddress( "glGenVertexArrays" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glGenVertexArrays" ) ) == BIT_NULL;
 
 				Ret |= ( __glIsVertexArray = ( PFNGLISVERTEXARRAYPROC )
-					( glGetProcAddress( "glIsVertexArray" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glIsVertexArray" ) ) == BIT_NULL;
 
 				if( Ret )
 				{
@@ -191,68 +201,58 @@ namespace Bit
 			// Load the shader functions if the shader extenstions are available
 			// and we are using the right verison of OpenGL
 			// WARNING: comparison of unsigned expression >= 0 is always true [-Wtype-limits]|
-			if( p_Major > 1 || ( p_Major == 2 && p_Major >= 0 ) )
+			if( p_Major >= 2 )
 			{
 
+				// Needed for the vertex objects.
 				Ret |= ( __glEnableVertexAttribArray = ( PFNGLENABLEVERTEXATTRIBARRAYPROC )
-					( glGetProcAddress( "glEnableVertexAttribArray" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glEnableVertexAttribArray" ) ) == BIT_NULL;
 
 				Ret |= ( __glVertexAttribPointer = ( PFNGLVERTEXATTRIBPOINTERPROC )
-					( glGetProcAddress( "glVertexAttribPointer" ) ) ) == BIT_NULL;
+					glGetProcAddress( "glVertexAttribPointer" ) ) == BIT_NULL;
 
+				Ret |=  ( __glAttachShader = ( PFNGLATTACHSHADERPROC )
+					 glGetProcAddress( "glAttachShader" ) ) == BIT_NULL;
 
+				Ret |= ( __glCompileShader = ( PFNGLCOMPILESHADERPROC )
+					glGetProcAddress( "glCompileShader" ) ) == BIT_NULL;
 
-				//Ret |=  ( __glAttachShader = ( PFNGLATTACHSHADERPROC )glGetProcAddress( "glAttachShader" ) ) == BIT_NULL;
+				Ret |= ( __glCreateProgram = ( PFNGLCREATEPROGRAMPROC )
+					glGetProcAddress( "glCreateProgram" ) ) == BIT_NULL;
+
+				Ret |= ( __glCreateShader = ( PFNGLCREATESHADERPROC )
+					glGetProcAddress( "glCreateShader" ) ) == BIT_NULL;
+
+				Ret |= ( __glDeleteProgram = ( PFNGLDELETEPROGRAMPROC )
+					glGetProcAddress( "glDeleteProgram" ) ) == BIT_NULL;
+
+				Ret |= ( __glDeleteShader = ( PFNGLDELETESHADERPROC )
+					glGetProcAddress( "glDeleteShader" ) ) == BIT_NULL;
+
+				Ret |= ( __glGetProgramInfoLog = ( PFNGLGETPROGRAMINFOLOGPROC )
+					glGetProcAddress( "glGetProgramInfoLog" ) ) == BIT_NULL;
+
+				Ret |= ( __glGetProgramiv = ( PFNGLGETPROGRAMIVPROC )
+					glGetProcAddress( "glGetProgramiv" ) ) == BIT_NULL;
+
+				Ret |= ( __glGetShaderInfoLog = ( PFNGLGETSHADERINFOLOGPROC )
+					glGetProcAddress( "glGetShaderInfoLog" ) ) == BIT_NULL;
+
+				Ret |= ( __glGetShaderiv = ( PFNGLGETSHADERIVPROC )
+					glGetProcAddress( "glGetShaderiv" ) ) == BIT_NULL;
+
+				Ret |= ( __glGetUniformLocation = ( PFNGLGETUNIFORMLOCATIONPROC )
+					glGetProcAddress( "glGetUniformLocation" ) ) == BIT_NULL;
+
+				Ret |= ( __glLinkProgram = ( PFNGLLINKPROGRAMPROC )
+					glGetProcAddress( "glLinkProgram" ) ) == BIT_NULL;
+
+				Ret |= ( __glShaderSource = ( PFNGLSHADERSOURCEPROC )
+					glGetProcAddress( "glShaderSource" ) ) == BIT_NULL;
+
+						
+				
 /*
-				Ret |= ( ( __bglCompileShader =
-					( PFNGLCOMPILESHADERPROC )glGetProcAddress(
-						"glCompileShader" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglCreateProgram =
-					( PFNGLCREATEPROGRAMPROC )glGetProcAddress(
-						"glCreateProgram" ) } == BIT_NULL );
-
-				Ret |= ( ( __bglCreateShader =
-					( PFNGLCREATESHADERPROC )glGetProcAddress(
-						"glCreateShader" ) ) == BIT_NULL );
-				*/
-/*
-				Ret |= ( ( __bglDeleteProgram =
-					( PFNGLDELETEPROGRAMPROC )glGetProcAddress(
-						"glDeleteProgram" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglDeleteShader =
-					( PFNGLDELETESHADERPROC )glGetProcAddress(
-						"glDeleteShader" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglGetProgramInfoLog =
-					( PFNGLGETPROGRAMINFOLOGPROC )glGetProcAddress(
-						"glGetProgramInfoLog" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglGetProgramiv =
-					( PFNGLGETPROGRAMIVPROC )glGetProcAddress(
-						"glGetProgramiv" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglGetShaderInfoLog =
-					( PFNGLGETSHADERINFOLOGPROC )glGetProcAddress(
-						"glGetShaderInfoLog" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglGetShaderiv =
-					( PFNGLGETSHADERIVPROC )glGetProcAddress(
-						"glGetShaderiv" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglGetUniformLocation =
-					( PFNGLGETUNIFORMLOCATIONPROC )glGetProcAddress(
-						"glGetUniformLocation" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglLinkProgram =
-					( PFNGLLINKPROGRAMPROC )glGetProcAddress(
-						"glLinkProgram" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglShaderSource =
-					( PFNGLSHADERSOURCEPROC )glGetProcAddress(
-						"glShaderSource" ) ) == BIT_NULL );
-
 				Ret |= ( ( __bglUniform1f =
 					( PFNGLUNIFORM1FPROC )glGetProcAddress(
 						"glUniform1f" ) ) == BIT_NULL );

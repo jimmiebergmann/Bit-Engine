@@ -53,7 +53,6 @@
 // ///////////////////////////////////////////////////////////////////
 // Opengl "private" extensions
 extern PFNGLGETSTRINGIPROC __glGetStringi;
-//static PFNGLBINDBUFFERPROC __glGetStringi = BIT_NULL;
 
 // Vertex buffer object functions
 extern PFNGLBINDVERTEXARRAYPROC __glBindVertexArray;
@@ -70,26 +69,23 @@ extern PFNGLGENBUFFERSPROC __glGenBuffers;
 
 
 // Shader functions
+extern PFNGLENABLEVERTEXATTRIBARRAYPROC __glEnableVertexAttribArray;
+extern PFNGLVERTEXATTRIBPOINTERPROC __glVertexAttribPointer;
 extern PFNGLATTACHSHADERPROC __glAttachShader;
 extern PFNGLCOMPILESHADERPROC __glCompileShader;
 extern PFNGLCREATEPROGRAMPROC __glCreateProgram;
 extern PFNGLCREATESHADERPROC __glCreateShader;
-extern PFNGLENABLEVERTEXATTRIBARRAYPROC __glEnableVertexAttribArray;
-extern PFNGLVERTEXATTRIBPOINTERPROC __glVertexAttribPointer;
+extern PFNGLDELETEPROGRAMPROC __glDeleteProgram;
+extern PFNGLDELETESHADERPROC __glDeleteShader;
+extern PFNGLGETPROGRAMINFOLOGPROC __glGetProgramInfoLog;
+extern PFNGLGETPROGRAMIVPROC __glGetProgramiv;
+extern PFNGLGETSHADERINFOLOGPROC __glGetShaderInfoLog;
+extern PFNGLGETSHADERIVPROC __glGetShaderiv;
+extern PFNGLGETUNIFORMLOCATIONPROC __glGetUniformLocation;
+extern PFNGLLINKPROGRAMPROC __glLinkProgram;
+extern PFNGLSHADERSOURCEPROC __glShaderSource;
 
 
-/*
-static PFNGLDELETEPROGRAMPROC __glGetStringi = BIT_NULL;
-static PFNGLDELETESHADERPROC __glGetStringi = BIT_NULL;
-static PFNGLGETPROGRAMINFOLOGPROC __glGetStringi = BIT_NULL;
-static PFNGLBINDBUFFERPROC __glGetStringi = BIT_NULL;
-static PFNGLBINDBUFFERPROC __glGetStringi = BIT_NULL;
-static PFNGLBINDBUFFERPROC __glGetStringi = BIT_NULL;
-static PFNGLBINDBUFFERPROC __glGetStringi = BIT_NULL;
-static PFNGLBINDBUFFERPROC __glGetStringi = BIT_NULL;
-static PFNGLBINDBUFFERPROC __glGetStringi = BIT_NULL;
-static PFNGLBINDBUFFERPROC __glGetStringi = BIT_NULL;
-*/
 
 // ///////////////////////////////////////////////////////////////////
 // Opengl extensions, use these
@@ -109,12 +105,23 @@ static PFNGLBINDBUFFERPROC __glGetStringi = BIT_NULL;
 #define  glGenBuffers __glGenBuffers
 
 // Shader functions
+#define glEnableVertexAttribArray __glEnableVertexAttribArray
+#define glVertexAttribPointer __glVertexAttribPointer
 #define glAttachShader __glAttachShader
 #define glCompileShader __glCompileShader
 #define glCreateProgram __glCreateProgram
 #define glCreateShader __glCreateShader
-#define glEnableVertexAttribArray __glEnableVertexAttribArray
-#define glVertexAttribPointer __glVertexAttribPointer
+#define glDeleteShader __glDeleteShader
+#define glGetProgramInfoLog __glGetProgramInfoLog
+#define glGetProgramiv __glGetProgramiv
+#define glGetShaderInfoLog __glGetShaderInfoLog
+#define glGetShaderiv __glGetShaderiv
+#define glGetUniformLocation __glGetUniformLocation
+#define glLinkProgram __glLinkProgram
+#define glShaderSource __glShaderSource
+
+
+
 
 
 namespace Bit

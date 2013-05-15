@@ -28,6 +28,8 @@
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Window.hpp>
 #include <Bit/Graphics/VertexObject.hpp>
+#include <Bit/Graphics/ShaderProgram.hpp>
+#include <Bit/Graphics/Shader.hpp>
 
 namespace Bit
 {
@@ -58,6 +60,8 @@ namespace Bit
 
 		// Create functions for different renderer elements
 		virtual VertexObject * CreateVertexObject( ) const = 0;
+		virtual ShaderProgram * CreateShaderProgram( ) const = 0;
+		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const = 0;
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits ) = 0;

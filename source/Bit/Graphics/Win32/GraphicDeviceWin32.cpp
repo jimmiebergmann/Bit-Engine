@@ -25,6 +25,8 @@
 #include <Bit/Graphics/Win32/GraphicDeviceWin32.hpp>
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
 #include <Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -286,6 +288,22 @@ namespace Bit
 		return new VertexObjectOpenGL( );
 	}
 
+	ShaderProgram * GraphicDeviceWin32::CreateShaderProgram( ) const
+	{
+		return BIT_NULL;
+	}
+
+	Shader * GraphicDeviceWin32::CreateShader( const Shader::eShaderType p_ShaderType ) const
+	{
+		// Make sure we support OpenGL vertex objects
+		if( !OpenGL::GetShaderAvailability( ) )
+		{
+			bitTrace( "[ GraphicDeviceWin32::CreateVertexObject] Not supporting the required functions.\n" );
+			return BIT_NULL;
+		}
+
+		return new ShaderOpenGL( p_ShaderType );
+	}
 
 	// Clear functions
 	void GraphicDeviceWin32::ClearBuffers( const BIT_UINT32 p_ClearBits )

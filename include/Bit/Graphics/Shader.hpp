@@ -22,57 +22,56 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_LINUX_HPP__
-#define __BIT_WINDOW_LINUX_HPP__
+#ifndef __BIT_GRAPHICS_SHADER_HPP__
+#define __BIT_GRAPHICS_SHADER_HPP__
 
 #include <Bit/DataTypes.hpp>
-
-#ifdef BIT_PLATFORM_LINUX
-
-#include <Bit/Window/Window.hpp>
-#include <X11/Xlib.h>
+#include <string>
 
 namespace Bit
 {
 
-	class WindowLinux : public Window
+	class Shader
 	{
 
 	public:
 
-		// Constructors/destructors
-		WindowLinux( );
-		virtual ~WindowLinux( );
+		enum eShaderType
+		{
+			None = 0,
+			Vertex = 1,
+			Fragment = 2
+		};
 
-		// Public general functions
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title );
-		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
-                    const BIT_UINT32 p_Style );
-		virtual BIT_UINT32 Close( );
-		virtual BIT_UINT32 Update( );
-		virtual BIT_BOOL Show( const BIT_BOOL p_State );
+		// Making a cute friend!
+		friend class ShaderProgram;
+
+		// Destructor
+		virtual ~Shader() { }
+
+		// General public functions
+		BIT_UINT32 Read( const std::string p_FilePath );
+		virtual BIT_UINT32 Compile( ) = 0;
 
 		// Set functions
-		virtual BIT_UINT32 SetTitle( std::string p_Title );
+		BIT_INLINE void SetSource( std::string p_Source ) { m_ShaderSource = p_Source; };
+		
+		// "inline" Get public functions
+		BIT_INLINE eShaderType GetType( ) const { return m_ShaderType; }
+		BIT_INLINE std::string GetSource( ) const { return m_ShaderSource; }
+		BIT_INLINE std::string GetFilePath( ) const { return m_FilePath; }
+		BIT_INLINE BIT_BOOL IsCompiled( ) const { return m_Compiled; }
 
-        // Get functions
-		::Window GetWindowDevice( ) const;
-		::Display * GetDisplayDevice( ) const;
-		int GetScreenDevice( ) const;
+	protected:
 
-	private:
-
-		// Private variables
-		::Display * m_pDisplay;
-		int m_Screen;
-		::Window m_Window;
-		//:: Colormap m_ColorMap;
+		// Protected variables
+		BIT_BOOL m_Compiled;
+		eShaderType m_ShaderType;
+		std::string m_ShaderSource;
+		std::string m_FilePath;
 
 	};
 
 }
-
-#endif
 
 #endif
