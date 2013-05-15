@@ -49,6 +49,7 @@ namespace Bit
 
 	GraphicDeviceWin32::~GraphicDeviceWin32( )
 	{
+		Close( );
 	}
 
 
