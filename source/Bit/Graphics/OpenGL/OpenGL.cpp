@@ -60,6 +60,11 @@ PFNGLGETSHADERIVPROC __glGetShaderiv = BIT_NULL;
 PFNGLGETUNIFORMLOCATIONPROC __glGetUniformLocation = BIT_NULL;
 PFNGLLINKPROGRAMPROC __glLinkProgram = BIT_NULL;
 PFNGLSHADERSOURCEPROC __glShaderSource = BIT_NULL;
+PFNGLVALIDATEPROGRAMPROC __glValidateProgram = BIT_NULL;
+PFNGLBINDATTRIBLOCATIONPROC __glBindAttribLocation = BIT_NULL;
+PFNGLGETATTRIBLOCATIONPROC __glGetAttribLocation = BIT_NULL;
+PFNGLUSEPROGRAMPROC __glUseProgram = BIT_NULL;
+
 
 
 // Static opengl extension variable availability
@@ -250,7 +255,18 @@ namespace Bit
 				Ret |= ( __glShaderSource = ( PFNGLSHADERSOURCEPROC )
 					glGetProcAddress( "glShaderSource" ) ) == BIT_NULL;
 
-						
+				Ret |= ( __glValidateProgram = ( PFNGLVALIDATEPROGRAMPROC )
+					glGetProcAddress( "glValidateProgram" ) ) == BIT_NULL;
+
+				Ret |= ( __glBindAttribLocation = ( PFNGLBINDATTRIBLOCATIONPROC )
+					glGetProcAddress( "glBindAttribLocation" ) ) == BIT_NULL;
+
+				Ret |= ( __glGetAttribLocation = ( PFNGLGETATTRIBLOCATIONPROC )
+					glGetProcAddress( "glGetAttribLocation" ) ) == BIT_NULL;
+
+				Ret |= ( __glUseProgram = ( PFNGLUSEPROGRAMPROC )
+					glGetProcAddress( "glUseProgram" ) ) == BIT_NULL;
+
 				
 /*
 				Ret |= ( ( __bglUniform1f =
@@ -329,30 +345,7 @@ namespace Bit
 					( PFNGLUNIFORMMATRIX4FVPROC )glGetProcAddress(
 						"glUniformMatrix4fv" ) ) == BIT_NULL );
 
-				Ret |= ( ( __bglUseProgram =
-					( PFNGLUSEPROGRAMPROC )glGetProcAddress(
-						"glUseProgram" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglValidateProgram =
-					( PFNGLVALIDATEPROGRAMPROC )glGetProcAddress(
-						"glValidateProgram" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglBindAttribLocation =
-					( PFNGLBINDATTRIBLOCATIONPROC )glGetProcAddress(
-						"glBindAttribLocation" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglGetAttribLocation =
-					( PFNGLGETATTRIBLOCATIONPROC )glGetProcAddress(
-						"glGetAttribLocation" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglEnableVertexAttribArray =
-					( PFNGLENABLEVERTEXATTRIBARRAYPROC )glGetProcAddress(
-						"glEnableVertexAttribArray" ) ) == BIT_NULL );
-
-				Ret |= ( ( __bglVertexAttribPointer =
-					( PFNGLVERTEXATTRIBPOINTERPROC )glGetProcAddress(
-						"glVertexAttribPointer" ) ) == BIT_NULL );
-
+			
 
 */
 				if( Ret == 0 )

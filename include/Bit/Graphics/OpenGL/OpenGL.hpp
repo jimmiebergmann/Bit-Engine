@@ -84,6 +84,11 @@ extern PFNGLGETSHADERIVPROC __glGetShaderiv;
 extern PFNGLGETUNIFORMLOCATIONPROC __glGetUniformLocation;
 extern PFNGLLINKPROGRAMPROC __glLinkProgram;
 extern PFNGLSHADERSOURCEPROC __glShaderSource;
+extern PFNGLVALIDATEPROGRAMPROC __glValidateProgram;
+extern PFNGLBINDATTRIBLOCATIONPROC __glBindAttribLocation;
+extern PFNGLGETATTRIBLOCATIONPROC __glGetAttribLocation;
+extern PFNGLUSEPROGRAMPROC __glUseProgram;
+
 
 
 
@@ -119,6 +124,10 @@ extern PFNGLSHADERSOURCEPROC __glShaderSource;
 #define glGetUniformLocation __glGetUniformLocation
 #define glLinkProgram __glLinkProgram
 #define glShaderSource __glShaderSource
+#define glValidateProgram __glValidateProgram
+#define glBindAttribLocation __glBindAttribLocation
+#define glGetAttribLocation __glGetAttribLocation
+#define glUseProgram __glUseProgram
 
 
 

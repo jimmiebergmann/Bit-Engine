@@ -25,6 +25,7 @@
 #ifndef __BIT_GRAPHICS_SHADER_OPENGL_HPP__
 #define __BIT_GRAPHICS_SHADER_OPENGL_HPP__
 
+#include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Shader.hpp>
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
 

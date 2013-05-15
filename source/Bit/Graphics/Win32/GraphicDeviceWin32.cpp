@@ -302,7 +302,14 @@ namespace Bit
 
 	ShaderProgram * GraphicDeviceWin32::CreateShaderProgram( ) const
 	{
-		return BIT_NULL;
+		// Make sure we support OpenGL vertex objects
+		if( !OpenGL::GetShaderAvailability( ) )
+		{
+			bitTrace( "[ GraphicDeviceWin32::CreateShaderProgram] Not supporting the required functions.\n" );
+			return BIT_NULL;
+		}
+
+		return new ShaderProgramOpenGL( );
 	}
 
 	Shader * GraphicDeviceWin32::CreateShader( const Shader::eShaderType p_ShaderType ) const
@@ -310,7 +317,7 @@ namespace Bit
 		// Make sure we support OpenGL vertex objects
 		if( !OpenGL::GetShaderAvailability( ) )
 		{
-			bitTrace( "[ GraphicDeviceWin32::CreateVertexObject] Not supporting the required functions.\n" );
+			bitTrace( "[ GraphicDeviceWin32::CreateShader] Not supporting the required functions.\n" );
 			return BIT_NULL;
 		}
 

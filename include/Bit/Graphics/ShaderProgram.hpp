@@ -42,7 +42,6 @@ namespace Bit
 		virtual ~ShaderProgram() { }
 
 		// General public functions
-		virtual BIT_UINT32 Load( ) = 0;
 		virtual BIT_UINT32 AttachShaders( Shader * p_Shader ) = 0;
 		virtual BIT_UINT32 Link( std::string & p_Validation ) = 0;
 		virtual void Bind( ) = 0;
