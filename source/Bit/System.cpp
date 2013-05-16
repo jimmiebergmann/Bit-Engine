@@ -24,4 +24,61 @@
 
 
 #include <Bit/System.hpp>
+#include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
+
+namespace Bit
+{
+
+	// Static variables
+	static std::string s_AbsolutePath = "";
+	static std::string s_AbsoluteDirectoryPath = "";
+
+	// Path functions
+	BIT_UINT32 BIT_API SetAbsolutePath( const std::string p_Path )
+	{
+		if( p_Path.size( ) == 0 )
+		{
+			return BIT_ERROR;
+		}
+
+		// Set the absolute path
+		s_AbsolutePath = p_Path;
+		s_AbsoluteDirectoryPath = p_Path;
+
+		// Set the directory path by finding the first "\" backwards and then cut off the rest
+		BIT_UINT32 Position = p_Path.size( ) + 1;
+		for( BIT_SINT32 i = p_Path.size( ) - 1; i >= 0; i-- )
+		{
+			if( p_Path[ i ] == '\\' )
+			{
+				Position = i;
+				break;
+			}
+		}
+
+		// Did we find the position?
+		if( Position != p_Path.size( ) + 1 )
+		{
+			s_AbsoluteDirectoryPath.resize( Position );
+		}
+
+		return BIT_OK;
+	}
+
+	std::string BIT_API GetAbsolutePath( )
+	{
+		return s_AbsolutePath;
+	}
+
+	std::string BIT_API GetAbsolutePath( const std::string p_Path )
+	{
+		return s_AbsoluteDirectoryPath + "\\" + p_Path;
+	}
+
+	std::string BIT_API GetAbsoluteDirectoryPath( )
+	{
+		return s_AbsoluteDirectoryPath;
+	}
+
+}

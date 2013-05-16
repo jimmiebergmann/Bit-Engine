@@ -25,11 +25,16 @@
 #ifndef __BIT_SYSTEM_HPP__
 #define __BIT_SYSTEM_HPP__
 
+#include <Bit/DataTypes.hpp>
+#include <string>
+
 namespace Bit
 {
-
-
-
+	// Path functions
+	BIT_UINT32 BIT_API SetAbsolutePath( const std::string p_Path );
+	std::string BIT_API GetAbsolutePath( );
+	std::string BIT_API GetAbsolutePath( const std::string p_Path );
+	std::string BIT_API GetAbsoluteDirectoryPath( );
 }
 
 #endif

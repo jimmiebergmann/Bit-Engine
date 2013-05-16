@@ -31,7 +31,7 @@
 namespace Bit
 {
 
-	class Shader
+	class BIT_API Shader
 	{
 
 	public:

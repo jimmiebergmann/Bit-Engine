@@ -32,7 +32,7 @@
 namespace Bit
 {
 
-	class ShaderOpenGL : public Shader
+	class BIT_API ShaderOpenGL : public Shader
 	{
 	public:
 

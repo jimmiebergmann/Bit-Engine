@@ -32,7 +32,7 @@
 namespace Bit
 {
 
-	class Matrix4x4
+	class BIT_API Matrix4x4
 	{
 
 	public:
