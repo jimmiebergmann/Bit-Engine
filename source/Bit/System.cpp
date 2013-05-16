@@ -27,6 +27,12 @@
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
+#ifdef BIT_PLATFORM_WIN32
+    #define SeparationSign '\\'
+#elif defined( BIT_PLATFORM_LINUX )
+    #define SeparationSign '/'
+#endif
+
 namespace Bit
 {
 
@@ -46,11 +52,11 @@ namespace Bit
 		s_AbsolutePath = p_Path;
 		s_AbsoluteDirectoryPath = p_Path;
 
-		// Set the directory path by finding the first "\" backwards and then cut off the rest
+		// Set the directory path by finding the first "\" or "/" backwards and then cut off the rest
 		BIT_UINT32 Position = p_Path.size( ) + 1;
 		for( BIT_SINT32 i = p_Path.size( ) - 1; i >= 0; i-- )
 		{
-			if( p_Path[ i ] == '\\' )
+			if( p_Path[ i ] == SeparationSign )
 			{
 				Position = i;
 				break;
@@ -73,7 +79,7 @@ namespace Bit
 
 	std::string BIT_API GetAbsolutePath( const std::string p_Path )
 	{
-		return s_AbsoluteDirectoryPath + "\\" + p_Path;
+		return s_AbsoluteDirectoryPath + std::string( 1, SeparationSign ) + p_Path;
 	}
 
 	std::string BIT_API GetAbsoluteDirectoryPath( )
