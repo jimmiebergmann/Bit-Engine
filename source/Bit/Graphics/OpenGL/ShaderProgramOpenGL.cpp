@@ -42,6 +42,12 @@ namespace Bit
 
 	ShaderProgramOpenGL::~ShaderProgramOpenGL()
 	{
+		if( m_ProgramID != 0 )
+		{
+			glDeleteProgram( m_ProgramID );
+			m_ProgramID = 0;
+		}
+
 		m_AttachedShaderCount = 0;
 	}
 
@@ -50,7 +56,7 @@ namespace Bit
 		// Make sure the shader program is loaded before we attach any shaders.
 		if( m_ProgramID == 0 )
 		{
-			bitTrace( BIT_NULL, "[Bit::ShaderProgramOGL::AttachShaders] <ERROR> "
+			bitTrace( "[ShaderProgramOpenGL::AttachShaders] "
 				"Shader program was not initialised\n" );
 			return BIT_ERROR;
 		}
@@ -58,7 +64,7 @@ namespace Bit
 		// Not supporting more than 2 shaders atm
 		if( m_AttachedShaderCount == 2 )
 		{
-			bitTrace( NULL, "[Bit::ShaderProgramOGL::AttachShaders] <ERROR> "
+			bitTrace( "[ShaderProgramOpenGL::AttachShaders] "
 				"Too many shaders attached already: %i/2\n", m_AttachedShaderCount );
 			return BIT_ERROR;
 		}
@@ -68,17 +74,18 @@ namespace Bit
 		// Attach the shader
 		glAttachShader( m_ProgramID, pShaderOpenGL->GetShaderObject( ) );
 
+		// Increment the attachment count
 		m_AttachedShaderCount++;
 
 		return BIT_OK;
 	}
 
-	BIT_UINT32 ShaderProgramOpenGL::Link( std::string & p_Validation )
+	BIT_UINT32 ShaderProgramOpenGL::Link( )
 	{
 		// Make sure we have attached any shaders at all to the shader program
 		if( m_AttachedShaderCount < 2 )
 		{
-			bitTrace( BIT_NULL, "[Bit::ShaderProgramOGL::Link] <ERROR> "
+			bitTrace( "[ShaderProgramOpenGL::Link] "
 				"Not enough shader objects are attached: %ld reported\n",
 				m_AttachedShaderCount );
 			return BIT_ERROR;
@@ -92,9 +99,6 @@ namespace Bit
 		glGetProgramiv( m_ProgramID, GL_LINK_STATUS, &LinkStatus );
 		if( LinkStatus == GL_FALSE )
 		{
-			bitTrace( BIT_NULL, "[Bit::ShaderProgramOGL::Link] <ERROR> "
-				"Failed to link program:\n" );
-
 			GLsizei Length = 0;
 			GLchar *pLog;
 
@@ -103,16 +107,11 @@ namespace Bit
 
 			glGetProgramInfoLog( m_ProgramID, Length, &Length, pLog );
 
-			bitTrace( BIT_NULL, "\t%s\n", pLog );
+			bitTrace( "[ShaderProgramOpenGL::Link] Failed to link program:\n%s\n", pLog );
 
-			p_Validation = pLog;
 			delete [ ] pLog;
-
 			return BIT_ERROR;
 		}
-
-		// Get the validation string (Useful for debugging shaders)
-//		p_Validation = ShaderOGL::ValidateShader( m_ProgramID );
 
 		m_Linked = BIT_TRUE;
 		return BIT_OK;
@@ -131,48 +130,43 @@ namespace Bit
 
 	void ShaderProgramOpenGL::SetUniform1i( const char * p_Location,  const BIT_SINT32 p_A )
 	{
-		//int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
-		//glUniform1i( UniformLocation, (GLint)p_A );
+		int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
+		glUniform1i( UniformLocation, (GLint)p_A );
 	}
 
 	void ShaderProgramOpenGL::SetUniform1f( const char * p_Location, const BIT_FLOAT32 p_A )
 	{
-		//int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
-		//glUniform1f( UniformLocation, (GLfloat)p_A );
+		int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
+		glUniform1f( UniformLocation, (GLfloat)p_A );
 	}
 
 	void ShaderProgramOpenGL::SetUniform2f( const char * p_Location, const BIT_FLOAT32 p_A, const BIT_FLOAT32 p_B )
 	{
-		//int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
-		//glUniform2f( UniformLocation, (GLfloat)p_A, (GLfloat)p_B );
+		int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
+		glUniform2f( UniformLocation, (GLfloat)p_A, (GLfloat)p_B );
 	}
 
 	void ShaderProgramOpenGL::SetUniform3f( const char * p_Location, const BIT_FLOAT32 p_A, const BIT_FLOAT32 p_B, const BIT_FLOAT32 p_C )
 	{
-		//int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
-		//glUniform3f( UniformLocation, (GLfloat)p_A, (GLfloat)p_B, (GLfloat)p_C );
+		int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
+		glUniform3f( UniformLocation, (GLfloat)p_A, (GLfloat)p_B, (GLfloat)p_C );
 	}
 
 	void ShaderProgramOpenGL::SetUniform4f( const char * p_Location, const BIT_FLOAT32 p_A, const BIT_FLOAT32 p_B, const BIT_FLOAT32 p_C, const BIT_FLOAT32 p_D )
 	{
-		//int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
-		//glUniform4f( UniformLocation, (GLfloat)p_A, (GLfloat)p_B, (GLfloat)p_C, (GLfloat)p_D );
+		int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
+		glUniform4f( UniformLocation, (GLfloat)p_A, (GLfloat)p_B, (GLfloat)p_C, (GLfloat)p_D );
 	}
 
 	void ShaderProgramOpenGL::SetUniformMatrix4x4f( const char * p_Location, Matrix4x4 & p_Matrix )
 	{
-
-		/*int UniformLocation = bglGetUniformLocation( m_ProgramID, p_Location );
-
-		BIT_FLOAT32 MatrixData[BIT_MATRIX4X4_SIZE];
-		p_Matrix.GetMatrix( MatrixData );
-		glUniformMatrix4fv( UniformLocation, 1, GL_FALSE, (GLfloat*)MatrixData );
-*/
+		int UniformLocation = glGetUniformLocation( m_ProgramID, p_Location );
+		glUniformMatrix4fv( UniformLocation, 1, GL_FALSE, (GLfloat*)p_Matrix.m );
 	}
+
 	void ShaderProgramOpenGL::SetAttributeLocation( const char * p_Location, BIT_UINT32 p_Index )
 	{
-
-		//glBindAttribLocation(m_ProgramID, (GLuint)p_Index, p_Location);
+		glBindAttribLocation( m_ProgramID, (GLuint)p_Index, p_Location);
 	}
 
 }

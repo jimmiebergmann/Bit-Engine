@@ -29,8 +29,8 @@
 #include <cmath>
 #include <float.h>
 
-#ifdef BIT_PLATFORM_LINUX
-    #define _isnan isnan
+#ifdef BIT_PLATFORM_WIN32
+	#define isnan _isnan
 #endif
 
 namespace Bit

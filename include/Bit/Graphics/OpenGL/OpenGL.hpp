@@ -89,6 +89,27 @@ extern PFNGLBINDATTRIBLOCATIONPROC __glBindAttribLocation;
 extern PFNGLGETATTRIBLOCATIONPROC __glGetAttribLocation;
 extern PFNGLUSEPROGRAMPROC __glUseProgram;
 
+// Shader uniforms
+extern PFNGLUNIFORM1FPROC __glUniform1f;
+extern PFNGLUNIFORM1FVPROC __glUniform1fv;
+extern PFNGLUNIFORM1IPROC __glUniform1i;
+extern PFNGLUNIFORM1IVPROC __glUniform1iv;
+extern PFNGLUNIFORM2FPROC __glUniform2f;
+extern PFNGLUNIFORM2FVPROC __glUniform2fv;
+extern PFNGLUNIFORM2IPROC __glUniform2i;
+extern PFNGLUNIFORM2IVPROC __glUniform2iv;
+extern PFNGLUNIFORM3FPROC __glUniform3f;
+extern PFNGLUNIFORM3FVPROC __glUniform3fv;
+extern PFNGLUNIFORM3IPROC __glUniform3i;
+extern PFNGLUNIFORM3IVPROC __glUniform3iv;
+extern PFNGLUNIFORM4FPROC __glUniform4f;
+extern PFNGLUNIFORM4FVPROC __glUniform4fv;
+extern PFNGLUNIFORM4IPROC __glUniform4i;
+extern PFNGLUNIFORM4IVPROC __glUniform4iv;
+extern PFNGLUNIFORMMATRIX2FVPROC __glUniformMatrix2fv;
+extern PFNGLUNIFORMMATRIX3FVPROC __glUniformMatrix3fv;
+extern PFNGLUNIFORMMATRIX4FVPROC __glUniformMatrix4fv;
+
 
 
 
@@ -116,6 +137,7 @@ extern PFNGLUSEPROGRAMPROC __glUseProgram;
 #define glCompileShader __glCompileShader
 #define glCreateProgram __glCreateProgram
 #define glCreateShader __glCreateShader
+#define glDeleteProgram __glDeleteProgram
 #define glDeleteShader __glDeleteShader
 #define glGetProgramInfoLog __glGetProgramInfoLog
 #define glGetProgramiv __glGetProgramiv
@@ -129,8 +151,25 @@ extern PFNGLUSEPROGRAMPROC __glUseProgram;
 #define glGetAttribLocation __glGetAttribLocation
 #define glUseProgram __glUseProgram
 
-
-
+#define  glUniform1f __glUniform1f
+#define  glUniform1fv __glUniform1fv
+#define  glUniform1i __glUniform1i
+#define  glUniform1iv __glUniform1iv
+#define  glUniform2f __glUniform2f
+#define  glUniform2fv __glUniform2fv
+#define  glUniform2i __glUniform2i
+#define  glUniform2iv __glUniform2iv
+#define  glUniform3f __glUniform3f
+#define  glUniform3fv __glUniform3fv
+#define  glUniform3i __glUniform3i
+#define  glUniform3iv __glUniform3iv
+#define  glUniform4f __glUniform4f
+#define  glUniform4fv __glUniform4fv
+#define  glUniform4iP __glUniform4i
+#define  glUniform4iv __glUniform4iv
+#define  glUniformMatrix2fv __glUniformMatrix2fv
+#define  glUniformMatrix3fv __glUniformMatrix3fv
+#define  glUniformMatrix4fv __glUniformMatrix4fv
 
 
 namespace Bit

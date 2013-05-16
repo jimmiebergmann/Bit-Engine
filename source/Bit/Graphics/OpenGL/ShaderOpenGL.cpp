@@ -62,14 +62,14 @@ namespace Bit
 		// Already compiled?
 		if( m_Compiled == BIT_TRUE )
 		{
-			bitTrace( NULL, "[ShaderOpenGL::Compile] The shader is already compiled.\n" );
+			bitTrace( "[ShaderOpenGL::Compile] The shader is already compiled.\n" );
 			return BIT_ERROR;
 		}
 
 		// Make sure we have a shader source
 		if( m_ShaderSource.length() == 0 )
 		{
-			bitTrace( NULL, "[ShaderOpenGL::Compile] No shader source.\n" );
+			bitTrace( "[ShaderOpenGL::Compile] No shader source.\n" );
 			return BIT_ERROR;
 		}
 
@@ -78,7 +78,7 @@ namespace Bit
 		// Might be a silly erorr check. But I'm doing it anyway.
 		if( pTextSource == BIT_NULL )
 		{
-			bitTrace( BIT_NULL, "[Bit::ShaderOGL::Compile] <ERROR> "
+			bitTrace( "[ShaderOpenGL::Compile] <ERROR> "
 				"Silly pointer error!" );
 			return BIT_ERROR;
 		}
@@ -100,7 +100,7 @@ namespace Bit
 			{
 				char *pLog = new char[ LogLength ];
 				glGetShaderInfoLog( m_ShaderObject, LogLength, BIT_NULL, pLog );
-				bitTrace( BIT_NULL, "[ShaderOpenGL::Compile] Shader compiler error:\n%s\n", pLog );
+				bitTrace( "[ShaderOpenGL::Compile] Shader compiler error:\n%s\n", pLog );
 				delete [ ] pLog;
 			}
 

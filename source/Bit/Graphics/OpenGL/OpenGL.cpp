@@ -65,6 +65,28 @@ PFNGLBINDATTRIBLOCATIONPROC __glBindAttribLocation = BIT_NULL;
 PFNGLGETATTRIBLOCATIONPROC __glGetAttribLocation = BIT_NULL;
 PFNGLUSEPROGRAMPROC __glUseProgram = BIT_NULL;
 
+// Shader uniforms
+PFNGLUNIFORM1FPROC __glUniform1f = BIT_NULL;
+PFNGLUNIFORM1FVPROC __glUniform1fv = BIT_NULL;
+PFNGLUNIFORM1IPROC __glUniform1i = BIT_NULL;
+PFNGLUNIFORM1IVPROC __glUniform1iv = BIT_NULL;
+PFNGLUNIFORM2FPROC __glUniform2f = BIT_NULL;
+PFNGLUNIFORM2FVPROC __glUniform2fv = BIT_NULL;
+PFNGLUNIFORM2IPROC __glUniform2i = BIT_NULL;
+PFNGLUNIFORM2IVPROC __glUniform2iv = BIT_NULL;
+PFNGLUNIFORM3FPROC __glUniform3f = BIT_NULL;
+PFNGLUNIFORM3FVPROC __glUniform3fv = BIT_NULL;
+PFNGLUNIFORM3IPROC __glUniform3i = BIT_NULL;
+PFNGLUNIFORM3IVPROC __glUniform3iv = BIT_NULL;
+PFNGLUNIFORM4FPROC __glUniform4f = BIT_NULL;
+PFNGLUNIFORM4FVPROC __glUniform4fv = BIT_NULL;
+PFNGLUNIFORM4IPROC __glUniform4i = BIT_NULL;
+PFNGLUNIFORM4IVPROC __glUniform4iv = BIT_NULL;
+PFNGLUNIFORMMATRIX2FVPROC __glUniformMatrix2fv = BIT_NULL;
+PFNGLUNIFORMMATRIX3FVPROC __glUniformMatrix3fv = BIT_NULL;
+PFNGLUNIFORMMATRIX4FVPROC __glUniformMatrix4fv = BIT_NULL;
+
+
 
 
 // Static opengl extension variable availability
@@ -267,96 +289,72 @@ namespace Bit
 				Ret |= ( __glUseProgram = ( PFNGLUSEPROGRAMPROC )
 					glGetProcAddress( "glUseProgram" ) ) == BIT_NULL;
 
-				
-/*
-				Ret |= ( ( __bglUniform1f =
-					( PFNGLUNIFORM1FPROC )glGetProcAddress(
-						"glUniform1f" ) ) == BIT_NULL );
+				// Uniforms
+				Ret |= ( __glUniform1f = ( PFNGLUNIFORM1FPROC )
+					glGetProcAddress( "glUniform1f" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform1fv =
-					( PFNGLUNIFORM1FVPROC )glGetProcAddress(
-						"glUniform1fv" ) ) == BIT_NULL );
+				Ret |= ( __glUniform1fv = ( PFNGLUNIFORM1FVPROC )
+					glGetProcAddress( "glUniform1fv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform1i =
-					( PFNGLUNIFORM1IPROC )glGetProcAddress(
-						"glUniform1i" ) ) == BIT_NULL );
+				Ret |= ( __glUniform1i = ( PFNGLUNIFORM1IPROC )
+					glGetProcAddress( "glUniform1i" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform1iv =
-					( PFNGLUNIFORM1IVPROC )glGetProcAddress(
-						"glUniform1iv" ) ) == BIT_NULL );
+				Ret |= ( __glUniform1iv = ( PFNGLUNIFORM1IVPROC )
+					glGetProcAddress( "glUniform1iv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform2f =
-					( PFNGLUNIFORM2FPROC )glGetProcAddress(
-						"glUniform2f" ) ) == BIT_NULL );
+				Ret |= ( __glUniform2f = ( PFNGLUNIFORM2FPROC )
+					glGetProcAddress( "glUniform2f" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform2fv =
-					( PFNGLUNIFORM2FVPROC )glGetProcAddress(
-						"glUniform2fv" ) ) == BIT_NULL );
+				Ret |= ( __glUniform2fv = ( PFNGLUNIFORM2FVPROC )
+					glGetProcAddress( "glUniform2fv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform2i =
-					( PFNGLUNIFORM2IPROC )glGetProcAddress(
-						"glUniform2i" ) ) == BIT_NULL );
+				Ret |= ( __glUniform2i = ( PFNGLUNIFORM2IPROC )
+					glGetProcAddress( "glUniform2i" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform2iv =
-					( PFNGLUNIFORM2IVPROC )glGetProcAddress(
-						"glUniform2iv" ) ) == BIT_NULL );
+				Ret |= ( __glUniform2iv = ( PFNGLUNIFORM2IVPROC )
+					glGetProcAddress( "glUniform2iv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform3f =
-					( PFNGLUNIFORM3FPROC )glGetProcAddress(
-						"glUniform3f" ) ) == BIT_NULL );
+				Ret |= ( __glUniform3f = ( PFNGLUNIFORM3FPROC )
+					glGetProcAddress( "glUniform3f" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform3fv =
-					( PFNGLUNIFORM3FVPROC )glGetProcAddress(
-						"glUniform3fv" ) ) == BIT_NULL );
+				Ret |= ( __glUniform3fv = ( PFNGLUNIFORM3FVPROC )
+					glGetProcAddress( "glUniform3fv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform3i =
-					( PFNGLUNIFORM3IPROC )glGetProcAddress(
-						"glUniform3i" ) ) == BIT_NULL );
+				Ret |= ( __glUniform3i = ( PFNGLUNIFORM3IPROC )
+					glGetProcAddress( "glUniform3i" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform3iv =
-					( PFNGLUNIFORM3IVPROC )glGetProcAddress(
-						"glUniform3iv" ) ) == BIT_NULL );
+				Ret |= ( __glUniform3iv = ( PFNGLUNIFORM3IVPROC )
+					glGetProcAddress( "glUniform3iv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform4f =
-					( PFNGLUNIFORM4FPROC )glGetProcAddress(
-						"glUniform4f" ) ) == BIT_NULL );
+				Ret |= ( __glUniform4f = ( PFNGLUNIFORM4FPROC )
+					glGetProcAddress( "glUniform4f" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform4fv =
-					( PFNGLUNIFORM4FVPROC )glGetProcAddress(
-						"glUniform4fv" ) ) == BIT_NULL );
+				Ret |= ( __glUniform4fv = ( PFNGLUNIFORM4FVPROC )
+					glGetProcAddress( "glUniform4fv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform4i =
-					( PFNGLUNIFORM4IPROC )glGetProcAddress(
-						"glUniform4i" ) ) == BIT_NULL );
+				Ret |= ( __glUniform4i = ( PFNGLUNIFORM4IPROC )
+					glGetProcAddress( "glUniform4i" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniform4iv =
-					( PFNGLUNIFORM4IVPROC )glGetProcAddress(
-						"glUniform4iv" ) ) == BIT_NULL );
+				Ret |= ( __glUniform4iv = ( PFNGLUNIFORM4IVPROC )
+					glGetProcAddress( "glUniform4iv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniformMatrix2fv =
-					( PFNGLUNIFORMMATRIX2FVPROC )glGetProcAddress(
-						"glUniformMatrix2fv" ) ) == BIT_NULL );
+				Ret |= ( __glUniformMatrix2fv = ( PFNGLUNIFORMMATRIX2FVPROC )
+					glGetProcAddress( "glUniformMatrix2fv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniformMatrix3fv =
-					( PFNGLUNIFORMMATRIX3FVPROC )glGetProcAddress(
-						"glUniformMatrix3fv" ) ) == BIT_NULL );
+				Ret |= ( __glUniformMatrix3fv = ( PFNGLUNIFORMMATRIX3FVPROC )
+					glGetProcAddress( "glUniformMatrix3fv" ) ) == BIT_NULL;
 
-				Ret |= ( ( __bglUniformMatrix4fv =
-					( PFNGLUNIFORMMATRIX4FVPROC )glGetProcAddress(
-						"glUniformMatrix4fv" ) ) == BIT_NULL );
+				Ret |= ( __glUniformMatrix4fv = ( PFNGLUNIFORMMATRIX4FVPROC )
+					glGetProcAddress( "glUniformMatrix4fv" ) ) == BIT_NULL;
 
-			
 
-*/
+				// Error check the OpenGL shader functions
 				if( Ret == 0 )
 				{
 					s_AllShaderFunctions = BIT_TRUE;
 				}
+
 			}
-			/*
-
-*/
-
 
 
 			return BIT_OK;

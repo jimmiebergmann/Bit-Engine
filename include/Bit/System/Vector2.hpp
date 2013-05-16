@@ -31,8 +31,8 @@
 #include <cmath>
 #include <float.h>
 
-#ifdef PLATFORM_WINDOWS
-#define isnan _isnan
+#ifdef BIT_PLATFORM_WIN32
+	#define isnan _isnan
 #endif
 
 namespace Bit
