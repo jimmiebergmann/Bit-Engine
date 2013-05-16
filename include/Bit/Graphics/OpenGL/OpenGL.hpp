@@ -60,6 +60,9 @@ extern PFNGLDELETEVERTEXARRAYSPROC __glDeleteVertexArrays;
 extern PFNGLGENVERTEXARRAYSPROC __glGenVertexArrays;
 extern PFNGLISVERTEXARRAYPROC __glIsVertexArray;
 
+// Texture, OpenGL 1.3
+extern PFNGLACTIVETEXTUREPROC __glActiveTexture;
+
 // Buffers, OpenGL 1.5
 extern PFNGLBINDBUFFERPROC __glBindBuffer;
 extern PFNGLBUFFERDATAPROC __glBufferData;
@@ -123,6 +126,9 @@ extern PFNGLUNIFORMMATRIX4FVPROC __glUniformMatrix4fv;
 #define glGenVertexArrays __glGenVertexArrays
 #define glIsVertexArray __glIsVertexArray
 
+// Texture, OpenGL 1.3
+#define glActiveTexture __glActiveTexture
+
 // Buffers, OpenGL 1.5
 #define  glBindBuffer __glBindBuffer
 #define  glBufferData __glBufferData
@@ -179,6 +185,7 @@ namespace Bit
 
 		BIT_API BIT_UINT32 BindOpenGLExtensions( const BIT_UINT32 p_Major, const BIT_UINT32 p_Minor );
 		BIT_API BIT_BOOL GetVertexObjectAvailability( );
+		BIT_API BIT_BOOL GetGeneralTextureAvailability( );
 		BIT_API BIT_BOOL GetGeneralBufferAvailability( );
 		BIT_API BIT_BOOL GetShaderAvailability( ); // Check if shaders are available
 

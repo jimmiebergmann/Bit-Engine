@@ -125,7 +125,7 @@ namespace Bit
 		if( (Type[1] != 0 || Type[2] != 2) && Type[2] != 3 )
 		{
 			File.close();
-			bitTrace( "[Bit::Image::ReadTGA] <ERROR> "
+			bitTrace( "[Image::ReadTGA] <ERROR> "
 				"Wrong TGA type.\n" );
 			return BIT_ERROR;
 		}
@@ -139,7 +139,7 @@ namespace Bit
 		if(m_Depth != 3 && m_Depth != 4)
 		{
 			File.close();
-			bitTrace( "[Bit::Image::ReadTGA] <ERROR> "
+			bitTrace( "[Image::ReadTGA] <ERROR> "
 				"Not a 24 or 32 bit depth image.\n" );
 			return BIT_ERROR;
 		}
@@ -176,7 +176,7 @@ namespace Bit
 		// Make sure the data pointer isn't NULL
 		if(p_pData == BIT_NULL)
 		{
-			bitTrace( "[Bit::Image::AddData] <ERROR> "
+			bitTrace( "[Image::AddData] <ERROR> "
 				"Passed NULL pointer.\n" );
 			return BIT_ERROR;
 		}
@@ -184,7 +184,7 @@ namespace Bit
 		// Also, we don't accept the width/height/depth to be equal to zero.
 		if( p_Size.x == 0 || p_Size.y == 0 || p_Depth == 0)
 		{
-			bitTrace( "[Bit::Image::AddData] <ERROR> "
+			bitTrace( "[Image::AddData] <ERROR> "
 				"With/Height/Depth is 0.\n" );
 			return BIT_ERROR;
 		}
@@ -283,7 +283,7 @@ namespace Bit
 		// Make sure we have any data to swap
 		if(ContainsData() == BIT_FALSE)
 		{
-			bitTrace( "[Bit::Image::BGR_To_RGB] <ERROR> "
+			bitTrace( "[Image::BGR_To_RGB] <ERROR> "
 				"Image not containing any data.\n" );
 			return;
 		}
@@ -307,7 +307,7 @@ namespace Bit
 		// Make sure we have any data to swap
 		if(ContainsData() == BIT_FALSE)
 		{
-			bitTrace( "[Bit::Image::BGRA_To_RGBA] <ERROR> "
+			bitTrace( "[Image::BGRA_To_RGBA] <ERROR> "
 				"Image not containing any data.\n" );
 			return;
 		}

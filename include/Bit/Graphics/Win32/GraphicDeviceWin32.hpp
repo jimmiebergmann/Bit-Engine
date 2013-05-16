@@ -49,6 +49,7 @@ namespace Bit
 		virtual VertexObject * CreateVertexObject( ) const;
 		virtual ShaderProgram * CreateShaderProgram( ) const;
 		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const;
+		virtual Texture * CreateTexture( ) const;
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits );

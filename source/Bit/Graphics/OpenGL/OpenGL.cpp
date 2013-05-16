@@ -37,6 +37,9 @@ PFNGLDELETEVERTEXARRAYSPROC __glDeleteVertexArrays = BIT_NULL;
 PFNGLGENVERTEXARRAYSPROC __glGenVertexArrays = BIT_NULL;
 PFNGLISVERTEXARRAYPROC __glIsVertexArray = BIT_NULL;
 
+// Texture, OpenGL 1.3
+PFNGLACTIVETEXTUREPROC __glActiveTexture = BIT_NULL;
+
 // Buffers, OpenGL 1.5
 PFNGLBINDBUFFERPROC __glBindBuffer = BIT_NULL;
 PFNGLBUFFERDATAPROC __glBufferData = BIT_NULL;
@@ -102,6 +105,7 @@ static BIT_BOOL BIT_ARB_fragment_shader = BIT_FALSE;
 // My own availability variables
 static BIT_BOOL s_AllShaderFunctions = BIT_FALSE;
 static BIT_BOOL s_GeneralBuffersFunctions = BIT_FALSE;
+static BIT_BOOL s_GeneralTextureFunctions = BIT_FALSE;
 
 namespace Bit
 {
@@ -172,6 +176,21 @@ namespace Bit
 			// Use a boolean to check if any attempt in getting
 			// any OpenGL function failed
 			BIT_BOOL Ret = 0;
+
+			// Get the texture functions
+
+
+			
+			if( p_Major > 1 || ( p_Major == 1 && p_Minor >= 3 ) )
+			{
+				Ret |= ( __glActiveTexture = ( PFNGLACTIVETEXTUREPROC )
+					glGetProcAddress( "glActiveTexture" ) ) == BIT_NULL;
+
+				if( !Ret )
+				{
+					s_GeneralTextureFunctions = BIT_TRUE;
+				}
+			}
 
 			// Get the buffer functions
 			if( p_Major > 1 || ( p_Major == 1 && p_Minor >= 5 ) )
@@ -363,6 +382,11 @@ namespace Bit
 		BIT_API BIT_BOOL GetVertexObjectAvailability( )
 		{
 			return	BIT_ARB_vertex_array_object;
+		}
+
+		BIT_API BIT_BOOL GetGeneralTextureAvailability( )
+		{
+			return s_GeneralTextureFunctions;
 		}
 
 		BIT_API BIT_BOOL GetGeneralBufferAvailability( )

@@ -365,6 +365,18 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\include\Bit\Graphics\Texture.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\Graphics\OpenGL\TextureOpenGL.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\Graphics\OpenGL\TextureOpenGL.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\include\Bit\Graphics\VertexObject.hpp"
 			>
 		</File>
