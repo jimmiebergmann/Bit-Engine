@@ -62,7 +62,7 @@ namespace Bit
 
 	WindowLinux::~WindowLinux( )
 	{
-
+        Close( );
 	}
 
 	// Public functions

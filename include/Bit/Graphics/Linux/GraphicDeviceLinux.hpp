@@ -26,10 +26,11 @@
 #ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP__
 #define __BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP__
 
+#include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/Window/Linux/WindowLinux.hpp>
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
-#include <Bit/DataTypes.hpp>
+
 
 namespace Bit
 {
@@ -49,6 +50,8 @@ namespace Bit
 
 		// Create functions for different renderer elements
 		virtual VertexObject * CreateVertexObject( ) const;
+		virtual ShaderProgram * CreateShaderProgram( ) const;
+		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const;
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits );

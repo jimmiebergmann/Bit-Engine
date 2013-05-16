@@ -26,6 +26,7 @@
 #define __BIT_SYSTEM_VECTOR3_HPP__
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/System/Math.hpp>
 #include <cmath>
 #include <float.h>
 
@@ -190,7 +191,7 @@ namespace Bit
 		BIT_FLOAT32 Dot( const Vector3< T > & v ) const
 		{
 			BIT_FLOAT32 Dot = ( x * v.x ) + ( y * v.y ) + ( z * v.z );
-			if( _isnan( Dot ) )
+			if( isnan( Dot ) )
 			{
 				return 0.0f;
 			}

@@ -24,6 +24,8 @@
 
 #include <Bit/Graphics/Linux/GraphicDeviceLinux.hpp>
 #include <Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -218,6 +220,30 @@ namespace Bit
 		// Allocate a ne vertex object
 		return new VertexObjectOpenGL( );
     }
+
+    ShaderProgram * GraphicDeviceLinux::CreateShaderProgram( ) const
+	{
+		// Make sure we support OpenGL vertex objects
+		if( !OpenGL::GetShaderAvailability( ) )
+		{
+			bitTrace( "[ GraphicDeviceLinux::CreateShaderProgram] Not supporting the required functions.\n" );
+			return BIT_NULL;
+		}
+
+		return new ShaderProgramOpenGL( );
+	}
+
+	Shader * GraphicDeviceLinux::CreateShader( const Shader::eShaderType p_ShaderType ) const
+	{
+		// Make sure we support OpenGL vertex objects
+		if( !OpenGL::GetShaderAvailability( ) )
+		{
+			bitTrace( "[ GraphicDeviceLinux::CreateShader] Not supporting the required functions.\n" );
+			return BIT_NULL;
+		}
+
+		return new ShaderOpenGL( p_ShaderType );
+	}
 
 	// Clear functions
 	void GraphicDeviceLinux::ClearBuffers( const BIT_UINT32 p_ClearBits )
