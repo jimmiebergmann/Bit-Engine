@@ -345,6 +345,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\Graphics\Image.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\Graphics\Image.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\Graphics\Shader.cpp"
 			>
 		</File>

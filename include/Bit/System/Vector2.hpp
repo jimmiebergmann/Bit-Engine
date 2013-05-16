@@ -218,6 +218,9 @@ namespace Bit
 	};
 
 	// Predefined vector types
+	typedef Vector2< BIT_BYTE >		Vector2_byte;
+	typedef Vector2< BIT_SCHAR8 >	Vector2_sc8;
+	typedef Vector2< BIT_UCHAR8 >	Vector2_uc8;
 	typedef Vector2< BIT_SINT32 >	Vector2_si32;
 	typedef Vector2< BIT_UINT32 >	Vector2_ui32;
 	typedef Vector2< BIT_FLOAT32 >	Vector2_f32;

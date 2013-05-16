@@ -36,7 +36,6 @@ namespace Bit
 		std::ifstream File( p_FilePath.c_str( ) );
 		if(File.is_open() == false)
 		{
-			bitTrace( "[Shader::Open] Failed to open file: %s\n", p_FilePath.c_str( ) );
 			return BIT_ERROR_OPEN_FILE;
 		}
 
