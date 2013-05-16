@@ -26,6 +26,7 @@
 #include <Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/TextureOpenGL.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -213,7 +214,7 @@ namespace Bit
 			!OpenGL::GetVertexObjectAvailability( ) ||
 			!OpenGL::GetShaderAvailability( ) )
 		{
-			bitTrace( "[ GraphicDeviceLinux::CreateVertexObject] Not supporting the required functions.\n" );
+			bitTrace( "[GraphicDeviceLinux::CreateVertexObject] Not supporting the required functions.\n" );
 			return BIT_NULL;
 		}
 
@@ -226,7 +227,7 @@ namespace Bit
 		// Make sure we support OpenGL vertex objects
 		if( !OpenGL::GetShaderAvailability( ) )
 		{
-			bitTrace( "[ GraphicDeviceLinux::CreateShaderProgram] Not supporting the required functions.\n" );
+			bitTrace( "[GraphicDeviceLinux::CreateShaderProgram] Not supporting the required functions.\n" );
 			return BIT_NULL;
 		}
 
@@ -238,11 +239,24 @@ namespace Bit
 		// Make sure we support OpenGL vertex objects
 		if( !OpenGL::GetShaderAvailability( ) )
 		{
-			bitTrace( "[ GraphicDeviceLinux::CreateShader] Not supporting the required functions.\n" );
+			bitTrace( "[GraphicDeviceLinux::CreateShader] Not supporting the required functions.\n" );
 			return BIT_NULL;
 		}
 
 		return new ShaderOpenGL( p_ShaderType );
+	}
+
+
+	Texture * GraphicDeviceLinux::CreateTexture( ) const
+	{
+	   // Make sure we support OpenGL vertex objects
+		if( !OpenGL::GetGeneralTextureAvailability( ) )
+		{
+			bitTrace( "[GraphicDeviceLinux::CreateTexture] Not supporting the required functions.\n" );
+			return BIT_NULL;
+		}
+
+		return new TextureOpenGL( );
 	}
 
 	// Clear functions

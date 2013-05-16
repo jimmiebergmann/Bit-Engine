@@ -22,7 +22,6 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
 #ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP__
 #define __BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP__
 
@@ -34,7 +33,7 @@
 
 namespace Bit
 {
-	class GraphicDeviceLinux : public GraphicDevice
+	class BIT_API GraphicDeviceLinux : public GraphicDevice
 	{
 
 	public:
@@ -52,6 +51,7 @@ namespace Bit
 		virtual VertexObject * CreateVertexObject( ) const;
 		virtual ShaderProgram * CreateShaderProgram( ) const;
 		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const;
+		virtual Texture * CreateTexture( ) const;
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits );
