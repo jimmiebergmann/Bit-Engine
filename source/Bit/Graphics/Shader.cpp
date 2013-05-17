@@ -30,7 +30,7 @@
 
 namespace Bit
 {
-	BIT_UINT32 Shader::Read( const std::string p_FilePath )
+	BIT_UINT32 Shader::ReadFile( const std::string p_FilePath )
 	{
 		// Use fstream for reading files.
 		std::ifstream File( p_FilePath.c_str( ) );

@@ -50,7 +50,7 @@ namespace Bit
 		virtual ~Shader() { }
 
 		// General public functions
-		BIT_UINT32 Read( const std::string p_FilePath );
+		BIT_UINT32 ReadFile( const std::string p_FilePath );
 		virtual BIT_UINT32 Compile( ) = 0;
 
 		// Set functions
