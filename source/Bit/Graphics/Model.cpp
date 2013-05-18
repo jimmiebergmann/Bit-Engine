@@ -250,6 +250,7 @@ namespace Bit
 		// Calculate and set the buffers
 		// !NOTE! JUST VERTEX POSITION FOR NOW
 		BIT_FLOAT32 * pVertexPositions = new BIT_FLOAT32[ m_Triangles.size( ) * 3 * 3 ];
+		BIT_FLOAT32 * pVertexTextures = new BIT_FLOAT32[ m_Triangles.size( ) * 3 * 2 ];
 		BIT_FLOAT32 * pVertexNormals = new BIT_FLOAT32[ m_Triangles.size( ) * 3 * 3 ];
 
 		// Add vertex positsion buffer if any
@@ -273,6 +274,34 @@ namespace Bit
 			if( p_VertexObject.AddVertexBuffer( pVertexPositions, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
 			{
 				delete [ ] pVertexPositions;
+				delete [ ] pVertexTextures;
+				delete [ ] pVertexNormals;
+				bitTrace("[Model::LoadVertexObject] Can not add the vertex buffer\n");
+				return BIT_ERROR;
+			}
+		}
+
+		// Add vertex textures buffer if any
+		if( m_VertexTextures.size( ) )
+		{
+			// Lopp through all the triangles
+			for( BIT_MEMSIZE i = 0; i < m_Triangles.size( ); i++ )
+			{
+				// Loop every single vertex in the triangle
+				for( BIT_MEMSIZE j = 0; j < 3; j++ )
+				{
+					BIT_SINT32 Index = m_Triangles[ i ].TextureIndex[ j ];
+				
+					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 0 ] = m_VertexPositions[ Index ].x;
+					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 1 ] = m_VertexPositions[ Index ].y;
+				}
+			}
+
+			// Add the vertex buffer
+			if( p_VertexObject.AddVertexBuffer( pVertexTextures, 2, BIT_TYPE_FLOAT32 ) != BIT_OK )
+			{
+				delete [ ] pVertexPositions;
+				delete [ ] pVertexTextures;
 				delete [ ] pVertexNormals;
 				bitTrace("[Model::LoadVertexObject] Can not add the vertex buffer\n");
 				return BIT_ERROR;
@@ -300,6 +329,7 @@ namespace Bit
 			if( p_VertexObject.AddVertexBuffer( pVertexNormals, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
 			{
 				delete [ ] pVertexPositions;
+				delete [ ] pVertexTextures;
 				delete [ ] pVertexNormals;
 				bitTrace("[Model::LoadVertexObject] Can not add the vertex buffer\n");
 				return BIT_ERROR;
@@ -310,6 +340,7 @@ namespace Bit
 		if( p_VertexObject.Load( m_Triangles.size( ), 3 ) != BIT_OK )
 		{
 			delete [ ] pVertexPositions;
+			delete [ ] pVertexTextures;
 			delete [ ] pVertexNormals;
 			bitTrace("[Model::LoadVertexObject] Can not load the vertex object\n");
 			return BIT_ERROR;
@@ -317,6 +348,7 @@ namespace Bit
 
 		// Clean all the buffers
 		delete [ ] pVertexPositions;
+		delete [ ] pVertexTextures;
 		delete [ ] pVertexNormals;
 
 		return BIT_OK;
@@ -327,9 +359,19 @@ namespace Bit
 	// ...
 
 	// Get functions
-	BIT_UINT32 Model::GetVertexCount( ) const
+	BIT_UINT32 Model::GetVertexPositionCount( ) const
 	{
 		return m_VertexPositions.size( );
+	}
+
+	BIT_UINT32 Model::GetVertexTextureCount( ) const
+	{
+		return m_VertexTextures.size( );
+	}
+
+	BIT_UINT32 Model::GetVertexNormalCount( ) const
+	{
+		return m_VertexNormals.size( );
 	}
 
 	BIT_UINT32 Model::GetTriangleCount( ) const

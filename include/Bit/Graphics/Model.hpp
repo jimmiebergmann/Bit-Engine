@@ -62,7 +62,9 @@ namespace Bit
 		// ...
 
 		// Get functions
-		BIT_UINT32 GetVertexCount( ) const;
+		BIT_UINT32 GetVertexPositionCount( ) const;
+		BIT_UINT32 GetVertexTextureCount( ) const;
+		BIT_UINT32 GetVertexNormalCount( ) const;
 		BIT_UINT32 GetTriangleCount( ) const;
 		BIT_UINT32 GetVertexPosition( BIT_UINT32 p_Index, Vector3_f32 p_Coord ) const;
 		BIT_UINT32 GetVertexTexture( BIT_UINT32 p_Index, Vector2_f32 p_Coord ) const;
