@@ -288,6 +288,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath="..\..\source\Bit\System\Circle.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Circle.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\include\Bit\DataTypes.hpp"
 			>
 		</File>

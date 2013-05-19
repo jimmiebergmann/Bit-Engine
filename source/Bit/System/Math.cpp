@@ -22,16 +22,73 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+
 #include <Bit/System/Math.hpp>
 #include <Bit/System/Line.hpp>
-#include <Bit/System/Vector2.hpp>
-#include <Bit/System/Vector2.hpp>
+#include <Bit/System/Circle.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
 	// Intersection tests
+	BIT_API BIT_BOOL IntersectionPoint2Circle2( Vector2_f32 p_Point, Circle p_Circle )
+	{
+		BIT_FLOAT32 Distance = Vector2_f32( p_Point - Vector2_f32( p_Circle.Position.x, p_Circle.Position.y ) ).Magnitude( );
+
+		if( Distance > ( p_Circle.Radius ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionPoint3Circle3( Vector3_f32 p_Point, Circle p_Circle )
+	{
+		BIT_FLOAT32 Distance = Vector3_f32( p_Point - p_Circle.Position ).Magnitude( );
+
+		if( Distance > ( p_Circle.Radius ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionPoint2Line2( Vector2_f32 p_Point, Line p_Line )
+	{
+		// Calcuate the area from the 3 points
+		BIT_FLOAT32 Area = 
+			(	( p_Point.x * ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) ) +
+				( p_Line.p[ 0 ].x * ( p_Line.p[ 1 ].y - p_Point.y ) ) +
+				( p_Line.p[ 1 ].x * ( p_Point.y - p_Line.p[ 0 ].y ) ) ) / 2.0f;
+
+		// Use the epsilon function to make sure that things wont get way too buggy
+		if( EqualEpsilon( Area, 0.0f ) )
+		{
+			return BIT_TRUE;
+		}
+
+		return BIT_FALSE;
+	}
+
+	BIT_API BIT_BOOL IntersectionPoint3Line3( Vector3_f32 p_Point, Line p_Line )
+	{
+		// Calcuate the area from the 3 points
+		BIT_FLOAT32 Area = 
+			Vector3_f32( p_Line.p[ 1 ] - p_Point ).Cross(
+			Vector3_f32( p_Line.p[ 1 ] - p_Line.p[ 0 ] ) ).Magnitude( ) * 0.5f;
+
+		// Use the epsilon function to make sure that things wont get way too buggy
+		if( EqualEpsilon( Area, 0.0f ) )
+		{
+			return BIT_TRUE;
+		}
+
+		return BIT_FALSE;
+	}
+
 	BIT_API BIT_BOOL IntersectionLine2Line2( Line p_Line1, Line p_Line2,
 		Vector3_f32 & p_Intersection )
 	{
@@ -82,6 +139,42 @@ namespace Bit
 			( PointMagnitudes[ 1 ] > LineMagnitudes[ 0 ] ) ||
 			( PointMagnitudes[ 2 ] > LineMagnitudes[ 1 ] ) ||
 			( PointMagnitudes[ 3 ] > LineMagnitudes[ 1 ] ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionLine2Circle2( Line p_Line, Circle p_Circle )
+	{
+		return BIT_FALSE;
+	}
+
+	BIT_API BIT_BOOL IntersectionLine3Circle3( Line p_Line, Circle p_Circle )
+	{
+		return BIT_FALSE;
+	}
+
+	BIT_API BIT_BOOL IntersectionCircle2Circle2( Circle p_Circle1, Circle p_Circle2 )
+	{
+		BIT_FLOAT32 Distance = Vector2_f32(
+			Vector2_f32( p_Circle1.Position.x, p_Circle1.Position.y ) -
+			Vector2_f32( p_Circle2.Position.x, p_Circle2.Position.y  ) ).Magnitude( );
+
+		if( Distance > ( p_Circle1.Radius + p_Circle2.Radius ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionCircle3Circle3( Circle p_Circle1, Circle p_Circle2 )
+	{
+		BIT_FLOAT32 Distance = Vector3_f32( p_Circle1.Position - p_Circle2.Position ).Magnitude( );
+
+		if( Distance > ( p_Circle1.Radius + p_Circle2.Radius ) )
 		{
 			return BIT_FALSE;
 		}

@@ -23,7 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Line.hpp>
-#include <Bit/System/Math.hpp>
+#include <Bit/System/Circle.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -72,15 +72,36 @@ namespace Bit
 	}
 
 	// Public functions
-	BIT_FLOAT32 Line::Length( ) const
+	BIT_FLOAT32 Line::GetLength( ) const
 	{
 		return Vector3_f32( p[ 0 ] - p[ 1 ] ).Magnitude( );
 	}
 
 	// Intersection functions
+	BIT_BOOL Line::IntersectionPoint2( Vector2_f32 p_Point )
+	{
+		return IntersectionPoint2Line2( p_Point, *this );
+	}
+
+	BIT_BOOL Line::IntersectionPoint3( Vector3_f32 p_Point )
+	{
+		return IntersectionPoint3Line3( p_Point, *this );
+	}
+
 	BIT_BOOL Line::IntersectionLine2( Line p_Line, Vector3_f32 & p_Intersection )
 	{
 		return IntersectionLine2Line2( *this, p_Line, p_Intersection ) ;
 	}
+
+	BIT_BOOL Line::IntersectionCircle2( Circle p_Circle )
+	{
+		return IntersectionLine2Circle2( *this, p_Circle );
+	}
+
+	BIT_BOOL Line::IntersectionCircle3( Circle p_Circle )
+	{
+		return IntersectionLine3Circle3( *this, p_Circle );
+	}
+
 
 }

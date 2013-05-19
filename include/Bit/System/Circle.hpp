@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_LINE_HPP__
-#define __BIT_SYSTEM_LINE_HPP__
+#ifndef __BIT_SYSTEM_CIRCLE_HPP__
+#define __BIT_SYSTEM_CIRCLE_HPP__
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Math.hpp>
@@ -34,34 +34,35 @@
 namespace Bit
 {
 
-	// Use this class for both 2D and 3D lines (line2/line3)
-	class Line
+	// Use this class for both circles and spheres (circle2/circle3)
+	class Circle
 	{
 
 	public:
 
 		// Construcotrs
-		Line( );
-		Line( const Line & p_Line );
-		Line( const Vector3_f32 p_P1, const Vector3_f32 p_P2 );
-		Line( const Vector2_f32 p_P1, const Vector2_f32 p_P2 );
-		Line( const BIT_FLOAT32 p_P1_1, const BIT_FLOAT32 p_P1_2,
-			const BIT_FLOAT32 p_P2_1, const BIT_FLOAT32 p_P2_2 );
-		Line( const BIT_FLOAT32 p_P1_1, const BIT_FLOAT32 p_P1_2, const BIT_FLOAT32 p_P1_3,
-			const BIT_FLOAT32 p_P2_1, const BIT_FLOAT32 p_P2_2, const BIT_FLOAT32 p_P2_3 );
+		Circle( );
+		Circle( const BIT_FLOAT32 p_Radius );
+		Circle( const Vector2_f32 p_Position, const BIT_FLOAT32 p_Radius );
+		Circle( const Vector3_f32 p_Position, const BIT_FLOAT32 p_Radius );
 
-		// Public functions
-		BIT_FLOAT32 GetLength( ) const;
+		// Get functions functions
+		BIT_FLOAT32 GetRadius( ) const;
+		BIT_FLOAT32 GetDiameter( ) const;
+		BIT_FLOAT32 GetArea( ) const;
+		BIT_FLOAT32 GetCircumference( ) const;
 
 		// Intersection functions
 		BIT_BOOL IntersectionPoint2( Vector2_f32 p_Point );
 		BIT_BOOL IntersectionPoint3( Vector3_f32 p_Point );
-		BIT_BOOL IntersectionLine2( Line p_Line, Vector3_f32 & p_Intersection );
+		BIT_BOOL IntersectionLine2( Line p_Line );
+		BIT_BOOL IntersectionLine3( Line p_Line );
 		BIT_BOOL IntersectionCircle2( Circle p_Circle );
 		BIT_BOOL IntersectionCircle3( Circle p_Circle );
 
 		// Public variables
-		Vector3_f32 p[ 2 ];
+		Vector3_f32 Position;
+		BIT_FLOAT32 Radius;
 
 	};
 

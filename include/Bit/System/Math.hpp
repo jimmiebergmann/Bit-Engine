@@ -42,8 +42,7 @@ namespace Bit
 	typedef Vector2< BIT_FLOAT32 > Vector2_f32;
 
 	class Line;
-	class Quad;
-	class Box;
+	class Circle;
 	class Sphere;
 
 
@@ -73,9 +72,27 @@ namespace Bit
 		return tan( DegreesToRadians( p_angle ) );
 	}
 
+	BIT_INLINE BIT_BOOL EqualEpsilon( BIT_FLOAT32 p_N1, BIT_FLOAT32 p_N2 )
+	{
+		if( p_N1 > ( p_N2 + BIT_EPSILON ) || p_N1 < ( p_N2 - BIT_EPSILON ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
 	// Intersection tests
+	BIT_API BIT_BOOL IntersectionPoint2Circle2( Vector2_f32 p_Point, Circle p_Circle );
+	BIT_API BIT_BOOL IntersectionPoint3Circle3( Vector3_f32 p_Point, Circle p_Circle );
+	BIT_API BIT_BOOL IntersectionPoint2Line2( Vector2_f32 p_Point, Line p_Line );
+	BIT_API BIT_BOOL IntersectionPoint3Line3( Vector3_f32 p_Point, Line p_Line );
 	BIT_API BIT_BOOL IntersectionLine2Line2( Line p_Line1, Line p_Line2,
 		Vector3_f32 & p_Intersection );
+	BIT_API BIT_BOOL IntersectionLine2Circle2( Line p_Line, Circle p_Circle );
+	BIT_API BIT_BOOL IntersectionLine3Circle3( Line p_Line, Circle p_Circle );
+	BIT_API BIT_BOOL IntersectionCircle2Circle2( Circle p_Circle1, Circle p_Circle2 );
+	BIT_API BIT_BOOL IntersectionCircle3Circle3( Circle p_Circle1, Circle p_Circle2 );
 
 	// Quadratic equation solver
 	BIT_API BIT_UINT32 QuadraticEquation( const BIT_FLOAT32 p_A, const BIT_FLOAT32 p_B,
