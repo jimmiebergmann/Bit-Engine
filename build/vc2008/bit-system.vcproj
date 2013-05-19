@@ -300,6 +300,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\System\Line.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Line.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\System\Math.cpp"
 			>
 		</File>

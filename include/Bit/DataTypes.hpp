@@ -25,6 +25,7 @@
 // Note:
 // The original header was written by Stuart ( teh_programerer@interactivelaboratories.com )
 
+
 #ifndef __BIT_DATATYPES_HPP__
 #define __BIT_DATATYPES_HPP__
 
@@ -100,8 +101,8 @@ typedef double				BIT_FLOAT64;
 typedef BIT_UCHAR8			BIT_BYTE;
 typedef bool				BIT_BOOL;
 typedef std::size_t			BIT_MEMSIZE;
-#define BIT_TRUE	1
-#define BIT_FALSE	0
+#define BIT_TRUE	true
+#define BIT_FALSE	false
 #define BIT_NULL	NULL
 
 // Type enums

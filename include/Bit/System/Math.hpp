@@ -32,6 +32,22 @@
 namespace Bit
 {
 
+	// Pre-defined classes.
+	template < typename T >
+	class Vector2;
+	template < typename T >
+	class Vector3;
+
+	typedef Vector3< BIT_FLOAT32 > Vector3_f32;
+	typedef Vector2< BIT_FLOAT32 > Vector2_f32;
+
+	class Line;
+	class Quad;
+	class Box;
+	class Sphere;
+
+
+	// Inline functions
 	BIT_INLINE BIT_FLOAT64 BIT_API DegreesToRadians( BIT_FLOAT64 p_Degrees)
 	{
 		return  p_Degrees * BIT_PI / 180.0f;
@@ -56,6 +72,14 @@ namespace Bit
 	{
 		return tan( DegreesToRadians( p_angle ) );
 	}
+
+	// Intersection tests
+	BIT_API BIT_BOOL IntersectionLine2Line2( Line p_Line1, Line p_Line2,
+		Vector3_f32 & p_Intersection );
+
+	// Quadratic equation solver
+	BIT_API BIT_UINT32 QuadraticEquation( const BIT_FLOAT32 p_A, const BIT_FLOAT32 p_B,
+		const BIT_FLOAT32 p_C, BIT_FLOAT32 & p_X1, BIT_FLOAT32 & p_X2 );
 
 }
 
