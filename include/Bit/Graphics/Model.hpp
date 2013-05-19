@@ -30,6 +30,7 @@
 #include <Bit/System/Vector3.hpp>
 #include <Bit/Graphics/VertexObject.hpp>
 #include <vector>
+#include <string>
 
 namespace Bit
 {

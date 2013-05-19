@@ -52,9 +52,11 @@
 		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGL.hpp" />
 		<Unit filename="../../include/Bit/Graphics/OpenGL/ShaderOpenGL.hpp" />
 		<Unit filename="../../include/Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/TextureOpenGL.hpp" />
 		<Unit filename="../../include/Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp" />
 		<Unit filename="../../include/Bit/Graphics/Shader.hpp" />
 		<Unit filename="../../include/Bit/Graphics/ShaderProgram.hpp" />
+		<Unit filename="../../include/Bit/Graphics/Texture.hpp" />
 		<Unit filename="../../include/Bit/Graphics/VertexObject.hpp" />
 		<Unit filename="../../source/Bit/Graphics/GraphicDevice.cpp" />
 		<Unit filename="../../source/Bit/Graphics/Image.cpp" />
@@ -62,6 +64,7 @@
 		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGL.cpp" />
 		<Unit filename="../../source/Bit/Graphics/OpenGL/ShaderOpenGL.cpp" />
 		<Unit filename="../../source/Bit/Graphics/OpenGL/ShaderProgramOpenGL.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/TextureOpenGL.cpp" />
 		<Unit filename="../../source/Bit/Graphics/OpenGL/VertexObjectOpenGL.cpp" />
 		<Unit filename="../../source/Bit/Graphics/Shader.cpp" />
 		<Extensions>
