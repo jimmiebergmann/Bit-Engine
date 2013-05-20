@@ -24,14 +24,120 @@
 
 
 #include <Bit/System/Math.hpp>
-#include <Bit/System/Line.hpp>
+#include <Bit/System/Line2.hpp>
+#include <Bit/System/Line3.hpp>
 #include <Bit/System/Circle.hpp>
+#include <Bit/System/Quad.hpp>
+#include <Bit/System/Sphere.hpp>
+#include <Bit/System/Box.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
 	// Intersection tests
+
+
+
+		/*
+
+	// Point 2
+	BIT_API BIT_BOOL IntersectionPoint2Line2(	Vector2_f32 p_Point, Line2 p_Line );
+	BIT_API BIT_BOOL IntersectionPoint2Circle(	Vector2_f32 p_Point, Cicle p_Circle );
+	BIT_API BIT_BOOL IntersectionPoint2Quad(	Vector2_f32 p_Point, Quad p_Quad );
+*/
+	// Point 3
+	BIT_API BIT_BOOL IntersectionPoint3Line3( Vector3_f32 p_Point, Line3 p_Line )
+	{
+		// Resources: http://answers.yahoo.com/question/index?qid=20100821030217AAISaE6
+
+		// Calcuate the area from the 3 points
+		BIT_FLOAT32 Area = 
+			Vector3_f32( p_Line.p[ 1 ] - p_Point ).Cross(
+			Vector3_f32( p_Line.p[ 1 ] - p_Line.p[ 0 ] ) ).Magnitude( ) * 0.5f;
+
+		// Use the epsilon function to make sure that things wont get way too buggy
+		if( EqualEpsilon( Area, 0.0f ) )
+		{
+			return BIT_TRUE;
+		}
+
+		return BIT_FALSE;
+	}
+
+	/*BIT_API BIT_BOOL IntersectionPoint3Sphere(	Vector3_f32 p_Point, Sphere p_Sphere );
+	BIT_API BIT_BOOL IntersectionPoint3Box(		Vector3_f32 p_Point, Box p_Box );
+
+	// Line 2
+	BIT_API BIT_BOOL IntersectionLine2Line2(	Line2 p_Line1,	Line2 p_Line2 );
+	BIT_API BIT_BOOL IntersectionLine2Circle(	Line2 p_Line,	Circle p_Circle );
+	BIT_API BIT_BOOL IntersectionLine2Quad(		Line2 p_Line,	Quad p_Quad );
+*/
+	// Line 3
+	BIT_API BIT_BOOL IntersectionLine3Line3( Line3 p_Line1,	Line3 p_Line2, Vector3_f32 & p_Intersection )
+	{
+		// http://mathworld.wolfram.com/Line-LineIntersection.html
+		// in 3d; will also work in 2d if z components are 0
+	
+		Vector3_f32 da = p_Line1.p[ 1 ] - p_Line1.p[ 0 ]; 
+		Vector3_f32 db = p_Line2.p[ 1 ] - p_Line2.p[ 0 ];
+		Vector3_f32 dc = p_Line2.p[ 0 ] - p_Line1.p[ 0 ];
+
+		// The lines are not coplanar
+		if( dc.Dot( da.Cross( db ) ) != 0.0f )
+		{
+			return BIT_FALSE;
+		}
+	
+		Vector3_f32 cs = da.Cross( db );
+		BIT_FLOAT32 s = dc.Cross( db ).Dot( da.Cross( db ) ) /
+			( ( cs.x * cs.x ) + ( cs.y * cs.y )+ ( cs.z * cs.z ) );
+
+
+		//Point s = dot(cross(dc,db),cross(da,db)) / norm2(cross(da,db));
+		if (s >= 0.0f && s <= 1.0f)
+		{
+			p_Intersection = p_Line1.p[ 0 ] + ( da * Vector3_f32( s, s, s ) );
+			//ip = a.first + da * Coord(s,s,s);
+			return BIT_TRUE;
+		}
+	
+		return BIT_FALSE;
+	}
+
+	BIT_API BIT_BOOL IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere )
+	{
+		return BIT_FALSE;
+	}
+
+	BIT_API BIT_BOOL IntersectionLine3Box(		Line3 p_Line,	Box p_Box )
+	{
+		return BIT_FALSE;
+	}
+/*
+	// Circle
+	BIT_API BIT_BOOL IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2 );
+	BIT_API BIT_BOOL IntersectionCircleQuad(	Circle p_Circle,	Quad p_Quad );
+
+	// Quad
+	BIT_API BIT_BOOL IntersectionQuadQuad(		Quad p_Quad1,	Quad p_Quad2 );
+
+	// Sphere
+	BIT_API BIT_BOOL IntersectionSphereSphere(	Sphere p_Sphere1,	Sphere p_Sphere2 );
+	BIT_API BIT_BOOL IntersectionSphereBox(		Sphere p_Sphere,	Box p_Box );
+
+	// Box
+	BIT_API BIT_BOOL IntersectionBoxBox(		Box p_Box1,	Box p_Box2 );
+
+	*/
+
+
+
+
+
+
+	
+	/*
 	BIT_API BIT_BOOL IntersectionPoint2Circle2( Vector2_f32 p_Point, Circle p_Circle )
 	{
 		BIT_FLOAT32 Distance = Vector2_f32( p_Point - Vector2_f32( p_Circle.Position.x, p_Circle.Position.y ) ).Magnitude( );
@@ -153,6 +259,31 @@ namespace Bit
 
 	BIT_API BIT_BOOL IntersectionLine2Circle2( Line p_Line, Circle p_Circle )
 	{
+		// Resources: http://stackoverflow.com/questions/6533856/ray-sphere-intersection
+
+		const BIT_FLOAT32 xA = p_Line.p[ 0 ].x;
+		const BIT_FLOAT32 yA = p_Line.p[ 0 ].y;
+		const BIT_FLOAT32 xB = p_Line.p[ 1 ].x;
+		const BIT_FLOAT32 yB = p_Line.p[ 1 ].y;
+		const BIT_FLOAT32 xC = p_Circle.Position.x;
+		const BIT_FLOAT32 yC = p_Circle.Position.y;
+		const BIT_FLOAT32 r = p_Circle.Radius;
+
+		const BIT_FLOAT32 a = ( (xB-xA) * (xB-xA) ) + ( (yB-yA) * (yB-yA) );
+		const BIT_FLOAT32 b = 2.0f *( (xB-xA) * (xA-xC) + (yB-yA) * (yA-yC) );
+		const BIT_FLOAT32 c = ( (xA-xC) * (xA-xC) ) + ( (yA-yC) * (yA-yC) )  - ( r * r );
+
+		// Get the delta( data under the root
+		const BIT_FLOAT32 Delta = ( b * b ) - ( 4.0f * a * c );
+
+		// No intersection at all
+		if( Delta < 0.0f )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+*/
 		/*// Resources: 
 		Vector3_f32 A;
 		A.x = p_Line.p[ 1 ].x - p_Line.p[ 0 ].x;
@@ -164,9 +295,9 @@ namespace Bit
 						( p_Line.p[ 1 ].x - p_Line.p[ 0 ].y );
 
 		BIT_FLOAT32 Delta = ( ( p_Circle.Radius * p_Circle.Radius ) * ( A.z * A.z ) ) - ( D * D );
-*/
-		return BIT_FALSE;
-	}
+
+		return BIT_FALSE;*/
+	/*}
 
 	BIT_API BIT_BOOL IntersectionLine3Circle3( Line p_Line, Circle p_Circle )
 	{
@@ -283,7 +414,7 @@ namespace Bit
 
 		return BIT_TRUE;
 	}
-
+*/
 	// Quadratic equation solver
 	BIT_API BIT_UINT32 QuadraticEquation( const BIT_FLOAT32 p_A, const BIT_FLOAT32 p_B,
 		const BIT_FLOAT32 p_C, BIT_FLOAT32 & p_X1, BIT_FLOAT32 & p_X2 )

@@ -23,45 +23,29 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_LINE_HPP__
-#define __BIT_SYSTEM_LINE_HPP__
+#ifndef __BIT_SYSTEM_BOX_HPP__
+#define __BIT_SYSTEM_BOX_HPP__
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Math.hpp>
-#include <Bit/System/Vector2.hpp>
 #include <Bit/System/Vector3.hpp>
 
 namespace Bit
 {
 
-	// Use this class for both 2D and 3D lines (line2/line3)
-	class Line
+	class Box
 	{
 
 	public:
 
 		// Construcotrs
-		Line( );
-		Line( const Line & p_Line );
-		Line( const Vector3_f32 p_P1, const Vector3_f32 p_P2 );
-		Line( const Vector2_f32 p_P1, const Vector2_f32 p_P2 );
-		Line( const BIT_FLOAT32 p_P1_1, const BIT_FLOAT32 p_P1_2,
-			const BIT_FLOAT32 p_P2_1, const BIT_FLOAT32 p_P2_2 );
-		Line( const BIT_FLOAT32 p_P1_1, const BIT_FLOAT32 p_P1_2, const BIT_FLOAT32 p_P1_3,
-			const BIT_FLOAT32 p_P2_1, const BIT_FLOAT32 p_P2_2, const BIT_FLOAT32 p_P2_3 );
 
 		// Public functions
-		BIT_FLOAT32 GetLength( ) const;
 
 		// Intersection functions
-		BIT_BOOL IntersectionPoint2( Vector2_f32 p_Point );
-		BIT_BOOL IntersectionPoint3( Vector3_f32 p_Point );
-		BIT_BOOL IntersectionLine2( Line p_Line, Vector3_f32 & p_Intersection );
-		BIT_BOOL IntersectionCircle2( Circle p_Circle );
-		BIT_BOOL IntersectionCircle3( Circle p_Circle );
 
 		// Public variables
-		Vector3_f32 p[ 2 ];
+
 
 	};
 

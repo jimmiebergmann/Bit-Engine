@@ -288,6 +288,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath="..\..\source\Bit\System\Box.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Box.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\System\Circle.cpp"
 			>
 		</File>
@@ -308,11 +316,19 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\source\Bit\System\Line.cpp"
+			RelativePath="..\..\source\Bit\System\Line2.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\include\Bit\System\Line.hpp"
+			RelativePath="..\..\include\Bit\System\Line2.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\Line3.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Line3.hpp"
 			>
 		</File>
 		<File
@@ -340,11 +356,27 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\System\Quad.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Quad.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\System\Randomizer.cpp"
 			>
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\System\Randomizer.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\Sphere.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Sphere.hpp"
 			>
 		</File>
 		<File

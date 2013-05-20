@@ -23,46 +23,29 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_CIRCLE_HPP__
-#define __BIT_SYSTEM_CIRCLE_HPP__
+#ifndef __BIT_SYSTEM_QUAD_HPP__
+#define __BIT_SYSTEM_QUAD_HPP__
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Math.hpp>
 #include <Bit/System/Vector2.hpp>
-#include <Bit/System/Vector3.hpp>
 
 namespace Bit
 {
 
-	// Use this class for both circles and spheres (circle2/circle3)
-	class Circle
+	class Quad
 	{
 
 	public:
 
-		/*// Construcotrs
-		Circle( );
-		Circle( const BIT_FLOAT32 p_Radius );
-		Circle( const Vector2_f32 p_Position, const BIT_FLOAT32 p_Radius );
-		Circle( const Vector3_f32 p_Position, const BIT_FLOAT32 p_Radius );
+		// Construcotrs
 
-		// Get functions functions
-		BIT_FLOAT32 GetRadius( ) const;
-		BIT_FLOAT32 GetDiameter( ) const;
-		BIT_FLOAT32 GetArea( ) const;
-		BIT_FLOAT32 GetCircumference( ) const;
+		// Public functions
 
 		// Intersection functions
-		BIT_BOOL IntersectionPoint2( Vector2_f32 p_Point );
-		BIT_BOOL IntersectionPoint3( Vector3_f32 p_Point );
-		BIT_BOOL IntersectionLine2( Line p_Line );
-		BIT_BOOL IntersectionLine3( Line p_Line );
-		BIT_BOOL IntersectionCircle2( Circle p_Circle );
-		BIT_BOOL IntersectionCircle3( Circle p_Circle );
 
 		// Public variables
-		Vector3_f32 Position;
-		BIT_FLOAT32 Radius;*/
+
 
 	};
 

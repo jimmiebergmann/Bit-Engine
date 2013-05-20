@@ -23,13 +23,13 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Circle.hpp>
-#include <Bit/System/Line.hpp>
+//#include <Bit/System/Line.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-
+/*
 	// Construcotrs
 	Circle::Circle( )
 	{
@@ -104,6 +104,6 @@ namespace Bit
 	{
 		return IntersectionCircle3Circle3( *this, p_Circle );
 	}
-
+*/
 
 }
