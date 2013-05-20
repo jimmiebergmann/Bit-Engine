@@ -28,7 +28,6 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Math.hpp>
-#include <Bit/System/Vector2.hpp>
 #include <Bit/System/Vector3.hpp>
 
 namespace Bit
@@ -55,6 +54,7 @@ namespace Bit
 		BIT_BOOL Intersection( Line3 p_Line );
 		BIT_BOOL Intersection( Line3 p_Line, Vector3_f32 & p_Intersection );
 		BIT_BOOL Intersection( Sphere p_Sphere );
+		BIT_UINT32 Intersection( Sphere p_Sphere, Vector3_f32 & p_Point1, Vector3_f32 & p_Point2 );
 		BIT_BOOL Intersection( Box p_Box );
 
 		// Public variables

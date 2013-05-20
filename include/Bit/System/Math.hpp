@@ -87,26 +87,28 @@ namespace Bit
 
 	// Intersection tests
 
-	/*
-
 	// Point 2
 	BIT_API BIT_BOOL IntersectionPoint2Line2(	Vector2_f32 p_Point, Line2 p_Line );
-	BIT_API BIT_BOOL IntersectionPoint2Circle(	Vector2_f32 p_Point, Cicle p_Circle );
+	/*BIT_API BIT_BOOL IntersectionPoint2Circle(	Vector2_f32 p_Point, Cicle p_Circle );
 	BIT_API BIT_BOOL IntersectionPoint2Quad(	Vector2_f32 p_Point, Quad p_Quad );
 */
 	// Point 3
 	BIT_API BIT_BOOL IntersectionPoint3Line3(	Vector3_f32 p_Point, Line3 p_Line );
-	/*BIT_API BIT_BOOL IntersectionPoint3Sphere(	Vector3_f32 p_Point, Sphere p_Sphere );
-	BIT_API BIT_BOOL IntersectionPoint3Box(		Vector3_f32 p_Point, Box p_Box );
+	BIT_API BIT_BOOL IntersectionPoint3Sphere(	Vector3_f32 p_Point, Sphere p_Sphere );
+	/*BIT_API BIT_BOOL IntersectionPoint3Box(		Vector3_f32 p_Point, Box p_Box );
 
-	// Line 2
-	BIT_API BIT_BOOL IntersectionLine2Line2(	Line2 p_Line1,	Line2 p_Line2 );
+	// Line 2*/
+	BIT_API BIT_BOOL IntersectionLine2Line2(	Line2 p_Line1,	Line2 p_Line2,		 Vector2_f32 & p_Intersection  );
 	BIT_API BIT_BOOL IntersectionLine2Circle(	Line2 p_Line,	Circle p_Circle );
-	BIT_API BIT_BOOL IntersectionLine2Quad(		Line2 p_Line,	Quad p_Quad );
+	BIT_API BIT_UINT32 IntersectionLine2Circle(	Line2 p_Line,	Circle p_Circle,
+		Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
+	/*BIT_API BIT_BOOL IntersectionLine2Quad(		Line2 p_Line,	Quad p_Quad );
 */
 	// Line 3
 	BIT_API BIT_BOOL IntersectionLine3Line3(	Line3 p_Line1,	Line3 p_Line2,		 Vector3_f32 & p_Intersection );
 	BIT_API BIT_BOOL IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere );
+	BIT_API BIT_UINT32 IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere,
+		Vector3_f32 & p_Point1, Vector3_f32 & p_Point2 );
 	BIT_API BIT_BOOL IntersectionLine3Box(		Line3 p_Line,	Box p_Box );
 /*
 	// Circle
