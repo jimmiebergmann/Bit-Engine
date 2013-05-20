@@ -91,6 +91,8 @@ namespace Bit
 		Vector3_f32 & p_Intersection );
 	BIT_API BIT_BOOL IntersectionLine2Circle2( Line p_Line, Circle p_Circle );
 	BIT_API BIT_BOOL IntersectionLine3Circle3( Line p_Line, Circle p_Circle );
+	BIT_API BIT_BOOL IntersectionLine3Circle3( Line p_Line, Circle p_Circle,
+		BIT_UINT32 & p_IntersectionCount, Vector3_f32 & m_IP1, Vector3_f32 & m_IP2 );
 	BIT_API BIT_BOOL IntersectionCircle2Circle2( Circle p_Circle1, Circle p_Circle2 );
 	BIT_API BIT_BOOL IntersectionCircle3Circle3( Circle p_Circle1, Circle p_Circle2 );
 

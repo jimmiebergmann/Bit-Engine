@@ -58,6 +58,8 @@ namespace Bit
 
 	BIT_API BIT_BOOL IntersectionPoint2Line2( Vector2_f32 p_Point, Line p_Line )
 	{
+		// Resouces: http://www.mathopenref.com/coordtrianglearea.html
+
 		// Calcuate the area from the 3 points
 		BIT_FLOAT32 Area = 
 			(	( p_Point.x * ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) ) +
@@ -75,6 +77,8 @@ namespace Bit
 
 	BIT_API BIT_BOOL IntersectionPoint3Line3( Vector3_f32 p_Point, Line p_Line )
 	{
+		// Resources: http://answers.yahoo.com/question/index?qid=20100821030217AAISaE6
+
 		// Calcuate the area from the 3 points
 		BIT_FLOAT32 Area = 
 			Vector3_f32( p_Line.p[ 1 ] - p_Point ).Cross(
@@ -88,6 +92,7 @@ namespace Bit
 
 		return BIT_FALSE;
 	}
+
 
 	BIT_API BIT_BOOL IntersectionLine2Line2( Line p_Line1, Line p_Line2,
 		Vector3_f32 & p_Intersection )
@@ -148,12 +153,109 @@ namespace Bit
 
 	BIT_API BIT_BOOL IntersectionLine2Circle2( Line p_Line, Circle p_Circle )
 	{
+		/*// Resources: 
+		Vector3_f32 A;
+		A.x = p_Line.p[ 1 ].x - p_Line.p[ 0 ].x;
+		A.y = p_Line.p[ 1 ].y - p_Line.p[ 0 ].y;
+		A.z = sqrt( ( A.x * A.x ) + ( A.y * A.y ) );
+
+		// Calculate the determine
+		BIT_FLOAT32 D = ( p_Line.p[ 0 ].x - p_Line.p[ 1 ].y ) -
+						( p_Line.p[ 1 ].x - p_Line.p[ 0 ].y );
+
+		BIT_FLOAT32 Delta = ( ( p_Circle.Radius * p_Circle.Radius ) * ( A.z * A.z ) ) - ( D * D );
+*/
 		return BIT_FALSE;
 	}
 
 	BIT_API BIT_BOOL IntersectionLine3Circle3( Line p_Line, Circle p_Circle )
 	{
-		return BIT_FALSE;
+		// Resources: http://stackoverflow.com/questions/6533856/ray-sphere-intersection
+
+		const BIT_FLOAT32 xA = p_Line.p[ 0 ].x;
+		const BIT_FLOAT32 yA = p_Line.p[ 0 ].y;
+		const BIT_FLOAT32 zA = p_Line.p[ 0 ].z;
+		const BIT_FLOAT32 xB = p_Line.p[ 1 ].x;
+		const BIT_FLOAT32 yB = p_Line.p[ 1 ].y;
+		const BIT_FLOAT32 zB = p_Line.p[ 1 ].z;
+		const BIT_FLOAT32 xC = p_Circle.Position.x;
+		const BIT_FLOAT32 yC = p_Circle.Position.y;
+		const BIT_FLOAT32 zC = p_Circle.Position.z;
+		const BIT_FLOAT32 r = p_Circle.Radius;
+
+		const BIT_FLOAT32 a = ( (xB-xA) * (xB-xA) ) + ( (yB-yA) * (yB-yA) ) + ( (zB-zA) * (zB-zA) );
+		const BIT_FLOAT32 b = 2.0f *( (xB-xA) * (xA-xC) + (yB-yA) * (yA-yC) + (zB-zA) * (zA-zC) );
+		const BIT_FLOAT32 c = ( (xA-xC) * (xA-xC) ) + ( (yA-yC) * (yA-yC) ) + ( (zA-zC) * (zA-zC) ) - ( r * r );
+
+		// Get the delta( data under the root
+		const BIT_FLOAT32 Delta = ( b * b ) - ( 4.0f * a * c );
+
+		// No intersection at all
+		if( Delta < 0.0f )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionLine3Circle3( Line p_Line, Circle p_Circle,
+		BIT_UINT32 & p_IntersectionCount, Vector3_f32 & m_IP1, Vector3_f32 & m_IP2 )
+	{
+
+		// Resources: http://stackoverflow.com/questions/6533856/ray-sphere-intersection
+
+		const BIT_FLOAT32 xA = p_Line.p[ 0 ].x;
+		const BIT_FLOAT32 yA = p_Line.p[ 0 ].y;
+		const BIT_FLOAT32 zA = p_Line.p[ 0 ].z;
+		const BIT_FLOAT32 xB = p_Line.p[ 1 ].x;
+		const BIT_FLOAT32 yB = p_Line.p[ 1 ].y;
+		const BIT_FLOAT32 zB = p_Line.p[ 1 ].z;
+		const BIT_FLOAT32 xC = p_Circle.Position.x;
+		const BIT_FLOAT32 yC = p_Circle.Position.y;
+		const BIT_FLOAT32 zC = p_Circle.Position.z;
+		const BIT_FLOAT32 r = p_Circle.Radius;
+
+		const BIT_FLOAT32 a = ( (xB-xA) * (xB-xA) ) + ( (yB-yA) * (yB-yA) ) + ( (zB-zA) * (zB-zA) );
+		const BIT_FLOAT32 b = 2.0f *( (xB-xA) * (xA-xC) + (yB-yA) * (yA-yC) + (zB-zA) * (zA-zC) );
+		const BIT_FLOAT32 c = ( (xA-xC) * (xA-xC) ) + ( (yA-yC) * (yA-yC) ) + ( (zA-zC) * (zA-zC) ) - ( r * r );
+
+		// Get the delta( data under the root
+		const BIT_FLOAT32 Delta = ( b * b ) - ( 4.0f * a * c );
+
+		// No intersection at all
+		if( Delta < 0.0f )
+		{
+			return BIT_FALSE;
+		}
+
+		// Find the intersection points
+		BIT_FLOAT32 DeltaSqrt = sqrt( Delta );
+	
+		// Full equation 1
+		BIT_FLOAT32 u1 = ( -b - DeltaSqrt ) / ( 2.0f * a );
+
+		// Set the first interpolation point
+		m_IP1.x = xA + ( u1 * ( xB - xA ) );
+		m_IP1.y = yA + ( u1 * ( yB - yA ) );
+		m_IP1.z = zA + ( u1 * ( zB - zA ) );
+
+		// Are we just getting 1 intersection point?
+		if( EqualEpsilon( Delta, 0.0f ) )
+		{
+			return BIT_TRUE;
+		}
+
+		// The line is going through 2 points
+		// Full equation 2
+		BIT_FLOAT32 u2 = ( -b + DeltaSqrt ) / ( 2.0f * a );
+
+		// Set the first interpolation point
+		m_IP2.x = xA + ( u2 * ( xB - xA ) );
+		m_IP2.y = yA + ( u2 * ( yB - yA ) );
+		m_IP2.z = zA + ( u2 * ( zB - zA ) );
+
+		return BIT_TRUE;
 	}
 
 	BIT_API BIT_BOOL IntersectionCircle2Circle2( Circle p_Circle1, Circle p_Circle2 )

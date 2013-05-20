@@ -95,12 +95,14 @@ namespace Bit
 
 	BIT_BOOL Line::IntersectionCircle2( Circle p_Circle )
 	{
-		return IntersectionLine2Circle2( *this, p_Circle );
+		return IntersectionLine2Circle2( *this, p_Circle);
 	}
 
 	BIT_BOOL Line::IntersectionCircle3( Circle p_Circle )
 	{
-		return IntersectionLine3Circle3( *this, p_Circle );
+		/*BIT_UINT32 Count;
+		Vector3_f32 A, B;*/
+		return IntersectionLine3Circle3( *this, p_Circle/*, Count, A, B*/ );
 	}
 
 
