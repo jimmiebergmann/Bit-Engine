@@ -46,6 +46,21 @@ namespace Bit
 	// Point 2
 	BIT_API BIT_BOOL IntersectionPoint2Line2( Vector2_f32 p_Point, Line2 p_Line )
 	{
+		// Resources: http://answers.yahoo.com/question/index?qid=20100821030217AAISaE6
+
+		Vector3_f32 A( p_Line.p[ 1 ].x - p_Point.x,p_Line.p[ 1 ].y - p_Point.y, 0.0f );
+		Vector3_f32 B( p_Line.p[ 1 ].x - p_Line.p[ 0 ].x, p_Line.p[ 1 ].y - p_Line.p[ 0 ].y, 0.0f  );
+		
+
+		// Calcuate the area from the 3 points
+		BIT_FLOAT32 Area = A.Cross( B ).Magnitude( ) * 0.5f;
+
+		// Use the epsilon function to make sure that things wont get way too buggy
+		if( EqualEpsilon( Area, 0.0f ) )
+		{
+			return BIT_TRUE;
+		}
+
 		return BIT_FALSE;
 	}
 
