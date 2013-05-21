@@ -39,12 +39,23 @@ namespace Bit
 	public:
 
 		// Construcotrs
+		Quad( );
+		Quad( Vector2_f32 p_Size );
+		Quad( Vector2_f32 p_Positsion, Vector2_f32 p_Size );
 
 		// Public functions
+		BIT_FLOAT32 GetArea( ) const;
+		BIT_FLOAT32 GetDiagonal( ) const;
 
 		// Intersection functions
+		BIT_BOOL Intersection( Vector2_f32 p_Point );
+		BIT_BOOL Intersection( Line2 p_Line );
+		BIT_BOOL Intersection( Circle p_Circle );
+		BIT_BOOL Intersection( Quad p_Box );
 
 		// Public variables
+		Vector2_f32 Positsion;
+		Vector2_f32 Size;
 
 
 	};

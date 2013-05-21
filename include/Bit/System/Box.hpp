@@ -51,6 +51,7 @@ namespace Bit
 		// Intersection functions
 		BIT_BOOL Intersection( Vector3_f32 p_Point );
 		BIT_BOOL Intersection( Line3 p_Line );
+		BIT_BOOL Intersection( Sphere p_Sphere );
 		BIT_BOOL Intersection( Box p_Box );
 
 		// Public variables

@@ -23,87 +23,62 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Circle.hpp>
-//#include <Bit/System/Line.hpp>
+#include <Bit/System/Line2.hpp>
+#include <Bit/System/Quad.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-/*
+
 	// Construcotrs
 	Circle::Circle( )
 	{
 	}
-
 	Circle::Circle( const BIT_FLOAT32 p_Radius )
 	{
-		Position = Vector3_f32( 0.0f, 0.0f, 0.0f );
-		Radius = p_Radius;
 	}
-
 	Circle::Circle( const Vector2_f32 p_Position, const BIT_FLOAT32 p_Radius )
 	{
-		Position = Vector3_f32( Position.x, Position.y, 0.0f );
-		Radius = p_Radius;
 	}
 
-	Circle::Circle( const Vector3_f32 p_Position, const BIT_FLOAT32 p_Radius )
-	{
-		Position = p_Position;
-		Radius = p_Radius;
-	}
-
-	// Public functions
-	BIT_FLOAT32 Circle::GetRadius( ) const
-	{
-		return Radius;
-	}
-
+	// Get functions functions
 	BIT_FLOAT32 Circle::GetDiameter( ) const
 	{
-		return Radius * 2.0f;
+		return 2.0f * Radius;
 	}
 
 	BIT_FLOAT32 Circle::GetArea( ) const
 	{
-		return Radius * Radius * BIT_PI;
+		return BIT_PI * Radius * Radius;
 	}
 
 	BIT_FLOAT32 Circle::GetCircumference( ) const
 	{
-		return Radius * 2 * BIT_PI;
+		return 2.0f * BIT_PI * Radius;
 	}
+
 
 	// Intersection functions
-	BIT_BOOL Circle::IntersectionPoint2( Vector2_f32 p_Point )
+	BIT_BOOL Circle::Intersection( Vector2_f32 p_Point )
 	{
-		return IntersectionPoint2Circle2( p_Point, *this );
+		return IntersectionPoint2Circle( p_Point, *this );
 	}
 
-	BIT_BOOL Circle::IntersectionPoint3( Vector3_f32 p_Point )
+	BIT_BOOL Circle::Intersection( Line2 p_Line )
 	{
-		return IntersectionPoint3Circle3( p_Point, *this );
+		return BIT_FALSE;
 	}
 
-	BIT_BOOL Circle::IntersectionLine2( Line p_Line )
+	BIT_BOOL Circle::Intersection( Circle p_Circle )
 	{
-		return IntersectionLine2Circle2( p_Line, *this );
+		//return IntersectionCircleCircle( *this, p_Circle );
+		return BIT_FALSE;
 	}
 
-	BIT_BOOL Circle::IntersectionLine3( Line p_Line )
+	BIT_BOOL Circle::Intersection( Quad p_Box )
 	{
-		return IntersectionLine3Circle3( p_Line, *this );
+		return BIT_FALSE;
 	}
-
-	BIT_BOOL Circle::IntersectionCircle2( Circle p_Circle )
-	{
-		return IntersectionCircle2Circle2( *this, p_Circle );
-	}
-
-	BIT_BOOL Circle::IntersectionCircle3( Circle p_Circle )
-	{
-		return IntersectionCircle3Circle3( *this, p_Circle );
-	}
-*/
 
 }

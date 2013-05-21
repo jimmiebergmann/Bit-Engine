@@ -55,17 +55,39 @@ namespace Bit
 		BIT_FLOAT32 Area = A.Cross( B ).Magnitude( ) * 0.5f;
 
 		// Use the epsilon function to make sure that things wont get way too buggy
-		if( EqualEpsilon( Area, 0.0f ) )
+		if( !EqualEpsilon( Area, 0.0f ) )
 		{
-			return BIT_TRUE;
+			return BIT_FALSE;
 		}
 
-		return BIT_FALSE;
+		return BIT_TRUE;
 	}
 
-	/*BIT_API BIT_BOOL IntersectionPoint2Circle(	Vector2_f32 p_Point, Cicle p_Circle );
-	BIT_API BIT_BOOL IntersectionPoint2Quad(	Vector2_f32 p_Point, Quad p_Quad );
-*/
+	BIT_API BIT_BOOL IntersectionPoint2Circle(	Vector2_f32 p_Point, Circle p_Circle )
+	{
+		if( Vector2_f32( p_Point - p_Circle.Position ).Magnitude( ) > p_Circle.Radius )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionPoint2Quad( Vector2_f32 p_Point, Quad p_Quad )
+	{
+		Vector2_f32 Size = p_Quad.Size / 2.0f;
+
+		if( p_Point.x > ( p_Quad.Positsion.x + Size.x ) ||
+			p_Point.x < ( p_Quad.Positsion.x - Size.x ) ||
+			p_Point.y > ( p_Quad.Positsion.y + Size.y ) ||
+			p_Point.y < ( p_Quad.Positsion.y - Size.y ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
 	// Point 3
 	BIT_API BIT_BOOL IntersectionPoint3Line3( Vector3_f32 p_Point, Line3 p_Line )
 	{
@@ -77,12 +99,12 @@ namespace Bit
 			Vector3_f32( p_Line.p[ 1 ] - p_Line.p[ 0 ] ) ).Magnitude( ) * 0.5f;
 
 		// Use the epsilon function to make sure that things wont get way too buggy
-		if( EqualEpsilon( Area, 0.0f ) )
+		if( !EqualEpsilon( Area, 0.0f ) )
 		{
-			return BIT_TRUE;
+			return BIT_FALSE;
 		}
 
-		return BIT_FALSE;
+		return BIT_TRUE;
 	}
 
 	BIT_API BIT_BOOL IntersectionPoint3Sphere( Vector3_f32 p_Point, Sphere p_Sphere )
@@ -95,12 +117,52 @@ namespace Bit
 		return BIT_TRUE;
 	}
 
-	/*BIT_API BIT_BOOL IntersectionPoint3Box(		Vector3_f32 p_Point, Box p_Box );
-*/
+	BIT_API BIT_BOOL IntersectionPoint3Box( Vector3_f32 p_Point, Box p_Box )
+	{
+		Vector3_f32 Size = p_Box.Size / 2.0f;
+
+		if( p_Point.x > ( p_Box.Positsion.x + Size.x ) ||
+			p_Point.x < ( p_Box.Positsion.x - Size.x ) ||
+			p_Point.y > ( p_Box.Positsion.y + Size.y ) ||
+			p_Point.y < ( p_Box.Positsion.y - Size.y ) ||
+			p_Point.z > ( p_Box.Positsion.z + Size.z ) ||
+			p_Point.z < ( p_Box.Positsion.z - Size.z ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
 	// Line 2
 	BIT_API BIT_BOOL IntersectionLine2Line2( Line2 p_Line1,	Line2 p_Line2, Vector2_f32 & p_Intersection )
 	{
-		return BIT_FALSE;
+		// http://mathworld.wolfram.com/Line-LineIntersection.html
+		// ( Same as in 3D )
+		Vector3_f32 da( p_Line1.p[ 1 ].x - p_Line1.p[ 0 ].x, p_Line1.p[ 1 ].y - p_Line1.p[ 0 ].y, 0.0f );
+		Vector3_f32 db( p_Line2.p[ 1 ].x - p_Line2.p[ 0 ].x, p_Line2.p[ 1 ].y - p_Line2.p[ 0 ].y, 0.0f );
+		Vector3_f32 dc( p_Line2.p[ 0 ].x - p_Line1.p[ 0 ].x, p_Line2.p[ 0 ].y - p_Line1.p[ 0 ].y, 0.0f );
+
+		// The lines are not coplanar
+		if( dc.Dot( da.Cross( db ) ) != 0.0f )
+		{
+			return BIT_FALSE;
+		}
+	
+		Vector3_f32 cs = da.Cross( db );
+		BIT_FLOAT32 s = dc.Cross( db ).Dot( da.Cross( db ) ) /
+			( ( cs.x * cs.x ) + ( cs.y * cs.y )+ ( cs.z * cs.z ) );
+
+		if (s < 0.0f && s > 1.0f)
+		{
+			Vector3_f32 Intersection3D = Vector3_f32( p_Line1.p[ 0 ].x, p_Line1.p[ 0 ].y, 0.0f ) + ( da * Vector3_f32( s, s, s ) );
+			p_Intersection.x = Intersection3D.x;
+			p_Intersection.y = Intersection3D.y;
+			
+			return BIT_FALSE;
+		}
+	
+		return BIT_TRUE;
 	}
 
 	BIT_API BIT_BOOL IntersectionLine2Circle( Line2 p_Line, Circle p_Circle )
@@ -121,7 +183,6 @@ namespace Bit
 	{
 		// http://mathworld.wolfram.com/Line-LineIntersection.html
 		// in 3d; will also work in 2d if z components are 0
-	
 		Vector3_f32 da = p_Line1.p[ 1 ] - p_Line1.p[ 0 ]; 
 		Vector3_f32 db = p_Line2.p[ 1 ] - p_Line2.p[ 0 ];
 		Vector3_f32 dc = p_Line2.p[ 0 ] - p_Line1.p[ 0 ];
@@ -136,16 +197,13 @@ namespace Bit
 		BIT_FLOAT32 s = dc.Cross( db ).Dot( da.Cross( db ) ) /
 			( ( cs.x * cs.x ) + ( cs.y * cs.y )+ ( cs.z * cs.z ) );
 
-
-		//Point s = dot(cross(dc,db),cross(da,db)) / norm2(cross(da,db));
-		if (s >= 0.0f && s <= 1.0f)
+		if (s < 0.0f && s > 1.0f)
 		{
 			p_Intersection = p_Line1.p[ 0 ] + ( da * Vector3_f32( s, s, s ) );
-			//ip = a.first + da * Coord(s,s,s);
-			return BIT_TRUE;
+			return BIT_FALSE;
 		}
 	
-		return BIT_FALSE;
+		return BIT_TRUE;
 	}
 
 	BIT_API BIT_BOOL IntersectionLine3Sphere( Line3 p_Line, Sphere p_Sphere )

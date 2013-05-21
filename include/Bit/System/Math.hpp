@@ -89,15 +89,15 @@ namespace Bit
 
 	// Point 2
 	BIT_API BIT_BOOL IntersectionPoint2Line2(	Vector2_f32 p_Point, Line2 p_Line );
-	/*BIT_API BIT_BOOL IntersectionPoint2Circle(	Vector2_f32 p_Point, Cicle p_Circle );
+	BIT_API BIT_BOOL IntersectionPoint2Circle(	Vector2_f32 p_Point, Circle p_Circle );
 	BIT_API BIT_BOOL IntersectionPoint2Quad(	Vector2_f32 p_Point, Quad p_Quad );
-*/
+
 	// Point 3
 	BIT_API BIT_BOOL IntersectionPoint3Line3(	Vector3_f32 p_Point, Line3 p_Line );
 	BIT_API BIT_BOOL IntersectionPoint3Sphere(	Vector3_f32 p_Point, Sphere p_Sphere );
-	/*BIT_API BIT_BOOL IntersectionPoint3Box(		Vector3_f32 p_Point, Box p_Box );
+	BIT_API BIT_BOOL IntersectionPoint3Box(		Vector3_f32 p_Point, Box p_Box );
 
-	// Line 2*/
+	// Line 2
 	BIT_API BIT_BOOL IntersectionLine2Line2(	Line2 p_Line1,	Line2 p_Line2,		 Vector2_f32 & p_Intersection  );
 	BIT_API BIT_BOOL IntersectionLine2Circle(	Line2 p_Line,	Circle p_Circle );
 	BIT_API BIT_UINT32 IntersectionLine2Circle(	Line2 p_Line,	Circle p_Circle,

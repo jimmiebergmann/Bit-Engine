@@ -73,7 +73,7 @@ namespace Bit
 	// Intersection functions
 	BIT_BOOL Box::Intersection( Vector3_f32 p_Point )
 	{
-		return BIT_FALSE;
+		return IntersectionPoint3Box( p_Point, *this );
 	}
 
 	BIT_BOOL Box::Intersection( Line3 p_Line )
@@ -81,6 +81,11 @@ namespace Bit
 		return BIT_FALSE;
 	}
 
+	BIT_BOOL Box::Intersection( Sphere p_Sphere )
+	{
+		return BIT_FALSE;
+	}
+	
 	BIT_BOOL Box::Intersection( Box p_Box )
 	{
 		return BIT_FALSE;
