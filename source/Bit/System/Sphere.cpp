@@ -37,6 +37,7 @@ namespace Bit
 	}
 
 	Sphere::Sphere( const BIT_FLOAT32 p_Radius ) :
+		Position( 0.0f, 0.0f, 0.0f ),
 		Radius( p_Radius )
 	{
 	}
@@ -50,20 +51,26 @@ namespace Bit
 
 
 	// Get functions functions
-	BIT_FLOAT32 Sphere::GetDiameter( ) const
-	{
-		return Radius * 2.0f;
-	}
-
 	BIT_FLOAT32 Sphere::GetArea( ) const
 	{
-		return Radius * Radius * BIT_PI;
+		return 4.0f * Radius * Radius * BIT_PI;
 	}
 
 	BIT_FLOAT32 Sphere::GetCircumference( ) const
 	{
 		return Radius * 2 * BIT_PI;
 	}
+
+	BIT_FLOAT32 Sphere::GetDiameter( ) const
+	{
+		return Radius * 2.0f;
+	}
+
+	BIT_FLOAT32 Sphere::GetVolume( ) const
+	{
+		return ( 4.0f * Radius * Radius * Radius * BIT_PI ) / 3.0f;
+	}
+
 
 	// Intersection functions
 	BIT_BOOL Sphere::Intersection( Vector3_f32 p_Point )

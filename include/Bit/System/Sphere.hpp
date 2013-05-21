@@ -44,10 +44,11 @@ namespace Bit
 		Sphere( const Vector3_f32 p_Position, const BIT_FLOAT32 p_Radius );
 
 		// Get functions functions
-		BIT_FLOAT32 GetDiameter( ) const;
 		BIT_FLOAT32 GetArea( ) const;
 		BIT_FLOAT32 GetCircumference( ) const;
-
+		BIT_FLOAT32 GetDiameter( ) const;
+		BIT_FLOAT32 GetVolume( ) const;
+		
 		// Intersection functions
 		BIT_BOOL Intersection( Vector3_f32 p_Point );
 		BIT_BOOL Intersection( Line3 p_Line );
