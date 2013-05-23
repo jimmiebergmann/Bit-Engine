@@ -110,10 +110,12 @@ namespace Bit
 	BIT_API BIT_UINT32 IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere,
 		Vector3_f32 & p_Point1, Vector3_f32 & p_Point2 );
 	BIT_API BIT_BOOL IntersectionLine3Box(		Line3 p_Line,	Box p_Box );
-/*
+
 	// Circle
-	BIT_API BIT_BOOL IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2 );
-	BIT_API BIT_BOOL IntersectionCircleQuad(	Circle p_Circle,	Quad p_Quad );
+	BIT_API BIT_SINT32 IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2 );
+	BIT_API BIT_SINT32 IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2,
+		Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
+	/*BIT_API BIT_BOOL IntersectionCircleQuad(	Circle p_Circle,	Quad p_Quad );
 
 	// Quad
 	BIT_API BIT_BOOL IntersectionQuadQuad(		Quad p_Quad1,	Quad p_Quad2 );

@@ -167,13 +167,47 @@ namespace Bit
 
 	BIT_API BIT_BOOL IntersectionLine2Circle( Line2 p_Line, Circle p_Circle )
 	{
-		return BIT_FALSE;
+		BIT_FLOAT32 k = ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) /
+						( p_Line.p[ 0 ].x - p_Line.p[ 1 ].x );
+
+		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y - p_Circle.Position.y ) - ( k * p_Line.p[ 0 ].x - p_Circle.Position.x  ); 
+
+		BIT_FLOAT32 a = ( k * k ) + 1;
+		BIT_FLOAT32 b = 2.0f * k * m;
+		BIT_FLOAT32 c = ( m * m ) - ( p_Circle.Radius * p_Circle.Radius );
+
+		BIT_FLOAT32 z = ( b * b ) - ( 4.0f * a * c );
+
+		// The line missed the circle
+		if( z < 0.0f )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
 	}
 
 	BIT_API BIT_UINT32 IntersectionLine2Circle(	Line2 p_Line, Circle p_Circle,
 		Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 )
 	{
-		return BIT_FALSE;
+		BIT_FLOAT32 k = ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) /
+						( p_Line.p[ 0 ].x - p_Line.p[ 1 ].x );
+
+		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y - p_Circle.Position.y ) - ( k * p_Line.p[ 0 ].x - p_Circle.Position.x  ); 
+
+		BIT_FLOAT32 a = ( k * k ) + 1;
+		BIT_FLOAT32 b = 2.0f * k * m;
+		BIT_FLOAT32 c = ( m * m ) - ( p_Circle.Radius * p_Circle.Radius );
+
+		BIT_FLOAT32 z = ( b * b ) - ( 4.0f * a * c );
+
+		// The line missed the circle
+		if( z < 0.0f )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
 	}
 
 	/*BIT_API BIT_BOOL IntersectionLine2Quad(		Line2 p_Line,	Quad p_Quad );
@@ -299,10 +333,94 @@ namespace Bit
 	{
 		return BIT_FALSE;
 	}
-/*
+
 	// Circle
-	BIT_API BIT_BOOL IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2 );
-	BIT_API BIT_BOOL IntersectionCircleQuad(	Circle p_Circle,	Quad p_Quad );
+	BIT_API BIT_SINT32 IntersectionCircleCircle( Circle p_Circle1, Circle p_Circle2 )
+	{
+		BIT_FLOAT32 Distance = Vector2_f32( p_Circle1.Position - p_Circle2.Position ).Magnitude( );
+
+		// No solutions
+		if( Distance > ( p_Circle1.Radius + p_Circle2.Radius ) )
+		{
+			return -1;
+		}
+
+		// Inside each other but no solutions
+		if( Distance < abs( p_Circle1.Radius - p_Circle2.Radius ) )
+		{
+			return 0;
+		}
+	
+		// Infinite numbers of solutions
+		if( ( Distance == 0 ) && ( p_Circle1.Radius == p_Circle2.Radius ) )
+		{
+			return 0;
+		};
+
+		// One solution
+		if( Distance == p_Circle1.Radius + p_Circle2.Radius )
+		{
+			return 1;
+		}
+
+		// Two solutions
+		return 2;
+	}
+
+	BIT_API BIT_SINT32 IntersectionCircleCircle( Circle p_Circle1, Circle p_Circle2,
+		Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 )
+	{
+		BIT_FLOAT32 Distance = Vector2_f32( p_Circle1.Position - p_Circle2.Position ).Magnitude( );
+
+		// No solutions
+		if( Distance > ( p_Circle1.Radius + p_Circle2.Radius ) )
+		{
+			return -1;
+		}
+
+		// Inside each other but no solutions
+		if( Distance < abs( p_Circle1.Radius - p_Circle2.Radius ) )
+		{
+			return 0;
+		}
+	
+		// Infinite numbers of solutions
+		if( ( Distance == 0 ) && ( p_Circle1.Radius == p_Circle2.Radius ) )
+		{
+			return 0;
+		};
+
+		// Tiangle width
+		BIT_FLOAT32 A = (	( p_Circle1.Radius * p_Circle1.Radius ) -
+							( p_Circle2.Radius * p_Circle2.Radius ) +
+							( Distance * Distance ) ) /
+							( 2.0f * Distance );
+		
+		// Triangle Height
+		BIT_FLOAT32 H = sqrt( ( p_Circle1.Radius * p_Circle1.Radius ) - ( A * A ) );
+
+		// Corner vector
+		Vector2_f32 Corner = p_Circle1.Position +
+			(( p_Circle2.Position - p_Circle1.Position ) * A ) / Distance;
+
+		// One solution
+		if( Distance == p_Circle1.Radius + p_Circle2.Radius )
+		{
+			p_Point1 = Corner;
+			return 1;
+		}
+
+		// Two solutions
+		p_Point1 = Vector2_f32( Corner.x + ( H * ( p_Circle2.Position.y - p_Circle1.Position.y ) / Distance ),
+								Corner.y - ( H * ( p_Circle2.Position.x - p_Circle1.Position.x ) / Distance ) );
+
+		p_Point2 = Vector2_f32( Corner.x - ( H * ( p_Circle2.Position.y - p_Circle1.Position.y ) / Distance ),
+								Corner.y + ( H * ( p_Circle2.Position.x - p_Circle1.Position.x ) / Distance ) );
+
+		return 2;
+	}
+
+	/*BIT_API BIT_BOOL IntersectionCircleQuad(	Circle p_Circle,	Quad p_Quad );
 
 	// Quad
 	BIT_API BIT_BOOL IntersectionQuadQuad(		Quad p_Quad1,	Quad p_Quad2 );
@@ -324,21 +442,21 @@ namespace Bit
 		// Returning the numbers of roots
 
 		// Root data
-		BIT_FLOAT32 Z = ( p_B * p_B ) - (4 * p_A * p_C);
+		BIT_FLOAT32 z = ( p_B * p_B ) - ( 4.0f * p_A * p_C );
 
 		// Roots were found
-		if( Z < 0.0f )
+		if( z < 0.0f )
 		{
 			return 0;
 		}
-		else if( Z == 0.0f )
+		else if( z == 0.0f )
 		{
 			p_X1 = -p_B / ( 2.0f * p_A );
 			return 1;
 		}
 		
 		// Else if we have 2 roots
-		BIT_FLOAT32 Root = sqrt( Z );
+		BIT_FLOAT32 Root = sqrt( z );
 		p_X1 = (-p_B - Root) / ( 2.0f * p_A );
 		p_X2 = (-p_B + Root) / ( 2.0f * p_A );
 

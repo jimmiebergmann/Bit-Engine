@@ -52,7 +52,9 @@ namespace Bit
 		// Intersection functions
 		BIT_BOOL Intersection( Vector2_f32 p_Point );
 		BIT_BOOL Intersection( Line2 p_Line );
-		BIT_BOOL Intersection( Circle p_Circle );
+		BIT_UINT32 Intersection( Line2 p_Line, Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
+		BIT_SINT32 Intersection( Circle p_Circle );
+		BIT_SINT32 Intersection( Circle p_Circle, Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
 		BIT_BOOL Intersection( Quad p_Box );
 
 		// Public variables
