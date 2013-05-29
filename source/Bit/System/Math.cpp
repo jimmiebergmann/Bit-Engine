@@ -574,8 +574,34 @@ namespace Bit
 		return 2;
 	}
 
-	/*BIT_API BIT_BOOL IntersectionSphereBox(		Sphere p_Sphere,	Box p_Box );
-*/
+	BIT_API BIT_BOOL IntersectionSphereBox( Sphere p_Sphere, Box p_Box )
+	{
+		// Is the center of the circle inside the quad?
+		if( IntersectionPoint3Box( p_Sphere.Position, p_Box ) )
+		{
+			return BIT_TRUE;
+		}
+
+		Vector3_f32 BoxLow = p_Box.GetLowCoords( );
+		Vector3_f32 BoxHigh = p_Box.GetHighCoords( );
+
+		// Get the closest coordinate ( circle origin - quad boarder )
+		Vector3_f32 Closest;
+		Closest.x = Clamp< BIT_FLOAT32 >( p_Sphere.Position.x, BoxLow.x, BoxHigh.x );
+		Closest.y = Clamp< BIT_FLOAT32 >( p_Sphere.Position.y, BoxLow.y, BoxHigh.y );
+		Closest.z = Clamp< BIT_FLOAT32 >( p_Sphere.Position.z, BoxLow.z, BoxHigh.z );
+
+		// Calculate the distance
+		BIT_FLOAT32 Distance = Vector3_f32( p_Sphere.Position - Closest ).Magnitude( );
+
+		if( Distance > p_Sphere.Radius )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
 	// Box
 	BIT_API BIT_BOOL IntersectionBoxBox( Box p_Box1, Box p_Box2 )
 	{

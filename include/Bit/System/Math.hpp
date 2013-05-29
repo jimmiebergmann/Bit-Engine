@@ -136,8 +136,8 @@ namespace Bit
 
 	// Sphere
 	BIT_API BIT_SINT32 IntersectionSphereSphere(	Sphere p_Sphere1,	Sphere p_Sphere2 );
-	/*BIT_API BIT_BOOL IntersectionSphereBox(		Sphere p_Sphere,	Box p_Box );
-*/
+	BIT_API BIT_BOOL IntersectionSphereBox(		Sphere p_Sphere,	Box p_Box );
+
 	// Box
 	BIT_API BIT_BOOL IntersectionBoxBox(		Box p_Box1,	Box p_Box2 );
 

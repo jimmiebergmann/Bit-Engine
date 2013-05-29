@@ -95,7 +95,7 @@ namespace Bit
 
 	BIT_BOOL Sphere::Intersection( Box p_Box )
 	{
-		return BIT_FALSE;
+		return IntersectionSphereBox( *this, p_Box );
 	}
 
 }
