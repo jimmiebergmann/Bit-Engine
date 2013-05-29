@@ -210,8 +210,71 @@ namespace Bit
 		return BIT_TRUE;
 	}
 
-	/*BIT_API BIT_BOOL IntersectionLine2Quad(		Line2 p_Line,	Quad p_Quad );
-*/
+	BIT_API BIT_BOOL IntersectionLine2Quad( Line2 p_Line, Quad p_Quad )
+	{
+		// Low and high coordinates of the quad
+		Vector2_f32 QuadLow = p_Quad.GetLowCoords( );
+		Vector2_f32 QuadHigh = p_Quad.GetHighCoords( );
+		Vector2_f32 Direction = p_Line.GetDirection( );
+
+		// Check if the line is parallel with the quad.
+		for( BIT_MEMSIZE i = 0; i < 2; i++ )
+		{
+			if( Direction[ i ] == 0.0f )
+			{
+				// Is the line intersecting with the quad.
+				if( Direction[ i ] >= QuadLow[ i ] ||
+					Direction[ i ] <= QuadHigh[ i ] )
+				{
+					return BIT_TRUE;
+				}
+				else
+				{
+					return BIT_FALSE;
+				}
+			}
+		}
+
+		// So the line isn't axis aligned...
+
+		// Variables from the line's equation: y = kx + m
+		BIT_FLOAT32 a = 0.0f;
+		BIT_FLOAT32 k = ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) /
+						( p_Line.p[ 0 ].x - p_Line.p[ 1 ].x );
+		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y ) - ( k * p_Line.p[ 0 ].x ); 
+		
+
+		// X low
+		a = ( k * QuadLow.x ) + m;
+		if( a >= QuadLow.y && a <= QuadHigh.y )
+		{
+			return BIT_TRUE;
+		}
+
+		// X high
+		a = ( k * QuadHigh.x ) + m;
+		if( a >= QuadLow.y && a <= QuadHigh.y )
+		{
+			return BIT_TRUE;
+		}
+
+		// Y low
+		a = ( QuadLow.y - m ) / k;
+		if( a >= QuadLow.x && a <= QuadHigh.x )
+		{
+			return BIT_TRUE;
+		}
+
+		// Y high
+		a = ( QuadHigh.y - m ) / k;
+		if( a >= QuadLow.x && a <= QuadHigh.x )
+		{
+			return BIT_TRUE;
+		}
+
+		return BIT_FALSE;
+	}
+
 	// Line 3
 	BIT_API BIT_BOOL IntersectionLine3Line3( Line3 p_Line1,	Line3 p_Line2, Vector3_f32 & p_Intersection )
 	{
@@ -328,11 +391,11 @@ namespace Bit
 
 		return 2;
 	}
-
+/*
 	BIT_API BIT_BOOL IntersectionLine3Box( Line3 p_Line, Box p_Box )
 	{
 		return BIT_FALSE;
-	}
+	}*/
 
 	// Circle
 	BIT_API BIT_SINT32 IntersectionCircleCircle( Circle p_Circle1, Circle p_Circle2 )
@@ -420,19 +483,156 @@ namespace Bit
 		return 2;
 	}
 
-	/*BIT_API BIT_BOOL IntersectionCircleQuad(	Circle p_Circle,	Quad p_Quad );
+	BIT_API BIT_BOOL IntersectionCircleQuad( Circle p_Circle, Quad p_Quad )
+	{
+		// Is the center of the circle inside the quad?
+		if( IntersectionPoint2Quad( p_Circle.Position, p_Quad ) )
+		{
+			return BIT_TRUE;
+		}
+
+		Vector2_f32 QuadLow = p_Quad.GetLowCoords( );
+		Vector2_f32 QuadHigh = p_Quad.GetHighCoords( );
+
+		// Get the closest coordinate ( circle origin - quad boarder )
+		Vector2_f32 Closest;
+		Closest.x = Clamp< BIT_FLOAT32 >( p_Circle.Position.x, QuadLow.x, QuadHigh.x );
+		Closest.y = Clamp< BIT_FLOAT32 >( p_Circle.Position.y, QuadLow.y, QuadHigh.y );
+
+		// Calculate the distance
+		BIT_FLOAT32 Distance = Vector2_f32( p_Circle.Position - Closest ).Magnitude( );
+
+		if( Distance > p_Circle.Radius )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
 
 	// Quad
-	BIT_API BIT_BOOL IntersectionQuadQuad(		Quad p_Quad1,	Quad p_Quad2 );
+	BIT_API BIT_BOOL IntersectionQuadQuad( Quad p_Quad1, Quad p_Quad2 )
+	{
+		// Pre-calculate all the points in the first quad
+		Vector2_f32 QuadPoints[ 4 ] =
+		{
+				p_Quad1.Positsion - ( p_Quad1.Size / 2.0f ),
+				Vector2_f32(	p_Quad1.Positsion.x + ( p_Quad1.Size.x / 2.0f ),
+								p_Quad1.Positsion.y - ( p_Quad1.Size.y / 2.0f ) ),
+				p_Quad1.Positsion + ( p_Quad1.Size / 2.0f ),
+				Vector2_f32(	p_Quad1.Positsion.x - ( p_Quad1.Size.x / 2.0f ),
+								p_Quad1.Positsion.y + ( p_Quad1.Size.y / 2.0f ) )
+		};
+
+		// Calculate the low and high values of the bound box we are testing all the points against.
+		Vector2_f32 Low(	p_Quad2.Positsion - ( p_Quad2.Size / 2.0f )	);
+		Vector2_f32 High(	p_Quad2.Positsion + ( p_Quad2.Size / 2.0f )	);
+
+		// Go through all the points and check if any of them are inside the bounding box.
+		for( BIT_MEMSIZE i = 0; i < 4; i++ )
+		{
+			if( QuadPoints[ i ].x <= High.x && QuadPoints[ i ].x >= Low.x &&
+				QuadPoints[ i ].y <= High.y && QuadPoints[ i ].y >= Low.y )
+			{
+				return BIT_TRUE;
+			}
+		}
+
+		return BIT_FALSE;
+	}
 
 	// Sphere
-	BIT_API BIT_BOOL IntersectionSphereSphere(	Sphere p_Sphere1,	Sphere p_Sphere2 );
-	BIT_API BIT_BOOL IntersectionSphereBox(		Sphere p_Sphere,	Box p_Box );
+	BIT_API BIT_SINT32 IntersectionSphereSphere( Sphere p_Sphere1, Sphere p_Sphere2 )
+	{
+		BIT_FLOAT32 Distance = Vector3_f32( p_Sphere1.Position - p_Sphere2.Position ).Magnitude( );
 
+		// No solutions
+		if( Distance > ( p_Sphere1.Radius + p_Sphere2.Radius ) )
+		{
+			return -1;
+		}
+
+		// Inside each other but no solutions
+		if( Distance < abs( p_Sphere1.Radius - p_Sphere2.Radius ) )
+		{
+			return 0;
+		}
+	
+		// Infinite numbers of solutions
+		if( ( Distance == 0 ) && ( p_Sphere1.Radius == p_Sphere2.Radius ) )
+		{
+			return 0;
+		};
+
+		// One solution
+		if( Distance == p_Sphere1.Radius + p_Sphere2.Radius )
+		{
+			return 1;
+		}
+
+		// Two solutions
+		return 2;
+	}
+
+	/*BIT_API BIT_BOOL IntersectionSphereBox(		Sphere p_Sphere,	Box p_Box );
+*/
 	// Box
-	BIT_API BIT_BOOL IntersectionBoxBox(		Box p_Box1,	Box p_Box2 );
+	BIT_API BIT_BOOL IntersectionBoxBox( Box p_Box1, Box p_Box2 )
+	{
+		// Pre-calculate all the points in the first quad
+		Vector3_f32 BoxPoints[ 8 ] =
+		{
+			p_Box1.Positsion - ( p_Box1.Size / 2.0f ),
 
-	*/
+			Vector3_f32(	p_Box1.Positsion.x + ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y - ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z - ( p_Box1.Size.z / 2.0f )	),
+
+			Vector3_f32(	p_Box1.Positsion.x + ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y + ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z - ( p_Box1.Size.z / 2.0f )	),
+
+			Vector3_f32(	p_Box1.Positsion.x - ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y + ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z - ( p_Box1.Size.z / 2.0f )	),
+
+
+
+			Vector3_f32(	p_Box1.Positsion.x - ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y - ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z + ( p_Box1.Size.z / 2.0f )	),
+
+			Vector3_f32(	p_Box1.Positsion.x + ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y - ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z + ( p_Box1.Size.z / 2.0f )	),
+
+			p_Box1.Positsion + ( p_Box1.Size / 2.0f ),
+
+			Vector3_f32(	p_Box1.Positsion.x - ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y + ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z + ( p_Box1.Size.z / 2.0f )	)
+
+		};
+
+		// Calculate the low and high values of the bound box we are testing all the points against.
+		Vector3_f32 Low(	p_Box2.Positsion - ( p_Box2.Size / 2.0f )	);
+		Vector3_f32 High(	p_Box2.Positsion + ( p_Box2.Size / 2.0f )	);
+
+		// Go through all the points and check if any of them are inside the bounding box.
+		for( BIT_MEMSIZE i = 0; i < 8; i++ )
+		{
+			if( BoxPoints[ i ].x <= High.x && BoxPoints[ i ].x >= Low.x &&
+				BoxPoints[ i ].y <= High.y && BoxPoints[ i ].y >= Low.y &&
+				BoxPoints[ i ].z <= High.z && BoxPoints[ i ].z >= Low.z )
+			{
+				return BIT_TRUE;
+			}
+		}
+
+		return BIT_FALSE;
+	}
+
+	
 
 
 	// Quadratic equation solver

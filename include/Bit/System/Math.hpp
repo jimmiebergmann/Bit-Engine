@@ -75,6 +75,20 @@ namespace Bit
 		return tan( DegreesToRadians( p_angle ) );
 	}
 
+	template < typename T >
+	BIT_INLINE T Clamp( const T p_Value, const T p_Min, const T p_Max )
+	{
+		if( p_Value < p_Min )
+		{
+			return p_Min;
+		}
+		if( p_Value > p_Max )
+		{
+			return p_Max;
+		}
+		return p_Value;
+	}
+
 	BIT_INLINE BIT_BOOL EqualEpsilon( BIT_FLOAT32 p_N1, BIT_FLOAT32 p_N2 )
 	{
 		if( p_N1 > ( p_N2 + BIT_EPSILON ) || p_N1 < ( p_N2 - BIT_EPSILON ) )
@@ -102,49 +116,32 @@ namespace Bit
 	BIT_API BIT_BOOL IntersectionLine2Circle(	Line2 p_Line,	Circle p_Circle );
 	BIT_API BIT_UINT32 IntersectionLine2Circle(	Line2 p_Line,	Circle p_Circle,
 		Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
-	/*BIT_API BIT_BOOL IntersectionLine2Quad(		Line2 p_Line,	Quad p_Quad );
-*/
+	BIT_API BIT_BOOL IntersectionLine2Quad(		Line2 p_Line,	Quad p_Quad );
+
 	// Line 3
 	BIT_API BIT_BOOL IntersectionLine3Line3(	Line3 p_Line1,	Line3 p_Line2,		 Vector3_f32 & p_Intersection );
 	BIT_API BIT_BOOL IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere );
 	BIT_API BIT_UINT32 IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere,
 		Vector3_f32 & p_Point1, Vector3_f32 & p_Point2 );
-	BIT_API BIT_BOOL IntersectionLine3Box(		Line3 p_Line,	Box p_Box );
-
+	/*BIT_API BIT_BOOL IntersectionLine3Box(		Line3 p_Line,	Box p_Box );
+*/
 	// Circle
 	BIT_API BIT_SINT32 IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2 );
 	BIT_API BIT_SINT32 IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2,
 		Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
-	/*BIT_API BIT_BOOL IntersectionCircleQuad(	Circle p_Circle,	Quad p_Quad );
+	BIT_API BIT_BOOL IntersectionCircleQuad(	Circle p_Circle,	Quad p_Quad );
 
 	// Quad
 	BIT_API BIT_BOOL IntersectionQuadQuad(		Quad p_Quad1,	Quad p_Quad2 );
 
 	// Sphere
-	BIT_API BIT_BOOL IntersectionSphereSphere(	Sphere p_Sphere1,	Sphere p_Sphere2 );
-	BIT_API BIT_BOOL IntersectionSphereBox(		Sphere p_Sphere,	Box p_Box );
-
+	BIT_API BIT_SINT32 IntersectionSphereSphere(	Sphere p_Sphere1,	Sphere p_Sphere2 );
+	/*BIT_API BIT_BOOL IntersectionSphereBox(		Sphere p_Sphere,	Box p_Box );
+*/
 	// Box
 	BIT_API BIT_BOOL IntersectionBoxBox(		Box p_Box1,	Box p_Box2 );
 
-	*/
-
-
-
-	/*
-	BIT_API BIT_BOOL IntersectionPoint2Circle2( Vector2_f32 p_Point, Circle p_Circle );
-	BIT_API BIT_BOOL IntersectionPoint3Circle3( Vector3_f32 p_Point, Circle p_Circle );
-	BIT_API BIT_BOOL IntersectionPoint2Line2( Vector2_f32 p_Point, Line p_Line );
-	BIT_API BIT_BOOL IntersectionPoint3Line3( Vector3_f32 p_Point, Line p_Line );
-	BIT_API BIT_BOOL IntersectionLine2Line2( Line p_Line1, Line p_Line2,
-		Vector3_f32 & p_Intersection );
-	BIT_API BIT_BOOL IntersectionLine2Circle2( Line p_Line, Circle p_Circle );
-	BIT_API BIT_BOOL IntersectionLine3Circle3( Line p_Line, Circle p_Circle );
-	BIT_API BIT_BOOL IntersectionLine3Circle3( Line p_Line, Circle p_Circle,
-		BIT_UINT32 & p_IntersectionCount, Vector3_f32 & m_IP1, Vector3_f32 & m_IP2 );
-	BIT_API BIT_BOOL IntersectionCircle2Circle2( Circle p_Circle1, Circle p_Circle2 );
-	BIT_API BIT_BOOL IntersectionCircle3Circle3( Circle p_Circle1, Circle p_Circle2 );
-*/
+	
 	// Quadratic equation solver
 	BIT_API BIT_UINT32 QuadraticEquation( const BIT_FLOAT32 p_A, const BIT_FLOAT32 p_B,
 		const BIT_FLOAT32 p_C, BIT_FLOAT32 & p_X1, BIT_FLOAT32 & p_X2 );

@@ -42,7 +42,7 @@ namespace Bit
 		// Construcotrs
 		Circle( );
 		Circle( const BIT_FLOAT32 p_Radius );
-		Circle( const Vector2_f32 p_Position, const BIT_FLOAT32 p_Radius );
+		Circle( const BIT_FLOAT32 p_Radius, const Vector2_f32 p_Position );
 
 		// Get functions functions
 		BIT_FLOAT32 GetDiameter( ) const;
@@ -55,11 +55,11 @@ namespace Bit
 		BIT_UINT32 Intersection( Line2 p_Line, Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
 		BIT_SINT32 Intersection( Circle p_Circle );
 		BIT_SINT32 Intersection( Circle p_Circle, Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
-		BIT_BOOL Intersection( Quad p_Box );
+		BIT_BOOL Intersection( Quad p_Quad );
 
 		// Public variables
-		Vector2_f32 Position;
 		BIT_FLOAT32 Radius;
+		Vector2_f32 Position;
 
 	};
 

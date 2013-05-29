@@ -37,14 +37,14 @@ namespace Bit
 	}
 
 	Sphere::Sphere( const BIT_FLOAT32 p_Radius ) :
-		Position( 0.0f, 0.0f, 0.0f ),
-		Radius( p_Radius )
+		Radius( p_Radius ),
+		Position( 0.0f, 0.0f, 0.0f )
 	{
 	}
 
-	Sphere::Sphere( const Vector3_f32 p_Position, const BIT_FLOAT32 p_Radius ) :
-		Position( p_Position ),
-		Radius( p_Radius )
+	Sphere::Sphere(  const BIT_FLOAT32 p_Radius, const Vector3_f32 p_Position) :
+		Radius( p_Radius ),
+		Position( p_Position )
 	{
 
 	}
@@ -88,9 +88,9 @@ namespace Bit
 		return IntersectionLine3Sphere( p_Line, *this, p_Point1, p_Point2 );
 	}
 
-	BIT_BOOL Sphere::Intersection( Sphere p_Sphere )
+	BIT_SINT32 Sphere::Intersection( Sphere p_Sphere )
 	{
-		return BIT_FALSE;
+		return IntersectionSphereSphere( *this, p_Sphere );
 	}
 
 	BIT_BOOL Sphere::Intersection( Box p_Box )

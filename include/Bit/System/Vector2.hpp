@@ -76,6 +76,7 @@ namespace Bit
 			this->y = static_cast< T >( p_Vector.y );
 		}
 
+		// Operators
 		const Vector2< T > & operator = ( const Vector2< T > p_Vector )
 		{
 			this->x = p_Vector.x;
@@ -141,6 +142,12 @@ namespace Bit
 			return Vector2< T >( this->x / p_Value, this->y / p_Value );
 		}
 
+		T operator [ ] ( const BIT_UINT32 & p_Index )
+		{
+			return *( &x + p_Index );
+		}
+
+		// Useful functions
 		const BIT_FLOAT32 Magnitude( ) const
 		{
 			return sqrt( static_cast< BIT_FLOAT32 >( ( x*x ) + ( y*y ) ) );
@@ -202,7 +209,6 @@ namespace Bit
 			x = tx;
 			y = ty;
 		}
-
 
 		// Static functions
 		static BIT_FLOAT64 AngleBetweenVectors( Vector2< T > p_Vec1, Vector2< T > p_Vec2 )

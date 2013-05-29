@@ -59,9 +59,13 @@ namespace Bit
 	// Public functions
 	BIT_FLOAT32 Line3::GetLength( ) const
 	{
-		return Vector3_f32( p[ 0 ] - p[ 1 ] ).Magnitude( );
+		return Vector3_f32( p[ 1 ] - p[ 0 ] ).Magnitude( );
 	}
 
+	Vector3_f32 Line3::GetDirection( ) const
+	{
+		return p[ 1 ] - p[ 0 ];
+	}
 
 	// Intersection functions
 	BIT_BOOL Line3::Intersection( Vector3_f32 p_Point )
@@ -92,7 +96,8 @@ namespace Bit
 
 	BIT_BOOL Line3::Intersection( Box p_Box )
 	{
-		return IntersectionLine3Box( *this, p_Box );
+		//return IntersectionLine3Box( *this, p_Box );
+		return BIT_FALSE;
 	}
 
 }

@@ -37,13 +37,14 @@ namespace Bit
 	}
 
 	Circle::Circle( const BIT_FLOAT32 p_Radius ) :
-		Radius( p_Radius )
+		Radius( p_Radius ),
+		Position( 0.0f, 0.0f )
 	{
 	}
 
-	Circle::Circle( const Vector2_f32 p_Position, const BIT_FLOAT32 p_Radius ) :
-		Position( p_Position ),
-		Radius( p_Radius )
+	Circle::Circle( const BIT_FLOAT32 p_Radius, const Vector2_f32 p_Position ) :
+		Radius( p_Radius ),
+		Position( p_Position )
 	{
 	}
 
@@ -90,9 +91,9 @@ namespace Bit
 		return IntersectionCircleCircle( *this, p_Circle, p_Point1, p_Point2 );
 	}
 
-	BIT_BOOL Circle::Intersection( Quad p_Box )
+	BIT_BOOL Circle::Intersection( Quad p_Quad )
 	{
-		return BIT_FALSE;
+		return IntersectionCircleQuad( *this, p_Quad );
 	}
 
 }

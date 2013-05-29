@@ -37,14 +37,14 @@ namespace Bit
 	}
 
 	Box::Box( Vector3_f32 p_Size ) :
-		Positsion( 0.0f, 0.0f, 0.0f ),
-		Size( p_Size )
+		Size( p_Size ),
+		Positsion( 0.0f, 0.0f, 0.0f )
 	{
 	}
 
-	Box::Box( Vector3_f32 p_Positsion, Vector3_f32 p_Size ) :
-		Positsion( p_Positsion ),
-		Size( p_Size )
+	Box::Box( Vector3_f32 p_Size, Vector3_f32 p_Positsion ) :
+		Size( p_Size ),
+		Positsion( p_Positsion )
 	{
 	}
 
@@ -70,6 +70,20 @@ namespace Bit
 		return Size.x * Size.y * Size.z;
 	}
 
+	Vector3_f32 Box::GetLowCoords( ) const
+	{
+		return Vector3_f32( Positsion.x - ( Size.x / 2.0f ),
+							Positsion.y - ( Size.y / 2.0f ),
+							Positsion.z - ( Size.z / 2.0f ) );
+	}
+
+	Vector3_f32 Box::GetHighCoords( ) const
+	{
+		return Vector3_f32( Positsion.x + ( Size.x / 2.0f ),
+							Positsion.y + ( Size.y / 2.0f ),
+							Positsion.z + ( Size.z / 2.0f ) );
+	}
+
 	// Intersection functions
 	BIT_BOOL Box::Intersection( Vector3_f32 p_Point )
 	{
@@ -88,7 +102,7 @@ namespace Bit
 	
 	BIT_BOOL Box::Intersection( Box p_Box )
 	{
-		return BIT_FALSE;
+		return IntersectionBoxBox( *this, p_Box );
 	}
 	
 }

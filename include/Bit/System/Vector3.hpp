@@ -80,6 +80,7 @@ namespace Bit
 			this->z = static_cast< T >( p_Vector.z );
 		}
 
+		// Operators
 		const Vector3< T > & operator = ( const Vector3< T > p_Vector )
 		{
 			this->x = p_Vector.x;
@@ -150,6 +151,12 @@ namespace Bit
 			return Vector3< T >( this->x / p_Value, this->y / p_Value, this->z / p_Value );
 		}
 
+		T operator [ ] ( const BIT_UINT32 & p_Index )
+		{
+			return *( &x + p_Index );
+		}
+
+		// Useful functions
 		const BIT_FLOAT32 Magnitude( ) const
 		{
 			return sqrt( ( x*x ) + ( y*y ) + ( z*z ) );

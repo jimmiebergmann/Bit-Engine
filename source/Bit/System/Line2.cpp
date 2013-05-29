@@ -59,9 +59,13 @@ namespace Bit
 	// Public functions
 	BIT_FLOAT32 Line2::GetLength( ) const
 	{
-		return Vector2_f32( p[ 0 ] - p[ 1 ] ).Magnitude( );
+		return Vector2_f32( p[ 1 ] - p[ 0 ] ).Magnitude( );
 	}
 
+	Vector2_f32 Line2::GetDirection( ) const
+	{
+		return p[ 1 ] - p[ 0 ];
+	}
 
 	// Intersection functions
 	BIT_BOOL Line2::Intersection( Vector2_f32 p_Point )
@@ -90,9 +94,9 @@ namespace Bit
 		return IntersectionLine2Circle( *this, p_Circle, p_Point1, p_Point2 );
 	}
 
-	/*BIT_BOOL Line2::Intersection( Quad p_Quad )
+	BIT_BOOL Line2::Intersection( Quad p_Quad )
 	{
 		return IntersectionLine2Quad( *this, p_Quad );
 	}
-	*/
+	
 }

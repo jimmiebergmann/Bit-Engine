@@ -41,12 +41,14 @@ namespace Bit
 		// Construcotrs
 		Box( );
 		Box( Vector3_f32 p_Size );
-		Box( Vector3_f32 p_Positsion, Vector3_f32 p_Size );
+		Box( Vector3_f32 p_Size, Vector3_f32 p_Positsion );
 
 		// Public functions
 		BIT_FLOAT32 GetArea( ) const;
 		BIT_FLOAT32 GetDiagonal( ) const;
 		BIT_FLOAT32 GetVolume( ) const;
+		Vector3_f32 GetLowCoords( ) const;
+		Vector3_f32 GetHighCoords( ) const;
 
 		// Intersection functions
 		BIT_BOOL Intersection( Vector3_f32 p_Point );
@@ -55,8 +57,8 @@ namespace Bit
 		BIT_BOOL Intersection( Box p_Box );
 
 		// Public variables
-		Vector3_f32 Positsion;
 		Vector3_f32 Size;
+		Vector3_f32 Positsion;
 
 	};
 

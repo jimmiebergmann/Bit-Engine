@@ -33,7 +33,6 @@
 namespace Bit
 {
 
-	// Use this class for both 2D and 3D lines (line2/line3)
 	class Line3
 	{
 
@@ -48,6 +47,7 @@ namespace Bit
 
 		// Public functions
 		BIT_FLOAT32 GetLength( ) const;
+		Vector3_f32 GetDirection( ) const;
 
 		// Intersection functions
 		BIT_BOOL Intersection( Vector3_f32 p_Point );

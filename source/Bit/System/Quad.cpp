@@ -37,14 +37,14 @@ namespace Bit
 	}
 
 	Quad::Quad( Vector2_f32 p_Size ) :
-		Positsion( 0.0f, 0.0f ),
-		Size( p_Size )
+		Size( p_Size ),
+		Positsion( 0.0f, 0.0f )
 	{
 	}
 
-	Quad::Quad( Vector2_f32 p_Positsion, Vector2_f32 p_Size ) :
-		Positsion( p_Positsion ),
-		Size( p_Size )
+	Quad::Quad( Vector2_f32 p_Size, Vector2_f32 p_Positsion ) :
+		Size( p_Size ),
+		Positsion( p_Positsion )
 	{
 	}
 
@@ -59,27 +59,37 @@ namespace Bit
 		return sqrt( ( Size.x * Size.x ) + ( Size.y * Size.y ) );
 	}
 
+	Vector2_f32 Quad::GetLowCoords( ) const
+	{
+		return Vector2_f32( Positsion.x - ( Size.x / 2.0f ),
+							Positsion.y - ( Size.y / 2.0f ) );
+	}
+
+	Vector2_f32 Quad::GetHighCoords( ) const
+	{
+		return Vector2_f32( Positsion.x + ( Size.x / 2.0f ),
+							Positsion.y + ( Size.y / 2.0f ) );
+	}
 
 	// Intersection functions
 	BIT_BOOL Quad::Intersection( Vector2_f32 p_Point )
 	{
-		//return IntersectionPoint2Quad( p_Point, *this );
-		return BIT_FALSE;
+		return IntersectionPoint2Quad( p_Point, *this );
 	}
 
 	BIT_BOOL Quad::Intersection( Line2 p_Line )
 	{
-		return BIT_FALSE;
+		return IntersectionLine2Quad( p_Line, *this );
 	}
 
 	BIT_BOOL Quad::Intersection( Circle p_Circle )
 	{
-		return BIT_FALSE;
+		return IntersectionCircleQuad( p_Circle, *this );
 	}
 	
 	BIT_BOOL Quad::Intersection( Quad p_Quad )
 	{
-		return BIT_FALSE;
+		return IntersectionQuadQuad( *this, p_Quad);
 	}
 	
 }

@@ -41,11 +41,13 @@ namespace Bit
 		// Construcotrs
 		Quad( );
 		Quad( Vector2_f32 p_Size );
-		Quad( Vector2_f32 p_Positsion, Vector2_f32 p_Size );
+		Quad( Vector2_f32 p_Size, Vector2_f32 p_Positsion );
 
 		// Public functions
 		BIT_FLOAT32 GetArea( ) const;
 		BIT_FLOAT32 GetDiagonal( ) const;
+		Vector2_f32 GetLowCoords( ) const;
+		Vector2_f32 GetHighCoords( ) const;
 
 		// Intersection functions
 		BIT_BOOL Intersection( Vector2_f32 p_Point );
@@ -54,9 +56,8 @@ namespace Bit
 		BIT_BOOL Intersection( Quad p_Box );
 
 		// Public variables
-		Vector2_f32 Positsion;
 		Vector2_f32 Size;
-
+		Vector2_f32 Positsion;
 
 	};
 
