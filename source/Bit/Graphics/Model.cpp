@@ -27,6 +27,7 @@
 #include <fstream>
 #include <string>
 #include <stdio.h>
+#include <Bit/System/SmartArray.hpp>
 #include <Bit/System/Randomizer.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
@@ -56,11 +57,9 @@ namespace Bit
 		}
 
 		// Currently, we can just load OBJ files. So let's do that.
-		return ReadOBJ( p_FilePath );
-
-/*
-		m_Loaded = BIT_FALSE;
-		return BIT_OK;*/
+		BIT_UINT32 Status = ReadOBJ( p_FilePath );
+		m_Loaded = ( Status == BIT_OK );
+		return Status;
 	}
 
 	BIT_UINT32 Model::ReadOBJ( std::string p_FilePath )
@@ -216,7 +215,6 @@ namespace Bit
 		// Open the .mtl file if any
 		// ...
 
-		m_Loaded = BIT_TRUE;
 		return BIT_OK;
 	}
 
@@ -248,10 +246,9 @@ namespace Bit
 		}
 
 		// Calculate and set the buffers
-		// !NOTE! JUST VERTEX POSITION FOR NOW
-		BIT_FLOAT32 * pVertexPositions = new BIT_FLOAT32[ m_Triangles.size( ) * 3 * 3 ];
-		BIT_FLOAT32 * pVertexTextures = new BIT_FLOAT32[ m_Triangles.size( ) * 3 * 2 ];
-		BIT_FLOAT32 * pVertexNormals = new BIT_FLOAT32[ m_Triangles.size( ) * 3 * 3 ];
+		SmartArray<BIT_FLOAT32> pVertexPositions( m_Triangles.size( ) * 3 * 3 );
+		SmartArray<BIT_FLOAT32> pVertexTextures( m_Triangles.size( ) * 3 * 2 );
+		SmartArray<BIT_FLOAT32> pVertexNormals( m_Triangles.size( ) * 3 * 3 );
 
 		// Add vertex positsion buffer if any
 		if( m_VertexPositions.size( ) )
@@ -273,9 +270,6 @@ namespace Bit
 			// Add the vertex buffer
 			if( p_VertexObject.AddVertexBuffer( pVertexPositions, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
 			{
-				delete [ ] pVertexPositions;
-				delete [ ] pVertexTextures;
-				delete [ ] pVertexNormals;
 				bitTrace("[Model::LoadVertexObject] Can not add the vertex buffer\n");
 				return BIT_ERROR;
 			}
@@ -300,9 +294,6 @@ namespace Bit
 			// Add the vertex buffer
 			if( p_VertexObject.AddVertexBuffer( pVertexTextures, 2, BIT_TYPE_FLOAT32 ) != BIT_OK )
 			{
-				delete [ ] pVertexPositions;
-				delete [ ] pVertexTextures;
-				delete [ ] pVertexNormals;
 				bitTrace("[Model::LoadVertexObject] Can not add the vertex buffer\n");
 				return BIT_ERROR;
 			}
@@ -328,9 +319,6 @@ namespace Bit
 			// Add the vertex buffer
 			if( p_VertexObject.AddVertexBuffer( pVertexNormals, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
 			{
-				delete [ ] pVertexPositions;
-				delete [ ] pVertexTextures;
-				delete [ ] pVertexNormals;
 				bitTrace("[Model::LoadVertexObject] Can not add the vertex buffer\n");
 				return BIT_ERROR;
 			}
@@ -339,17 +327,9 @@ namespace Bit
 		// Load the vertex object
 		if( p_VertexObject.Load( m_Triangles.size( ), 3 ) != BIT_OK )
 		{
-			delete [ ] pVertexPositions;
-			delete [ ] pVertexTextures;
-			delete [ ] pVertexNormals;
 			bitTrace("[Model::LoadVertexObject] Can not load the vertex object\n");
 			return BIT_ERROR;
 		}
-
-		// Clean all the buffers
-		delete [ ] pVertexPositions;
-		delete [ ] pVertexTextures;
-		delete [ ] pVertexNormals;
 
 		return BIT_OK;
 

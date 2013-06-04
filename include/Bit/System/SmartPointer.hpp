@@ -31,8 +31,47 @@
 namespace Bit
 {
 
+	template <typename T>
 	class BIT_API SmartPointer
 	{
+
+	public:
+
+		// Construcotrs/destructor
+		SmartPointer( )
+		{
+			m_pPointer = new T;
+		}
+
+		SmartPointer( T * p_pPointer )
+		{
+			m_pPointer = p_pPointer;
+		}
+
+		~SmartPointer( )
+		{
+			if( m_pPointer )
+			{
+				delete m_pPointer;
+			}
+		}
+
+		// Public functions
+		T * Get( ) const
+		{
+			return m_pPointer;
+		}
+
+		// Operators
+		operator T * ( ) const
+		{
+			return m_pPointer;
+		}
+
+	private:
+
+		// Private variables
+		T * m_pPointer;
 
 	};
 

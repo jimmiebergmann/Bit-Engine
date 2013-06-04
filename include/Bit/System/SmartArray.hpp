@@ -31,8 +31,48 @@
 namespace Bit
 {
 
+	template <typename T>
 	class BIT_API SmartArray
 	{
+
+	public:
+
+		// Construcotrs/destructor
+		SmartArray( const BIT_MEMSIZE p_Size )
+		{
+			m_pPointer = new T[ p_Size ];
+		}
+
+		SmartArray( T * p_pPointer )
+		{
+			m_pPointer = p_pPointer;
+		}
+
+		~SmartArray( )
+		{
+			if( m_pPointer )
+			{
+				delete [ ] m_pPointer;
+			}
+		}
+
+		// Public functions
+		T * Get( ) const
+		{
+			return m_pPointer;
+		}
+
+		// Operators
+		// Operators
+		operator T * ( ) const
+		{
+			return m_pPointer;
+		}
+
+	private:
+
+		// Private variables
+		T * m_pPointer;
 
 	};
 

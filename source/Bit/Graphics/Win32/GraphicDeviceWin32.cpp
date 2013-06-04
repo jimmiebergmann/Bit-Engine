@@ -88,7 +88,7 @@ namespace Bit
 
 		
 		// //////////////////////////////////////////////
-		// !NOTE! SKIT THIS FOR NOW!
+		// !NOTE! SKIP THIS FOR NOW!
 		/*if( p_Devices & Bit::GraphicDevice::Device_OpenGL_3_1 )
 		{
 			GLVersionMajor = 3;

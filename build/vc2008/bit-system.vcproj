@@ -372,15 +372,7 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\source\Bit\System\SmartArray.cpp"
-			>
-		</File>
-		<File
 			RelativePath="..\..\include\Bit\System\SmartArray.hpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\Bit\System\SmartPointer.cpp"
 			>
 		</File>
 		<File
