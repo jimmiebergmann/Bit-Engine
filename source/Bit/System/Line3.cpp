@@ -96,8 +96,7 @@ namespace Bit
 
 	BIT_BOOL Line3::Intersection( Box p_Box )
 	{
-		//return IntersectionLine3Box( *this, p_Box );
-		return BIT_FALSE;
+		return IntersectionLine3Box( *this, p_Box );
 	}
 
 }

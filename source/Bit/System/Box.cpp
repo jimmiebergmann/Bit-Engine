@@ -92,7 +92,7 @@ namespace Bit
 
 	BIT_BOOL Box::Intersection( Line3 p_Line )
 	{
-		return BIT_FALSE;
+		return IntersectionLine3Box( p_Line, *this );
 	}
 
 	BIT_BOOL Box::Intersection( Sphere p_Sphere )

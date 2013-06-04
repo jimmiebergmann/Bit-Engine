@@ -123,8 +123,8 @@ namespace Bit
 	BIT_API BIT_BOOL IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere );
 	BIT_API BIT_UINT32 IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere,
 		Vector3_f32 & p_Point1, Vector3_f32 & p_Point2 );
-	/*BIT_API BIT_BOOL IntersectionLine3Box(		Line3 p_Line,	Box p_Box );
-*/
+	BIT_API BIT_BOOL IntersectionLine3Box(		Line3 p_Line,	Box p_Box );
+
 	// Circle
 	BIT_API BIT_SINT32 IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2 );
 	BIT_API BIT_SINT32 IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2,

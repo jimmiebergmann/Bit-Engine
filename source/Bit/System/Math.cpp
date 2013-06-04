@@ -391,11 +391,65 @@ namespace Bit
 
 		return 2;
 	}
-/*
+
 	BIT_API BIT_BOOL IntersectionLine3Box( Line3 p_Line, Box p_Box )
 	{
-		return BIT_FALSE;
-	}*/
+		// Resources: http://www.codercorner.com/RayAABB.cpp
+
+		Vector3_f32 BoxExtents, Diff, Dir, fAWdU;
+
+		// Get the high/abs(low) values for the bound box
+		BoxExtents = p_Box.GetHighCoords( );
+
+		// Check X
+		Dir.x = 0.5f * ( p_Line.p[ 1 ].x - p_Line.p[ 0 ].x );
+		Diff.x = ( 0.5f * ( p_Line.p[ 1 ].x + p_Line.p[ 0 ].x ) ) - p_Box.Positsion.x;
+		fAWdU.x = fabsf( Dir.x );
+		if( fabsf( Diff.x ) > BoxExtents.x + fAWdU.x )
+		{
+			return BIT_FALSE;
+		}
+			
+		// Check Y
+		Dir.y = 0.5f * ( p_Line.p[ 1 ].y - p_Line.p[ 0 ].y );
+		Diff.y = ( 0.5f * ( p_Line.p[ 1 ].y + p_Line.p[ 0 ].y ) ) - p_Box.Positsion.y;
+		fAWdU.y = fabsf(Dir.y);
+		if( fabsf( Diff.y ) > BoxExtents.y + fAWdU.y )
+		{
+			return BIT_FALSE;
+		}
+
+		// Check Z
+		Dir.z = 0.5f * ( p_Line.p[ 1 ].z - p_Line.p[ 0 ].z );
+		Diff.z = ( 0.5f * ( p_Line.p[ 1 ].z + p_Line.p[ 0 ].z ) ) - p_Box.Positsion.z;
+		fAWdU.z = fabsf(Dir.z);
+		if( fabsf( Diff.z ) > BoxExtents.z + fAWdU.z )
+		{
+			return BIT_FALSE;
+		}
+
+		// Final check
+		float f;
+		f = Dir.y * Diff.z - Dir.z * Diff.y;
+		if( fabsf(f) > BoxExtents.y*fAWdU.z + BoxExtents.z*fAWdU.y )
+		{
+			return BIT_FALSE;
+		}
+
+		f = Dir.z * Diff.x - Dir.x * Diff.z;
+		if( fabsf(f) > BoxExtents.x*fAWdU.z + BoxExtents.z*fAWdU.x )
+		{
+			return BIT_FALSE;
+		}
+
+		f = Dir.x * Diff.y - Dir.y * Diff.x;
+		if( fabsf(f) > BoxExtents.x*fAWdU.y + BoxExtents.y*fAWdU.x )
+		{
+			return BIT_FALSE;
+		}
+		
+		return BIT_TRUE;
+	}
 
 	// Circle
 	BIT_API BIT_SINT32 IntersectionCircleCircle( Circle p_Circle1, Circle p_Circle2 )
