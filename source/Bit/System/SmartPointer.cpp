@@ -22,46 +22,12 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
-#ifndef __BIT_SYSTEM_LINE2_HPP__
-#define __BIT_SYSTEM_LINE2_HPP__
-
-#include <Bit/DataTypes.hpp>
-#include <Bit/System/Math.hpp>
-#include <Bit/System/Vector2.hpp>
+#include <Bit/System/SmartPointer.hpp>
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	class BIT_API Line2
-	{
-
-	public:
-
-		// Construcotrs
-		Line2( );
-		Line2( const Line2 & p_Line );
-		Line2( const Vector2_f32 p_P1, const Vector2_f32 p_P2 );
-		Line2( const BIT_FLOAT32 p_P1_1, const BIT_FLOAT32 p_P1_2,
-			const BIT_FLOAT32 p_P2_1, const BIT_FLOAT32 p_P2_2 );
-
-		// Public functions
-		BIT_FLOAT32 GetLength( ) const;
-		Vector2_f32 GetDirection( ) const;
-
-		// Intersection functions
-		BIT_BOOL Intersection( Vector2_f32 p_Point );
-		BIT_BOOL Intersection( Line2 p_Line );
-		BIT_BOOL Intersection( Line2 p_Line, Vector2_f32 & p_Intersection );
-		BIT_BOOL Intersection( Circle p_Circle );
-		BIT_UINT32 Intersection( Circle p_Circle, Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
-		BIT_BOOL Intersection( Quad p_Quad );
-
-		// Public variables
-		Vector2_f32 p[ 2 ];
-
-	};
 
 }
-
-#endif

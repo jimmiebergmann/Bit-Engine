@@ -33,7 +33,7 @@
 namespace Bit
 {
 
-	class Sphere
+	class BIT_API Sphere
 	{
 
 	public:

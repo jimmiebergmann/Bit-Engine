@@ -33,7 +33,7 @@
 namespace Bit
 {
 
-	class Line3
+	class BIT_API Line3
 	{
 
 	public:

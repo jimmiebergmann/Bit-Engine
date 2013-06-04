@@ -33,8 +33,7 @@
 namespace Bit
 {
 
-	// Use this class for both circles and spheres (circle2/circle3)
-	class Circle
+	class BIT_API Circle
 	{
 
 	public:

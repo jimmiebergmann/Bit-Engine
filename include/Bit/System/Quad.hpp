@@ -33,7 +33,7 @@
 namespace Bit
 {
 
-	class Quad
+	class BIT_API Quad
 	{
 
 	public:

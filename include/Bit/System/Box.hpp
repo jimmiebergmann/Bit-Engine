@@ -33,7 +33,7 @@
 namespace Bit
 {
 
-	class Box
+	class BIT_API Box
 	{
 
 	public:
