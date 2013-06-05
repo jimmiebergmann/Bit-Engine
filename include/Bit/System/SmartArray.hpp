@@ -32,7 +32,7 @@ namespace Bit
 {
 
 	template <typename T>
-	class BIT_API SmartArray
+	class SmartArray
 	{
 
 	public:

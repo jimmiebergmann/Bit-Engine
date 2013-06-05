@@ -27,6 +27,7 @@
 #include <fstream>
 #include <string>
 #include <stdio.h>
+#include <Bit/System.hpp>
 #include <Bit/System/SmartArray.hpp>
 #include <Bit/System/Randomizer.hpp>
 #include <Bit/System/Debugger.hpp>
@@ -50,16 +51,20 @@ namespace Bit
 	// Public functions
 	BIT_UINT32 Model::ReadFile( const char * p_pFilePath )
 	{
-		if( m_Loaded )
+		// Get the file's extension
+		std::string FileExtension = GetFileExtension( p_pFilePath );
+
+		if( FileExtension == "OBJ" )
 		{
-			bitTrace( "[Model::LoadFile] Already loaded.\n" );
-			return BIT_ERROR;
+			BIT_UINT32 Status = ReadOBJ( p_pFilePath );
+			m_Loaded = ( Status == BIT_OK );
+			return Status;
 		}
 
-		// Currently, we can just load OBJ files. So let's do that.
-		BIT_UINT32 Status = ReadOBJ( p_pFilePath );
-		m_Loaded = ( Status == BIT_OK );
-		return Status;
+		bitTrace( BIT_NULL, "[Bit::Model::ReadFile] <ERROR> "
+			"Unknow extension: %s.\n", FileExtension );
+
+		return BIT_ERROR;
 	}
 
 	BIT_UINT32 Model::ReadOBJ( const char * p_pFilePath )
