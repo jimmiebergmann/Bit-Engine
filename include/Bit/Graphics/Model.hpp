@@ -53,8 +53,8 @@ namespace Bit
 		~Model( );
 
 		// Public functions
-		BIT_UINT32 ReadFile( std::string p_FilePath );
-		BIT_UINT32 ReadOBJ( std::string p_FilePath );
+		BIT_UINT32 ReadFile( const char * p_FilePath );
+		BIT_UINT32 ReadOBJ( const char * p_FilePath );
 		BIT_UINT32 LoadVertexObject( VertexObject & p_VertexObject );
 		void DeallocateData( );
 		BIT_INLINE BIT_BOOL IsLoaded( ) const { return m_Loaded; }
@@ -75,8 +75,8 @@ namespace Bit
 	private:
 
 		// Private functions
-		void DecodeOBJFaces( std::string p_String, BIT_SINT32 & p_Position,
-			BIT_SINT32 & p_Texture, BIT_SINT32 & p_Normal );
+		void DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
+		BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal );
 
 		// Private variables
 		BIT_BOOL m_Loaded;

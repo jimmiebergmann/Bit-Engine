@@ -48,7 +48,7 @@ namespace Bit
 	}
 
 	// Public functions
-	BIT_UINT32 Model::ReadFile( std::string p_FilePath )
+	BIT_UINT32 Model::ReadFile( const char * p_FilePath )
 	{
 		if( m_Loaded )
 		{
@@ -62,7 +62,7 @@ namespace Bit
 		return Status;
 	}
 
-	BIT_UINT32 Model::ReadOBJ( std::string p_FilePath )
+	BIT_UINT32 Model::ReadOBJ( const char * p_FilePath )
 	{
 		// Make sure the model is not already loaded.
 		if( m_Loaded )
@@ -72,7 +72,7 @@ namespace Bit
 		}
 
 		// Open the main .obj file
-		std::ifstream fin( p_FilePath.c_str( ) );
+		std::ifstream fin( p_FilePath );
 		
 		// Could we open the file?
 		if( !fin.is_open( ) )
@@ -87,86 +87,63 @@ namespace Bit
 		Vector2_f32 Vec2;
 		Triangle Tri;
 		BIT_UINT32 UnknowPrefixCount = 0;
+		BIT_SCHAR8 LineBuffer[ 64 ];
 
 		// Keep on reading until we reach any stream flag
 		while( fin.good( ) )
 		{
-			// Read the prefix
-			fin >> Prefix;
-			
-			// Manage the prefix's data
-			if( Prefix == "v" )
+			fin.getline( (char*)LineBuffer, 63 );
+
+			if( LineBuffer[ 0 ] == 'v' )
 			{
-				// Read the vertex position
-				fin >> Vec3.x;
-				fin >> Vec3.y;
-				fin >> Vec3.z;
-
-				// Add the vertex position
-				m_VertexPositions.push_back( Vec3 );
-
-				// Ignore the rest... ( x, y, z, [w] )
-				std::getline( fin, String ); 
+				if( LineBuffer[ 1 ] == 't' )
+				{
+					if( sscanf( (const char*)LineBuffer, "vt %f %f", &Vec2.x, &Vec2.y ) == 2 )
+					{
+						m_VertexTextures.push_back( Vec2 );
+					}
+				}
+				else if( LineBuffer[ 1 ] == 'n' )
+				{
+					if( sscanf( (const char*)LineBuffer, "vn %f %f %f", &Vec3.x, &Vec3.y, &Vec3.z ) == 3 )
+					{
+						m_VertexNormals.push_back( Vec3.Normalize( ) );
+					}
+				}
+				/*
+				// IGNORE THIS
+				else if( LineBuffer[ 1 ] == 'p' )
+				{
+					// ...
+				}
+				*/
+				else
+				{
+					if( sscanf( (const char*)LineBuffer, "v %f %f %f", &Vec3.x, &Vec3.y, &Vec3.z ) == 3 )
+					{
+						m_VertexPositions.push_back( Vec3 );
+					}
+				}
 			}
-			else if( Prefix == "vt" )
+			else if( LineBuffer[ 0 ] == 'f' )
 			{
-				// Read the vertex texture
-				fin >> Vec2.x;
-				fin >> Vec2.y;
-
-				// Add the vertex position
-				m_VertexTextures.push_back( Vec2 );
-
-				// Ignore the rest... ( x, y, [w] )
-				std::getline( fin, String ); 
-			}
-			else if( Prefix == "vn" )
-			{
-				// Read the vertex normal
-				fin >> Vec3.x;
-				fin >> Vec3.y;
-				fin >> Vec3.z;
-
-				// Add the normalized vertex normal
-				m_VertexNormals.push_back( Vec3.Normalize( ) );
-			}
-			else if( Prefix == "vp" )
-			{
-				// Ignore this?
-				std::getline( fin, String ); 
-			}
-			else if( Prefix == "f" )
-			{
-				// Read the indices
 				for( BIT_MEMSIZE i = 0; i < 3; i++ )
 				{
-					fin >> String;
-					DecodeOBJFaces( String,  Tri.PositionIndex[ i ],
-						Tri.TextureIndex[ i ], Tri.NormalIndex[ i ] );
+					LineBuffer[ 63 ] = 0;
+					DecodeOBJFaces( &LineBuffer[ 2 ],  Tri.PositionIndex,
+						Tri.TextureIndex, Tri.NormalIndex );
 				}
 			
 				// Add the triangle
 				m_Triangles.push_back( Tri );
-
-				// Ignore the rest... ( v1, v2, v3, ... [v4] )
-				// We are just supporting triangles this far but
-				// should support quads by cutting them in half.
-				std::getline( fin, String ); 
 			}
-			else if( Prefix == "#" )
+			else if( LineBuffer[ 0 ] == '#' )
 			{
-				// Ignore comments.
-				std::getline( fin, String ); 
+				continue;
 			}
 			else
 			{
 				UnknowPrefixCount++;
-
-				// Unknown prefix, ignore this line
-				std::getline( fin, String ); 
-
-				bitTrace("[Model::ReadOBJ] Unknown prefix: %s%s\n",
-					Prefix.c_str( ), String.c_str( ) );
 			}
 		}
 
@@ -411,53 +388,66 @@ namespace Bit
 
 
 	// Private functions
-	void Model::DecodeOBJFaces( std::string p_String, BIT_SINT32 & p_Position,
-		BIT_SINT32 & p_Texture, BIT_SINT32 & p_Normal )
+	void Model::DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
+		BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal )
 	{
-		if( !p_String.size( ) )
-		{
-			return;
-		}
-
 		// Let's decode by scanning the string
-		if( sscanf( p_String.c_str( ), "%i/%i/%i",
-			&p_Position, &p_Texture, &p_Normal ) == 3 )
+		if( sscanf( (const char*)p_String, "%i/%i/%i %i/%i/%i %i/%i/%i",
+			&p_pPosition[ 0 ], &p_pTexture[ 0 ], &p_pNormal[ 0 ],
+			&p_pPosition[ 1 ], &p_pTexture[ 1 ], &p_pNormal[ 1 ],
+			&p_pPosition[ 2 ], &p_pTexture[ 2 ], &p_pNormal[ 2 ] ) == 9 )
 		{
-			p_Position--;
-			p_Texture--;
-			p_Normal--;
+			for( BIT_MEMSIZE i = 0; i < 3; i++ )
+			{
+				p_pPosition[ i ]--;
+				p_pTexture[ i ]--;
+				p_pNormal[ i ]--;
+			}
+
 			return;
 		}
 
-		if( sscanf( p_String.c_str( ), "%i//%i",
-			&p_Position, &p_Normal ) == 2 )
+		if( sscanf( (const char*)p_String, "%i//%i %i//%i %i//%i",
+			&p_pPosition[ 0 ], &p_pNormal[ 0 ],
+			&p_pPosition[ 1 ], &p_pNormal[ 1 ],
+			&p_pPosition[ 2 ], &p_pNormal[ 2 ] ) == 6 )
 		{
-			p_Position--;
-			p_Texture = -1;
-			p_Normal--;
+			for( BIT_MEMSIZE i = 0; i < 3; i++ )
+			{
+				p_pPosition[ i ]--;
+				p_pTexture[ i ] = -1;
+				p_pNormal[ i ]--;
+			}
+
 			return;
 		}
 
-		if( sscanf( p_String.c_str( ), "%i/%i",
-			&p_Position, &p_Texture ) == 2 )
+		if( sscanf( (const char*)p_String, "%i/%i %i/%i %i/%i",
+			&p_pPosition[ 0 ], &p_pTexture[ 0 ],
+			&p_pPosition[ 1 ], &p_pTexture[ 1 ],
+			&p_pPosition[ 2 ], &p_pTexture[ 2 ] ) == 4 )
 		{
-			p_Position--;
-			p_Texture--;
-			p_Normal = -1;
+			for( BIT_MEMSIZE i = 0; i < 3; i++ )
+			{
+				p_pPosition[ i ]--;
+				p_pTexture[ i ]--;
+				p_pNormal[ i ] = -1;
+			}
+
 			return;
 		}
 
-		if( sscanf( p_String.c_str( ), "%i",
-			&p_Position ) == 1 )
+		if( sscanf( (const char*)p_String, "%i %i %i",
+			&p_pPosition[ 0 ], &p_pPosition[ 1 ], &p_pPosition[ 2 ] ) == 3 )
 		{
-			p_Position--;
-			p_Texture = -1;
-			p_Normal = -1;
+			for( BIT_MEMSIZE i = 0; i < 3; i++ )
+			{
+				p_pPosition[ i ]--;
+				p_pTexture[ i ] = -1;
+				p_pNormal[ i ] = -1;
+			}
 			return;
 		}
-
-
-		// What now?
 
 	}
 
