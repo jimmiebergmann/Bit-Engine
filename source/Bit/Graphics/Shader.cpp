@@ -30,17 +30,14 @@
 
 namespace Bit
 {
-	BIT_UINT32 Shader::ReadFile( const std::string p_FilePath )
+	BIT_UINT32 Shader::ReadFile( const char * p_pFilePath )
 	{
 		// Use fstream for reading files.
-		std::ifstream File( p_FilePath.c_str( ) );
+		std::ifstream File( p_pFilePath );
 		if(File.is_open() == false)
 		{
 			return BIT_ERROR_OPEN_FILE;
 		}
-
-		// Set the file path (if we want to reload the shader later, maybe.
-		m_FilePath = p_FilePath;
 
 		// Get the file size
 		File.seekg( 0, std::ios::end );

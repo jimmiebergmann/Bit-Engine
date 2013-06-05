@@ -40,7 +40,6 @@ namespace Bit
 		m_Compiled = BIT_FALSE;
 		m_ShaderType = p_ShaderType;
 		m_ShaderSource = "";
-		m_FilePath = "";
 
 		// Create the shader object
 		m_ShaderObject = glCreateShader( s_ShaderObjectTypes[ p_ShaderType ] );

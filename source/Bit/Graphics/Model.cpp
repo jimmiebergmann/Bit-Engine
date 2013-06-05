@@ -48,7 +48,7 @@ namespace Bit
 	}
 
 	// Public functions
-	BIT_UINT32 Model::ReadFile( const char * p_FilePath )
+	BIT_UINT32 Model::ReadFile( const char * p_pFilePath )
 	{
 		if( m_Loaded )
 		{
@@ -57,12 +57,12 @@ namespace Bit
 		}
 
 		// Currently, we can just load OBJ files. So let's do that.
-		BIT_UINT32 Status = ReadOBJ( p_FilePath );
+		BIT_UINT32 Status = ReadOBJ( p_pFilePath );
 		m_Loaded = ( Status == BIT_OK );
 		return Status;
 	}
 
-	BIT_UINT32 Model::ReadOBJ( const char * p_FilePath )
+	BIT_UINT32 Model::ReadOBJ( const char * p_pFilePath )
 	{
 		// Make sure the model is not already loaded.
 		if( m_Loaded )
@@ -72,7 +72,7 @@ namespace Bit
 		}
 
 		// Open the main .obj file
-		std::ifstream fin( p_FilePath );
+		std::ifstream fin( p_pFilePath );
 		
 		// Could we open the file?
 		if( !fin.is_open( ) )

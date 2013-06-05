@@ -76,7 +76,7 @@ namespace Bit
 		DeallocateData( );
 	}
 
-	BIT_UINT32 Image::ReadFile( const std::string p_pFilePath )
+	BIT_UINT32 Image::ReadFile( const char * p_pFilePath )
 	{
 		// Get the file's extension
 		/*char FileExtension[4];
@@ -100,10 +100,10 @@ namespace Bit
 		//return BIT_ERROR;
 	}
 
-	BIT_UINT32 Image::ReadTGA( const std::string p_pFilePath )
+	BIT_UINT32 Image::ReadTGA( const char * p_pFilePath )
 	{
 		// Open the file
-		std::ifstream File( p_pFilePath.c_str( ), std::ios::binary );
+		std::ifstream File( p_pFilePath, std::ios::binary );
 		if(File.is_open() == false)
 		{
 			return BIT_ERROR_OPEN_FILE;

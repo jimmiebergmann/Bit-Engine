@@ -50,7 +50,7 @@ namespace Bit
 		virtual ~Shader() { }
 
 		// General public functions
-		BIT_UINT32 ReadFile( const std::string p_FilePath );
+		BIT_UINT32 ReadFile( const char * p_pFilePath );
 		virtual BIT_UINT32 Compile( ) = 0;
 
 		// Set functions
@@ -59,7 +59,6 @@ namespace Bit
 		// "inline" Get public functions
 		BIT_INLINE eShaderType GetType( ) const { return m_ShaderType; }
 		BIT_INLINE std::string GetSource( ) const { return m_ShaderSource; }
-		BIT_INLINE std::string GetFilePath( ) const { return m_FilePath; }
 		BIT_INLINE BIT_BOOL IsCompiled( ) const { return m_Compiled; }
 
 	protected:
@@ -68,7 +67,6 @@ namespace Bit
 		BIT_BOOL m_Compiled;
 		eShaderType m_ShaderType;
 		std::string m_ShaderSource;
-		std::string m_FilePath;
 
 	};
 
