@@ -53,8 +53,8 @@ namespace Bit
 		~Model( );
 
 		// Public functions
-		BIT_UINT32 ReadFile( std::string p_FilePath );
-		BIT_UINT32 ReadOBJ( std::string p_FilePath );
+		BIT_UINT32 ReadFile( const char * p_FilePath );
+		BIT_UINT32 ReadOBJ( const char * p_FilePath );
 		BIT_UINT32 LoadVertexObject( VertexObject & p_VertexObject );
 		void DeallocateData( );
 		BIT_INLINE BIT_BOOL IsLoaded( ) const { return m_Loaded; }
