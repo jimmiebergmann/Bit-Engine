@@ -132,13 +132,10 @@ namespace Bit
 			}
 			else if( LineBuffer[ 0 ] == 'f' )
 			{
-				for( BIT_MEMSIZE i = 0; i < 3; i++ )
-				{
-					LineBuffer[ 63 ] = 0;
-					DecodeOBJFaces( &LineBuffer[ 2 ],  Tri.PositionIndex,
-						Tri.TextureIndex, Tri.NormalIndex );
-				}
-			
+				LineBuffer[ 63 ] = 0;
+				DecodeOBJFaces( &LineBuffer[ 2 ],  Tri.PositionIndex,
+					Tri.TextureIndex, Tri.NormalIndex );
+
 				// Add the triangle
 				m_Triangles.push_back( Tri );
 			}
@@ -267,9 +264,10 @@ namespace Bit
 				for( BIT_MEMSIZE j = 0; j < 3; j++ )
 				{
 					BIT_SINT32 Index = m_Triangles[ i ].TextureIndex[ j ];
+					//bitTrace( "%i ", Index );
 				
-					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 0 ] = m_VertexPositions[ Index ].x;
-					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 1 ] = m_VertexPositions[ Index ].y;
+					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 0 ] = m_VertexTextures[ Index ].x;
+					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 1 ] = m_VertexTextures[ Index ].y;
 				}
 			}
 
