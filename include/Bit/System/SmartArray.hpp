@@ -63,7 +63,6 @@ namespace Bit
 		}
 
 		// Operators
-		// Operators
 		operator T * ( ) const
 		{
 			return m_pPointer;
