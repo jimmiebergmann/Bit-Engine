@@ -76,17 +76,16 @@ namespace Bit
 		DeallocateData( );
 	}
 
-	BIT_UINT32 Image::ReadFile( const std::string p_pFilePath )
+	BIT_UINT32 Image::ReadFile( const char * p_pFilePath )
 	{
 		// Get the file's extension
-		/*char FileExtension[4];
-		GetFileExtension( p_pFilePath.c_str( ), FileExtension, 4 );
+		std::string FileExtension = GetFileExtension( p_pFilePath );
 
-		if( strcmp( FileExtension, "TGA" ) == 0 )
+		if( FileExtension == "TGA" )
 		{
-			return ReadTGA( p_pFileName );
+			return ReadTGA( p_pFilePath );
 		}
-		else if( strcmp( FileExtension, "PNG" ) == 0 )
+		else if( FileExtension == "PNG" )
 		{
 			bitTrace( BIT_NULL, "[Bit::Image::ReadFile] <ERROR> "
 				"Not supporting PNG images yet.\n" );
@@ -94,16 +93,15 @@ namespace Bit
 		}
 
 		bitTrace( BIT_NULL, "[Bit::Image::ReadFile] <ERROR> "
-			"Unknow extension: %s.\n", FileExtension );*/
+			"Unknow extension: %s.\n", FileExtension );
 
-		return ReadTGA( p_pFilePath );
-		//return BIT_ERROR;
+		return BIT_ERROR;
 	}
 
-	BIT_UINT32 Image::ReadTGA( const std::string p_pFilePath )
+	BIT_UINT32 Image::ReadTGA( const char * p_pFilePath )
 	{
 		// Open the file
-		std::ifstream File( p_pFilePath.c_str( ), std::ios::binary );
+		std::ifstream File( p_pFilePath, std::ios::binary );
 		if(File.is_open() == false)
 		{
 			return BIT_ERROR_OPEN_FILE;

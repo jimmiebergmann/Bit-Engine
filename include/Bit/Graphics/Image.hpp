@@ -65,8 +65,8 @@ namespace Bit
 		~Image( );
 
 		// Public general functions
-		BIT_UINT32 ReadFile( const std::string p_pFilePath ); // Read data from a file.
-		BIT_UINT32 ReadTGA( const std::string p_pFilePath );
+		BIT_UINT32 ReadFile( const char * p_pFilePath ); // Read data from a file.
+		BIT_UINT32 ReadTGA( const char * p_pFilePath );
 		void DeallocateData( );
 		BIT_BOOL ContainsData( ) const; // Does the Image class have any data?
 

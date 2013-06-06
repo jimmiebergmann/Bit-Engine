@@ -22,56 +22,47 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
-#ifndef __BIT_SYSTEM_SMART_ARRAY_HPP__
-#define __BIT_SYSTEM_SMART_ARRAY_HPP__
+#ifndef __BIT_AUDIO_BUFFER_HPP__
+#define __BIT_AUDIO_BUFFER_HPP__
 
 #include <Bit/DataTypes.hpp>
 
 namespace Bit
 {
-
-	template <typename T>
-	class SmartArray
+	
+	class BIT_API AudioBuffer
 	{
 
 	public:
 
-		// Construcotrs/destructor
-		SmartArray( const BIT_MEMSIZE p_Size )
-		{
-			m_pPointer = new T[ p_Size ];
-		}
-
-		SmartArray( T * p_pPointer )
-		{
-			m_pPointer = p_pPointer;
-		}
-
-		~SmartArray( )
-		{
-			if( m_pPointer )
-			{
-				delete [ ] m_pPointer;
-			}
-		}
+		// Constructor/destructor
+		AudioBuffer( );
+		~AudioBuffer( );
 
 		// Public functions
-		T * Get( ) const
-		{
-			return m_pPointer;
-		}
+		BIT_UINT32 Read( char * p_pFileName );
 
-		// Operators
-		operator T * ( ) const
-		{
-			return m_pPointer;
-		}
+		// Get functions
+		BIT_BYTE * GetData( ) const;
+		BIT_UINT32 GetDataSize( ) const;
+		BIT_UINT16 GetChannelCount( ) const;
+		BIT_UINT32 GetSampleRate( ) const;
+		BIT_UINT16 GetBitsPerSample( ) const;
+		BIT_BOOL ContainsData( ) const;
 
 	private:
 
+		// Private functions
+		BIT_UINT32 ReadWAVE( char *p_pFileName );
+
 		// Private variables
-		T * m_pPointer;
+		BIT_BOOL m_Loaded;
+		BIT_UINT16 m_ChannelCount;
+		BIT_UINT32 m_SampleRate;
+		BIT_UINT16 m_BitsPerSample;
+		BIT_UINT32 m_BufferSize;
+		BIT_BYTE * m_pBuffer;
+
 
 	};
 

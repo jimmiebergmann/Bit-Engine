@@ -25,6 +25,7 @@
 
 #include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
 #include <cstring>
+#include <Bit/System/SmartArray.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -40,7 +41,6 @@ namespace Bit
 		m_Compiled = BIT_FALSE;
 		m_ShaderType = p_ShaderType;
 		m_ShaderSource = "";
-		m_FilePath = "";
 
 		// Create the shader object
 		m_ShaderObject = glCreateShader( s_ShaderObjectTypes[ p_ShaderType ] );
@@ -98,10 +98,9 @@ namespace Bit
 
 			if( LogLength > 1 )
 			{
-				char *pLog = new char[ LogLength ];
+				SmartArray< char > pLog( LogLength + 1 );
 				glGetShaderInfoLog( m_ShaderObject, LogLength, BIT_NULL, pLog );
 				bitTrace( "[ShaderOpenGL::Compile] Shader compiler error:\n%s\n", pLog );
-				delete [ ] pLog;
 			}
 
 			return BIT_ERROR;
