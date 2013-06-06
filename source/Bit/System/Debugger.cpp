@@ -57,8 +57,9 @@ namespace Bit
 		va_list ArgPtr;
 
 		va_start( ArgPtr, p_pMessage );
-		ReturnVal = _vsnprintf_s( CompleteMessage, 1024, p_pMessage, ArgPtr );
+		ReturnVal = _vsnprintf_s( CompleteMessage, 1023, p_pMessage, ArgPtr );
 		va_end( ArgPtr );
+		CompleteMessage[ 1023 ] = 0;
 
 		// Output the message
 		#ifdef BIT_PLATFORM_WIN32

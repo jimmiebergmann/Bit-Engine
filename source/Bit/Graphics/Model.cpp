@@ -27,6 +27,7 @@
 #include <fstream>
 #include <string>
 #include <stdio.h>
+#include <Bit/System.hpp>
 #include <Bit/System/SmartArray.hpp>
 #include <Bit/System/Randomizer.hpp>
 #include <Bit/System/Debugger.hpp>
@@ -48,21 +49,25 @@ namespace Bit
 	}
 
 	// Public functions
-	BIT_UINT32 Model::ReadFile( const char * p_FilePath )
+	BIT_UINT32 Model::ReadFile( const char * p_pFilePath )
 	{
-		if( m_Loaded )
+		// Get the file's extension
+		std::string FileExtension = GetFileExtension( p_pFilePath );
+
+		if( FileExtension == "OBJ" )
 		{
-			bitTrace( "[Model::LoadFile] Already loaded.\n" );
-			return BIT_ERROR;
+			BIT_UINT32 Status = ReadOBJ( p_pFilePath );
+			m_Loaded = ( Status == BIT_OK );
+			return Status;
 		}
 
-		// Currently, we can just load OBJ files. So let's do that.
-		BIT_UINT32 Status = ReadOBJ( p_FilePath );
-		m_Loaded = ( Status == BIT_OK );
-		return Status;
+		bitTrace( BIT_NULL, "[Bit::Model::ReadFile] <ERROR> "
+			"Unknow extension: %s.\n", FileExtension );
+
+		return BIT_ERROR;
 	}
 
-	BIT_UINT32 Model::ReadOBJ( const char * p_FilePath )
+	BIT_UINT32 Model::ReadOBJ( const char * p_pFilePath )
 	{
 		// Make sure the model is not already loaded.
 		if( m_Loaded )
@@ -72,7 +77,7 @@ namespace Bit
 		}
 
 		// Open the main .obj file
-		std::ifstream fin( p_FilePath );
+		std::ifstream fin( p_pFilePath, std::fstream::binary );
 		
 		// Could we open the file?
 		if( !fin.is_open( ) )
@@ -80,9 +85,18 @@ namespace Bit
 			return BIT_ERROR_OPEN_FILE;
 		}
 
+		// Get the file size
+		fin.seekg( 0, std::fstream::end );
+		BIT_UINT32 FileSize = fin.tellg( );
+		fin.seekg( 0, std::fstream::beg );
+
+		// Allocate and read the data
+		SmartArray< BIT_SCHAR8 > Data( FileSize );
+		fin.read( (char*)Data.Get( ), FileSize );
+		fin.close( );
+
 		// Usefil pre-declared variales for the file reading
-		std::string Prefix = "";
-		std::string String = "";
+		BIT_UINT32 CurrentPosition = 0;
 		Vector3_f32 Vec3;
 		Vector2_f32 Vec2;
 		Triangle Tri;
@@ -90,10 +104,29 @@ namespace Bit
 		BIT_SCHAR8 LineBuffer[ 64 ];
 
 		// Keep on reading until we reach any stream flag
-		while( fin.good( ) )
+		//while( fin.good( ) )
+		while( CurrentPosition < FileSize )
 		{
-			fin.getline( (char*)LineBuffer, 63 );
+			// Get the current line
+			for( BIT_UINT32 i = CurrentPosition; i < CurrentPosition + 64; i++ )
+			{
+				// Look for a new line
+				if( Data[ i ] == '\n' )
+				{
+					// Calculate length of the line
+					BIT_UINT32 Size = i - CurrentPosition;
 
+					// Copy the new line into the temporary line buffer
+					strncpy( (char*)LineBuffer, (const char*)&Data[ CurrentPosition ], Size );
+					LineBuffer[ Size ] = 0;
+
+					// Set the new data position
+					CurrentPosition = i + 1;
+					break;
+				}
+			}
+
+			// Handle vertex line
 			if( LineBuffer[ 0 ] == 'v' )
 			{
 				if( LineBuffer[ 1 ] == 't' )
@@ -125,30 +158,27 @@ namespace Bit
 					}
 				}
 			}
+			// Handle face line
 			else if( LineBuffer[ 0 ] == 'f' )
 			{
-				for( BIT_MEMSIZE i = 0; i < 3; i++ )
-				{
-					LineBuffer[ 63 ] = 0;
-					DecodeOBJFaces( &LineBuffer[ 2 ],  Tri.PositionIndex,
-						Tri.TextureIndex, Tri.NormalIndex );
-				}
-			
+				LineBuffer[ 63 ] = 0;
+				DecodeOBJFaces( &LineBuffer[ 2 ],  Tri.PositionIndex,
+					Tri.TextureIndex, Tri.NormalIndex );
+
 				// Add the triangle
 				m_Triangles.push_back( Tri );
 			}
+			// Handle comment line
 			else if( LineBuffer[ 0 ] == '#' )
 			{
 				continue;
 			}
+			// Handle unknown line (?)
 			else
 			{
 				UnknowPrefixCount++;
 			}
 		}
-
-		// Close the main file
-		fin.close( );
 
 		// Validate the triangles by making sure that no indices are out of bound
 		for( BIT_MEMSIZE i = 0; i < m_Triangles.size( ); i++ )
@@ -262,9 +292,10 @@ namespace Bit
 				for( BIT_MEMSIZE j = 0; j < 3; j++ )
 				{
 					BIT_SINT32 Index = m_Triangles[ i ].TextureIndex[ j ];
+					//bitTrace( "%i ", Index );
 				
-					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 0 ] = m_VertexPositions[ Index ].x;
-					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 1 ] = m_VertexPositions[ Index ].y;
+					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 0 ] = m_VertexTextures[ Index ].x;
+					pVertexTextures[ ( i * 6 ) + ( j * 2 ) + 1 ] = m_VertexTextures[ Index ].y;
 				}
 			}
 
