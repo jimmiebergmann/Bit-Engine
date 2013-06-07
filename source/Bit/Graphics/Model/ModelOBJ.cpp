@@ -31,6 +31,7 @@ namespace Bit
 
 	// Constructor/Destructor
 	ModelOBJ::ModelOBJ( const GraphicDevice & p_GraphicDevice ) :
+		m_TotalTriangleCount( 0 ),
 		m_GraphicDevice( p_GraphicDevice )
 	{
 		m_Loaded = BIT_FALSE;
@@ -59,6 +60,24 @@ namespace Bit
 
 	void ModelOBJ::Unload( )
 	{
+		// Clear the pointerless vectors
+		m_VertexPositions.clear( );
+		m_TexturePositions.clear( );
+		m_NormalPositions.clear( );
+		m_Textures.clear( );
+		
+		// Clear the texture groups
+		for( BIT_MEMSIZE i = 0; i < m_VertexGroups.size( ); i++ )
+		{
+			delete m_VertexGroups[ i ];
+		}
+		m_VertexGroups.clear( );
+		
+		// Reset the count varaibles
+		m_TotalTriangleCount = 0;
+		m_TotalTriangleIndexCount = 0;
+
+		// Set the loaded flag to false
 		m_Loaded = BIT_FALSE;
 	}
 
@@ -71,32 +90,32 @@ namespace Bit
 	// Get functions
 	BIT_UINT32 ModelOBJ::GetTriangleCount( ) const
 	{
-		return 0;
+		return m_TotalTriangleCount;
 	}
 
 	BIT_UINT32 ModelOBJ::GetTriangleIndexCount( ) const
 	{
-		return 0;
+		return m_TotalTriangleIndexCount;
 	}
 
 	BIT_UINT32 ModelOBJ::GetPositionCoordinateCount( ) const
 	{
-		return 0;
+		return m_VertexPositions.size( );
 	}
 
 	BIT_UINT32 ModelOBJ::GetTextureCoordinateCount( ) const
 	{
-		return 0;
+		return m_TexturePositions.size( );
 	}
 
 	BIT_UINT32 ModelOBJ::GetNormalCoordinateCount( ) const
 	{
-		return 0;
+		return m_NormalPositions.size( );
 	}
 
 	BIT_UINT32 ModelOBJ::GetTextureCount( ) const
 	{
-		return 0;
+		return m_Textures.size( );
 	}
 
 	BIT_UINT32 ModelOBJ::GetAnimationCount( ) const

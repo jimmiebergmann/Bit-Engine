@@ -28,6 +28,7 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Graphics/Texture.hpp>
 #include <Bit/Graphics/Model.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <Bit/System/Vector3.hpp>
@@ -50,6 +51,7 @@ namespace Bit
 		struct VertexGroup
 		{
 			std::vector< Triangle > Triangles;
+			Texture * pTexture;
 		};
 
 		// Constructor/Destructor
@@ -73,11 +75,17 @@ namespace Bit
 
 	private:
 
+		// Private variables
 		std::vector< Vector3_f32 > m_VertexPositions;
 		std::vector< Vector2_f32 > m_TexturePositions;
 		std::vector< Vector3_f32 > m_NormalPositions;
-		std::vector< VertexGroup > m_VertexGroups;
+		std::vector< VertexGroup * > m_VertexGroups;
+		std::vector< Texture * > m_Textures;
+		BIT_UINT32 m_TotalTriangleCount;
+		BIT_UINT32 m_TotalTriangleIndexCount;
 		const GraphicDevice & m_GraphicDevice;
+
+		// Private render variables
 
 	};
 
