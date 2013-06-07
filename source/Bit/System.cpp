@@ -107,6 +107,13 @@ namespace Bit
 			}
 		}
 
+		// We didn't find any extension
+		if( !Extension.size( ) )
+		{
+			return std::string( p_pFilePath );
+		}
+
+		// Return the extension
 		return Extension;
 	}
 

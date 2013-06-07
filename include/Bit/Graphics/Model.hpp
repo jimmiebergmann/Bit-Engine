@@ -26,16 +26,59 @@
 #define __BIT_GRAPHICS_MODEL_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Model/StaticModel.hpp>
-#include <Bit/Graphics/Model/DynamicModel.hpp>
+/*#include <Bit/Graphics/Model/StaticModel.hpp>
+#include <Bit/Graphics/Model/DynamicModel.hpp>*/
 
 namespace Bit
 {
 
-	// Model creating functions
+	class BIT_API Model
+	{
+
+	public:
+
+		// Public enum
+		enum eModelType
+		{
+			Model_None = 1,
+			Model_OBJ = 2
+		};
+
+		// Destructor
+		virtual ~Model( ) { }
+
+		// Virtual public functions
+		virtual BIT_UINT32 ReadFile( const char * p_pFilePath ) = 0;
+		virtual void Unload( ) = 0;
+		virtual void Render( ) = 0;
+
+		// Virtual get functions
+		virtual BIT_UINT32 GetTriangleCount( ) const = 0;
+		virtual BIT_UINT32 GetTriangleIndexCount( ) const = 0;
+		virtual BIT_UINT32 GetPositionCoordinateCount( ) const = 0;
+		virtual BIT_UINT32 GetTextureCoordinateCount( ) const = 0;
+		virtual BIT_UINT32 GetNormalCoordinateCount( ) const = 0;
+		virtual BIT_UINT32 GetTextureCount( ) const = 0;
+		virtual BIT_UINT32 GetAnimationCount( ) const = 0;
+		virtual BIT_BOOL ContainsRagdoll( ) const = 0;
+
+		// Public inline get functions
+		BIT_INLINE BIT_BOOL IsLoaded( ) { return m_Loaded; }
+		BIT_INLINE eModelType GetType( ) { return m_Type; }
+
+	protected:
+
+		BIT_BOOL m_Loaded;
+		eModelType m_Type;
+
+	};
+
+
+/*
+	// Utility functions for creating models, regarless of the file format
 	BIT_API StaticModel * CreateStaticModel( const char * p_pFilePath );
 	BIT_API DynamicModel * CreateDynamicModel( const char * p_pFilePath );
-
+*/
 }
 
 #endif

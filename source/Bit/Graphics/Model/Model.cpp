@@ -32,7 +32,7 @@ namespace Bit
 {
 
 	// Model creating functions
-	BIT_API StaticModel * CreateStaticModel( const char * p_pFilePath )
+	/*BIT_API StaticModel * CreateStaticModel( const char * p_pFilePath )
 	{
 		// Get the file's extension
 		std::string Extension = GetFileExtension( p_pFilePath );
@@ -58,6 +58,6 @@ namespace Bit
 		}
 
 		return BIT_NULL;
-	}
+	}*/
 
 }

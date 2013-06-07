@@ -31,6 +31,7 @@
 #include <Bit/Graphics/ShaderProgram.hpp>
 #include <Bit/Graphics/Shader.hpp>
 #include <Bit/Graphics/Texture.hpp>
+#include <Bit/Graphics/Model.hpp>
 
 namespace Bit
 {
@@ -64,6 +65,7 @@ namespace Bit
 		virtual ShaderProgram * CreateShaderProgram( ) const = 0;
 		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const = 0;
 		virtual Texture * CreateTexture( ) const = 0;
+		virtual Model * CreateModel( Model::eModelType p_Type ) const = 0;
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits ) = 0;

@@ -30,7 +30,8 @@ namespace Bit
 {
 
 	// Constructor/Destructor
-	ModelOBJ::ModelOBJ( )
+	ModelOBJ::ModelOBJ( const GraphicDevice & p_GraphicDevice ) :
+		m_GraphicDevice( p_GraphicDevice )
 	{
 		m_Loaded = BIT_FALSE;
 	}
@@ -42,12 +43,6 @@ namespace Bit
 
 	// Public functions
 	BIT_UINT32 ModelOBJ::ReadFile( const char * p_pFilePath )
-	{
-
-		return BIT_ERROR;
-	}
-
-	BIT_UINT32 ModelOBJ::Load( )
 	{
 		// Make sure that the model is not already loaded
 		if( m_Loaded )
@@ -62,14 +57,56 @@ namespace Bit
 		return BIT_OK;
 	}
 
+	void ModelOBJ::Unload( )
+	{
+		m_Loaded = BIT_FALSE;
+	}
+
 	void ModelOBJ::Render( )
 	{
 
 	}
 
-	void ModelOBJ::Unload( )
+
+	// Get functions
+	BIT_UINT32 ModelOBJ::GetTriangleCount( ) const
 	{
-		m_Loaded = BIT_FALSE;
+		return 0;
+	}
+
+	BIT_UINT32 ModelOBJ::GetTriangleIndexCount( ) const
+	{
+		return 0;
+	}
+
+	BIT_UINT32 ModelOBJ::GetPositionCoordinateCount( ) const
+	{
+		return 0;
+	}
+
+	BIT_UINT32 ModelOBJ::GetTextureCoordinateCount( ) const
+	{
+		return 0;
+	}
+
+	BIT_UINT32 ModelOBJ::GetNormalCoordinateCount( ) const
+	{
+		return 0;
+	}
+
+	BIT_UINT32 ModelOBJ::GetTextureCount( ) const
+	{
+		return 0;
+	}
+
+	BIT_UINT32 ModelOBJ::GetAnimationCount( ) const
+	{
+		return 0;
+	}
+
+	BIT_BOOL ModelOBJ::ContainsRagdoll( ) const
+	{
+		return BIT_FALSE;
 	}
 
 

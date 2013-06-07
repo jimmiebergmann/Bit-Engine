@@ -27,29 +27,57 @@
 #define __BIT_GRAPHICS_MODEL_OBJ_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Model/StaticModel.hpp>
+#include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Graphics/Model.hpp>
+#include <Bit/System/Vector2.hpp>
+#include <Bit/System/Vector3.hpp>
+#include <vector>
 
 namespace Bit
 {
 
-	class BIT_API ModelOBJ : public StaticModel
+	class BIT_API ModelOBJ : public Model
 	{
 
 	public:
 
+		// public structures
+		struct Triangle
+		{
+			BIT_UINT32 Indices[ 3 ];
+		};
+
+		struct VertexGroup
+		{
+			std::vector< Triangle > Triangles;
+		};
+
 		// Constructor/Destructor
-		ModelOBJ( );
+		ModelOBJ( const GraphicDevice & p_GraphicDevice );
 		~ModelOBJ( );
 
 		// Public functions
 		virtual BIT_UINT32 ReadFile( const char * p_pFilePath );
-		virtual BIT_UINT32 Load( );
+		virtual void Unload( );
 		virtual void Render( );
-		void Unload( );
+
+		// Get functions
+		virtual BIT_UINT32 GetTriangleCount( ) const;
+		virtual BIT_UINT32 GetTriangleIndexCount( ) const;
+		virtual BIT_UINT32 GetPositionCoordinateCount( ) const;
+		virtual BIT_UINT32 GetTextureCoordinateCount( ) const;
+		virtual BIT_UINT32 GetNormalCoordinateCount( ) const;
+		virtual BIT_UINT32 GetTextureCount( ) const;
+		virtual BIT_UINT32 GetAnimationCount( ) const;
+		virtual BIT_BOOL ContainsRagdoll( ) const;
 
 	private:
 
-
+		std::vector< Vector3_f32 > m_VertexPositions;
+		std::vector< Vector2_f32 > m_TexturePositions;
+		std::vector< Vector3_f32 > m_NormalPositions;
+		std::vector< VertexGroup > m_VertexGroups;
+		const GraphicDevice & m_GraphicDevice;
 
 	};
 
