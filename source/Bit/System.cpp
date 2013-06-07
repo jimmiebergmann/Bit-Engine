@@ -117,4 +117,27 @@ namespace Bit
 		return Extension;
 	}
 
+	// Get line functions.
+	BIT_UINT32 BIT_API GetLine( BIT_SCHAR8 * p_Destination, BIT_UINT32 p_DestinationSize, const BIT_SCHAR8 * p_Source )
+	{
+		// Keep on searching for a line ending.
+		for( BIT_UINT32 i = 0; i < i < p_DestinationSize; i++ )
+		{
+			// Look for a new line
+			if( p_Source[ i ] == '\n' || p_Source[ i ] == 0 )
+			{
+				// Calculate the size of the line
+				BIT_UINT32 Size = i + 1;
+
+				// Copy the new line into the temporary line buffer
+				strncpy( (char*)p_Destination, (const char*)p_Source, Size );
+				p_Destination[ i ] = 0;
+
+				return Size;
+			}
+		}
+
+		return 0;
+	}
+
 }

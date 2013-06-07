@@ -53,6 +53,7 @@ namespace Bit
 		virtual void Render( ) = 0;
 
 		// Virtual get functions
+		virtual std::string GetName( ) const = 0;
 		virtual BIT_UINT32 GetTriangleCount( ) const = 0;
 		virtual BIT_UINT32 GetTriangleIndexCount( ) const = 0;
 		virtual BIT_UINT32 GetPositionCoordinateCount( ) const = 0;

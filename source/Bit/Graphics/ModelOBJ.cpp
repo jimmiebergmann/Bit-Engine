@@ -23,6 +23,9 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/ModelOBJ.hpp>
+#include <Bit/System.hpp>
+#include <Bit/System/SmartArray.hpp>
+#include <fstream>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -52,6 +55,19 @@ namespace Bit
 			return BIT_ERROR;
 		}
 
+		// Read the model data
+		if( ReadData( p_pFilePath ) != BIT_OK )
+		{
+			bitTrace( "[ModelOBJ::Load] Can not read the data\n" );
+			return BIT_ERROR;
+		}
+
+		// Load the graphics: Textures, shaders and vertex objects
+		if( LoadGraphics( ) != BIT_OK )
+		{
+			bitTrace( "[ModelOBJ::Load] Can not load the graphics\n" );
+			return BIT_ERROR;
+		}
 
 		// We are done
 		m_Loaded = BIT_OK;
@@ -66,9 +82,14 @@ namespace Bit
 		m_NormalPositions.clear( );
 		m_Textures.clear( );
 		
-		// Clear the texture groups
+		// Clear the vertex groups
 		for( BIT_MEMSIZE i = 0; i < m_VertexGroups.size( ); i++ )
 		{
+			for( BIT_MEMSIZE j = 0; j < m_VertexGroups[ i ]->Materials.size( ); j++ )
+			{
+				delete m_VertexGroups[ i ]->Materials[ j ];
+			}
+
 			delete m_VertexGroups[ i ];
 		}
 		m_VertexGroups.clear( );
@@ -86,8 +107,12 @@ namespace Bit
 
 	}
 
-
 	// Get functions
+	std::string ModelOBJ::GetName( ) const
+	{
+		return m_Name;
+	}
+
 	BIT_UINT32 ModelOBJ::GetTriangleCount( ) const
 	{
 		return m_TotalTriangleCount;
@@ -128,5 +153,310 @@ namespace Bit
 		return BIT_FALSE;
 	}
 
+	// Private functions
+	BIT_UINT32 ModelOBJ::ReadData( const char * p_pFilePath )
+	{
+		// Open the main .obj file
+		std::ifstream fin( p_pFilePath, std::fstream::binary );
+
+		// Could we open the file?
+		if( !fin.is_open( ) )
+		{
+			return BIT_ERROR_OPEN_FILE;
+		}
+
+		// Get the file size
+		fin.seekg( 0, std::fstream::end );
+		BIT_UINT32 FileSize = fin.tellg( );
+		fin.seekg( 0, std::fstream::beg );
+
+		// Allocate and read the data
+		SmartArray< BIT_SCHAR8 > Data( FileSize );
+		fin.read( (char*)Data.Get( ), FileSize );
+		fin.close( );
+
+		// Useful variables
+		BIT_UINT32 CurrentPosition = 0;
+		BIT_SCHAR8 LineBuffer[ 128 ];
+		BIT_UINT32 UnknowDataCount = 0;
+		std::vector< std::string > m_UnknownData;
+		BIT_SCHAR8 TextBuffer64[ 64 ];
+		Vector3_f32 Vec3;
+		Vector2_f32 Vec2;
+		Triangle Tri;
+
+		// Smoothing group varaibles
+		BIT_BOOL UseSmoothing = BIT_FALSE;
+		std::vector< Triangle > * pTriangleVectorPtr;
+
+		// Create the first vertex and material groups
+		MaterialGroup * pMaterialGroup = new MaterialGroup;
+		VertexGroup * pVertexGroup = new VertexGroup;
+		pMaterialGroup->pTexture = BIT_NULL;
+		pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
+		pVertexGroup->Materials.push_back( pMaterialGroup );
+		m_VertexGroups.push_back( pVertexGroup );
+
+		// Keep on reading until we reach any stream flag
+		while( CurrentPosition < FileSize )
+		{
+			// Get the current line 
+			CurrentPosition += GetLine( LineBuffer, 128, &Data[ CurrentPosition] );
+			
+			// Manage the current line
+			// Ignore comments
+			switch( LineBuffer[ 0 ] )
+			{
+				// Vertex data
+				case 'v':
+				{
+					// Switch the second character
+					switch( LineBuffer[ 1 ] )
+					{
+						// Positions coordinates
+						case ' ':
+						{
+							if( sscanf( (const char*)&LineBuffer[ 1 ], "%f %f %f", &Vec3.x, &Vec3.y, &Vec3.z ) == 3 )
+							{
+								m_VertexPositions.push_back( Vec3 );
+							}
+						}
+						break;
+						// Texture coordinates
+						case 't':
+						{
+							if( sscanf( (const char*)&LineBuffer[ 2 ], "%f %f", &Vec2.x, &Vec2.y ) == 3 )
+							{
+								m_TexturePositions.push_back( Vec2 );
+							}
+						}
+						break;
+						// Normal coordinates
+						case 'n':
+						{
+							if( sscanf( (const char*)&LineBuffer[ 2 ], "%f %f %f", &Vec3.x, &Vec3.y, &Vec3.z ) == 3 )
+							{
+								m_NormalPositions.push_back( Vec3 );
+							}
+						}
+						break;
+						default:
+						{
+						}
+						break;
+					}
+				}
+				break;
+				// Face data
+				case 'f':
+				{
+					DecodeOBJFaces( &LineBuffer[ 1 ],  Tri.PositionIndices,
+						Tri.TextureIndices, Tri.NormalIndices );
+
+					// Add the triangle
+					pTriangleVectorPtr->push_back( Tri );
+				}
+				break;
+				// Group prefix
+				case 'g':
+				{
+					// Is this the first vertex group?
+					// Then ignore the line since we initially added the first vertex group.
+					if( m_VertexGroups.size( ) == 1 )
+					{
+						continue;
+					}
+
+					// Create a new vertex group
+					pVertexGroup = new VertexGroup;
+					m_VertexGroups.push_back( pVertexGroup );
+
+					// Add a new material
+					pMaterialGroup = new MaterialGroup;
+					pMaterialGroup->pTexture = BIT_NULL;
+					pVertexGroup->Materials.push_back( pMaterialGroup );
+
+					// Set the first triangle group, depending on the smoothing
+					if( UseSmoothing )
+					{
+						pTriangleVectorPtr = &pMaterialGroup->TrianglesSmooth;
+					}
+					else
+					{
+						pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
+					}
+				}
+				break;
+				// u prefix( usemtl - material name )
+				case 'u':
+				{
+					// Scan for "usemtl"
+					if( sscanf( (const char *)LineBuffer, "usemtl %s", TextBuffer64 ) == 1 )
+					{
+						// Is this the first material group?
+						if( pVertexGroup->Materials.size( ) == 1 )
+						{
+							pVertexGroup->Materials[ 0 ]->MaterialName = (char*)TextBuffer64;
+							continue;
+						}
+
+						// Create a new material
+						pMaterialGroup = new MaterialGroup;
+						pMaterialGroup->pTexture = BIT_NULL;
+						pVertexGroup->Materials.push_back( pMaterialGroup );
+
+						// Set the first triangle group, depending on the smoothing
+						if( UseSmoothing )
+						{
+							pTriangleVectorPtr = &pMaterialGroup->TrianglesSmooth;
+						}
+						else
+						{
+							pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
+						}
+					}
+				}
+				break;
+				// Smoothing group prefix
+				case 's':
+				{
+					// Are we turning off smoothing groups?
+					// Check for the word [o]ff.
+					if( LineBuffer[ 2 ] == 'o' )
+					{
+						UseSmoothing = BIT_FALSE;
+						pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
+						continue;
+					}
+
+					// The following data is probably a number
+					BIT_SINT32 SmoothingNumber = atoi( (const char *)&LineBuffer[ 2 ] );
+
+					// Turn smoothing groups off if the smoothing number is 0
+					if( SmoothingNumber == 0 )
+					{
+						UseSmoothing = BIT_FALSE;
+						pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
+						continue;
+					}
+
+					// Turn on smoothing groups
+					UseSmoothing = BIT_TRUE;
+					pTriangleVectorPtr = &pMaterialGroup->TrianglesSmooth;
+				}
+				// m prefix( mtllib - material library )
+				case 'm':
+				{
+
+					continue;
+				}
+				break;
+				// object name prefix
+				case 'o':
+				{
+					if( sscanf( (const char *)&LineBuffer[ 1 ], "%s", TextBuffer64 ) == 1 )
+					{
+						m_Name = std::string( (char*)TextBuffer64 );
+					}
+				}
+				break;
+				// Comment
+				case '#':
+				{
+					continue;
+				}
+				break;
+				// Unknow data
+				default:
+				{
+					m_UnknownData.push_back( (char*)LineBuffer );
+					UnknowDataCount++;
+				}
+				break;
+
+			}
+
+
+		}
+
+		if( m_UnknownData.size( ) )
+		{
+			bitTrace( "Unknow OBJ data:\n" );
+		}
+
+		for( BIT_UINT32 i = 0; i < m_UnknownData.size( ); i++ )
+		{
+			bitTrace( "%i: %s\n", ( i + 1 ), m_UnknownData[ i ].c_str( )  );
+		}
+
+		return BIT_OK;
+	}
+
+	BIT_UINT32 ModelOBJ::LoadGraphics( )
+	{
+		return BIT_OK;
+	}
+
+	void ModelOBJ::DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
+			BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal )
+	{
+		// Let's decode by scanning the string
+		if( sscanf( (const char*)p_String, "%i/%i/%i %i/%i/%i %i/%i/%i",
+			&p_pPosition[ 0 ], &p_pTexture[ 0 ], &p_pNormal[ 0 ],
+			&p_pPosition[ 1 ], &p_pTexture[ 1 ], &p_pNormal[ 1 ],
+			&p_pPosition[ 2 ], &p_pTexture[ 2 ], &p_pNormal[ 2 ] ) == 9 )
+		{
+			for( BIT_MEMSIZE i = 0; i < 3; i++ )
+			{
+				p_pPosition[ i ]--;
+				p_pTexture[ i ]--;
+				p_pNormal[ i ]--;
+			}
+
+			return;
+		}
+
+		if( sscanf( (const char*)p_String, "%i//%i %i//%i %i//%i",
+			&p_pPosition[ 0 ], &p_pNormal[ 0 ],
+			&p_pPosition[ 1 ], &p_pNormal[ 1 ],
+			&p_pPosition[ 2 ], &p_pNormal[ 2 ] ) == 6 )
+		{
+			for( BIT_MEMSIZE i = 0; i < 3; i++ )
+			{
+				p_pPosition[ i ]--;
+				p_pTexture[ i ] = -1;
+				p_pNormal[ i ]--;
+			}
+
+			return;
+		}
+
+		if( sscanf( (const char*)p_String, "%i/%i %i/%i %i/%i",
+			&p_pPosition[ 0 ], &p_pTexture[ 0 ],
+			&p_pPosition[ 1 ], &p_pTexture[ 1 ],
+			&p_pPosition[ 2 ], &p_pTexture[ 2 ] ) == 4 )
+		{
+			for( BIT_MEMSIZE i = 0; i < 3; i++ )
+			{
+				p_pPosition[ i ]--;
+				p_pTexture[ i ]--;
+				p_pNormal[ i ] = -1;
+			}
+
+			return;
+		}
+
+		if( sscanf( (const char*)p_String, "%i %i %i",
+			&p_pPosition[ 0 ], &p_pPosition[ 1 ], &p_pPosition[ 2 ] ) == 3 )
+		{
+			for( BIT_MEMSIZE i = 0; i < 3; i++ )
+			{
+				p_pPosition[ i ]--;
+				p_pTexture[ i ] = -1;
+				p_pNormal[ i ] = -1;
+			}
+			return;
+		}
+	}
 
 }

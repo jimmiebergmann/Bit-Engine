@@ -45,14 +45,26 @@ namespace Bit
 		// public structures
 		struct Triangle
 		{
-			BIT_UINT32 Indices[ 3 ];
+			BIT_SINT32 PositionIndices[ 3 ];
+			BIT_SINT32 TextureIndices[ 3 ];
+			BIT_SINT32 NormalIndices[ 3 ];
+		};
+		
+		struct MaterialGroup
+		{
+			Texture * pTexture;
+			std::string MaterialName;
+
+			// Triangles - flat or smooth triangles
+			std::vector< Triangle > TrianglesFlat;
+			std::vector< Triangle > TrianglesSmooth;
 		};
 
 		struct VertexGroup
 		{
-			std::vector< Triangle > Triangles;
-			Texture * pTexture;
+			std::vector< MaterialGroup * > Materials;
 		};
+
 
 		// Constructor/Destructor
 		ModelOBJ( const GraphicDevice & p_GraphicDevice );
@@ -64,6 +76,7 @@ namespace Bit
 		virtual void Render( );
 
 		// Get functions
+		virtual std::string GetName( ) const;
 		virtual BIT_UINT32 GetTriangleCount( ) const;
 		virtual BIT_UINT32 GetTriangleIndexCount( ) const;
 		virtual BIT_UINT32 GetPositionCoordinateCount( ) const;
@@ -75,7 +88,14 @@ namespace Bit
 
 	private:
 
+		// Private functions
+		BIT_UINT32 ReadData( const char * p_pFilePath );
+		BIT_UINT32 LoadGraphics( );
+		void DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
+			BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal );
+
 		// Private variables
+		std::string m_Name;
 		std::vector< Vector3_f32 > m_VertexPositions;
 		std::vector< Vector2_f32 > m_TexturePositions;
 		std::vector< Vector3_f32 > m_NormalPositions;

@@ -30,12 +30,17 @@
 
 namespace Bit
 {
+
 	// Path functions
 	BIT_UINT32 BIT_API SetAbsolutePath( const std::string p_ExecutablePath );
 	std::string BIT_API GetAbsolutePath( );
 	std::string BIT_API GetAbsolutePath( const std::string p_Path );
 	std::string BIT_API GetAbsoluteDirectoryPath( );
 	std::string BIT_API GetFileExtension( const char * p_pFilePath );
+
+	// Get line functions. From strings and char arrays
+	BIT_UINT32 BIT_API GetLine( BIT_SCHAR8 * p_Destination, BIT_UINT32 p_DestinationSize, const BIT_SCHAR8 * p_Source );
+
 }
 
 #endif
