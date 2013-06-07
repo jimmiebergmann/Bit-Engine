@@ -73,12 +73,6 @@ namespace Bit
 
 	};
 
-
-/*
-	// Utility functions for creating models, regarless of the file format
-	BIT_API StaticModel * CreateStaticModel( const char * p_pFilePath );
-	BIT_API DynamicModel * CreateDynamicModel( const char * p_pFilePath );
-*/
 }
 
 #endif

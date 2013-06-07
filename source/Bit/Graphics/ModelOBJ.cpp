@@ -22,7 +22,7 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Graphics/Model/ModelOBJ.hpp>
+#include <Bit/Graphics/ModelOBJ.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 

@@ -28,7 +28,7 @@
 #include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/TextureOpenGL.hpp>
-#include <Bit/Graphics/Model/ModelOBJ.hpp>
+#include <Bit/Graphics/ModelOBJ.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
