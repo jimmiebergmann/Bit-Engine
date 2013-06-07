@@ -336,6 +336,30 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Model"
+			>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\Model\DynamicModel.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\Bit\Graphics\Model\Model.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\Bit\Graphics\Model\ModelOBJ.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\Model\ModelOBJ.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\Model\StaticModel.hpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\source\Bit\Graphics\GraphicDevice.cpp"
 			>
@@ -350,10 +374,6 @@
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\Graphics\Image.hpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\source\Bit\Graphics\Model.cpp"
 			>
 		</File>
 		<File

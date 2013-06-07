@@ -22,20 +22,55 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_MODEL_HPP__
-#define __BIT_GRAPHICS_MODEL_HPP__
-
-#include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Model/StaticModel.hpp>
-#include <Bit/Graphics/Model/DynamicModel.hpp>
+#include <Bit/Graphics/Model/ModelOBJ.hpp>
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	// Model creating functions
-	BIT_API StaticModel * CreateStaticModel( const char * p_pFilePath );
-	BIT_API DynamicModel * CreateDynamicModel( const char * p_pFilePath );
+	// Constructor/Destructor
+	ModelOBJ::ModelOBJ( )
+	{
+		m_Loaded = BIT_FALSE;
+	}
+
+	ModelOBJ::~ModelOBJ( )
+	{
+		Unload( );
+	}
+
+	// Public functions
+	BIT_UINT32 ModelOBJ::ReadFile( const char * p_pFilePath )
+	{
+
+		return BIT_ERROR;
+	}
+
+	BIT_UINT32 ModelOBJ::Load( )
+	{
+		// Make sure that the model is not already loaded
+		if( m_Loaded )
+		{
+			bitTrace( "[ModelOBJ::Load] Already loaded\n" );
+			return BIT_ERROR;
+		}
+
+
+		// We are done
+		m_Loaded = BIT_OK;
+		return BIT_OK;
+	}
+
+	void ModelOBJ::Render( )
+	{
+
+	}
+
+	void ModelOBJ::Unload( )
+	{
+		m_Loaded = BIT_FALSE;
+	}
+
 
 }
-
-#endif

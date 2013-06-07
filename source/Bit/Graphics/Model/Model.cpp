@@ -22,20 +22,42 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_MODEL_HPP__
-#define __BIT_GRAPHICS_MODEL_HPP__
-
-#include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Model/StaticModel.hpp>
-#include <Bit/Graphics/Model/DynamicModel.hpp>
+#include <Bit/Graphics/Model.hpp>
+#include <Bit/System.hpp>
+#include <Bit/Graphics/Model/ModelOBJ.hpp>
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
 	// Model creating functions
-	BIT_API StaticModel * CreateStaticModel( const char * p_pFilePath );
-	BIT_API DynamicModel * CreateDynamicModel( const char * p_pFilePath );
+	BIT_API StaticModel * CreateStaticModel( const char * p_pFilePath )
+	{
+		// Get the file's extension
+		std::string Extension = GetFileExtension( p_pFilePath );
+
+		// Compare the extensions
+		if( Extension == "OBJ" )
+		{
+			return new ModelOBJ( );
+		}
+
+		return BIT_NULL;
+	}
+
+	BIT_API DynamicModel * CreateDynamicModel( const char * p_pFilePath )
+	{
+		// Get the file's extension
+		std::string Extension = GetFileExtension( p_pFilePath );
+
+		// Compare the extensions
+		if( Extension == "" )
+		{
+			return BIT_NULL;
+		}
+
+		return BIT_NULL;
+	}
 
 }
-
-#endif

@@ -22,19 +22,36 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_MODEL_HPP__
-#define __BIT_GRAPHICS_MODEL_HPP__
+
+#ifndef __BIT_GRAPHICS_MODEL_OBJ_HPP__
+#define __BIT_GRAPHICS_MODEL_OBJ_HPP__
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Model/StaticModel.hpp>
-#include <Bit/Graphics/Model/DynamicModel.hpp>
 
 namespace Bit
 {
 
-	// Model creating functions
-	BIT_API StaticModel * CreateStaticModel( const char * p_pFilePath );
-	BIT_API DynamicModel * CreateDynamicModel( const char * p_pFilePath );
+	class BIT_API ModelOBJ : public StaticModel
+	{
+
+	public:
+
+		// Constructor/Destructor
+		ModelOBJ( );
+		~ModelOBJ( );
+
+		// Public functions
+		virtual BIT_UINT32 ReadFile( const char * p_pFilePath );
+		virtual BIT_UINT32 Load( );
+		virtual void Render( );
+		void Unload( );
+
+	private:
+
+
+
+	};
 
 }
 
