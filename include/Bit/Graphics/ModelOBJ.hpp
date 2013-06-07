@@ -34,6 +34,10 @@
 #include <Bit/System/Vector3.hpp>
 #include <vector>
 
+// To do:
+// -------------------------------------
+// 1. Support negative face indices. f -3/-3 -2/-1 -1/-2
+
 namespace Bit
 {
 
@@ -93,6 +97,15 @@ namespace Bit
 		BIT_UINT32 LoadGraphics( );
 		void DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
 			BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal );
+
+		// Private typedefs
+		typedef std::vector< VertexGroup * > VertexGroupVector;
+		typedef VertexGroupVector::iterator VertexGroupIterator;
+		typedef std::vector< MaterialGroup * > MaterialGroupVector;
+		typedef MaterialGroupVector::iterator MaterialGroupIterator;
+		typedef std::vector< Triangle > TriangleVector;
+		typedef TriangleVector::iterator TriangleIterator;
+
 
 		// Private variables
 		std::string m_Name;

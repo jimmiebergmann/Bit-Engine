@@ -375,20 +375,59 @@ namespace Bit
 				break;
 
 			}
-
-
 		}
 
+		// Validate the triangle indices to make sure that no indices are out of bound.
+		for( VertexGroupIterator it_vg = m_VertexGroups.begin( ); it_vg != m_VertexGroups.end( ); it_vg++ )
+		{
+			for( MaterialGroupIterator it_mg = (*it_vg)->Materials.begin( ); it_mg != (*it_vg)->Materials.end( ); it_mg++ )
+			{
+				// Go through flat triangles
+				for( TriangleIterator it_tr = (*it_mg)->TrianglesFlat.begin( ); it_tr != (*it_mg)->TrianglesFlat.end( ); it_tr++ )
+				{
+					for( BIT_MEMSIZE i = 0; i < 3; i++ )
+					{
+						// Position index erorr check
+						if( (*it_tr).PositionIndices[ i ] >= m_VertexPositions.size( ) )
+						{
+							bitTrace( "[ModelOBJ::ReadData] Triangle position index error." );
+							return BIT_ERROR;
+						}
+
+						// Normal index erorr check
+						if( (*it_tr).NormalIndices[ i ] >= m_NormalPositions.size( ) )
+						{
+							bitTrace( "[ModelOBJ::ReadData] Triangle normal index error." );
+							return BIT_ERROR;
+						}
+					}
+
+					for( BIT_MEMSIZE i = 0; i < 2; i++ )
+					{
+						// Texture index erorr check
+						if( (*it_tr).TextureIndices[ i ] >= m_TexturePositions.size( ) )
+						{
+							bitTrace( "[ModelOBJ::ReadData] Triangle texture index error." );
+							return BIT_ERROR;
+						}
+					}
+					
+				}
+
+			}
+		}
+
+		// Were any unknown data lines discovered?
 		if( m_UnknownData.size( ) )
 		{
-			bitTrace( "Unknow OBJ data:\n" );
+			bitTrace( "[ModelOBJ::ReadData] Note: Unknow OBJ data:\n" );
 		}
-
 		for( BIT_UINT32 i = 0; i < m_UnknownData.size( ); i++ )
 		{
 			bitTrace( "%i: %s\n", ( i + 1 ), m_UnknownData[ i ].c_str( )  );
 		}
 
+		// Everything went ok.
 		return BIT_OK;
 	}
 
