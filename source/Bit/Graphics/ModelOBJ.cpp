@@ -225,7 +225,7 @@ namespace Bit
 						// Texture coordinates
 						case 't':
 						{
-							if( sscanf( (const char*)&LineBuffer[ 2 ], "%f %f", &Vec2.x, &Vec2.y ) == 3 )
+							if( sscanf( (const char*)&LineBuffer[ 2 ], "%f %f", &Vec2.x, &Vec2.y ) == 2 )
 							{
 								m_TexturePositions.push_back( Vec2 );
 							}
@@ -344,6 +344,7 @@ namespace Bit
 					UseSmoothing = BIT_TRUE;
 					pTriangleVectorPtr = &pMaterialGroup->TrianglesSmooth;
 				}
+				break;
 				// m prefix( mtllib - material library )
 				case 'm':
 				{
@@ -358,6 +359,17 @@ namespace Bit
 					{
 						m_Name = std::string( (char*)TextBuffer64 );
 					}
+				}
+				break;
+				// Empty line
+				case '\r':
+				{
+					continue;
+				}
+				break;
+				case '\n':
+				{
+					continue;
 				}
 				break;
 				// Comment
@@ -390,14 +402,16 @@ namespace Bit
 						// Position index erorr check
 						if( (*it_tr).PositionIndices[ i ] >= m_VertexPositions.size( ) )
 						{
-							bitTrace( "[ModelOBJ::ReadData] Triangle position index error." );
+							bitTrace( "[ModelOBJ::ReadData] Triangle position index error %i / %i\n",
+								(*it_tr).PositionIndices[ i ], m_VertexPositions.size( ) );
 							return BIT_ERROR;
 						}
 
 						// Normal index erorr check
 						if( (*it_tr).NormalIndices[ i ] >= m_NormalPositions.size( ) )
 						{
-							bitTrace( "[ModelOBJ::ReadData] Triangle normal index error." );
+							bitTrace( "[ModelOBJ::ReadData] Triangle normal index error %i / %i\n",
+								(*it_tr).NormalIndices[ i ], m_NormalPositions.size( ) );
 							return BIT_ERROR;
 						}
 					}
@@ -407,7 +421,8 @@ namespace Bit
 						// Texture index erorr check
 						if( (*it_tr).TextureIndices[ i ] >= m_TexturePositions.size( ) )
 						{
-							bitTrace( "[ModelOBJ::ReadData] Triangle texture index error." );
+							bitTrace( "[ModelOBJ::ReadData] Triangle texture index error %i / %i\n",
+								(*it_tr).TextureIndices[ i ], m_TexturePositions.size( ) );
 							return BIT_ERROR;
 						}
 					}
