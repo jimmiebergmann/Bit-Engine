@@ -77,6 +77,7 @@ namespace Bit
 	void ModelOBJ::Unload( )
 	{
 		// Clear the pointerless vectors
+		m_MaterialLibraries.clear( );
 		m_VertexPositions.clear( );
 		m_TexturePositions.clear( );
 		m_NormalPositions.clear( );
@@ -94,17 +95,53 @@ namespace Bit
 		}
 		m_VertexGroups.clear( );
 		
+		// Clear the render objects
+		for( BIT_MEMSIZE i = 0; i < m_RenderObjects.size( ); i++ )
+		{
+			// Remove the textures via the resource manager?
+			// ...
+
+			// Null the textures
+			m_RenderObjects[ i ]->pTextureDiffuse = BIT_NULL;
+			m_RenderObjects[ i ]->pTextureBump = BIT_NULL;
+			
+			// Unload the vertex object
+			delete m_RenderObjects[ i ]->pVertexObject;
+
+			// Delete the render object
+			delete m_RenderObjects[ i ];
+		}
+		m_RenderObjects.clear( );
+		
+
+
 		// Reset the count varaibles
 		m_TotalTriangleCount = 0;
-		m_TotalTriangleIndexCount = 0;
 
 		// Set the loaded flag to false
 		m_Loaded = BIT_FALSE;
 	}
 
-	void ModelOBJ::Render( )
+	void ModelOBJ::Render( VertexObject::eRenderMode p_Mode )
 	{
+		// Render all the reder objects
+		for( BIT_MEMSIZE i = 0; i < m_RenderObjects.size( ); i++ )
+		{
+			// Bind the diffuse texture
+			if( m_RenderObjects[ i ]->pTextureDiffuse )
+			{
+				m_RenderObjects[ i ]->pTextureDiffuse->Bind( 0 );
+			}
 
+			// Bind the bump texture
+			if( m_RenderObjects[ i ]->pTextureBump )
+			{
+				m_RenderObjects[ i ]->pTextureBump->Bind( 1 );
+			}
+
+			// Render the vertex object
+			m_RenderObjects[ i ]->pVertexObject->Render( p_Mode );
+		}
 	}
 
 	// Get functions
@@ -113,14 +150,14 @@ namespace Bit
 		return m_Name;
 	}
 
+	BIT_UINT32 ModelOBJ::GetVertexGroupCount( ) const
+	{
+		return m_VertexGroups.size( );
+	}
+
 	BIT_UINT32 ModelOBJ::GetTriangleCount( ) const
 	{
 		return m_TotalTriangleCount;
-	}
-
-	BIT_UINT32 ModelOBJ::GetTriangleIndexCount( ) const
-	{
-		return m_TotalTriangleIndexCount;
 	}
 
 	BIT_UINT32 ModelOBJ::GetPositionCoordinateCount( ) const
@@ -303,6 +340,7 @@ namespace Bit
 						// Create a new material
 						pMaterialGroup = new MaterialGroup;
 						pMaterialGroup->pTexture = BIT_NULL;
+						pMaterialGroup->MaterialName = (char*)TextBuffer64;
 						pVertexGroup->Materials.push_back( pMaterialGroup );
 
 						// Set the first triangle group, depending on the smoothing
@@ -390,10 +428,16 @@ namespace Bit
 		}
 
 		// Validate the triangle indices to make sure that no indices are out of bound.
+		// Also, calculate the total triangle count
+		m_TotalTriangleCount = 0;
+
 		for( VertexGroupIterator it_vg = m_VertexGroups.begin( ); it_vg != m_VertexGroups.end( ); it_vg++ )
 		{
 			for( MaterialGroupIterator it_mg = (*it_vg)->Materials.begin( ); it_mg != (*it_vg)->Materials.end( ); it_mg++ )
 			{
+				m_TotalTriangleCount += (*it_mg)->TrianglesFlat.size( );
+				m_TotalTriangleCount += (*it_mg)->TrianglesSmooth.size( );
+
 				// Go through flat triangles
 				for( TriangleIterator it_tr = (*it_mg)->TrianglesFlat.begin( ); it_tr != (*it_mg)->TrianglesFlat.end( ); it_tr++ )
 				{

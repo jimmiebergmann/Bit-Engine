@@ -26,6 +26,7 @@
 #define __BIT_GRAPHICS_MODEL_HPP__
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/Graphics/VertexObject.hpp>
 /*#include <Bit/Graphics/Model/StaticModel.hpp>
 #include <Bit/Graphics/Model/DynamicModel.hpp>*/
 
@@ -50,12 +51,12 @@ namespace Bit
 		// Virtual public functions
 		virtual BIT_UINT32 ReadFile( const char * p_pFilePath ) = 0;
 		virtual void Unload( ) = 0;
-		virtual void Render( ) = 0;
+		virtual void Render( VertexObject::eRenderMode p_Mode ) = 0;
 
 		// Virtual get functions
 		virtual std::string GetName( ) const = 0;
+		virtual BIT_UINT32 GetVertexGroupCount( ) const = 0;
 		virtual BIT_UINT32 GetTriangleCount( ) const = 0;
-		virtual BIT_UINT32 GetTriangleIndexCount( ) const = 0;
 		virtual BIT_UINT32 GetPositionCoordinateCount( ) const = 0;
 		virtual BIT_UINT32 GetTextureCoordinateCount( ) const = 0;
 		virtual BIT_UINT32 GetNormalCoordinateCount( ) const = 0;

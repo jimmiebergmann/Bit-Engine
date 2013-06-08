@@ -29,6 +29,8 @@
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/Graphics/Texture.hpp>
+#include <Bit/Graphics/ShaderProgram.hpp>
+#include <Bit/Graphics/Shader.hpp>
 #include <Bit/Graphics/Model.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <Bit/System/Vector3.hpp>
@@ -69,6 +71,13 @@ namespace Bit
 			std::vector< MaterialGroup * > Materials;
 		};
 
+		struct RenderObject
+		{
+			Texture * pTextureDiffuse;
+			Texture * pTextureBump;
+			//Texture * pTextureDisplacement; / Ignoring for now
+			VertexObject * pVertexObject;
+		};
 
 		// Constructor/Destructor
 		ModelOBJ( const GraphicDevice & p_GraphicDevice );
@@ -77,12 +86,12 @@ namespace Bit
 		// Public functions
 		virtual BIT_UINT32 ReadFile( const char * p_pFilePath );
 		virtual void Unload( );
-		virtual void Render( );
+		virtual void Render( VertexObject::eRenderMode p_Mode );
 
 		// Get functions
 		virtual std::string GetName( ) const;
+		virtual BIT_UINT32 GetVertexGroupCount( ) const;
 		virtual BIT_UINT32 GetTriangleCount( ) const;
-		virtual BIT_UINT32 GetTriangleIndexCount( ) const;
 		virtual BIT_UINT32 GetPositionCoordinateCount( ) const;
 		virtual BIT_UINT32 GetTextureCoordinateCount( ) const;
 		virtual BIT_UINT32 GetNormalCoordinateCount( ) const;
@@ -106,19 +115,19 @@ namespace Bit
 		typedef std::vector< Triangle > TriangleVector;
 		typedef TriangleVector::iterator TriangleIterator;
 
-
 		// Private variables
 		std::string m_Name;
+		std::vector< std::string > m_MaterialLibraries;
 		std::vector< Vector3_f32 > m_VertexPositions;
 		std::vector< Vector2_f32 > m_TexturePositions;
 		std::vector< Vector3_f32 > m_NormalPositions;
 		std::vector< VertexGroup * > m_VertexGroups;
 		std::vector< Texture * > m_Textures;
 		BIT_UINT32 m_TotalTriangleCount;
-		BIT_UINT32 m_TotalTriangleIndexCount;
 		const GraphicDevice & m_GraphicDevice;
 
 		// Private render variables
+		std::vector< RenderObject * > m_RenderObjects;
 
 	};
 
