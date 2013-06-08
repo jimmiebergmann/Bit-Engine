@@ -35,7 +35,10 @@ namespace Bit
 	// Constructor/Destructor
 	ModelOBJ::ModelOBJ( const GraphicDevice & p_GraphicDevice ) :
 		m_TotalTriangleCount( 0 ),
-		m_GraphicDevice( p_GraphicDevice )
+		m_GraphicDevice( p_GraphicDevice ),
+		m_pVertexShader( BIT_NULL ),
+		m_pFragmentShader( BIT_NULL ),
+		m_pShaderProgram( BIT_NULL )
 	{
 		m_Loaded = BIT_FALSE;
 	}
@@ -70,7 +73,7 @@ namespace Bit
 		}
 
 		// We are done
-		m_Loaded = BIT_OK;
+		m_Loaded = BIT_TRUE;
 		return BIT_OK;
 	}
 
@@ -113,7 +116,22 @@ namespace Bit
 		}
 		m_RenderObjects.clear( );
 		
-
+		// Unload the shaders
+		if( m_pVertexShader )
+		{
+			delete m_pVertexShader;
+			m_pVertexShader = BIT_NULL;
+		}
+		if( m_pFragmentShader )
+		{
+			delete m_pFragmentShader;
+			m_pFragmentShader = BIT_NULL;
+		}
+		if( m_pShaderProgram )
+		{
+			delete m_pShaderProgram;
+			m_pShaderProgram = BIT_NULL;
+		}
 
 		// Reset the count varaibles
 		m_TotalTriangleCount = 0;
@@ -124,6 +142,15 @@ namespace Bit
 
 	void ModelOBJ::Render( VertexObject::eRenderMode p_Mode )
 	{
+		// Make sure that everything is loaded
+		if( !m_Loaded )
+		{
+			return;
+		}
+
+		// Bind the shader
+		m_pShaderProgram->Bind( );
+
 		// Render all the reder objects
 		for( BIT_MEMSIZE i = 0; i < m_RenderObjects.size( ); i++ )
 		{
@@ -142,6 +169,9 @@ namespace Bit
 			// Render the vertex object
 			m_RenderObjects[ i ]->pVertexObject->Render( p_Mode );
 		}
+
+		// Unbind the shader
+		m_pShaderProgram->Unbind( );
 	}
 
 	// Get functions
@@ -429,51 +459,9 @@ namespace Bit
 
 		// Validate the triangle indices to make sure that no indices are out of bound.
 		// Also, calculate the total triangle count
-		m_TotalTriangleCount = 0;
-
-		for( VertexGroupIterator it_vg = m_VertexGroups.begin( ); it_vg != m_VertexGroups.end( ); it_vg++ )
+		if( ValidateTriangles( ) != BIT_OK )
 		{
-			for( MaterialGroupIterator it_mg = (*it_vg)->Materials.begin( ); it_mg != (*it_vg)->Materials.end( ); it_mg++ )
-			{
-				m_TotalTriangleCount += (*it_mg)->TrianglesFlat.size( );
-				m_TotalTriangleCount += (*it_mg)->TrianglesSmooth.size( );
-
-				// Go through flat triangles
-				for( TriangleIterator it_tr = (*it_mg)->TrianglesFlat.begin( ); it_tr != (*it_mg)->TrianglesFlat.end( ); it_tr++ )
-				{
-					for( BIT_MEMSIZE i = 0; i < 3; i++ )
-					{
-						// Position index erorr check
-						if( (*it_tr).PositionIndices[ i ] >= m_VertexPositions.size( ) )
-						{
-							bitTrace( "[ModelOBJ::ReadData] Triangle position index error %i / %i\n",
-								(*it_tr).PositionIndices[ i ], m_VertexPositions.size( ) );
-							return BIT_ERROR;
-						}
-
-						// Normal index erorr check
-						if( (*it_tr).NormalIndices[ i ] >= m_NormalPositions.size( ) )
-						{
-							bitTrace( "[ModelOBJ::ReadData] Triangle normal index error %i / %i\n",
-								(*it_tr).NormalIndices[ i ], m_NormalPositions.size( ) );
-							return BIT_ERROR;
-						}
-					}
-
-					for( BIT_MEMSIZE i = 0; i < 2; i++ )
-					{
-						// Texture index erorr check
-						if( (*it_tr).TextureIndices[ i ] >= m_TexturePositions.size( ) )
-						{
-							bitTrace( "[ModelOBJ::ReadData] Triangle texture index error %i / %i\n",
-								(*it_tr).TextureIndices[ i ], m_TexturePositions.size( ) );
-							return BIT_ERROR;
-						}
-					}
-					
-				}
-
-			}
+			return BIT_OK;
 		}
 
 		// Were any unknown data lines discovered?
@@ -492,13 +480,221 @@ namespace Bit
 
 	BIT_UINT32 ModelOBJ::LoadGraphics( )
 	{
+		for( VertexGroupIterator it_vg = m_VertexGroups.begin( ); it_vg != m_VertexGroups.end( ); it_vg++ )
+		{
+			for( MaterialGroupIterator it_mg = (*it_vg)->Materials.begin( ); it_mg != (*it_vg)->Materials.end( ); it_mg++ )
+			{
+				// Ignore smoothing groups for now. Render them in a reagulary.
+				// Use a pointer array to easily access the flat and smooth triangles.
+				TriangleVector * pTriangleVectors[ 2 ] = { &(*it_mg)->TrianglesFlat, &(*it_mg)->TrianglesSmooth };
+
+				// Go through flat and smooth triangles
+				for( BIT_MEMSIZE i = 0; i < 2; i++ )
+				{
+					BIT_UINT32 TriangleCount = pTriangleVectors[ i ]->size( );
+
+					// Continue if the current triangle vector is empty
+					if( TriangleCount == 0 )
+					{
+						continue;
+					}
+
+					// Create and push a new render object to the render object vector
+					RenderObject * pRenderObject = new RenderObject;
+					pRenderObject->pTextureDiffuse = BIT_NULL;
+					pRenderObject->pTextureBump = BIT_NULL;
+					m_RenderObjects.push_back( pRenderObject );
+
+					// Create an array of position data
+					SmartArray< BIT_FLOAT32 > pPositionBuffer( TriangleCount * 9 );
+
+					// Fill the position buffer
+					BIT_UINT32 j = 0;
+					for( TriangleIterator it_tr = pTriangleVectors[ i ]->begin( ); it_tr != pTriangleVectors[ i ]->end( ); it_tr++ )
+					{
+						// Loop every single vertex in the triangle
+						for( BIT_MEMSIZE k = 0; k < 3; k++ )
+						{
+							BIT_SINT32 Index = (*it_tr).PositionIndices[ k ];
+
+							pPositionBuffer[ ( j * 9 ) + ( k * 3 ) + 0 ] = m_VertexPositions[ Index ].x;
+							pPositionBuffer[ ( j * 9 ) + ( k * 3 ) + 1 ] = m_VertexPositions[ Index ].y;
+							pPositionBuffer[ ( j * 9 ) + ( k * 3 ) + 2 ] = m_VertexPositions[ Index ].z;
+						}
+
+
+						j++;
+					}
+
+					// Create a vertex object and add it to the render oject
+					// Create the vertex object
+					if( (pRenderObject->pVertexObject = m_GraphicDevice.CreateVertexObject( ) ) == BIT_NULL )
+					{
+						bitTrace( "[ModelOBJ::LoadGraphics] Can not create the vertex object\n" );
+						return BIT_ERROR;
+					}
+
+					// Add the position buffer
+					if( pRenderObject->pVertexObject->AddVertexBuffer( pPositionBuffer.Get( ), 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
+					{
+						bitTrace( "[ModelOBJ::LoadGraphics] Can not add the vertex buffer" );
+						return BIT_ERROR;
+					}
+
+					// Load the vertex object
+					if( pRenderObject->pVertexObject->Load( TriangleCount, 3 ) != BIT_OK )
+					{
+						bitTrace( "[ModelOBJ::LoadGraphics] Can not load the vertex buffer" );
+						return BIT_ERROR;
+					}
+				}
+			}
+		}
+
+
+
+		// Create a test vertex object for now.
+		/*RenderObject * pRenderObject = new RenderObject;
+		pRenderObject->pTextureDiffuse = BIT_NULL;
+		pRenderObject->pTextureBump = BIT_NULL;
+		m_RenderObjects.push_back( pRenderObject );
+
+		// Create the vertex object
+		if( (pRenderObject->pVertexObject = m_GraphicDevice.CreateVertexObject( ) ) == BIT_NULL )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphics] Can not create the vertex object\n" );
+			return BIT_ERROR;
+		}
+
+		// Create the vertex buffer
+		SmartArray< BIT_FLOAT32 > pPositionBuffer( 9 );
+		pPositionBuffer[ 0 ] = 0.0f;	pPositionBuffer[ 1 ] = 0.0f;	pPositionBuffer[ 2 ] = 0.0f;
+		pPositionBuffer[ 3 ] = 1.0f;	pPositionBuffer[ 4 ] = 0.0f;	pPositionBuffer[ 5 ] = 0.0f;
+		pPositionBuffer[ 6 ] = 1.0f;	pPositionBuffer[ 7 ] = 1.0f;	pPositionBuffer[ 8 ] = 0.0f;
+
+		// Add the vertex buffer
+		if( pRenderObject->pVertexObject->AddVertexBuffer( pPositionBuffer.Get( ), 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphics] Can not add the vertex buffer" );
+			return BIT_ERROR;
+		}
+
+		// Load the vertex object
+		if( pRenderObject->pVertexObject->Load( 1, 3 ) != BIT_OK )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphics] Can not load the vertex buffer" );
+			return BIT_ERROR;
+		}
+
+*/
+
+
+		// Load the shaders
+		// Create the vertex and fragment shaders
+		if( ( m_pVertexShader = m_GraphicDevice.CreateShader( Bit::Shader::Vertex ) ) == BIT_NULL )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphic] Can not create the vertex shader\n" );
+			return BIT_ERROR;
+		}
+		if( ( m_pFragmentShader = m_GraphicDevice.CreateShader( Bit::Shader::Fragment ) ) == BIT_NULL )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphic] Can not create the vertex shader\n" );
+			return BIT_ERROR;
+		}
+
+		// Set the sources
+		std::string VertexSource =
+			"#version 330 \n"
+			"precision highp float; \n"
+
+			"in vec3 Position; \n"
+			"uniform mat4 ProjectionMatrix; \n"
+			"uniform mat4 ViewMatrix; \n"
+
+			"void main(void) \n"
+			"{ \n"
+			"	gl_Position = ProjectionMatrix * ViewMatrix * vec4( Position, 1.0 ); \n"
+			"} \n";
+
+		std::string FragmentSource =
+			"#version 330 \n"
+			"precision highp float; \n"
+
+			"out vec4 out_Color; \n"
+
+			"void main(void) \n"
+			"{ \n"
+			"	out_Color = vec4( 1.0, 0.0, 0.0, 1.0 ); \n"
+			"} \n";
+
+		m_pVertexShader->SetSource( VertexSource );
+		m_pFragmentShader->SetSource( FragmentSource );
+
+		// Compile the shaders
+		if( m_pVertexShader->Compile( ) != BIT_OK )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphic] Can not compile the vertex shader\n" );
+			return BIT_ERROR;
+		}
+		if( m_pFragmentShader->Compile( ) != BIT_OK )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphic] Can not compile the fragment shader\n" );
+			return BIT_ERROR;
+		}
+
+
+		// Create the shader program
+		if( ( m_pShaderProgram = m_GraphicDevice.CreateShaderProgram( ) ) == BIT_NULL )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphic] Can not create the shader program\n" );
+			return BIT_ERROR;
+		}
+
+		// Attach the shaders
+		if( m_pShaderProgram->AttachShaders( m_pVertexShader ) != BIT_OK )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphic] Can not attach the vertex shader\n" );
+			return BIT_ERROR;
+		}
+		if( m_pShaderProgram->AttachShaders( m_pFragmentShader ) != BIT_OK )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphic] Can not attach the fragment shader\n" );
+			return BIT_ERROR;
+		}
+
+		// Set attribute locations
+		m_pShaderProgram->SetAttributeLocation( "Position", 0 );
+
+		// Link the shaders
+		if( m_pShaderProgram->Link( ) != BIT_OK )
+		{
+			bitTrace( "[ModelOBJ::LoadGraphic] Can not link the shader program\n" );
+			return BIT_ERROR;
+		}
+
+		// Set uniforms
+		Bit::Matrix4x4 ProjectionMatrix;
+		Bit::Matrix4x4 ViewMatrix;
+		ProjectionMatrix.Perspective( 45.0f,(BIT_FLOAT32)800 / (BIT_FLOAT32)600,
+			0.1f, 10000.0f ); 
+		ViewMatrix.Identity( );
+		ViewMatrix.Translate( 0.0f, -2000.0f, -5000.0f );
+
+		// Bind and finally set the uniforms
+		m_pShaderProgram->Bind( );
+		m_pShaderProgram->SetUniformMatrix4x4f( "ProjectionMatrix", ProjectionMatrix );
+		m_pShaderProgram->SetUniformMatrix4x4f( "ViewMatrix", ViewMatrix );
+		m_pShaderProgram->Unbind( );
+
 		return BIT_OK;
 	}
 
 	void ModelOBJ::DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
 			BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal )
 	{
-		// Let's decode by scanning the string
+		// Let's decode the face string by testing multiple scanning combination
+		// in order to find the right one.
+		// Consider a faster way.
 		if( sscanf( (const char*)p_String, "%i/%i/%i %i/%i/%i %i/%i/%i",
 			&p_pPosition[ 0 ], &p_pTexture[ 0 ], &p_pNormal[ 0 ],
 			&p_pPosition[ 1 ], &p_pTexture[ 1 ], &p_pNormal[ 1 ],
@@ -555,6 +751,66 @@ namespace Bit
 			}
 			return;
 		}
+	}
+
+	BIT_UINT32 ModelOBJ::ValidateTriangles(  )
+	{
+		m_TotalTriangleCount = 0;
+
+		for( VertexGroupIterator it_vg = m_VertexGroups.begin( ); it_vg != m_VertexGroups.end( ); it_vg++ )
+		{
+			for( MaterialGroupIterator it_mg = (*it_vg)->Materials.begin( ); it_mg != (*it_vg)->Materials.end( ); it_mg++ )
+			{
+				// Increate the triangle count
+				m_TotalTriangleCount += (*it_mg)->TrianglesFlat.size( );
+				m_TotalTriangleCount += (*it_mg)->TrianglesSmooth.size( );
+
+				// Use a pointer array to easily access the flat and smooth triangles.
+				TriangleVector * pTriangleVectors[ 2 ] = { &(*it_mg)->TrianglesFlat, &(*it_mg)->TrianglesSmooth };
+
+				// Go through flat and smooth triangles
+				for( BIT_MEMSIZE i = 0; i < 2; i++ )
+				{
+					// Go through the triangles
+					for( TriangleIterator it_tr = pTriangleVectors[ i ]->begin( ); it_tr != pTriangleVectors[ i ]->end( ); it_tr++ )
+					{
+						for( BIT_MEMSIZE i = 0; i < 3; i++ )
+						{
+							// Position index error check
+							if( (*it_tr).PositionIndices[ i ] >= m_VertexPositions.size( ) )
+							{
+								bitTrace( "[ModelOBJ::ReadData] Triangle position index error %i / %i\n",
+									(*it_tr).PositionIndices[ i ], m_VertexPositions.size( ) );
+								return BIT_ERROR;
+							}
+
+							// Normal index error check
+							if( (*it_tr).NormalIndices[ i ] >= m_NormalPositions.size( ) )
+							{
+								bitTrace( "[ModelOBJ::ReadData] Triangle normal index error %i / %i\n",
+									(*it_tr).NormalIndices[ i ], m_NormalPositions.size( ) );
+								return BIT_ERROR;
+							}
+						}
+
+						for( BIT_MEMSIZE i = 0; i < 2; i++ )
+						{
+							// Texture index error check
+							if( (*it_tr).TextureIndices[ i ] >= m_TexturePositions.size( ) )
+							{
+								bitTrace( "[ModelOBJ::ReadData] Triangle texture index error %i / %i\n",
+									(*it_tr).TextureIndices[ i ], m_TexturePositions.size( ) );
+								return BIT_ERROR;
+							}
+						}	
+					}
+				}
+
+
+			}
+		}
+
+		return BIT_OK;
 	}
 
 }

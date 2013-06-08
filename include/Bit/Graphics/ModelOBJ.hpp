@@ -106,6 +106,7 @@ namespace Bit
 		BIT_UINT32 LoadGraphics( );
 		void DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
 			BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal );
+		BIT_UINT32 ValidateTriangles(  );
 
 		// Private typedefs
 		typedef std::vector< VertexGroup * > VertexGroupVector;
@@ -124,10 +125,13 @@ namespace Bit
 		std::vector< VertexGroup * > m_VertexGroups;
 		std::vector< Texture * > m_Textures;
 		BIT_UINT32 m_TotalTriangleCount;
-		const GraphicDevice & m_GraphicDevice;
 
 		// Private render variables
+		const GraphicDevice & m_GraphicDevice;
 		std::vector< RenderObject * > m_RenderObjects;
+		Shader * m_pVertexShader;
+		Shader * m_pFragmentShader;
+		ShaderProgram * m_pShaderProgram;
 
 	};
 
