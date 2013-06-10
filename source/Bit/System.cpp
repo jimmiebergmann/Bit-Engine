@@ -56,7 +56,7 @@ namespace Bit
 		BIT_UINT32 Position = p_ExecutablePath.size( ) + 1;
 		for( BIT_SINT32 i = p_ExecutablePath.size( ) - 1; i >= 0; i-- )
 		{
-			if( p_ExecutablePath[ i ] == SeparationSign )
+			if( p_ExecutablePath[ i ] == '/' || p_ExecutablePath[ i ] == '\\' )
 			{
 				Position = i;
 				break;
@@ -85,6 +85,36 @@ namespace Bit
 	std::string BIT_API GetAbsoluteDirectoryPath( )
 	{
 		return s_AbsoluteDirectoryPath;
+	}
+
+	std::string BIT_API GetDirectoryPath( const std::string p_ExecutablePath )
+	{
+		if( p_ExecutablePath.size( ) == 0 )
+		{
+			return "";
+		}
+
+		// Set the absolute path
+		std::string DirectoryPath = p_ExecutablePath;
+
+		// Set the directory path by finding the first "\" or "/" backwards and then cut off the rest
+		BIT_UINT32 Position = p_ExecutablePath.size( ) + 1;
+		for( BIT_SINT32 i = p_ExecutablePath.size( ) - 1; i >= 0; i-- )
+		{
+			if( p_ExecutablePath[ i ] == '/' || p_ExecutablePath[ i ] == '\\' )
+			{
+				Position = i;
+				break;
+			}
+		}
+
+		// Did we find the position?
+		if( Position != p_ExecutablePath.size( ) + 1 )
+		{
+			DirectoryPath.resize( Position );
+		}
+
+		return DirectoryPath;
 	}
 
 	std::string BIT_API GetFileExtension( const char * p_pFilePath )

@@ -39,6 +39,7 @@
 // To do:
 // -------------------------------------
 // 1. Support negative face indices. f -3/-3 -2/-1 -1/-2
+// 2. Support multiple material files.
 
 namespace Bit
 {
@@ -49,6 +50,13 @@ namespace Bit
 	public:
 
 		// public structures
+		struct Material
+		{
+			std::string Name;
+			std::string DiffuseTexture;
+			std::string BumpTexture;
+		};
+
 		struct Triangle
 		{
 			BIT_SINT32 PositionIndices[ 3 ];
@@ -58,7 +66,6 @@ namespace Bit
 		
 		struct MaterialGroup
 		{
-			Texture * pTexture;
 			std::string MaterialName;
 
 			// Triangles - flat or smooth triangles
@@ -103,12 +110,17 @@ namespace Bit
 
 		// Private functions
 		BIT_UINT32 ReadData( const char * p_pFilePath );
+		BIT_UINT32 ReadMaterialFile( const char * p_pFilePath, const char * p_pMainFilePath );
 		BIT_UINT32 LoadGraphics( );
+		BIT_UINT32 LoadVertexObjects( );
+		BIT_UINT32 LoadShaders( );
 		void DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
 			BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal );
 		BIT_UINT32 ValidateTriangles(  );
 
 		// Private typedefs
+		typedef std::vector< Material * > MaterialVector;
+		typedef MaterialVector::iterator MaterialIterator;
 		typedef std::vector< VertexGroup * > VertexGroupVector;
 		typedef VertexGroupVector::iterator VertexGroupIterator;
 		typedef std::vector< MaterialGroup * > MaterialGroupVector;
@@ -119,6 +131,7 @@ namespace Bit
 		// Private variables
 		std::string m_Name;
 		std::vector< std::string > m_MaterialLibraries;
+		std::vector< Material * > m_Materials;
 		std::vector< Vector3_f32 > m_VertexPositions;
 		std::vector< Vector2_f32 > m_TexturePositions;
 		std::vector< Vector3_f32 > m_NormalPositions;

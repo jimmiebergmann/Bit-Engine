@@ -372,6 +372,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\System\ResourceManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\ResourceManager.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\include\Bit\System\SmartArray.hpp"
 			>
 		</File>
