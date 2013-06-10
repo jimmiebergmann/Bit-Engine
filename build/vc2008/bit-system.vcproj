@@ -348,6 +348,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\System\MatrixManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\MatrixManager.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\System\MemoryLeak.cpp"
 			>
 		</File>
