@@ -54,7 +54,7 @@ namespace Bit
 		// Destructor
 		virtual ~Texture( ) { }
 
-		virtual BIT_UINT32 Load( const Image & p_Image ) = 0;
+		virtual BIT_UINT32 Load( const Image & p_Image, const BIT_BOOL p_Mipmapping ) = 0;
 		virtual BIT_UINT32 Load( Vector2_ui32 p_Size, const BIT_UINT32 p_Format,
 			const BIT_UINT32 p_Type, BIT_BYTE * p_Data ) = 0;
 		virtual void Bind( BIT_UINT32 p_Index ) = 0;
@@ -62,7 +62,7 @@ namespace Bit
 		BIT_INLINE BIT_BOOL IsLoaded( ) { return m_Loaded; };
 		
 		// Set functions
-		virtual BIT_UINT32 SetFilters( eFilter * p_pFilters ) = 0;
+		virtual BIT_UINT32 SetFilters( const eFilter * p_pFilters ) = 0;
 		
 	protected:
 

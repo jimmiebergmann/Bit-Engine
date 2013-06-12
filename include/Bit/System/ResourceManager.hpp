@@ -46,7 +46,10 @@ namespace Bit
 		
 		// Get functions
 		static GraphicDevice * GetGraphicDevice( );
-		static Texture * GetTexture( std::string p_FilePath );
+		static Texture * GetTexture( const std::string p_FilePath );
+		static Texture * GetTexture( const std::string p_FilePath, const Texture::eFilter * p_pTextureFilters );
+		static Texture * GetTexture( const std::string p_FilePath, const BIT_BOOL p_Mipmapping );
+		static Texture * GetTexture( const std::string p_FilePath, const Texture::eFilter * p_pTextureFilters, const BIT_BOOL p_Mipmapping  );
 		static Texture * GetErrorTexture( );
 
 	private:

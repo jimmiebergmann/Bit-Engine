@@ -47,7 +47,7 @@ namespace Bit
 	}
 
 	// General public functions
-	BIT_UINT32 TextureOpenGL::Load( const Image & p_Image)
+	BIT_UINT32 TextureOpenGL::Load( const Image & p_Image, const BIT_BOOL p_Mipmapping )
 	{
 		// Make sure the image class contains any data at all.
 		if( p_Image.ContainsData() == BIT_FALSE )
@@ -74,6 +74,13 @@ namespace Bit
 		glTexImage2D ( GL_TEXTURE_2D, 0, Format, Size.x, Size.y, 0,
 			(GLenum)Format, GL_UNSIGNED_BYTE, (GLvoid *)p_Image.GetData() );
 
+
+		// Generate the mipmap
+		if( p_Mipmapping )
+		{
+			glGenerateMipmap( GL_TEXTURE_2D );
+		}
+
 		// Unbind the texture
 		glBindTexture( GL_TEXTURE_2D, 0 );
 		
@@ -99,7 +106,7 @@ namespace Bit
 	}
 
 	// Set functions
-	BIT_UINT32 TextureOpenGL::SetFilters( eFilter * p_pFilters )
+	BIT_UINT32 TextureOpenGL::SetFilters( const eFilter * p_pFilters )
 	{
 		// This code is working, but I don't know about it's efficiency...
 		if( p_pFilters == BIT_NULL ||

@@ -122,7 +122,22 @@ namespace Bit
 		return m_pGraphicDevice;
 	}
 
-	Texture * ResourceManager::GetTexture( std::string p_FilePath )
+	Texture * ResourceManager::GetTexture( const std::string p_FilePath )
+	{
+		return GetTexture( p_FilePath, m_DefaultTextureFilters, BIT_FALSE );
+	}
+
+	Texture * ResourceManager::GetTexture( const std::string p_FilePath, const Texture::eFilter * p_pTextureFilters )
+	{
+		return GetTexture( p_FilePath, p_pTextureFilters, BIT_FALSE );
+	}
+
+	Texture * ResourceManager::GetTexture( const std::string p_FilePath, const BIT_BOOL p_Mipmapping )
+	{
+		return GetTexture( p_FilePath, m_DefaultTextureFilters, p_Mipmapping );
+	}
+
+	Texture * ResourceManager::GetTexture( const std::string p_FilePath, const Texture::eFilter * p_pTextureFilters, const BIT_BOOL p_Mipmapping  )
 	{
 		// Find the texture
 		TextureIterator it = m_Textures.find( p_FilePath );
@@ -147,7 +162,7 @@ namespace Bit
 			}
 			
 			// Load the texture
-			if( pTexture->Load( ImageFile ) != BIT_OK )
+			if( pTexture->Load( ImageFile, p_Mipmapping ) != BIT_OK )
 			{
 				// Could not load the texture
 				return BIT_NULL;
@@ -156,7 +171,7 @@ namespace Bit
 			// Set the default filters
 			if( m_DefaultTextureFilters )
 			{
-				pTexture->SetFilters( m_DefaultTextureFilters );
+				pTexture->SetFilters( p_pTextureFilters );
 			}
 
 			// Add the texture to the texture map

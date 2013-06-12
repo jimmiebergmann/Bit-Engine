@@ -41,14 +41,14 @@ namespace Bit
 		virtual ~TextureOpenGL ( );
 
 		// General public functions
-		virtual BIT_UINT32 Load( const Image & p_Image);
+		virtual BIT_UINT32 Load( const Image & p_Image, const BIT_BOOL p_Mipmapping );
 		virtual BIT_UINT32 Load( Vector2_ui32 p_Size, const BIT_UINT32 p_Format,
 			const BIT_UINT32 p_Type, BIT_BYTE * p_Data );
 		virtual void Bind( BIT_UINT32 p_Index );
 		virtual void Unbind( );
 
 		// Set functions
-		virtual BIT_UINT32 SetFilters( eFilter * p_pFilters );
+		virtual BIT_UINT32 SetFilters( const eFilter * p_pFilters );
 
 		// Get functions
 		BIT_INLINE GLuint GetID( ) const { return m_ID; }

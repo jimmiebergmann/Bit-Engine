@@ -67,7 +67,7 @@ namespace Bit
 		{
 			std::string MaterialName;
 
-			// Triangles - flat or smooth triangles
+			// Triangles - flat and smooth triangles
 			std::vector< Triangle > TrianglesFlat;
 			std::vector< Triangle > TrianglesSmooth;
 		};
@@ -90,7 +90,8 @@ namespace Bit
 
 		// Public functions
 		virtual BIT_UINT32 ReadFile( const char * p_pFilePath );
-		virtual BIT_UINT32 Load( const BIT_UINT32 m_VertexElementBits, Texture::eFilter * p_pTextureFilters );
+		virtual BIT_UINT32 Load( const BIT_UINT32 m_VertexElementBits, const Texture::eFilter * p_pTextureFilters,
+			const BIT_BOOL p_Mipmapping );
 		virtual void Unload( );
 		virtual void Render( const VertexObject::eRenderMode p_Mode );
 

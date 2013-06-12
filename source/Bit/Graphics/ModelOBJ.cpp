@@ -68,7 +68,8 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 ModelOBJ::Load( const BIT_UINT32 m_VertexElementBits, Texture::eFilter * p_pTextureFilters )
+	BIT_UINT32 ModelOBJ::Load( const BIT_UINT32 m_VertexElementBits, const Texture::eFilter * p_pTextureFilters,
+			const BIT_BOOL p_Mipmapping )
 	{
 		// Go through every single vertex group and material
 		for( VertexGroupIterator it_vg = m_VertexGroups.begin( ); it_vg != m_VertexGroups.end( ); it_vg++ )
@@ -79,16 +80,20 @@ namespace Bit
 				Texture * pDiffuseTexture = BIT_NULL;
 				Texture * pNormalTexture = BIT_NULL;
 
-				// Find the material we are looking for
-				for( MaterialIterator it_mat = m_Materials.begin( ); it_mat != m_Materials.end( ); it_mat++ )
+				// Is there any material applied to this material group?
+				if( (*it_mg)->MaterialName.size( ) )
 				{
-					if( (*it_mat)->Name == (*it_mg)->MaterialName )
+					// Find the material we are looking for
+					for( MaterialIterator it_mat = m_Materials.begin( ); it_mat != m_Materials.end( ); it_mat++ )
 					{
-						// We found the material we are looking for.
-						// Get the textures
-						pDiffuseTexture = ResourceManager::GetTexture( (*it_mat)->DiffuseTexture );
-						pNormalTexture = ResourceManager::GetTexture( (*it_mat)->NormalTexture );
-						break;
+						if( (*it_mat)->Name == (*it_mg)->MaterialName )
+						{
+							// We found the material we are looking for.
+							// Get the textures
+							pDiffuseTexture = ResourceManager::GetTexture( (*it_mat)->DiffuseTexture, p_pTextureFilters, p_Mipmapping );
+							pNormalTexture = ResourceManager::GetTexture( (*it_mat)->NormalTexture, p_pTextureFilters, p_Mipmapping );
+							break;
+						}
 					}
 				}
 
