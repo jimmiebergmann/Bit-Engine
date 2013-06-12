@@ -27,8 +27,7 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/VertexObject.hpp>
-/*#include <Bit/Graphics/Model/StaticModel.hpp>
-#include <Bit/Graphics/Model/DynamicModel.hpp>*/
+#include <Bit/Graphics/Texture.hpp>
 
 namespace Bit
 {
@@ -50,8 +49,9 @@ namespace Bit
 
 		// Virtual public functions
 		virtual BIT_UINT32 ReadFile( const char * p_pFilePath ) = 0;
+		virtual BIT_UINT32 Load( const BIT_UINT32 m_VertexElementBits, Texture::eFilter * p_pTextureFilters ) = 0;
 		virtual void Unload( ) = 0;
-		virtual void Render( VertexObject::eRenderMode p_Mode ) = 0;
+		virtual void Render( const VertexObject::eRenderMode p_Mode ) = 0;
 
 		// Virtual get functions
 		virtual std::string GetName( ) const = 0;

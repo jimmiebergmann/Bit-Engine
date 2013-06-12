@@ -128,7 +128,7 @@ namespace Bit
 			if( p_pFilePath[ i ] == '.' )
 			{
 				// Set the extension with upper case letters
-				for( BIT_SINT32 j = i + 1; j < strlen( p_pFilePath ); j++ )
+				for( BIT_SINT32 j = i + 1; j < (BIT_SINT32)strlen( p_pFilePath ); j++ )
 				{
 					Extension += toupper( p_pFilePath[ j ] );
 				}
@@ -151,7 +151,7 @@ namespace Bit
 	BIT_UINT32 BIT_API GetLine( BIT_SCHAR8 * p_Destination, BIT_UINT32 p_DestinationSize, const BIT_SCHAR8 * p_Source )
 	{
 		// Keep on searching for a line ending.
-		for( BIT_UINT32 i = 0; i < i < p_DestinationSize; i++ )
+		for( BIT_UINT32 i = 0; i < p_DestinationSize; i++ )
 		{
 			// Look for a new line
 			if( p_Source[ i ] == '\n' || p_Source[ i ] == 0 )

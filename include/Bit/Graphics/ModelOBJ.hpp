@@ -27,11 +27,9 @@
 #define __BIT_GRAPHICS_MODEL_OBJ_HPP__
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/Graphics/Model.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/Graphics/Texture.hpp>
-#include <Bit/Graphics/ShaderProgram.hpp>
-#include <Bit/Graphics/Shader.hpp>
-#include <Bit/Graphics/Model.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <Bit/System/Vector3.hpp>
 #include <vector>
@@ -40,6 +38,7 @@
 // -------------------------------------
 // 1. Support negative face indices. f -3/-3 -2/-1 -1/-2
 // 2. Support multiple material files.
+// 3. Support 4 point polygons.
 
 namespace Bit
 {
@@ -54,7 +53,7 @@ namespace Bit
 		{
 			std::string Name;
 			std::string DiffuseTexture;
-			std::string BumpTexture;
+			std::string NormalTexture;
 		};
 
 		struct Triangle
@@ -81,8 +80,7 @@ namespace Bit
 		struct RenderObject
 		{
 			Texture * pTextureDiffuse;
-			Texture * pTextureBump;
-			//Texture * pTextureDisplacement; / Ignoring for now
+			Texture * pTextureNormal;
 			VertexObject * pVertexObject;
 		};
 
@@ -92,8 +90,9 @@ namespace Bit
 
 		// Public functions
 		virtual BIT_UINT32 ReadFile( const char * p_pFilePath );
+		virtual BIT_UINT32 Load( const BIT_UINT32 m_VertexElementBits, Texture::eFilter * p_pTextureFilters );
 		virtual void Unload( );
-		virtual void Render( VertexObject::eRenderMode p_Mode );
+		virtual void Render( const VertexObject::eRenderMode p_Mode );
 
 		// Get functions
 		virtual std::string GetName( ) const;
@@ -111,9 +110,6 @@ namespace Bit
 		// Private functions
 		BIT_UINT32 ReadData( const char * p_pFilePath );
 		BIT_UINT32 ReadMaterialFile( const char * p_pFilePath, const char * p_pMainFilePath );
-		BIT_UINT32 LoadGraphics( );
-		BIT_UINT32 LoadVertexObjects( );
-		BIT_UINT32 LoadShaders( );
 		void DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
 			BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal );
 		BIT_UINT32 ValidateTriangles(  );
@@ -142,9 +138,6 @@ namespace Bit
 		// Private render variables
 		const GraphicDevice & m_GraphicDevice;
 		std::vector< RenderObject * > m_RenderObjects;
-		Shader * m_pVertexShader;
-		Shader * m_pFragmentShader;
-		ShaderProgram * m_pShaderProgram;
 
 	};
 

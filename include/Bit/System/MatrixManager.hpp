@@ -49,6 +49,10 @@ namespace Bit
 		static void Push( );
 		static void Pop( );
 		static void LoadIdentity( );
+		static void LoadPerspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
+			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
+		static void LoadOrthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
+			const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
 		static void Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
 		static void RotateX( const BIT_FLOAT32 p_Angle );
 		static void RotateY( const BIT_FLOAT32 p_Angle );

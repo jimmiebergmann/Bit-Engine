@@ -94,7 +94,7 @@ namespace Bit
 	}
 
 	// Virtual public functions
-	BIT_UINT32 VertexObjectOpenGL::Load( BIT_UINT32 p_PieceCount, BIT_UINT32 p_PieceSize )
+	BIT_UINT32 VertexObjectOpenGL::Load( const BIT_UINT32 p_PieceCount, const BIT_UINT32 p_PieceSize )
 	{
 		if( m_Loaded || !m_Buffers.size( ) )
 		{
@@ -160,7 +160,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 VertexObjectOpenGL::AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, BIT_UINT32 p_DataType )
+	BIT_UINT32 VertexObjectOpenGL::AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const BIT_UINT32 p_DataType )
 	{
 		if( m_Loaded )
 		{
@@ -195,7 +195,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 VertexObjectOpenGL::UpdateVertexBuffer( const BIT_UINT32 p_Index, void * p_pBuffer,
+	BIT_UINT32 VertexObjectOpenGL::UpdateVertexBuffer( const BIT_UINT32 p_Index, const void * p_pBuffer,
 		const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize )
 	{
 		if( !m_Loaded )
@@ -220,7 +220,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	void VertexObjectOpenGL::Render( eRenderMode p_Mode )
+	void VertexObjectOpenGL::Render( const eRenderMode p_Mode )
 	{
 		if( !m_Loaded )
 		{

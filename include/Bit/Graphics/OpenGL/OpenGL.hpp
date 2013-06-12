@@ -70,6 +70,8 @@ extern PFNGLBUFFERSUBDATAPROC __glBufferSubData;
 extern PFNGLDELETEBUFFERSPROC __glDeleteBuffers;
 extern PFNGLGENBUFFERSPROC __glGenBuffers;
 
+// Texture functions
+extern PFNGLGENERATEMIPMAPPROC __glGenerateMipmap;
 
 // Shader functions
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC __glEnableVertexAttribArray;
@@ -135,6 +137,9 @@ extern PFNGLUNIFORMMATRIX4FVPROC __glUniformMatrix4fv;
 #define  glBufferSubData __glBufferSubData
 #define  glDeleteBuffers __glDeleteBuffers
 #define  glGenBuffers __glGenBuffers
+
+// Texture functions
+#define  glGenerateMipmap __glGenerateMipmap
 
 // Shader functions
 #define glEnableVertexAttribArray __glEnableVertexAttribArray

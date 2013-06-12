@@ -30,8 +30,8 @@
 namespace Bit
 {
 	// Dummy matrix variable used for the stack initialization
-	Matrix4x4 Dummy;
-	std::deque< Matrix4x4 > DummyDeque( 1, Dummy );
+	Matrix4x4 DummyMatrix;
+	std::deque< Matrix4x4 > DummyDeque( 1, DummyMatrix );
 
 	// Set the private static variables
 	MatrixManager::eMode MatrixManager::m_Mode = MatrixManager::Mode_Projection;
@@ -60,6 +60,18 @@ namespace Bit
 	void MatrixManager::LoadIdentity( )
 	{
 		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Identity( );
+	}
+
+	void MatrixManager::LoadPerspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
+			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
+	{
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Perspective( p_Fov, p_Aspect, p_ZNear, p_ZFar );
+	}
+
+	void MatrixManager::LoadOrthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
+			const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
+	{
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Orthographic( p_Left, p_Right, p_Bottom, p_Top, p_ZNear, p_ZFar );
 	}
 
 	void MatrixManager::Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
