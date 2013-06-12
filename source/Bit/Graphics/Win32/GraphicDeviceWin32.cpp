@@ -28,6 +28,7 @@
 #include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/TextureOpenGL.hpp>
+#include <Bit/Graphics/ModelOBJ.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -335,6 +336,23 @@ namespace Bit
 		}
 
 		return new TextureOpenGL( );
+	}
+
+	Model * GraphicDeviceWin32::CreateModel( Model::eModelType p_Type ) const
+	{
+		switch( p_Type )
+		{
+		case Model::Model_OBJ:
+			{
+				return new ModelOBJ( *reinterpret_cast< const GraphicDevice *>( this ) );
+			}
+			break;
+
+		default:
+			break;
+		}
+
+		return BIT_NULL;
 	}
 
 	// Clear functions

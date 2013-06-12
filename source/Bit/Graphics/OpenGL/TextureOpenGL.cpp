@@ -65,12 +65,11 @@ namespace Bit
 		}
 
 		GLint OpenGLTextureFormats[2] = { GL_RGB, GL_RGBA };
-		GLint Format = OpenGLTextureFormats[Depth - 3];
+		GLint Format = OpenGLTextureFormats[ Depth - 3 ];
 
 		// Generate an OpenGL texture id.
 		glGenTextures( 1, &m_ID );
 		glBindTexture( GL_TEXTURE_2D, m_ID );
-
 		Vector2_ui32 Size = p_Image.GetSize( );
 		glTexImage2D ( GL_TEXTURE_2D, 0, Format, Size.x, Size.y, 0,
 			(GLenum)Format, GL_UNSIGNED_BYTE, (GLvoid *)p_Image.GetData() );
