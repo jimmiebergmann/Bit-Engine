@@ -502,7 +502,7 @@ namespace Bit
 				case 'u':
 				{
 					// Scan for "usemtl"
-					if( sscanf_s( (const char *)LineBuffer, "usemtl %s", TextBuffer64 ) == 1 )
+					if( sscanf_s( (const char *)LineBuffer, "usemtl %s", TextBuffer64, sizeof( TextBuffer64 ) ) == 1 )
 					{
 						// Is this the first material group?
 						if( pVertexGroup->Materials.size( ) == 1 )
@@ -559,7 +559,7 @@ namespace Bit
 				// m prefix( mtllib - material library )
 				case 'm':
 				{
-					if( sscanf_s( (const char *)LineBuffer, "mtllib %s", TextBuffer64 ) == 1 )
+					if( sscanf_s( (const char *)LineBuffer, "mtllib %s", TextBuffer64, sizeof( TextBuffer64 ) ) == 1 )
 					{
 						if( ReadMaterialFile( (const char *)TextBuffer64, p_pFilePath ) != BIT_OK )
 						{
@@ -571,7 +571,7 @@ namespace Bit
 				// object name prefix
 				case 'o':
 				{
-					if( sscanf_s( (const char *)&LineBuffer[ 1 ], "%s", TextBuffer64 ) == 1 )
+					if( sscanf_s( (const char *)&LineBuffer[ 1 ], "%s", TextBuffer64, sizeof( TextBuffer64 ) ) == 1 )
 					{
 						m_Name = std::string( (char*)TextBuffer64 );
 					}
@@ -678,7 +678,7 @@ namespace Bit
 			}
 			
 			// Scan for the data
-			if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "newmtl %s", TextBuffer64 ) == 1 )
+			if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "newmtl %s", TextBuffer64, sizeof( TextBuffer64 ) ) == 1 )
 			{
 				// Create a new material and add it to the vector
 				pMaterial = new Material;
@@ -687,7 +687,7 @@ namespace Bit
 				continue;
 			}
 			// Scan for diffuse texture
-			else if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "map_Kd %s", TextBuffer128 ) == 1 )
+			else if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "map_Kd %s", TextBuffer128, sizeof( TextBuffer128 ) ) == 1 )
 			{
 				// Continue if we don't have any material yet.
 				if( !pMaterial )
@@ -699,7 +699,7 @@ namespace Bit
 				pMaterial->DiffuseTexture = DirectoryPath + std::string( (char *)TextBuffer128 ); 
 			}
 			// Scan for bump texture
-			else if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "bump %s", TextBuffer128 ) == 1 )
+			else if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "bump %s", TextBuffer128, sizeof( TextBuffer128 ) ) == 1 )
 			{
 				// Continue if we don't have any material yet.
 				if( !pMaterial )
