@@ -22,25 +22,50 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_SYSTEM_HPP__
-#define __BIT_SYSTEM_HPP__
+
+#ifndef __BIT_SYSTEM_RESOURCE_MANAGER_HPP__
+#define __BIT_SYSTEM_RESOURCE_MANAGER_HPP__
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/Graphics/GraphicDevice.hpp>
+#include <hash_map>
 #include <string>
 
 namespace Bit
 {
 
-	// Path functions
-	BIT_UINT32 BIT_API SetAbsolutePath( const std::string p_ExecutablePath );
-	std::string BIT_API GetAbsolutePath( );
-	std::string BIT_API GetAbsolutePath( const std::string p_Path );
-	std::string BIT_API GetAbsoluteDirectoryPath( );
-	std::string BIT_API GetDirectoryPath( const std::string p_ExecutablePath );
-	std::string BIT_API GetFileExtension( const char * p_pFilePath );
+	class ResourceManager
+	{
 
-	// Get line functions. From strings and char arrays
-	BIT_UINT32 BIT_API GetLine( BIT_SCHAR8 * p_Destination, BIT_UINT32 p_DestinationSize, const BIT_SCHAR8 * p_Source );
+	public:
+
+		// Public functions
+		static BIT_UINT32 Initialize( GraphicDevice * p_pGraphicDevice,
+			Texture::eFilter * p_DefaultTextureFilters );
+		static void Release( );
+		
+		// Get functions
+		static GraphicDevice * GetGraphicDevice( );
+		static Texture * GetTexture( std::string p_FilePath );
+		static Texture * GetErrorTexture( );
+
+	private:
+
+		// Private functions
+		static BIT_UINT32 LoadErrorTexture( );
+
+		// Private typedefs
+		typedef stdext::hash_map <std::string, Texture *> TextureMap;
+		typedef TextureMap::iterator TextureIterator;
+
+		// Private variables
+		static BIT_BOOL m_Initialized;
+		static GraphicDevice * m_pGraphicDevice;
+		static TextureMap m_Textures;
+		static Texture::eFilter * m_DefaultTextureFilters;
+		static Texture * m_ErrorTexture;
+
+	};
 
 }
 

@@ -56,7 +56,7 @@ namespace Bit
 		BIT_UINT32 Position = p_ExecutablePath.size( ) + 1;
 		for( BIT_SINT32 i = p_ExecutablePath.size( ) - 1; i >= 0; i-- )
 		{
-			if( p_ExecutablePath[ i ] == SeparationSign )
+			if( p_ExecutablePath[ i ] == '/' || p_ExecutablePath[ i ] == '\\' )
 			{
 				Position = i;
 				break;
@@ -87,6 +87,36 @@ namespace Bit
 		return s_AbsoluteDirectoryPath;
 	}
 
+	std::string BIT_API GetDirectoryPath( const std::string p_ExecutablePath )
+	{
+		if( p_ExecutablePath.size( ) == 0 )
+		{
+			return "";
+		}
+
+		// Set the absolute path
+		std::string DirectoryPath = p_ExecutablePath;
+
+		// Set the directory path by finding the first "\" or "/" backwards and then cut off the rest
+		BIT_UINT32 Position = p_ExecutablePath.size( ) + 1;
+		for( BIT_SINT32 i = p_ExecutablePath.size( ) - 1; i >= 0; i-- )
+		{
+			if( p_ExecutablePath[ i ] == '/' || p_ExecutablePath[ i ] == '\\' )
+			{
+				Position = i;
+				break;
+			}
+		}
+
+		// Did we find the position?
+		if( Position != p_ExecutablePath.size( ) + 1 )
+		{
+			DirectoryPath.resize( Position );
+		}
+
+		return DirectoryPath;
+	}
+
 	std::string BIT_API GetFileExtension( const char * p_pFilePath )
 	{
 		std::string Extension = "";
@@ -98,7 +128,7 @@ namespace Bit
 			if( p_pFilePath[ i ] == '.' )
 			{
 				// Set the extension with upper case letters
-				for( BIT_SINT32 j = i + 1; j < strlen( p_pFilePath ); j++ )
+				for( BIT_SINT32 j = i + 1; j < (BIT_SINT32)strlen( p_pFilePath ); j++ )
 				{
 					Extension += toupper( p_pFilePath[ j ] );
 				}
@@ -107,7 +137,37 @@ namespace Bit
 			}
 		}
 
+		// We didn't find any extension
+		if( !Extension.size( ) )
+		{
+			return std::string( p_pFilePath );
+		}
+
+		// Return the extension
 		return Extension;
+	}
+
+	// Get line functions.
+	BIT_UINT32 BIT_API GetLine( BIT_SCHAR8 * p_Destination, BIT_UINT32 p_DestinationSize, const BIT_SCHAR8 * p_Source )
+	{
+		// Keep on searching for a line ending.
+		for( BIT_UINT32 i = 0; i < p_DestinationSize; i++ )
+		{
+			// Look for a new line
+			if( p_Source[ i ] == '\n' || p_Source[ i ] == 0 )
+			{
+				// Calculate the size of the line
+				BIT_UINT32 Size = i + 1;
+
+				// Copy the new line into the temporary line buffer
+				strncpy( (char*)p_Destination, (const char*)p_Source, Size );
+				p_Destination[ i ] = 0;
+
+				return Size;
+			}
+		}
+
+		return 0;
 	}
 
 }

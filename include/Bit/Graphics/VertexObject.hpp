@@ -52,12 +52,12 @@ namespace Bit
 		virtual ~VertexObject( ) { }
 
 		// Virtual public functions
-		virtual BIT_UINT32 Load( BIT_UINT32 p_PieceCount, BIT_UINT32 p_PieceSize ) = 0;
+		virtual BIT_UINT32 Load( const BIT_UINT32 p_PieceCount, const BIT_UINT32 p_PieceSize ) = 0;
 		virtual BIT_UINT32 Unload( ) = 0;
-		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, BIT_UINT32 p_DataType ) = 0;
-		virtual BIT_UINT32 UpdateVertexBuffer( const BIT_UINT32 p_Index, void * p_pBuffer,
-		const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize ) = 0;
-		virtual void Render(eRenderMode p_Mode) = 0;
+		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const BIT_UINT32 p_DataType ) = 0;
+		virtual BIT_UINT32 UpdateVertexBuffer( const BIT_UINT32 p_Index, const void * p_pBuffer,
+			const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize ) = 0;
+		virtual void Render( const eRenderMode p_Mode ) = 0;
 
 		// Public inline functions
 		BIT_INLINE BIT_BOOL IsLoaded( ) const { return m_Loaded; }
