@@ -84,6 +84,16 @@ namespace Bit
 			return *this;
 		}
 
+		BIT_BOOL operator == ( const Vector2< T > p_Vector )
+		{
+			return ( this->x == p_Vector.x ) && ( this->y == p_Vector.y );
+		}
+
+		BIT_BOOL operator != ( const Vector2< T > p_Vector )
+		{
+			return ( this->x != p_Vector.x ) || ( this->y != p_Vector.y );
+		}
+
 		const Vector2< T > & operator += ( const Vector2< T > p_Vector )
 		{
 			this->x += p_Vector.x;

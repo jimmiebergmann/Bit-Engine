@@ -37,7 +37,7 @@ namespace Bit
 	public:
 
 		// Constructor/destrucotr
-		TextureOpenGL( );
+		TextureOpenGL( const BIT_BOOL p_OpenGL2 );
 		virtual ~TextureOpenGL ( );
 
 		// General public functions

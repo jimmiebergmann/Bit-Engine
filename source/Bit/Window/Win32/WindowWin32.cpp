@@ -37,6 +37,7 @@ namespace Bit
 		m_RegisteredClass( BIT_FALSE )
 	{
 		m_Open = BIT_FALSE;
+		m_Focused = BIT_FALSE;
 	}
 
 	WindowWin32::~WindowWin32( )
@@ -193,6 +194,9 @@ namespace Bit
 
 	BIT_UINT32 WindowWin32::Close( )
 	{
+		// Show the cursor
+		::ShowCursor( BIT_TRUE );
+
 		// Get the module handler.
 		HINSTANCE Hinstance = GetModuleHandle( BIT_NULL );
 
@@ -227,23 +231,43 @@ namespace Bit
 
 	BIT_UINT32 WindowWin32::Update( )
 	{
+		// Clear the event queue
 		m_EventQueue.clear( );
 
+		// Go through all the window event messages
 		MSG Message;
 		while( PeekMessage( &Message, NULL, NULL, NULL, PM_REMOVE ))
 		{
 			TranslateMessage( &Message );
 			DispatchMessage( &Message );
-
 		}
 
 		return BIT_OK;
 	}
 
-	BIT_BOOL WindowWin32::Show( const BIT_BOOL p_State )
+	BIT_UINT32 WindowWin32::Show( const BIT_BOOL p_State )
 	{
-		ShowWindow( m_Window, p_State );
+		::ShowWindow( m_Window, p_State );
 		return BIT_OK;
+	}
+
+	BIT_UINT32 WindowWin32::ShowCursor( const BIT_BOOL p_State )
+	{
+		::ShowCursor( p_State );
+		return BIT_OK;
+	}
+
+	BIT_UINT32 WindowWin32::SetCursorPosition( Vector2_si32 p_Position )
+	{
+		SetCursorPos( p_Position.x, p_Position.y );
+		return BIT_OK;
+	}
+
+	Vector2_si32 WindowWin32::GetCursorScreenPosition( )
+	{
+		POINT Point;
+		GetCursorPos( &Point );
+		return Vector2_si32( Point.x, Point.y );
 	}
 
 	// Set functions
@@ -308,6 +332,7 @@ namespace Bit
 			break;
 			case WM_SETFOCUS:
 			{
+				m_Focused = BIT_TRUE;
 				Bit::Event Event;
 				Event.Type = Bit::Event::GainedFocus;
 				m_EventQueue.push_back( Event );
@@ -315,6 +340,7 @@ namespace Bit
 			break;
 			case WM_KILLFOCUS:
 			{
+				m_Focused = BIT_FALSE;
 				Bit::Event Event;
 				Event.Type = Bit::Event::LostFocus;
 				m_EventQueue.push_back( Event );
@@ -332,7 +358,8 @@ namespace Bit
 			{
 				Bit::Event Event;
 				Event.Type = Bit::Event::Moved;
-				Event.Position = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				m_Position = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+				Event.Position = m_Position; 
 				m_EventQueue.push_back( Event );
 			}
 			break;

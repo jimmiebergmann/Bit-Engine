@@ -62,7 +62,7 @@ namespace Bit
 		virtual void EnableAlpha( );
 		virtual void EnableDepthTest( );
 		virtual void EnableStencilTest( );
-		virtual void EnableFaceCulling( BIT_UINT32 p_FaceCulling );
+		virtual void EnableFaceCulling( eCulling p_FaceCulling );
 		virtual void EnableSmoothLines( );
 
 		// Disable functions

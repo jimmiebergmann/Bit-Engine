@@ -41,11 +41,17 @@ namespace Bit
 	public:
 
 		// Public enums
-		enum eDevices
+		enum eDevice
 		{
 			Device_Any = 0,			// Picking the most fitting and newest one.
 			Device_OpenGL_2_1 = 1,	// OpenGL 2.1 context
 			Device_OpenGL_3_1 = 2,	// OpenGL 3.1 context
+		};
+
+		enum eCulling
+		{
+			Culling_FrontFace = 0,
+			Culling_BackFace = 1
 		};
 
 
@@ -77,7 +83,7 @@ namespace Bit
 		virtual void EnableAlpha( ) = 0;
 		virtual void EnableDepthTest( ) = 0;
 		virtual void EnableStencilTest( ) = 0;
-		virtual void EnableFaceCulling( BIT_UINT32 p_FaceCulling ) = 0;
+		virtual void EnableFaceCulling( eCulling p_FaceCulling ) = 0;
 		virtual void EnableSmoothLines( ) = 0;
 
 		// Disable functions
@@ -103,7 +109,7 @@ namespace Bit
 		BIT_INLINE BIT_BOOL GetAlphaStatus( ) const { return m_AlphaStatus; }
 		BIT_INLINE BIT_BOOL GetDepthTestStatus( ) const { return m_DepthTestStatus; }
 		BIT_INLINE BIT_BOOL GetStencilTestStatus( ) const { return m_StencilTestStatus; }
-		BIT_INLINE BIT_BOOL GetFaceFullingStatus( ) const { return m_FaceCullingStatus; }
+		BIT_INLINE BIT_BOOL GetFaceCullingStatus( ) const { return m_FaceCullingStatus; }
 		BIT_INLINE BIT_UINT32 GetFaceCullingType( ) const { return m_FaceCullingType; }
 		BIT_INLINE BIT_BOOL GetSmoothLinesStatus( ) const { return m_SmoothLinesStatus; }
 		BIT_INLINE Vector2_si32 GetViewportSize( ) const { return m_ViewportHigh - m_ViewportLow; }
@@ -114,7 +120,7 @@ namespace Bit
 
 		// Protected functions
 		BIT_BOOL m_Open;
-		BIT_UINT32 m_DeviceType;
+		eDevice m_DeviceType;
 		Vector2_si32 m_ViewportLow;
 		Vector2_si32 m_ViewportHigh;
 

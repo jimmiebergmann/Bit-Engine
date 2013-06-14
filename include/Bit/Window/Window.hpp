@@ -59,10 +59,14 @@ namespace Bit
                     const BIT_UINT32 p_Style ) = 0;
 		virtual BIT_UINT32 Close( ) = 0;
 		virtual BIT_UINT32 Update( ) = 0;
-		virtual BIT_BOOL Show( const BIT_BOOL p_State ) = 0;
+		virtual BIT_UINT32 Show( const BIT_BOOL p_State ) = 0;
+		virtual BIT_UINT32 ShowCursor( const BIT_BOOL p_State ) = 0;
+		virtual BIT_UINT32 SetCursorPosition( Vector2_si32 p_Position ) = 0;
+		virtual Vector2_si32 GetCursorScreenPosition( ) = 0;
 
 		// Public functions
-		BIT_BOOL IsOpen( ) const;
+		BIT_INLINE BIT_BOOL IsOpen( ) const { return m_Open; }
+		BIT_INLINE BIT_BOOL IsFocused( ) const { return m_Focused; }
 		BIT_BOOL PollEvent( Event & p_Event );
 
 		// Set functions
@@ -79,6 +83,7 @@ namespace Bit
 
 		// Protected variables
 		BIT_BOOL m_Open;
+		BIT_BOOL m_Focused;
 		Vector2_ui32 m_Size;
 		Vector2_si32 m_Position;
 		BIT_UINT32 m_Bits;

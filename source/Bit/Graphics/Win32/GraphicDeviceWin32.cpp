@@ -335,7 +335,8 @@ namespace Bit
 			return BIT_NULL;
 		}
 
-		return new TextureOpenGL( );
+		BIT_BOOL OpenGL2 = ( m_DeviceType == Device_OpenGL_2_1 );
+		return new TextureOpenGL( OpenGL2 );
 	}
 
 	Model * GraphicDeviceWin32::CreateModel( Model::eModelType p_Type ) const
@@ -400,23 +401,18 @@ namespace Bit
 		m_StencilTestStatus = BIT_TRUE;
 	}
 
-	void GraphicDeviceWin32::EnableFaceCulling( BIT_UINT32 p_FaceCulling )
+	void GraphicDeviceWin32::EnableFaceCulling( eCulling p_FaceCulling )
 	{
-		/*GLenum Mode = GL_FRONT;
-		if( p_FaceCulling == BIT_RENDERER_BACKFACE_CULLING )
+		GLenum Mode = GL_FRONT;
+		if( p_FaceCulling == Culling_BackFace )
 		{
 			Mode = GL_BACK;
-		}
-		// else if the culling isn't front face culling, return ( failed )
-		else if( p_FaceCulling != BIT_RENDERER_FRONTFACE_CULLING )
-		{
-			return;
 		}
 
 		glEnable( GL_CULL_FACE );
 		glCullFace( Mode );
 		m_FaceCullingStatus = BIT_TRUE;
-		m_FaceCullingType = p_FaceCulling;*/
+		m_FaceCullingType = p_FaceCulling;
 	}
 
 	void GraphicDeviceWin32::EnableSmoothLines( )

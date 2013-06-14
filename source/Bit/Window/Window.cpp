@@ -40,12 +40,6 @@
 namespace Bit
 {
 
-	// Private functions
-	BIT_BOOL Window::IsOpen( ) const
-	{
-		return m_Open;
-	}
-
 	BIT_BOOL Window::PollEvent( Event & p_Event )
 	{
 		// Poll the next event in the queue

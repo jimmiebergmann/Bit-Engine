@@ -704,7 +704,7 @@ namespace Bit
 				pMaterial->DiffuseTexture = DirectoryPath + std::string( (char *)TextBuffer128 ); 
 			}
 			// Scan for bump texture
-			else if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "bump %s", TextBuffer128, sizeof( TextBuffer128 ) ) == 1 )
+			else if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "map_Disp %s", TextBuffer128, sizeof( TextBuffer128 ) ) == 1 )
 			{
 				// Continue if we don't have any material yet.
 				if( !pMaterial )

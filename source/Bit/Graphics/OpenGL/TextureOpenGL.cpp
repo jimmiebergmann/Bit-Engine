@@ -29,10 +29,11 @@
 namespace Bit
 {
 	// Constructor/destrucotr
-	TextureOpenGL::TextureOpenGL( ) :
+	TextureOpenGL::TextureOpenGL( const BIT_BOOL p_OpenGL2 ) :
 		m_ID( 0 )
 	{
 		m_Loaded = BIT_FALSE;
+		m_OpenGL2 = p_OpenGL2;
 	}
 
 	TextureOpenGL::~TextureOpenGL ( )
@@ -70,15 +71,30 @@ namespace Bit
 		// Generate an OpenGL texture id.
 		glGenTextures( 1, &m_ID );
 		glBindTexture( GL_TEXTURE_2D, m_ID );
+
+		// Generate the mipmap ( Opengl > 1.4 style )
+		if( m_OpenGL2 && p_Mipmapping )
+		{
+			glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE ); 
+		}
+
+		// Set the texure data
 		Vector2_ui32 Size = p_Image.GetSize( );
 		glTexImage2D ( GL_TEXTURE_2D, 0, Format, Size.x, Size.y, 0,
 			(GLenum)Format, GL_UNSIGNED_BYTE, (GLvoid *)p_Image.GetData() );
 
-
-		// Generate the mipmap
-		if( p_Mipmapping )
+		// Generate the mipmap ( Opengl 3.x style )
+		if( !m_OpenGL2 && p_Mipmapping )
 		{
 			glGenerateMipmap( GL_TEXTURE_2D );
+		}
+
+		// Add anisotropy filtering
+		if( p_Mipmapping )
+		{
+			GLfloat Levels;
+			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &Levels );
+			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 8.0f );
 		}
 
 		// Unbind the texture

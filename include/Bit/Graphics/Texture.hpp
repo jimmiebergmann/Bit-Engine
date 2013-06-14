@@ -68,6 +68,7 @@ namespace Bit
 
 		// Protexted variables
 		BIT_BOOL m_Loaded;
+		BIT_BOOL m_OpenGL2; // Indicate if we are using OpenGL 2
 
 	};
 }
