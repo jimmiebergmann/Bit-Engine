@@ -168,8 +168,8 @@ namespace Bit
 				return BIT_NULL;
 			}
 
-			// Set the default filters
-			if( m_DefaultTextureFilters )
+			// Set the filters
+			if( p_pTextureFilters )
 			{
 				pTexture->SetFilters( p_pTextureFilters );
 			}

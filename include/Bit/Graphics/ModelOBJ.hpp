@@ -66,10 +66,10 @@ namespace Bit
 		struct MaterialGroup
 		{
 			std::string MaterialName;
-
-			// Triangles - flat and smooth triangles
-			std::vector< Triangle > TrianglesFlat;
-			std::vector< Triangle > TrianglesSmooth;
+			BIT_BOOL ContainsVertexPositions;
+			BIT_BOOL ContainsTexturePositions;
+			BIT_BOOL ContainsNormalPositions;
+			std::vector< Triangle > Triangles;
 		};
 
 		struct VertexGroup
@@ -108,13 +108,6 @@ namespace Bit
 
 	private:
 
-		// Private functions
-		BIT_UINT32 ReadData( const char * p_pFilePath );
-		BIT_UINT32 ReadMaterialFile( const char * p_pFilePath, const char * p_pMainFilePath );
-		void DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
-			BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal );
-		BIT_UINT32 ValidateTriangles(  );
-
 		// Private typedefs
 		typedef std::vector< Material * > MaterialVector;
 		typedef MaterialVector::iterator MaterialIterator;
@@ -124,6 +117,18 @@ namespace Bit
 		typedef MaterialGroupVector::iterator MaterialGroupIterator;
 		typedef std::vector< Triangle > TriangleVector;
 		typedef TriangleVector::iterator TriangleIterator;
+
+		// Private functions
+		BIT_UINT32 ReadData( const char * p_pFilePath );
+		BIT_UINT32 ReadMaterialFile( const char * p_pFilePath, const char * p_pMainFilePath );
+		void DecodeOBJFaces( BIT_SCHAR8 * p_String, BIT_SINT32 * p_pPosition,
+			BIT_SINT32 * p_pTexture, BIT_SINT32 * p_pNormal );
+		BIT_UINT32 ValidateTriangles(  );
+		void CreateVertexPositions( const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pPositions, const BIT_UINT32 p_TriangleCount );
+		void CreateVertexTextures( const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pTextures, const BIT_UINT32 p_TriangleCount );
+		void CreateVertexNormals( const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pNormals, const BIT_UINT32 p_TriangleCount );
+		void CreateVertexTangentsBinormals( const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pTangents,
+			BIT_FLOAT32 * p_pBinormals, const BIT_UINT32 p_TriangleCount );
 
 		// Private variables
 		std::string m_Name;

@@ -40,12 +40,22 @@ namespace Bit
 
 	public:
 
-		// Public enum
+		// Public enums
 		enum eRenderMode
 		{
 			RenderMode_Triangles = 0,
 			RenderMode_Lines = 1,
 			RenderMode_LineStrip = 2
+		};
+
+		enum eVertexType
+		{
+			Vertex_None = 0,
+			Vertex_Position = 1,
+			Vertex_Texture = 2,
+			Vertex_Normal = 4,
+			Vertex_Tangent = 8,
+			Vertex_Binormal = 16
 		};
 		
 		// Destructor

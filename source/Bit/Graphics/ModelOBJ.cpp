@@ -97,149 +97,148 @@ namespace Bit
 					}
 				}
 
+				BIT_UINT32 TriangleCount = (*it_mg)->Triangles.size( );
 
-				// Ignore smoothing groups for now. Render them in a reagulary.
-				// Use a pointer array to easily access the flat and smooth triangles.
-				TriangleVector * pTriangleVectors[ 2 ] = { &(*it_mg)->TrianglesFlat, &(*it_mg)->TrianglesSmooth };
-
-				// Go through flat and smooth triangles
-				for( BIT_MEMSIZE i = 0; i < 2; i++ )
+				// Continue if the current triangle vector is empty
+				if( TriangleCount == 0 )
 				{
-					BIT_UINT32 TriangleCount = pTriangleVectors[ i ]->size( );
+					continue;
+				}
 
-					// Continue if the current triangle vector is empty
-					if( TriangleCount == 0 )
+				// Create and push a new render object to the render object vector
+				RenderObject * pRenderObject = new RenderObject;
+				pRenderObject->pTextureDiffuse = pDiffuseTexture;
+				pRenderObject->pTextureNormal = pNormalTexture;
+				m_RenderObjects.push_back( pRenderObject );
+
+				// Create the vertex object
+				if( (pRenderObject->pVertexObject = m_GraphicDevice.CreateVertexObject( ) ) == BIT_NULL )
+				{
+					bitTrace( "[ModelOBJ::LoadVertexObjects] Can not create the vertex object\n" );
+					return BIT_ERROR;
+				}
+
+				// Use these buffers for the vertex object
+				BIT_FLOAT32 * pPositionBuffer = BIT_NULL;
+				BIT_FLOAT32 * pTextureBuffer = BIT_NULL;
+				BIT_FLOAT32 * pNormalBuffer = BIT_NULL;
+				BIT_FLOAT32 * pTangentBuffer = BIT_NULL;
+				BIT_FLOAT32 * pBinormalBuffer = BIT_NULL;
+
+				// Vertex positions
+				if( ( m_VertexElementBits & VertexObject::Vertex_Position ) && (*it_mg)->ContainsVertexPositions )
+				{
+					pPositionBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
+					CreateVertexPositions( it_mg, pPositionBuffer, TriangleCount );
+					
+					// Add the position buffer
+					if( pRenderObject->pVertexObject->AddVertexBuffer( pPositionBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
 					{
-						continue;
-					}
-
-					// Create and push a new render object to the render object vector
-					RenderObject * pRenderObject = new RenderObject;
-					pRenderObject->pTextureDiffuse = pDiffuseTexture;
-					pRenderObject->pTextureNormal = pNormalTexture;
-					m_RenderObjects.push_back( pRenderObject );
-
-					// Create the vertex object
-					if( (pRenderObject->pVertexObject = m_GraphicDevice.CreateVertexObject( ) ) == BIT_NULL )
-					{
-						bitTrace( "[ModelOBJ::LoadVertexObjects] Can not create the vertex object\n" );
+						bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the vertex position buffer\n" );
 						return BIT_ERROR;
-					}
-
-					// Create an array of position data
-					//BIT_FLOAT32 * pPositionBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
-					BIT_FLOAT32 * pPositionBuffer = BIT_NULL;
-					BIT_FLOAT32 * pTextureBuffer = BIT_NULL;
-					BIT_FLOAT32 * pNormalBuffer = BIT_NULL;
-
-					// Vertex positions
-					if( (*pTriangleVectors[ i ])[ 0 ].PositionIndices[ 0 ] != -1 )
-					{
-						pPositionBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
-
-						// Fill the position buffer
-						BIT_UINT32 j = 0;
-						for( TriangleIterator it_tr = pTriangleVectors[ i ]->begin( ); it_tr != pTriangleVectors[ i ]->end( ); it_tr++ )
-						{
-							// Loop every single vertex in the triangle
-							for( BIT_MEMSIZE k = 0; k < 3; k++ )
-							{
-								BIT_SINT32 Index = (*it_tr).PositionIndices[ k ];
-
-								pPositionBuffer[ ( j * 9 ) + ( k * 3 ) + 0 ] = m_VertexPositions[ Index ].x;
-								pPositionBuffer[ ( j * 9 ) + ( k * 3 ) + 1 ] = m_VertexPositions[ Index ].y;
-								pPositionBuffer[ ( j * 9 ) + ( k * 3 ) + 2 ] = m_VertexPositions[ Index ].z;
-							}
-							j++;
-						}
-
-						// Add the position buffer
-						if( pRenderObject->pVertexObject->AddVertexBuffer( pPositionBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
-						{
-							bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the vertex position buffer" );
-							return BIT_ERROR;
-						}
-					}
-					// Texture positions
-					if( (*pTriangleVectors[ i ])[ 0 ].TextureIndices[ 0 ] != -1 )
-					{
-						pTextureBuffer = new BIT_FLOAT32[ TriangleCount * 6 ];
-
-						// Fill the position buffer
-						BIT_UINT32 j = 0;
-						for( TriangleIterator it_tr = pTriangleVectors[ i ]->begin( ); it_tr != pTriangleVectors[ i ]->end( ); it_tr++ )
-						{
-							// Loop every single vertex in the triangle
-							for( BIT_MEMSIZE k = 0; k < 3; k++ )
-							{
-								BIT_SINT32 Index = (*it_tr).TextureIndices[ k ];
-
-								pTextureBuffer[ ( j * 6 ) + ( k * 2 ) + 0 ] = m_TexturePositions[ Index ].x;
-								pTextureBuffer[ ( j * 6 ) + ( k * 2 ) + 1 ] = m_TexturePositions[ Index ].y;
-							}
-							j++;
-						}
-
-						// Add the position buffer
-						if( pRenderObject->pVertexObject->AddVertexBuffer( pTextureBuffer, 2, BIT_TYPE_FLOAT32 ) != BIT_OK )
-						{
-							bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the texture position buffer" );
-							return BIT_ERROR;
-						}
-					}
-					// Normal positions
-					if( (*pTriangleVectors[ i ])[ 0 ].NormalIndices[ 0 ] != -1 )
-					{
-						pNormalBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
-
-						// Fill the position buffer
-						BIT_UINT32 j = 0;
-						for( TriangleIterator it_tr = pTriangleVectors[ i ]->begin( ); it_tr != pTriangleVectors[ i ]->end( ); it_tr++ )
-						{
-							// Loop every single vertex in the triangle
-							for( BIT_MEMSIZE k = 0; k < 3; k++ )
-							{
-								BIT_SINT32 Index = (*it_tr).NormalIndices[ k ];
-
-								pNormalBuffer[ ( j * 9 ) + ( k * 3 ) + 0 ] = m_NormalPositions[ Index ].x;
-								pNormalBuffer[ ( j * 9 ) + ( k * 3 ) + 1 ] = m_NormalPositions[ Index ].y;
-								pNormalBuffer[ ( j * 9 ) + ( k * 3 ) + 2 ] = m_NormalPositions[ Index ].z;
-							}
-							j++;
-						}
-
-						// Add the position buffer
-						if( pRenderObject->pVertexObject->AddVertexBuffer( pNormalBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
-						{
-							bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the normal position buffer" );
-							return BIT_ERROR;
-						}
-					}
-
-
-					// Load the vertex object
-					if( pRenderObject->pVertexObject->Load( TriangleCount, 3 ) != BIT_OK )
-					{
-						bitTrace( "[ModelOBJ::LoadVertexObjects] Can not load the vertex buffer" );
-						return BIT_ERROR;
-					}
-
-					// Delete the buffers
-					if( pPositionBuffer )
-					{
-						delete [ ] pPositionBuffer;
-					}
-					if( pTextureBuffer )
-					{
-						delete [ ] pTextureBuffer;
-					}
-					if( pNormalBuffer )
-					{
-						delete [ ] pNormalBuffer;
 					}
 				}
+				// Texture positions
+				if( ( m_VertexElementBits & VertexObject::Vertex_Texture ) && (*it_mg)->ContainsTexturePositions )
+				{
+					pTextureBuffer = new BIT_FLOAT32[ TriangleCount * 6 ];
+					CreateVertexTextures( it_mg, pTextureBuffer, TriangleCount );
+
+					// Add the position buffer
+					if( pRenderObject->pVertexObject->AddVertexBuffer( pTextureBuffer, 2, BIT_TYPE_FLOAT32 ) != BIT_OK )
+					{
+						bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the texture position buffer\n" );
+						return BIT_ERROR;
+					}
+				}
+				// Normal positions
+				if( ( m_VertexElementBits & VertexObject::Vertex_Normal ) && (*it_mg)->ContainsNormalPositions )
+				{
+					pNormalBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
+					CreateVertexNormals( it_mg, pNormalBuffer, TriangleCount );
+					
+					// Add the position buffer
+					if( pRenderObject->pVertexObject->AddVertexBuffer( pNormalBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
+					{
+						bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the normal position buffer\n" );
+						return BIT_ERROR;
+					}
+				}
+				// Tangent / binormal positions
+				BIT_BOOL CalculateTangents = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Tangent );
+				BIT_BOOL CalculateBinormals = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Binormal );
+				
+				if( ( CalculateTangents || CalculateBinormals ) &&
+					(*it_mg)->ContainsNormalPositions && (*it_mg)->ContainsTexturePositions )
+				{
+					// Tangent memory allocation
+					if( CalculateTangents )
+					{
+						pTangentBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
+					}
+					// Binormal memory allocation
+					if( CalculateBinormals )
+					{
+						pBinormalBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
+					}
+
+					// Create the tangent/binormal buffers
+					CreateVertexTangentsBinormals( it_mg, pTangentBuffer, pBinormalBuffer, TriangleCount );
+			
+					// Add the position buffer
+					if( CalculateTangents )
+					{
+						if( pRenderObject->pVertexObject->AddVertexBuffer( pTangentBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
+						{
+							bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the tangent position buffer\n" );
+							return BIT_ERROR;
+						}
+					}
+					if( CalculateBinormals )
+					{
+						if( pRenderObject->pVertexObject->AddVertexBuffer( pBinormalBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
+						{
+							bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the binormals position buffer\n" );
+							return BIT_ERROR;
+						}
+					}
+
+
+				}
+
+				// Load the vertex object
+				if( pRenderObject->pVertexObject->Load( TriangleCount, 3 ) != BIT_OK )
+				{
+					bitTrace( "[ModelOBJ::LoadVertexObjects] Can not load the vertex buffer\n" );
+					return BIT_ERROR;
+				}
+
+				// Delete the buffers
+				if( pPositionBuffer )
+				{
+					delete [ ] pPositionBuffer;
+				}
+				if( pTextureBuffer )
+				{
+					delete [ ] pTextureBuffer;
+				}
+				if( pNormalBuffer )
+				{
+					delete [ ] pNormalBuffer;
+				}
+				if( pTangentBuffer )
+				{
+					delete [ ] pTangentBuffer;
+				}
+				if( pBinormalBuffer )
+				{
+					delete [ ] pBinormalBuffer;
+				}
+
+				
 			}
 		}
+	
 
 		return BIT_OK;
 	}
@@ -403,15 +402,11 @@ namespace Bit
 		Vector2_f32 Vec2;
 		Triangle Tri;
 
-		// Smoothing group varaibles
-		BIT_BOOL UseSmoothing = BIT_FALSE;
-		std::vector< Triangle > * pTriangleVectorPtr;
-
 		// Create the first vertex and material groups
 		MaterialGroup * pMaterialGroup = new MaterialGroup;
 		VertexGroup * pVertexGroup = new VertexGroup;
-		pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
 		pVertexGroup->Materials.push_back( pMaterialGroup );
+		m_VertexGroups.push_back( pVertexGroup );
 
 		// Keep on reading until we reach any stream flag
 		while( CurrentPosition < FileSize )
@@ -470,7 +465,7 @@ namespace Bit
 						Tri.TextureIndices, Tri.NormalIndices );
 
 					// Add the triangle
-					pTriangleVectorPtr->push_back( Tri );
+					pMaterialGroup->Triangles.push_back( Tri );
 				}
 				break;
 				// Group prefix
@@ -491,16 +486,6 @@ namespace Bit
 					// Add a new material
 					pMaterialGroup = new MaterialGroup;
 					pVertexGroup->Materials.push_back( pMaterialGroup );
-
-					// Set the first triangle group, depending on the smoothing
-					if( UseSmoothing )
-					{
-						pTriangleVectorPtr = &pMaterialGroup->TrianglesSmooth;
-					}
-					else
-					{
-						pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
-					}
 				}
 				break;
 				// u prefix( usemtl - material name )
@@ -520,45 +505,13 @@ namespace Bit
 						pMaterialGroup = new MaterialGroup;
 						pMaterialGroup->MaterialName = (char*)TextBuffer64;
 						pVertexGroup->Materials.push_back( pMaterialGroup );
-
-						// Set the first triangle group, depending on the smoothing
-						if( UseSmoothing )
-						{
-							pTriangleVectorPtr = &pMaterialGroup->TrianglesSmooth;
-						}
-						else
-						{
-							pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
-						}
 					}
 				}
 				break;
 				// Smoothing group prefix
 				case 's':
 				{
-					// Are we turning off smoothing groups?
-					// Check for the word [o]ff.
-					if( LineBuffer[ 2 ] == 'o' )
-					{
-						UseSmoothing = BIT_FALSE;
-						pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
-						continue;
-					}
-
-					// The following data is probably a number
-					BIT_SINT32 SmoothingNumber = atoi( (const char *)&LineBuffer[ 2 ] );
-
-					// Turn smoothing groups off if the smoothing number is 0
-					if( SmoothingNumber == 0 )
-					{
-						UseSmoothing = BIT_FALSE;
-						pTriangleVectorPtr = &pMaterialGroup->TrianglesFlat;
-						continue;
-					}
-
-					// Turn on smoothing groups
-					UseSmoothing = BIT_TRUE;
-					pTriangleVectorPtr = &pMaterialGroup->TrianglesSmooth;
+					continue;
 				}
 				break;
 				// m prefix( mtllib - material library )
@@ -792,56 +745,207 @@ namespace Bit
 		{
 			for( MaterialGroupIterator it_mg = (*it_vg)->Materials.begin( ); it_mg != (*it_vg)->Materials.end( ); it_mg++ )
 			{
+				// Set the vertex flags to true, set them to false if any index < 0
+				(*it_mg)->ContainsVertexPositions = BIT_TRUE;
+				(*it_mg)->ContainsTexturePositions = BIT_TRUE;
+				(*it_mg)->ContainsNormalPositions = BIT_TRUE;
+
 				// Increate the triangle count
-				m_TotalTriangleCount += (*it_mg)->TrianglesFlat.size( );
-				m_TotalTriangleCount += (*it_mg)->TrianglesSmooth.size( );
+				m_TotalTriangleCount += (*it_mg)->Triangles.size( );
 
-				// Use a pointer array to easily access the flat and smooth triangles.
-				TriangleVector * pTriangleVectors[ 2 ] = { &(*it_mg)->TrianglesFlat, &(*it_mg)->TrianglesSmooth };
-
-				// Go through flat and smooth triangles
-				for( BIT_MEMSIZE i = 0; i < 2; i++ )
+				// Go through the triangles
+				for( TriangleIterator it_tr = (*it_mg)->Triangles.begin( ); it_tr != (*it_mg)->Triangles.end( ); it_tr++ )
 				{
-					// Go through the triangles
-					for( TriangleIterator it_tr = pTriangleVectors[ i ]->begin( ); it_tr != pTriangleVectors[ i ]->end( ); it_tr++ )
+					for( BIT_MEMSIZE i = 0; i < 3; i++ )
 					{
-						for( BIT_MEMSIZE i = 0; i < 3; i++ )
+						// Position index error check
+						if( (*it_tr).PositionIndices[ i ] >= (BIT_SINT32)m_VertexPositions.size( ) )
 						{
-							// Position index error check
-							if( (*it_tr).PositionIndices[ i ] >= (BIT_SINT32)m_VertexPositions.size( ) )
-							{
-								bitTrace( "[ModelOBJ::ReadData] Triangle position index error %i / %i\n",
-									(*it_tr).PositionIndices[ i ], m_VertexPositions.size( ) );
-								return BIT_ERROR;
-							}
-
-							// Normal index error check
-							if( (*it_tr).NormalIndices[ i ] >= (BIT_SINT32)m_NormalPositions.size( ) )
-							{
-								bitTrace( "[ModelOBJ::ReadData] Triangle normal index error %i / %i\n",
-									(*it_tr).NormalIndices[ i ], m_NormalPositions.size( ) );
-								return BIT_ERROR;
-							}
+							bitTrace( "[ModelOBJ::ReadData] Triangle position index error %i / %i\n",
+								(*it_tr).PositionIndices[ i ], m_VertexPositions.size( ) );
+							return BIT_ERROR;
+						}
+						if( (*it_tr).PositionIndices[ i ] < 0 )
+						{
+							(*it_mg)->ContainsVertexPositions = BIT_FALSE;
 						}
 
-						for( BIT_MEMSIZE i = 0; i < 2; i++ )
+						// Normal index error check
+						if( (*it_tr).NormalIndices[ i ] >= (BIT_SINT32)m_NormalPositions.size( ) )
 						{
-							// Texture index error check
-							if( (*it_tr).TextureIndices[ i ] >= (BIT_SINT32)m_TexturePositions.size( ) )
-							{
-								bitTrace( "[ModelOBJ::ReadData] Triangle texture index error %i / %i\n",
-									(*it_tr).TextureIndices[ i ], m_TexturePositions.size( ) );
-								return BIT_ERROR;
-							}
-						}	
+							bitTrace( "[ModelOBJ::ReadData] Triangle normal index error %i / %i\n",
+								(*it_tr).NormalIndices[ i ], m_NormalPositions.size( ) );
+							return BIT_ERROR;
+						}
+						if( (*it_tr).NormalIndices[ i ] < 0 )
+						{
+							(*it_mg)->ContainsNormalPositions = BIT_FALSE;
+						}
 					}
+
+					for( BIT_MEMSIZE i = 0; i < 2; i++ )
+					{
+						// Texture index error check
+						if( (*it_tr).TextureIndices[ i ] >= (BIT_SINT32)m_TexturePositions.size( ) )
+						{
+							bitTrace( "[ModelOBJ::ReadData] Triangle texture index error %i / %i\n",
+								(*it_tr).TextureIndices[ i ], m_TexturePositions.size( ) );
+							return BIT_ERROR;
+						}
+						if( (*it_tr).TextureIndices[ i ] < 0 )
+						{
+							(*it_mg)->ContainsTexturePositions = BIT_FALSE;
+						}
+					}	
 				}
-
-
 			}
 		}
+		// End of loops
 
 		return BIT_OK;
 	}
+
+	void ModelOBJ::CreateVertexPositions( const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pPositions, const BIT_UINT32 p_TriangleCount )
+	{
+		// Fill the position buffer
+		BIT_UINT32 j = 0;
+		for( TriangleIterator it_tr = (*p_MatGroupIt)->Triangles.begin( ); it_tr != (*p_MatGroupIt)->Triangles.end( ); it_tr++ )
+		{
+			// Loop every single vertex in the triangle
+			for( BIT_MEMSIZE k = 0; k < 3; k++ )
+			{
+				BIT_SINT32 Index = (*it_tr).PositionIndices[ k ];
+
+				p_pPositions[ ( j * 9 ) + ( k * 3 ) + 0 ] = m_VertexPositions[ Index ].x;
+				p_pPositions[ ( j * 9 ) + ( k * 3 ) + 1 ] = m_VertexPositions[ Index ].y;
+				p_pPositions[ ( j * 9 ) + ( k * 3 ) + 2 ] = m_VertexPositions[ Index ].z;
+			}
+			j++;
+		}
+	}
+
+	void ModelOBJ::CreateVertexTextures (const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pTextures, const BIT_UINT32 p_TriangleCount )
+	{
+		// Fill the texture buffer
+		BIT_UINT32 j = 0;
+		for( TriangleIterator it_tr = (*p_MatGroupIt)->Triangles.begin( ); it_tr != (*p_MatGroupIt)->Triangles.end( ); it_tr++ )
+		{
+			// Loop every single vertex in the triangle
+			for( BIT_MEMSIZE k = 0; k < 3; k++ )
+			{
+				BIT_SINT32 Index = (*it_tr).TextureIndices[ k ];
+
+				p_pTextures[ ( j * 6 ) + ( k * 2 ) + 0 ] = m_TexturePositions[ Index ].x;
+				p_pTextures[ ( j * 6 ) + ( k * 2 ) + 1 ] = m_TexturePositions[ Index ].y;
+			}
+			j++;
+		}
+	}
+
+	void ModelOBJ::CreateVertexNormals( const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pNormals, const BIT_UINT32 p_TriangleCount )
+	{
+		// Fill the position buffer
+		BIT_UINT32 j = 0;
+		for( TriangleIterator it_tr = (*p_MatGroupIt)->Triangles.begin( ); it_tr != (*p_MatGroupIt)->Triangles.end( ); it_tr++ )
+		{
+			// Loop every single vertex in the triangle
+			for( BIT_MEMSIZE k = 0; k < 3; k++ )
+			{
+				BIT_SINT32 Index = (*it_tr).NormalIndices[ k ];
+
+				p_pNormals[ ( j * 9 ) + ( k * 3 ) + 0 ] = m_NormalPositions[ Index ].x;
+				p_pNormals[ ( j * 9 ) + ( k * 3 ) + 1 ] = m_NormalPositions[ Index ].y;
+				p_pNormals[ ( j * 9 ) + ( k * 3 ) + 2 ] = m_NormalPositions[ Index ].z;
+			}
+			j++;
+		}
+
+	}
+
+	void ModelOBJ::CreateVertexTangentsBinormals( const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pTangents,
+		BIT_FLOAT32 * p_pBinormals, const BIT_UINT32 p_TriangleCount )
+	{
+		// Go through all the triangles
+		BIT_UINT32 ti = 0;
+		for( TriangleIterator it_tr = (*p_MatGroupIt)->Triangles.begin( ); it_tr != (*p_MatGroupIt)->Triangles.end( ); it_tr++ )
+		{
+
+			for( BIT_UINT32 vt = 0; vt < 3; vt++ )
+			{
+				Vector3_ui32 Indices( vt, ( vt + 1 ) % 3, ( vt + 2 ) % 3 );
+
+				const Vector3_f32 Vertex1 = m_VertexPositions[ (*it_tr).PositionIndices[ Indices.x ] ];
+				const Vector3_f32 Vertex2 = m_VertexPositions[ (*it_tr).PositionIndices[ Indices.y ] ];
+				const Vector3_f32 Vertex3 = m_VertexPositions[ (*it_tr).PositionIndices[ Indices.z ] ];
+
+				const Vector2_f32 Texture1 = m_TexturePositions[ (*it_tr).TextureIndices[ Indices.x ] ];
+				const Vector2_f32 Texture2 = m_TexturePositions[ (*it_tr).TextureIndices[ Indices.y ] ];
+				const Vector2_f32 Texture3 = m_TexturePositions[ (*it_tr).TextureIndices[ Indices.z ] ];
+
+				float x1 = Vertex2.x - Vertex1.x;
+				float x2 = Vertex3.x - Vertex1.x;
+				float y1 = Vertex2.y - Vertex1.y;
+				float y2 = Vertex3.y - Vertex1.y;
+				float z1 = Vertex2.z - Vertex1.z;
+				float z2 = Vertex3.z - Vertex1.z;
+
+				float s1 = Texture2.x - Texture1.x;
+				float s2 = Texture3.x - Texture1.x;
+				float t1 = Texture2.y - Texture1.y;
+				float t2 = Texture3.y - Texture1.y;
+
+				float r = 1.0f / ( s1 * t2 - s2 * t1 );
+
+				// Tangent
+				if( p_pTangents )
+				{
+					Vector3_f32 Tangent( (t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
+						(t2 * z1 - t1 * z2) * r );
+					Tangent.Normalize( );
+
+					p_pTangents[ ( ti * 9 ) + ( vt * 3 ) + 0 ] = Tangent.x;
+					p_pTangents[ ( ti * 9 ) + ( vt * 3 ) + 1 ] = Tangent.y;
+					p_pTangents[ ( ti * 9 ) + ( vt * 3 ) + 2 ] = Tangent.z;
+
+					//bitTrace( "Tangent %i:  %f  %f  %f\n", (*it_tr).PositionIndices[ Indices.x ], Tangent.x, Tangent.y, Tangent.z );
+				}
+
+				// Binormal
+				if( p_pTangents )
+				{
+					Vector3_f32 Binormal( (s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
+						(s1 * z2 - s2 * z1) * r );
+					Binormal.Normalize( );
+
+					p_pBinormals[ ( ti * 9 ) + ( vt * 3 ) + 0 ] = Binormal.x;
+					p_pBinormals[ ( ti * 9 ) + ( vt * 3 ) + 1 ] = Binormal.y;
+					p_pBinormals[ ( ti * 9 ) + ( vt * 3 ) + 2 ] = Binormal.z;
+				}
+			}
+
+
+			//for( BIT_MEMSIZE vi = 0; vi < 3; vi++ )
+			//{
+				//const Vector3_f32 Vertex1 = 
+				//const Vector3_f32 Normal = m_NormalPositions[ (*it_tr).NormalIndices[ vi ] ];
+				//const Vector2_f32 Texutre = m_TexturePositions[ (*it_tr).TextureIndices[ vi ] ];
+				//float x1 = 
+				
+				/*// Loop every single vertex in the triangle
+				for( BIT_MEMSIZE k = 0; k < 3; k++ )
+				{
+					BIT_SINT32 Index = (*it_tr).PositionIndices[ k ];
+
+					p_pPositions[ ( j * 9 ) + ( k * 3 ) + 0 ] = m_VertexPositions[ Index ].x;
+					p_pPositions[ ( j * 9 ) + ( k * 3 ) + 1 ] = m_VertexPositions[ Index ].y;
+					p_pPositions[ ( j * 9 ) + ( k * 3 ) + 2 ] = m_VertexPositions[ Index ].z;
+				}*/
+			//}
+			ti++;
+		}
+	
+	
+	}
+
 
 }
