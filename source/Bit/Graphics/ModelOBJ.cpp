@@ -906,8 +906,6 @@ namespace Bit
 					p_pTangents[ ( ti * 9 ) + ( vt * 3 ) + 0 ] = Tangent.x;
 					p_pTangents[ ( ti * 9 ) + ( vt * 3 ) + 1 ] = Tangent.y;
 					p_pTangents[ ( ti * 9 ) + ( vt * 3 ) + 2 ] = Tangent.z;
-
-					//bitTrace( "Tangent %i:  %f  %f  %f\n", (*it_tr).PositionIndices[ Indices.x ], Tangent.x, Tangent.y, Tangent.z );
 				}
 
 				// Binormal

@@ -178,6 +178,12 @@ namespace Bit
 			case Filter_Linear:
 				Param = GL_LINEAR;
 				break;
+			case Filter_Nearest_Mipmap:
+				Param = GL_NEAREST_MIPMAP_NEAREST;
+				break;
+			case Filter_Linear_Mipmap:
+				Param = GL_LINEAR_MIPMAP_LINEAR;
+				break;
 			case Filter_Repeat:
 				Param = GL_REPEAT;
 				break;

@@ -47,8 +47,10 @@ namespace Bit
 
 			Filter_Nearest = 5,
 			Filter_Linear = 6,
-			Filter_Repeat = 7,
-			Filter_Clamp = 8,
+			Filter_Nearest_Mipmap = 7,
+			Filter_Linear_Mipmap = 8,
+			Filter_Repeat = 9,
+			Filter_Clamp = 10
 		};
 
 		// Destructor
