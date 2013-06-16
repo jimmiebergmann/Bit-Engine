@@ -125,8 +125,15 @@ namespace Bit
 				BIT_FLOAT32 * pTangentBuffer = BIT_NULL;
 				BIT_FLOAT32 * pBinormalBuffer = BIT_NULL;
 
+				// Calculation flags
+				BIT_BOOL CalculatePositions = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Position );
+				BIT_BOOL CalculateTextures = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Texture );
+				BIT_BOOL CalculateNormals = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Normal );
+				BIT_BOOL CalculateTangents = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Tangent );
+				BIT_BOOL CalculateBinormals = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Binormal );
+
 				// Vertex positions
-				if( ( m_VertexElementBits & VertexObject::Vertex_Position ) && (*it_mg)->ContainsVertexPositions )
+				if( CalculatePositions && (*it_mg)->ContainsVertexPositions )
 				{
 					pPositionBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
 					CreateVertexPositions( it_mg, pPositionBuffer, TriangleCount );
@@ -139,7 +146,7 @@ namespace Bit
 					}
 				}
 				// Texture positions
-				if( ( m_VertexElementBits & VertexObject::Vertex_Texture ) && (*it_mg)->ContainsTexturePositions )
+				if( CalculateTextures && (*it_mg)->ContainsTexturePositions )
 				{
 					pTextureBuffer = new BIT_FLOAT32[ TriangleCount * 6 ];
 					CreateVertexTextures( it_mg, pTextureBuffer, TriangleCount );
@@ -152,7 +159,7 @@ namespace Bit
 					}
 				}
 				// Normal positions
-				if( ( m_VertexElementBits & VertexObject::Vertex_Normal ) && (*it_mg)->ContainsNormalPositions )
+				if( CalculateNormals && (*it_mg)->ContainsNormalPositions )
 				{
 					pNormalBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
 					CreateVertexNormals( it_mg, pNormalBuffer, TriangleCount );
@@ -164,12 +171,9 @@ namespace Bit
 						return BIT_ERROR;
 					}
 				}
-				// Tangent / binormal positions
-				BIT_BOOL CalculateTangents = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Tangent );
-				BIT_BOOL CalculateBinormals = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Binormal );
-				
+				// Tangent / binormal positions	
 				if( ( CalculateTangents || CalculateBinormals ) &&
-					(*it_mg)->ContainsNormalPositions && (*it_mg)->ContainsTexturePositions )
+					CalculatePositions && CalculateTextures )
 				{
 					// Tangent memory allocation
 					if( CalculateTangents )
@@ -183,7 +187,9 @@ namespace Bit
 					}
 
 					// Create the tangent/binormal buffers
-					CreateVertexTangentsBinormals( it_mg, pTangentBuffer, pBinormalBuffer, TriangleCount );
+					VertexObject::GenerateTangents( pPositionBuffer, pTextureBuffer,
+						pTangentBuffer, pBinormalBuffer, TriangleCount );
+					//CreateVertexTangentsBinormals( it_mg, pTangentBuffer, pBinormalBuffer, TriangleCount );
 			
 					// Add the position buffer
 					if( CalculateTangents )
@@ -862,6 +868,8 @@ namespace Bit
 
 	}
 
+	
+
 	void ModelOBJ::CreateVertexTangentsBinormals( const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pTangents,
 		BIT_FLOAT32 * p_pBinormals, const BIT_UINT32 p_TriangleCount )
 	{
@@ -921,29 +929,14 @@ namespace Bit
 				}
 			}
 
-
-			//for( BIT_MEMSIZE vi = 0; vi < 3; vi++ )
-			//{
-				//const Vector3_f32 Vertex1 = 
-				//const Vector3_f32 Normal = m_NormalPositions[ (*it_tr).NormalIndices[ vi ] ];
-				//const Vector2_f32 Texutre = m_TexturePositions[ (*it_tr).TextureIndices[ vi ] ];
-				//float x1 = 
-				
-				/*// Loop every single vertex in the triangle
-				for( BIT_MEMSIZE k = 0; k < 3; k++ )
-				{
-					BIT_SINT32 Index = (*it_tr).PositionIndices[ k ];
-
-					p_pPositions[ ( j * 9 ) + ( k * 3 ) + 0 ] = m_VertexPositions[ Index ].x;
-					p_pPositions[ ( j * 9 ) + ( k * 3 ) + 1 ] = m_VertexPositions[ Index ].y;
-					p_pPositions[ ( j * 9 ) + ( k * 3 ) + 2 ] = m_VertexPositions[ Index ].z;
-				}*/
-			//}
+			// Increment the triangle index
 			ti++;
 		}
 	
 	
 	}
+
+	
 
 
 }

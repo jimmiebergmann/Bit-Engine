@@ -389,6 +389,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\Graphics\VertexObject.cpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\include\Bit\Graphics\VertexObject.hpp"
 			>
 		</File>

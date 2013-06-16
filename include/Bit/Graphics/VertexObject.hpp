@@ -69,6 +69,10 @@ namespace Bit
 			const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize ) = 0;
 		virtual void Render( const eRenderMode p_Mode ) = 0;
 
+		// Static publuc function
+		static void GenerateTangents( const BIT_FLOAT32 * p_pVertexPositions, const BIT_FLOAT32 * p_pTexturePositions,
+			BIT_FLOAT32 * p_pTangents, BIT_FLOAT32 * p_pBinormals, const BIT_UINT32 p_TriangleCount );
+
 		// Public inline functions
 		BIT_INLINE BIT_BOOL IsLoaded( ) const { return m_Loaded; }
 
