@@ -22,39 +22,12 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_SHADER_OPENGL_HPP__
-#define __BIT_GRAPHICS_SHADER_OPENGL_HPP__
-
-#include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Shader.hpp>
-#include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/OpenGL/RenderbufferOpenGL.hpp>
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	class BIT_API ShaderOpenGL : public Shader
-	{
-	public:
 
-		// Constructor/destructor
-		ShaderOpenGL( eShaderType p_ShaderType );
-		virtual ~ShaderOpenGL( );
-		
-		// General public functions
-		virtual BIT_UINT32 Compile( );
-
-		// Get functions
-		GLuint GetShaderObject() const;
-
-	private:
-
-		// Private static variable
-		static GLenum s_ShaderObjectTypes[ 3 ];
-
-		// Private variable
-		GLuint m_ShaderObject;
-
-	};
 }
-
-#endif
