@@ -29,5 +29,13 @@
 namespace Bit
 {
 
+	// Constructor/destructor
+	RenderbufferOpenGL::RenderbufferOpenGL( )
+	{
+	}
+
+	RenderbufferOpenGL::~RenderbufferOpenGL( )
+	{
+	}
 
 }

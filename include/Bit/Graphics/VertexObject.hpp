@@ -26,6 +26,7 @@
 #define __BIT_GRAPHICS_VERTEX_OBJECT_HPP__
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/System/Vector2.hpp>
 
 // How to use:
 // 1. Create the vertex object via your graphic device.
@@ -63,6 +64,7 @@ namespace Bit
 
 		// Virtual public functions
 		virtual BIT_UINT32 Load( const BIT_UINT32 p_PieceCount, const BIT_UINT32 p_PieceSize ) = 0;
+		virtual BIT_UINT32 LoadFullscreenQuad( const Vector2_ui32 p_Size ) = 0;
 		virtual BIT_UINT32 Unload( ) = 0;
 		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const BIT_UINT32 p_DataType ) = 0;
 		virtual BIT_UINT32 UpdateVertexBuffer( const BIT_UINT32 p_Index, const void * p_pBuffer,

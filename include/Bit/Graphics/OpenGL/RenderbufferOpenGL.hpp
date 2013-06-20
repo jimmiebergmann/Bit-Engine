@@ -27,6 +27,7 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Renderbuffer.hpp>
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
 
 namespace Bit
 {
@@ -39,9 +40,12 @@ namespace Bit
 		RenderbufferOpenGL( );
 		virtual ~RenderbufferOpenGL( );
 
+		// Get functions
+		BIT_INLINE GLuint GetID( ) const { return m_RenderbufferObject; }
+
 	private:
 
-
+		GLuint m_RenderbufferObject;
 
 	};
 
