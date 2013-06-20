@@ -27,6 +27,7 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Framebuffer.hpp>
+#include <Bit/Graphics/OpenGL/Opengl.hpp>
 
 namespace Bit
 {
@@ -37,11 +38,22 @@ namespace Bit
 
 		// Constructor/destructor
 		FramebufferOpenGL( );
-		virtual ~FramebufferOpenGL();
+		virtual ~FramebufferOpenGL( );
+
+		// Virtual public functions
+		virtual void Bind( );
+		virtual void Unbind( );
+		virtual BIT_UINT32 Attach( const Texture * p_pTexture );
+		virtual BIT_UINT32 Attach( const Renderbuffer * p_pRenderbuffer );
+
+		// Get functions
+		BIT_INLINE GLuint GetID( ) const { return m_FramebufferObject; }
 
 	private:
 
-
+		GLuint m_FramebufferObject;
+		BIT_UINT32 m_ColorAttachmentCount;
+		BIT_UINT32 m_DepthAttachmentCount;
 
 	};
 

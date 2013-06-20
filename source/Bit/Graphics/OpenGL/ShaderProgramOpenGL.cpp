@@ -51,7 +51,7 @@ namespace Bit
 		m_AttachedShaderCount = 0;
 	}
 
-	BIT_UINT32 ShaderProgramOpenGL::AttachShaders( Shader *p_pShader )
+	BIT_UINT32 ShaderProgramOpenGL::AttachShaders( const Shader *p_pShader )
 	{
 		// Make sure the shader program is loaded before we attach any shaders.
 		if( m_ProgramID == 0 )
@@ -69,7 +69,7 @@ namespace Bit
 			return BIT_ERROR;
 		}
 
-		ShaderOpenGL * pShaderOpenGL = reinterpret_cast< ShaderOpenGL * >( p_pShader );
+		const ShaderOpenGL * pShaderOpenGL = reinterpret_cast< const ShaderOpenGL * >( p_pShader );
 
 		// Attach the shader
 		glAttachShader( m_ProgramID, pShaderOpenGL->GetShaderObject( ) );

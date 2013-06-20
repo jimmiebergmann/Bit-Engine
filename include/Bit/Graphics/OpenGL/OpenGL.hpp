@@ -70,6 +70,18 @@ extern PFNGLBUFFERSUBDATAPROC __glBufferSubData;
 extern PFNGLDELETEBUFFERSPROC __glDeleteBuffers;
 extern PFNGLGENBUFFERSPROC __glGenBuffers;
 
+// Framebuffers/renderbuffers, OpenGL 3.0
+extern PFNGLBINDFRAMEBUFFERPROC __glBindFramebuffer;
+extern PFNGLBINDRENDERBUFFERPROC __glBindRenderbuffer;
+extern PFNGLCHECKFRAMEBUFFERSTATUSPROC __glCheckFramebufferStatus;
+extern PFNGLDELETEFRAMEBUFFERSPROC __glDeleteFramebuffers;
+extern PFNGLDELETERENDERBUFFERSPROC __glDeleteRenderbuffers;
+extern PFNGLFRAMEBUFFERRENDERBUFFERPROC __glFramebufferRenderbuffer;
+extern PFNGLFRAMEBUFFERTEXTURE2DPROC __glFramebufferTexture2D;
+extern PFNGLGENFRAMEBUFFERSPROC __glGenFramebuffers;
+extern PFNGLGENRENDERBUFFERSPROC __glGenrRenderbuffers;
+extern PFNGLRENDERBUFFERSTORAGEPROC __glRenderbufferStorage;
+
 // Texture functions
 extern PFNGLGENERATEMIPMAPPROC __glGenerateMipmap;
 
@@ -132,14 +144,26 @@ extern PFNGLUNIFORMMATRIX4FVPROC __glUniformMatrix4fv;
 #define glActiveTexture __glActiveTexture
 
 // Buffers, OpenGL 1.5
-#define  glBindBuffer __glBindBuffer
-#define  glBufferData __glBufferData
-#define  glBufferSubData __glBufferSubData
-#define  glDeleteBuffers __glDeleteBuffers
-#define  glGenBuffers __glGenBuffers
+#define glBindBuffer __glBindBuffer
+#define glBufferData __glBufferData
+#define glBufferSubData __glBufferSubData
+#define glDeleteBuffers __glDeleteBuffers
+#define glGenBuffers __glGenBuffers
+
+// Framebuffers/renderbuffers, OpenGL 3.0
+#define glBindFramebuffer __glBindFramebuffer
+#define glBindRenderbuffer __glBindRenderbuffer
+#define glCheckFramebufferStatus __glCheckFramebufferStatus
+#define glDeleteFramebuffers __glDeleteFramebuffers
+#define glDeleteRenderbuffers __glDeleteRenderbuffers
+#define glFramebufferRenderbuffer __glFramebufferRenderbuffer
+#define glFramebufferTexture2D __glFramebufferTexture2D
+#define glGenFramebuffers __glGenFramebuffers
+#define glGenrRenderbuffers __glGenrRenderbuffers
+#define glRenderbufferStorage __glRenderbufferStorage
 
 // Texture functions
-#define  glGenerateMipmap __glGenerateMipmap
+#define glGenerateMipmap __glGenerateMipmap
 
 // Shader functions
 #define glEnableVertexAttribArray __glEnableVertexAttribArray
@@ -162,25 +186,25 @@ extern PFNGLUNIFORMMATRIX4FVPROC __glUniformMatrix4fv;
 #define glGetAttribLocation __glGetAttribLocation
 #define glUseProgram __glUseProgram
 
-#define  glUniform1f __glUniform1f
-#define  glUniform1fv __glUniform1fv
-#define  glUniform1i __glUniform1i
-#define  glUniform1iv __glUniform1iv
-#define  glUniform2f __glUniform2f
-#define  glUniform2fv __glUniform2fv
-#define  glUniform2i __glUniform2i
-#define  glUniform2iv __glUniform2iv
-#define  glUniform3f __glUniform3f
-#define  glUniform3fv __glUniform3fv
-#define  glUniform3i __glUniform3i
-#define  glUniform3iv __glUniform3iv
-#define  glUniform4f __glUniform4f
-#define  glUniform4fv __glUniform4fv
-#define  glUniform4iP __glUniform4i
-#define  glUniform4iv __glUniform4iv
-#define  glUniformMatrix2fv __glUniformMatrix2fv
-#define  glUniformMatrix3fv __glUniformMatrix3fv
-#define  glUniformMatrix4fv __glUniformMatrix4fv
+#define glUniform1f __glUniform1f
+#define glUniform1fv __glUniform1fv
+#define glUniform1i __glUniform1i
+#define glUniform1iv __glUniform1iv
+#define glUniform2f __glUniform2f
+#define glUniform2fv __glUniform2fv
+#define glUniform2i __glUniform2i
+#define glUniform2iv __glUniform2iv
+#define glUniform3f __glUniform3f
+#define glUniform3fv __glUniform3fv
+#define glUniform3i __glUniform3i
+#define glUniform3iv __glUniform3iv
+#define glUniform4f __glUniform4f
+#define glUniform4fv __glUniform4fv
+#define glUniform4iP __glUniform4i
+#define glUniform4iv __glUniform4iv
+#define glUniformMatrix2fv __glUniformMatrix2fv
+#define glUniformMatrix3fv __glUniformMatrix3fv
+#define glUniformMatrix4fv __glUniformMatrix4fv
 
 
 namespace Bit
@@ -193,6 +217,7 @@ namespace Bit
 		BIT_API BIT_BOOL GetGeneralTextureAvailability( );
 		BIT_API BIT_BOOL GetGeneralBufferAvailability( );
 		BIT_API BIT_BOOL GetShaderAvailability( ); // Check if shaders are available
+		BIT_API BIT_BOOL GetFramebufferAvailability( ); // Check if framebuffers/renderbuffers are available
 
 	}
 }
