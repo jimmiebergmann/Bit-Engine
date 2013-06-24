@@ -35,8 +35,9 @@ namespace Bit
 
 	// Set the private static variables
 	MatrixManager::eMode MatrixManager::m_Mode = MatrixManager::Mode_Projection;
-	std::stack< Matrix4x4 > MatrixManager::m_MatrixStacks[ 2 ] =
+	std::stack< Matrix4x4 > MatrixManager::m_MatrixStacks[ 3 ] =
 	{
+		std::stack< Matrix4x4 >( DummyDeque ),
 		std::stack< Matrix4x4 >( DummyDeque ),
 		std::stack< Matrix4x4 >( DummyDeque )
 	};
@@ -119,6 +120,21 @@ namespace Bit
 	Matrix4x4 MatrixManager::GetMatrix( const eMode p_Mode )
 	{
 		return m_MatrixStacks[ (BIT_MEMSIZE)p_Mode ].top( );
-	}	
+	}
+
+	Matrix4x4 MatrixManager::GetProjectionMatrix( )
+	{
+		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_Projection ].top( );
+	}
+
+	Matrix4x4 MatrixManager::GetViewMatrix( )
+	{
+		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_View ].top( );
+	}
+
+	Matrix4x4 MatrixManager::GetModelMatrix( )
+	{
+		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_Model ].top( );
+	}
 
 }

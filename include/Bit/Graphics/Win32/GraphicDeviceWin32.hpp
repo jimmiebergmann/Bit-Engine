@@ -44,8 +44,12 @@ namespace Bit
 		virtual BIT_UINT32 Open( const Window & p_Window, const BIT_UINT32 p_Devices );
 		virtual BIT_UINT32 Close( );
 		virtual void Present( );
+		virtual void BindDefaultFramebuffer( );
+		virtual void BindDefaultShaderProgram( );
 
 		// Create functions for different renderer elements
+		virtual Framebuffer * CreateFramebuffer( ) const;
+		virtual Renderbuffer * CreateRenderbuffer( ) const;
 		virtual VertexObject * CreateVertexObject( ) const;
 		virtual ShaderProgram * CreateShaderProgram( ) const;
 		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const;

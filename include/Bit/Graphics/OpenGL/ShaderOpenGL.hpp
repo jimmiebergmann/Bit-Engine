@@ -38,7 +38,7 @@ namespace Bit
 
 		// Constructor/destructor
 		ShaderOpenGL( eShaderType p_ShaderType );
-		virtual ~ShaderOpenGL();
+		virtual ~ShaderOpenGL( );
 		
 		// General public functions
 		virtual BIT_UINT32 Compile( );

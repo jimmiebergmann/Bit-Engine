@@ -1,69 +1,61 @@
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-// 
+//
 // This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
-// 
+//
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute
 // it freely, subject to the following restrictions:
-// 
+//
 // 1. The origin of this software must not be misrepresented;
 //    you must not claim that you wrote the original software.
 //    If you use this software in a product, an acknowledgment
 //    in the product documentation would be appreciated but
 //    is not required.
-// 
+//
 // 2. Altered source versions must be plainly marked as such,
 //    and must not be misrepresented as being the original software.
-// 
+//
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_SHADER_PROGRAM_OPENGL_HPP__
-#define __BIT_GRAPHICS_SHADER_PROGRAM_OPENGL_HPP__
+#ifndef __BIT_GRAPHICS_FRAMEBUFFER_OPENGL_HPP__
+#define __BIT_GRAPHICS_FRAMEBUFFER_OPENGL_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/ShaderProgram.hpp>
-#include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/Framebuffer.hpp>
+#include <Bit/Graphics/OpenGL/Opengl.hpp>
 
 namespace Bit
 {
-
-	class BIT_API ShaderProgramOpenGL : public ShaderProgram
+	class BIT_API FramebufferOpenGL : public Framebuffer
 	{
 
 	public:
 
 		// Constructor/destructor
-		ShaderProgramOpenGL( );
-		virtual ~ShaderProgramOpenGL( );
+		FramebufferOpenGL( );
+		virtual ~FramebufferOpenGL( );
 
-		// Public general functions
-		virtual BIT_UINT32 AttachShaders( const Shader * p_Shader );
-		virtual BIT_UINT32 Link( );
+		// Virtual public functions
 		virtual void Bind( );
 		virtual void Unbind( );
+		virtual BIT_UINT32 Attach( const Texture * p_pTexture );
+		virtual BIT_UINT32 Attach( const Renderbuffer * p_pRenderbuffer );
 
-		// Public set functions
-		virtual void SetUniform1i( const char * p_Location, const BIT_SINT32 );
-		virtual void SetUniform1f( const char *, const BIT_FLOAT32 );
-		virtual void SetUniform2f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 );
-		virtual void SetUniform3f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 );
-		virtual void SetUniform4f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 );
-		virtual void SetUniformMatrix4x4f( const char * p_Location, Matrix4x4 & p_Matrix );
-		virtual void SetAttributeLocation( const char * p_Location, BIT_UINT32 p_Index );
+		// Get functions
+		BIT_INLINE GLuint GetID( ) const { return m_FramebufferObject; }
 
 	private:
 
-		// Private variables
-		GLuint m_ProgramID;
-		BIT_UINT32 m_AttachedShaderCount;
+		GLuint m_FramebufferObject;
+		BIT_UINT32 m_ColorAttachmentCount;
+		BIT_UINT32 m_DepthAttachmentCount;
 
 	};
-
 
 }
 

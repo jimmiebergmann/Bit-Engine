@@ -46,6 +46,7 @@ namespace Bit
 
 		// Virtual public functions
 		virtual BIT_UINT32 Load( const BIT_UINT32 p_PieceCount, const BIT_UINT32 p_PieceSize ) ;
+		virtual BIT_UINT32 LoadFullscreenQuad( const Vector2_ui32 p_Size );
 		virtual BIT_UINT32 Unload( );
 		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const BIT_UINT32 p_DataType );
 		virtual BIT_UINT32 UpdateVertexBuffer( const BIT_UINT32 p_Index, const void * p_pBuffer,

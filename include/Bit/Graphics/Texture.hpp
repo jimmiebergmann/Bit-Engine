@@ -58,19 +58,22 @@ namespace Bit
 
 		virtual BIT_UINT32 Load( const Image & p_Image, const BIT_BOOL p_Mipmapping ) = 0;
 		virtual BIT_UINT32 Load( Vector2_ui32 p_Size, const BIT_UINT32 p_Format,
-			const BIT_UINT32 p_Type, BIT_BYTE * p_Data ) = 0;
+			const BIT_UINT32 p_InternalFormat, const BIT_UINT32 p_FormatType, void * p_Data ) = 0;
 		virtual void Bind( BIT_UINT32 p_Index ) = 0;
 		virtual void Unbind( ) = 0;
-		BIT_INLINE BIT_BOOL IsLoaded( ) { return m_Loaded; };
-		
+
 		// Set functions
 		virtual BIT_UINT32 SetFilters( const eFilter * p_pFilters ) = 0;
+
+		// Get functions
+		BIT_INLINE BIT_UINT32 GetFormat( ) const { return m_Format; };
+		BIT_INLINE BIT_BOOL IsLoaded( ) const { return m_Loaded; };
 		
 	protected:
 
 		// Protexted variables
 		BIT_BOOL m_Loaded;
-		BIT_BOOL m_OpenGL2; // Indicate if we are using OpenGL 2
+		BIT_UINT32 m_Format;
 
 	};
 }

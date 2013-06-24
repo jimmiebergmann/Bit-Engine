@@ -24,6 +24,8 @@
 
 #include <Bit/Graphics/Win32/GraphicDeviceWin32.hpp>
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/OpenGL/FramebufferOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/RenderbufferOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
@@ -285,8 +287,28 @@ namespace Bit
 
 		SwapBuffers( m_DeviceContext );
 	}
+
+	void GraphicDeviceWin32::BindDefaultFramebuffer( )
+	{
+		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+	}
+
+	void GraphicDeviceWin32::BindDefaultShaderProgram( )
+	{
+		glUseProgram( 0 );
+	}
 	
 	// Create functions for different renderer elements
+	Framebuffer * GraphicDeviceWin32::CreateFramebuffer( ) const
+	{
+		return new FramebufferOpenGL( );
+	}
+
+	Renderbuffer * GraphicDeviceWin32::CreateRenderbuffer( ) const
+	{
+		return new RenderbufferOpenGL( );
+	}
+
 	VertexObject * GraphicDeviceWin32::CreateVertexObject( ) const
 	{
 		// Make sure we support OpenGL vertex objects
