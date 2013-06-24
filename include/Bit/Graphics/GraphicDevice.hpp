@@ -27,6 +27,8 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Window.hpp>
+#include <Bit/Graphics/Framebuffer.hpp>
+#include <Bit/Graphics/Renderbuffer.hpp>
 #include <Bit/Graphics/VertexObject.hpp>
 #include <Bit/Graphics/ShaderProgram.hpp>
 #include <Bit/Graphics/Shader.hpp>
@@ -62,11 +64,15 @@ namespace Bit
 		virtual BIT_UINT32 Open( const Window & p_Window, const BIT_UINT32 p_Devices ) = 0;
 		virtual BIT_UINT32 Close( ) = 0;
 		virtual void Present( ) = 0;
+		virtual void BindDefaultFramebuffer( ) = 0;
+		virtual void BindDefaultShaderProgram( ) = 0;
 
 		// Public functions
 		BIT_INLINE BIT_BOOL IsOpen( ) const { return m_Open; }
 
 		// Create functions for different renderer elements
+		virtual Framebuffer * CreateFramebuffer( ) const = 0;
+		virtual Renderbuffer * CreateRenderbuffer( ) const = 0;
 		virtual VertexObject * CreateVertexObject( ) const = 0;
 		virtual ShaderProgram * CreateShaderProgram( ) const = 0;
 		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const = 0;

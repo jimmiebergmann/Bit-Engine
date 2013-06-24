@@ -292,11 +292,27 @@
 			Name="OpenGL"
 			>
 			<File
+				RelativePath="..\..\source\Bit\Graphics\OpenGL\FramebufferOpenGL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\OpenGL\FramebufferOpenGL.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\Bit\Graphics\OpenGL\RenderbufferOpenGL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\OpenGL\RenderbufferOpenGL.hpp"
 				>
 			</File>
 			<File
@@ -345,6 +361,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath="..\..\include\Bit\Graphics\Framebuffer.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\Graphics\GraphicDevice.cpp"
 			>
 		</File>
@@ -370,6 +390,10 @@
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\Graphics\ModelOBJ.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\Graphics\Renderbuffer.hpp"
 			>
 		</File>
 		<File

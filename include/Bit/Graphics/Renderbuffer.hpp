@@ -22,43 +22,25 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_TEXTURE_OPENGL_HPP__
-#define __BIT_GRAPHICS_TEXTURE_OPENGL_HPP__
+#ifndef __BIT_GRAPHICS_RENDERBUFFER_HPP__
+#define __BIT_GRAPHICS_RENDERBUFFER_HPP__
 
-#include <Bit/Graphics/Texture.hpp>
-#include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/DataTypes.hpp>
 
 namespace Bit
 {
-	
-	class BIT_API TextureOpenGL : public Texture
+	class BIT_API Renderbuffer 
 	{
 
 	public:
 
-		// Constructor/destrucotr
-		TextureOpenGL( const BIT_BOOL p_OpenGL2 );
-		virtual ~TextureOpenGL ( );
+		// Destructor
+		virtual ~Renderbuffer( ) { }
 
-		// General public functions
-		virtual BIT_UINT32 Load( const Image & p_Image, const BIT_BOOL p_Mipmapping );
-		virtual BIT_UINT32 Load( Vector2_ui32 p_Size, const BIT_UINT32 p_Format,
-			const BIT_UINT32 p_InternalFormat, const BIT_UINT32 p_FormatType, void * p_Data );
-		virtual void Bind( BIT_UINT32 p_Index );
-		virtual void Unbind( );
+	protected:
 
-		// Set functions
-		virtual BIT_UINT32 SetFilters( const eFilter * p_pFilters );
-
-		// Get functions
-		BIT_INLINE GLuint GetID( ) const { return m_ID; }
-
-	private:
-
-		// Private variables
-		GLuint m_ID;
-		BIT_BOOL m_OpenGL2; // Indicate if we are using OpenGL 2
 	};
+
 }
 
 #endif

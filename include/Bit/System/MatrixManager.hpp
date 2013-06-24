@@ -42,7 +42,8 @@ namespace Bit
 		enum eMode
 		{
 			Mode_Projection = 0,
-			Mode_ModelView = 1
+			Mode_View = 1,
+			Mode_Model = 2
 		};
 
 		// Public functions
@@ -66,11 +67,15 @@ namespace Bit
 		static eMode GetMode( );
 		static Matrix4x4 GetMatrix( );
 		static Matrix4x4 GetMatrix( const eMode p_Mode );
+		static Matrix4x4 GetProjectionMatrix( );
+		static Matrix4x4 GetViewMatrix( );
+		static Matrix4x4 GetModelMatrix( );
+
 
 	private:
 
 		static eMode m_Mode;
-		static std::stack< Matrix4x4 > m_MatrixStacks[ 2 ];
+		static std::stack< Matrix4x4 > m_MatrixStacks[ 3 ];
 		//static Matrix4x4 m_Matrices[ 2 ];
 
 	};
