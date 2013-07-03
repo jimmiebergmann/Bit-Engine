@@ -23,6 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/ResourceManager.hpp>
+#include <Bit/Graphics/Image.hpp>
+#include <Bit/Audio/XM.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 

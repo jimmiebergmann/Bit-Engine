@@ -34,7 +34,7 @@
 namespace Bit
 {
 
-	class ResourceManager
+	class BIT_API ResourceManager
 	{
 
 	public:
@@ -49,7 +49,7 @@ namespace Bit
 		static Texture * GetTexture( const std::string p_FilePath );
 		static Texture * GetTexture( const std::string p_FilePath, const Texture::eFilter * p_pTextureFilters );
 		static Texture * GetTexture( const std::string p_FilePath, const BIT_BOOL p_Mipmapping );
-		static Texture * GetTexture( const std::string p_FilePath, const Texture::eFilter * p_pTextureFilters, const BIT_BOOL p_Mipmapping  );
+		static Texture * GetTexture( const std::string p_FilePath, const Texture::eFilter * p_pTextureFilters, const BIT_BOOL p_Mipmapping );
 		static Texture * GetErrorTexture( );
 
 	private:

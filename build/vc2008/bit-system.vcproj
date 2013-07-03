@@ -189,6 +189,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="../../../Bit-Engine/lib/Windows/32/Static/bit-graphics.lib"
 				OutputFile="$(OutDir)\$(ProjectName)-d.dll"
 				ImportLibrary="$(TargetDir)$(TargetName).lib"
 			/>
@@ -260,6 +261,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="../../../Bit-Engine/lib/Windows/32/Static/bit-graphics.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

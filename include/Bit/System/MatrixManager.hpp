@@ -33,7 +33,7 @@
 namespace Bit
 {
 
-	class MatrixManager
+	class BIT_API MatrixManager
 	{
 
 	public:
