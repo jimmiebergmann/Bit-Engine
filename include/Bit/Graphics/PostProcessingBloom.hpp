@@ -22,44 +22,35 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_SHADER_PROGRAM_HPP__
-#define __BIT_GRAPHICS_SHADER_PROGRAM_HPP__
+#ifndef __BIT_GRAPHICS_POST_PROCESSING_BLOOM_HPP__
+#define __BIT_GRAPHICS_POST_PROCESSING_BLOOM_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Shader.hpp>
-#include <Bit/System/Matrix4x4.hpp>
-#include <string>
+#include <Bit/Graphics/Texture.hpp>
 
 namespace Bit
 {
 
-	class BIT_API ShaderProgram
+	class BIT_API PostProcessingBloom
 	{
 
 	public:
 
 		// Destructor
-		virtual ~ShaderProgram( ) { }
+		virtual ~PostProcessingBloom( ) { }
 
-		// General public functions
-		virtual BIT_UINT32 AttachShaders( const Shader * p_Shader ) = 0;
-		virtual BIT_UINT32 Link( ) = 0;
-		virtual void Bind( ) = 0;
-		virtual void Unbind( ) = 0;
+		// Public general functions
+		virtual BIT_UINT32 Load( BIT_FLOAT32 p_Power, BIT_UINT32 p_BlurSize, BIT_FLOAT32 p_PixelSize ) = 0;
+		virtual void Process( ) = 0;
 
 		// Public set functions
-		virtual void SetUniform1i( const char * p_Location, const BIT_SINT32 ) = 0;
-		virtual void SetUniform1f( const char *, const BIT_FLOAT32 ) = 0;
-		virtual void SetUniform2f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 ) = 0;
-		virtual void SetUniform3f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 ) = 0;
-		virtual void SetUniform4f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 ) = 0;
-		virtual void SetUniformMatrix4x4f( const char * p_Location, Matrix4x4 & p_Matrix ) = 0;
-		virtual void SetAttributeLocation( const char * p_Location, BIT_UINT32 p_Index ) = 0;
+		virtual void SetTexture( Texture * p_pTexture ) = 0;
+
+		// Public get functions
+		virtual Texture * GetTexture( ) const = 0;
 
 	protected:
 
-		// Protected variables
-		BIT_BOOL m_Linked;
 
 	};
 

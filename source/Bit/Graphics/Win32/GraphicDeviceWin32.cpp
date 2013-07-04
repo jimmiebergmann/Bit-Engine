@@ -30,6 +30,7 @@
 #include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/TextureOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/PostProcessingBloomOpenGL.hpp>
 #include <Bit/Graphics/ModelOBJ.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
@@ -376,6 +377,33 @@ namespace Bit
 		}
 
 		return BIT_NULL;
+	}
+
+	PostProcessingBloom * GraphicDeviceWin32::CreatePostProcessingBloom( VertexObject * p_pVertexObject, Texture * p_pTexture )
+	{
+		ShaderProgram * pShaderProgram = BIT_NULL;
+		Shader * pVertexShader = BIT_NULL;
+		Shader * pFragmentShader = BIT_NULL;
+
+		// Create the shader program
+		if( ( pShaderProgram = CreateShaderProgram( ) ) == BIT_NULL )
+		{
+			bitTrace( "[GraphicDeviceWin32::CreatePostProcessingBloom] Can not create the shader program\n" );
+			return BIT_NULL;
+		}
+
+		if( ( pVertexShader = CreateShader( Bit::Shader::Vertex ) ) == BIT_NULL )
+		{
+			bitTrace( "[GraphicDeviceWin32::CreatePostProcessingBloom] Can not create the vertex shader\n" );
+			return BIT_NULL;
+		}
+		if( ( pFragmentShader = CreateShader( Bit::Shader::Fragment ) ) == BIT_NULL )
+		{
+			bitTrace( "[GraphicDeviceWin32::CreatePostProcessingBloom] Can not create the vertex shader\n" );
+			return BIT_NULL;
+		}
+
+		return new PostProcessingBloomOpenGL( pShaderProgram, pVertexShader,pFragmentShader, p_pVertexObject, p_pTexture );
 	}
 
 	// Clear functions

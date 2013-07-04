@@ -59,7 +59,6 @@ namespace Bit
 	const BIT_UINT32 BIT_TYPE_FLOAT64 = 14;
 	const BIT_UINT32 BIT_TYPE_BYTE = 15;
 	const BIT_UINT32 BIT_TYPE_BOOL = 16;
-
 */
 
 	static const GLenum OpenGLTypes[ 17 ] = 
@@ -77,7 +76,7 @@ namespace Bit
 	};
 
 	// Static private variables
-	GLenum VertexObjectOpenGL::s_RenderModes[ 3 ] = { GL_TRIANGLES, GL_TRIANGLES, GL_TRIANGLES };
+	GLenum VertexObjectOpenGL::s_RenderModes[ 3 ] = { GL_TRIANGLES, GL_LINES, GL_LINE_STRIP };
 
 
 	// Constructor / Destructor

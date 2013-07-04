@@ -308,6 +308,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\source\Bit\Graphics\OpenGL\PostProcessingBloomOpenGL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\OpenGL\PostProcessingBloomOpenGL.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\source\Bit\Graphics\OpenGL\RenderbufferOpenGL.cpp"
 				>
 			</File>
@@ -390,6 +398,10 @@
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\Graphics\ModelOBJ.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\Graphics\PostProcessingBloom.hpp"
 			>
 		</File>
 		<File

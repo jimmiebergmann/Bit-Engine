@@ -66,6 +66,7 @@ namespace Bit
 		virtual BIT_UINT32 SetFilters( const eFilter * p_pFilters ) = 0;
 
 		// Get functions
+		BIT_INLINE Vector2_ui32 GetSize( ) const { return m_Size; };
 		BIT_INLINE BIT_UINT32 GetFormat( ) const { return m_Format; };
 		BIT_INLINE BIT_BOOL IsLoaded( ) const { return m_Loaded; };
 		
@@ -73,6 +74,7 @@ namespace Bit
 
 		// Protexted variables
 		BIT_BOOL m_Loaded;
+		Vector2_ui32 m_Size;
 		BIT_UINT32 m_Format;
 
 	};

@@ -98,8 +98,8 @@ namespace Bit
 		}
 
 		// Set the texure data
-		Vector2_ui32 Size = p_Image.GetSize( );
-		glTexImage2D ( GL_TEXTURE_2D, 0, Format, Size.x, Size.y, 0,
+		m_Size = p_Image.GetSize( );
+		glTexImage2D ( GL_TEXTURE_2D, 0, Format, m_Size.x, m_Size.y, 0,
 			(GLenum)Format, GL_UNSIGNED_BYTE, (GLvoid *)p_Image.GetData() );
 
 		// Generate the mipmap ( Opengl 3.x style )
@@ -150,7 +150,8 @@ namespace Bit
 			return BIT_ERROR;
 		}
 
-		// Set the format
+		// Set the size and format
+		m_Size = p_Size;
 		m_Format = p_Format;
 
 		// OpenGL formats
