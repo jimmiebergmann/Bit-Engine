@@ -48,6 +48,12 @@ namespace Bit
 		{
 		}
 
+		Vector2( T a )
+		{
+			this->x = a;
+			this->y = a;
+		}
+
 		Vector2( T x, T y )
 		{
 			this->x = x;

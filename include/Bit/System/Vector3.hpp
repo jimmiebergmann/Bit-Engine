@@ -47,6 +47,13 @@ namespace Bit
 		{
 		}
 
+		Vector3( T a )
+		{
+			this->x = a;
+			this->y = a;
+			this->z = a;
+		}
+
 		Vector3( T x, T y, T z )
 		{
 			this->x = x;
