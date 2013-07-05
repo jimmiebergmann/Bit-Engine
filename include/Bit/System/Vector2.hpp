@@ -133,6 +133,12 @@ namespace Bit
 			return Vector2< T >( this->x + p_Vector.x, this->y + p_Vector.y );
 		}
 
+		const Vector2< T > operator - ( ) const
+		{
+			return Vector2< T >( -this->x, -this->y );
+		}
+
+
 		const Vector2 <T > operator - ( const Vector2< T > p_Vector ) const
 		{
 			return Vector2< T >( this->x - p_Vector.x, this->y - p_Vector.y );
