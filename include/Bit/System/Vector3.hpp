@@ -309,7 +309,14 @@ namespace Bit
 
 		static BIT_FLOAT64 AngleBetweenVectors( Vector3< T > p_Vec1, Vector3< T > p_Vec2 )
 		{
-			return Bit::RadiansToDegrees( acos( p_Vec1.Dot( p_Vec2 ) ) );
+			BIT_FLOAT64 Angle = acos( p_Vec1.Dot( p_Vec2 ) );
+
+			if( isnan( Angle ) )
+			{
+				return 0.0f;
+			}
+
+			return Bit::RadiansToDegrees( Angle );
 		}
 
 
