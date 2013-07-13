@@ -27,7 +27,7 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Texture.hpp>
-#include <Bit/Graphics/Renderbuffer.hpp>
+
 
 namespace Bit
 {
@@ -43,7 +43,6 @@ namespace Bit
 		virtual void Bind( ) = 0;
 		virtual void Unbind( ) = 0;
 		virtual BIT_UINT32 Attach( const Texture * p_pTexture ) = 0;
-		virtual BIT_UINT32 Attach( const Renderbuffer * p_pRenderbuffer ) = 0;
 
 	protected:
 

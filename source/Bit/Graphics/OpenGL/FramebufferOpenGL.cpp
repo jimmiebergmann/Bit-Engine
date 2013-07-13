@@ -24,7 +24,6 @@
 
 #include <Bit/Graphics/OpenGL/FramebufferOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/TextureOpenGL.hpp>
-#include <Bit/Graphics/OpenGL/RenderbufferOpenGL.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -137,28 +136,6 @@ namespace Bit
 		m_ColorAttachmentCount++;
 
 		return BIT_OK;
-	}
-
-	BIT_UINT32 FramebufferOpenGL::Attach( const Renderbuffer * p_pRenderbuffer )
-	{
-		// Bullshit for now
-		/*if( m_DepthAttachmentCount || p_pRenderbuffer == BIT_NULL )
-		{
-			return BIT_ERROR;
-		}
-
-		// Cast the renderbuffer pointer to an opengl renderbuffer
-		const RenderbufferOpenGL * pRenderbufferOpenGL =
-			reinterpret_cast< const RenderbufferOpenGL * >( p_pRenderbuffer );
-
-		// Attach the renderbuffer
-		glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-			GL_RENDERBUFFER, pRenderbufferOpenGL->GetID( ) );
-	
-		// Increment the depth attachment counter.
-		m_DepthAttachmentCount++;
-*/
-		return BIT_ERROR;
 	}
 
 }

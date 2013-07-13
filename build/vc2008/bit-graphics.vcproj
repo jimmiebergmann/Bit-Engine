@@ -316,14 +316,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\source\Bit\Graphics\OpenGL\RenderbufferOpenGL.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\include\Bit\Graphics\OpenGL\RenderbufferOpenGL.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\source\Bit\Graphics\OpenGL\ShaderOpenGL.cpp"
 				>
 			</File>
@@ -398,14 +390,6 @@
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\Graphics\ModelOBJ.hpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\include\Bit\Graphics\PostProcessingBloom.hpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\include\Bit\Graphics\Renderbuffer.hpp"
 			>
 		</File>
 		<File

@@ -44,7 +44,6 @@ namespace Bit
 		virtual void Bind( );
 		virtual void Unbind( );
 		virtual BIT_UINT32 Attach( const Texture * p_pTexture );
-		virtual BIT_UINT32 Attach( const Renderbuffer * p_pRenderbuffer );
 
 		// Get functions
 		BIT_INLINE GLuint GetID( ) const { return m_FramebufferObject; }

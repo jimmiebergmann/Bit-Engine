@@ -49,7 +49,7 @@ namespace Bit
 
 		// Create functions for different renderer elements
 		virtual Framebuffer * CreateFramebuffer( ) const;
-		virtual Renderbuffer * CreateRenderbuffer( ) const;
+		//virtual Renderbuffer * CreateRenderbuffer( ) const;
 		virtual VertexObject * CreateVertexObject( ) const;
 		virtual ShaderProgram * CreateShaderProgram( ) const;
 		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const;
