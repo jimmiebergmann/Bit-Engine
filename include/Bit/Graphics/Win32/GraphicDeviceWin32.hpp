@@ -44,12 +44,18 @@ namespace Bit
 		virtual BIT_UINT32 Open( const Window & p_Window, const BIT_UINT32 p_Devices );
 		virtual BIT_UINT32 Close( );
 		virtual void Present( );
+		virtual void BindDefaultFramebuffer( );
+		virtual void BindDefaultShaderProgram( );
 
 		// Create functions for different renderer elements
+		virtual Framebuffer * CreateFramebuffer( ) const;
+		//virtual Renderbuffer * CreateRenderbuffer( ) const;
 		virtual VertexObject * CreateVertexObject( ) const;
 		virtual ShaderProgram * CreateShaderProgram( ) const;
 		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const;
 		virtual Texture * CreateTexture( ) const;
+		virtual Model * CreateModel( Model::eModelType p_Type ) const;
+		virtual PostProcessingBloom * CreatePostProcessingBloom( VertexObject * p_pVertexObject, Texture * p_pTexture );
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits );
@@ -61,7 +67,7 @@ namespace Bit
 		virtual void EnableAlpha( );
 		virtual void EnableDepthTest( );
 		virtual void EnableStencilTest( );
-		virtual void EnableFaceCulling( BIT_UINT32 p_FaceCulling );
+		virtual void EnableFaceCulling( eCulling p_FaceCulling );
 		virtual void EnableSmoothLines( );
 
 		// Disable functions

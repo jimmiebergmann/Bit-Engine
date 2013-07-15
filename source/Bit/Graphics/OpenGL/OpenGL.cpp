@@ -47,6 +47,21 @@ PFNGLBUFFERSUBDATAPROC __glBufferSubData = BIT_NULL;
 PFNGLDELETEBUFFERSPROC __glDeleteBuffers = BIT_NULL;
 PFNGLGENBUFFERSPROC __glGenBuffers = BIT_NULL;
 
+// Framebuffers/renderbuffers, OpenGL 3.0
+PFNGLBINDFRAMEBUFFERPROC __glBindFramebuffer = BIT_NULL;
+PFNGLBINDRENDERBUFFERPROC __glBindRenderbuffer = BIT_NULL;
+PFNGLCHECKFRAMEBUFFERSTATUSPROC __glCheckFramebufferStatus = BIT_NULL;
+PFNGLDELETEFRAMEBUFFERSPROC __glDeleteFramebuffers = BIT_NULL;
+PFNGLDELETERENDERBUFFERSPROC __glDeleteRenderbuffers = BIT_NULL;
+PFNGLFRAMEBUFFERRENDERBUFFERPROC __glFramebufferRenderbuffer = BIT_NULL;
+PFNGLFRAMEBUFFERTEXTURE2DPROC __glFramebufferTexture2D = BIT_NULL;
+PFNGLGENFRAMEBUFFERSPROC __glGenFramebuffers = BIT_NULL;
+PFNGLGENRENDERBUFFERSPROC __glGenrRenderbuffers = BIT_NULL;
+PFNGLRENDERBUFFERSTORAGEPROC __glRenderbufferStorage = BIT_NULL;
+
+// Texture functions
+PFNGLGENERATEMIPMAPPROC __glGenerateMipmap = BIT_NULL;
+
 // Shader functions
 PFNGLENABLEVERTEXATTRIBARRAYPROC __glEnableVertexAttribArray = BIT_NULL;
 PFNGLVERTEXATTRIBPOINTERPROC __glVertexAttribPointer = BIT_NULL;
@@ -126,7 +141,7 @@ namespace Bit
 			__glGetStringi = (PFNGLGETSTRINGIPROC)glGetProcAddress( "glGetStringi" );
 
 			// Get all the available extensions
-			for( BIT_MEMSIZE i = 0; i < AvailableExtensionCount; i++ )
+			for( BIT_MEMSIZE i = 0; i < (BIT_MEMSIZE)AvailableExtensionCount; i++ )
 			{
 				//if( std::string( (char*)__glGetStringi( GL_EXTENSIONS, i ) ) == "GL_ARB_shading_language_100" )
 				//{
@@ -178,7 +193,49 @@ namespace Bit
 			BIT_BOOL Ret = 0;
 
 			// Get the texture functions
+			if( BIT_ARB_framebuffer_object )
+			{
+				Ret |= ( __glGenerateMipmap = ( PFNGLGENERATEMIPMAPPROC )
+					glGetProcAddress( "glGenerateMipmap" ) ) == BIT_NULL;
 
+				Ret |= ( __glBindFramebuffer = ( PFNGLBINDFRAMEBUFFERPROC )
+					glGetProcAddress( "glBindFramebuffer" ) ) == BIT_NULL;
+
+				Ret |= ( __glBindRenderbuffer = ( PFNGLBINDRENDERBUFFERPROC )
+					glGetProcAddress( "glBindRenderbuffer" ) ) == BIT_NULL;
+
+				Ret |= ( __glCheckFramebufferStatus = ( PFNGLCHECKFRAMEBUFFERSTATUSPROC )
+					glGetProcAddress( "glCheckFramebufferStatus" ) ) == BIT_NULL;
+
+				Ret |= ( __glDeleteFramebuffers = ( PFNGLDELETEFRAMEBUFFERSPROC )
+					glGetProcAddress( "glDeleteFramebuffers" ) ) == BIT_NULL;
+
+				Ret |= ( __glDeleteRenderbuffers = ( PFNGLDELETERENDERBUFFERSPROC )
+					glGetProcAddress( "glDeleteRenderbuffers" ) ) == BIT_NULL;
+
+				Ret |= ( __glFramebufferRenderbuffer = ( PFNGLFRAMEBUFFERRENDERBUFFERPROC )
+					glGetProcAddress( "glFramebufferRenderbuffer" ) ) == BIT_NULL;
+
+				Ret |= ( __glFramebufferTexture2D = ( PFNGLFRAMEBUFFERTEXTURE2DPROC )
+					glGetProcAddress( "glFramebufferTexture2D" ) ) == BIT_NULL;
+
+				Ret |= ( __glGenFramebuffers = ( PFNGLGENFRAMEBUFFERSPROC )
+					glGetProcAddress( "glGenFramebuffers" ) ) == BIT_NULL;
+
+				Ret |= ( __glGenrRenderbuffers = ( PFNGLGENRENDERBUFFERSPROC )
+					glGetProcAddress( "glGenrRenderbuffers" ) ) == BIT_NULL;
+
+				Ret |= ( __glRenderbufferStorage = ( PFNGLRENDERBUFFERSTORAGEPROC )
+					glGetProcAddress( "glRenderbufferStorage" ) ) == BIT_NULL;
+
+				if( !Ret )
+				{
+					BIT_ARB_framebuffer_object = BIT_FALSE;
+				}
+			}
+
+			// Reset the return flag
+			Ret = 0;
 
 			
 			if( p_Major > 1 || ( p_Major == 1 && p_Minor >= 3 ) )
@@ -191,6 +248,9 @@ namespace Bit
 					s_GeneralTextureFunctions = BIT_TRUE;
 				}
 			}
+
+			// Reset the return flag
+			Ret = 0;
 
 			// Get the buffer functions
 			if( p_Major > 1 || ( p_Major == 1 && p_Minor >= 5 ) )
@@ -249,7 +309,6 @@ namespace Bit
 			// WARNING: comparison of unsigned expression >= 0 is always true [-Wtype-limits]|
 			if( p_Major >= 2 )
 			{
-
 				// Needed for the vertex objects.
 				Ret |= ( __glEnableVertexAttribArray = ( PFNGLENABLEVERTEXATTRIBARRAYPROC )
 					glGetProcAddress( "glEnableVertexAttribArray" ) ) == BIT_NULL;
@@ -401,6 +460,11 @@ namespace Bit
 					BIT_ARB_shader_objects &&
 					BIT_ARB_vertex_shader &&
 					BIT_ARB_fragment_shader;
+		}
+
+		BIT_API BIT_BOOL GetFramebufferAvailability( )
+		{
+			return BIT_ARB_framebuffer_object;
 		}
 
 	}

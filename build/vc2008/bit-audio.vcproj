@@ -242,7 +242,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="WIN32;NDEBUG;PLATFORM_WINDOWS;BUILD_RELEASE;BIT_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;BIT_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -294,6 +294,22 @@
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\Audio.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\Audio\AudioBuffer.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\Audio\AudioBuffer.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\Audio\XM.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\Audio\XM.hpp"
 			>
 		</File>
 	</Files>

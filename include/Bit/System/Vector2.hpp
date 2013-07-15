@@ -48,6 +48,12 @@ namespace Bit
 		{
 		}
 
+		Vector2( T a )
+		{
+			this->x = a;
+			this->y = a;
+		}
+
 		Vector2( T x, T y )
 		{
 			this->x = x;
@@ -76,11 +82,22 @@ namespace Bit
 			this->y = static_cast< T >( p_Vector.y );
 		}
 
+		// Operators
 		const Vector2< T > & operator = ( const Vector2< T > p_Vector )
 		{
 			this->x = p_Vector.x;
 			this->y = p_Vector.y;
 			return *this;
+		}
+
+		BIT_BOOL operator == ( const Vector2< T > p_Vector )
+		{
+			return ( this->x == p_Vector.x ) && ( this->y == p_Vector.y );
+		}
+
+		BIT_BOOL operator != ( const Vector2< T > p_Vector )
+		{
+			return ( this->x != p_Vector.x ) || ( this->y != p_Vector.y );
 		}
 
 		const Vector2< T > & operator += ( const Vector2< T > p_Vector )
@@ -116,6 +133,12 @@ namespace Bit
 			return Vector2< T >( this->x + p_Vector.x, this->y + p_Vector.y );
 		}
 
+		const Vector2< T > operator - ( ) const
+		{
+			return Vector2< T >( -this->x, -this->y );
+		}
+
+
 		const Vector2 <T > operator - ( const Vector2< T > p_Vector ) const
 		{
 			return Vector2< T >( this->x - p_Vector.x, this->y - p_Vector.y );
@@ -141,6 +164,12 @@ namespace Bit
 			return Vector2< T >( this->x / p_Value, this->y / p_Value );
 		}
 
+		T operator [ ] ( const BIT_UINT32 & p_Index )
+		{
+			return *( &x + p_Index );
+		}
+
+		// Useful functions
 		const BIT_FLOAT32 Magnitude( ) const
 		{
 			return sqrt( static_cast< BIT_FLOAT32 >( ( x*x ) + ( y*y ) ) );
@@ -203,11 +232,17 @@ namespace Bit
 			y = ty;
 		}
 
-
 		// Static functions
 		static BIT_FLOAT64 AngleBetweenVectors( Vector2< T > p_Vec1, Vector2< T > p_Vec2 )
 		{
-			return Bit::RadiansToDegrees( acos( p_Vec1.Dot( p_Vec2 ) ) );
+			BIT_FLOAT64 Angle = acos( p_Vec1.Dot( p_Vec2 ) );
+
+			if( isnan( Angle ) )
+			{
+				return 0.0f;
+			}
+
+			return Bit::RadiansToDegrees( Angle );
 		}
 
 

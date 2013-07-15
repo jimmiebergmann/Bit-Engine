@@ -292,11 +292,27 @@
 			Name="OpenGL"
 			>
 			<File
+				RelativePath="..\..\source\Bit\Graphics\OpenGL\FramebufferOpenGL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\OpenGL\FramebufferOpenGL.hpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\Bit\Graphics\OpenGL\PostProcessingBloomOpenGL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\OpenGL\PostProcessingBloomOpenGL.hpp"
 				>
 			</File>
 			<File
@@ -313,6 +329,14 @@
 			</File>
 			<File
 				RelativePath="..\..\include\Bit\Graphics\OpenGL\ShaderProgramOpenGL.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\Bit\Graphics\OpenGL\TextureOpenGL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\Graphics\OpenGL\TextureOpenGL.hpp"
 				>
 			</File>
 			<File
@@ -337,6 +361,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath="..\..\include\Bit\Graphics\Framebuffer.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\Graphics\GraphicDevice.cpp"
 			>
 		</File>
@@ -353,11 +381,15 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\source\Bit\Graphics\Model.cpp"
+			RelativePath="..\..\include\Bit\Graphics\Model.hpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\include\Bit\Graphics\Model.hpp"
+			RelativePath="..\..\source\Bit\Graphics\ModelOBJ.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\Graphics\ModelOBJ.hpp"
 			>
 		</File>
 		<File
@@ -377,11 +409,7 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\source\Bit\Graphics\OpenGL\TextureOpenGL.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\include\Bit\Graphics\OpenGL\TextureOpenGL.hpp"
+			RelativePath="..\..\source\Bit\Graphics\VertexObject.cpp"
 			>
 		</File>
 		<File

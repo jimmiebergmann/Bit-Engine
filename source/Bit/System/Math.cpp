@@ -22,72 +22,698 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+
 #include <Bit/System/Math.hpp>
-#include <Bit/System/Line.hpp>
 #include <Bit/System/Vector2.hpp>
-#include <Bit/System/Vector2.hpp>
+#include <Bit/System/Vector3.hpp>
+#include <Bit/System/Line2.hpp>
+#include <Bit/System/Line3.hpp>
+#include <Bit/System/Circle.hpp>
+#include <Bit/System/Quad.hpp>
+#include <Bit/System/Sphere.hpp>
+#include <Bit/System/Box.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
 	// Intersection tests
-	BIT_API BIT_BOOL IntersectionLine2Line2( Line p_Line1, Line p_Line2,
-		Vector3_f32 & p_Intersection )
+
+
+
+		
+
+	// Point 2
+	BIT_API BIT_BOOL IntersectionPoint2Line2( Vector2_f32 p_Point, Line2 p_Line )
 	{
-		// calculate the "parallel constant"
-		const BIT_FLOAT32 Parallel = ( ( p_Line1.p[ 0 ].x - p_Line1.p[ 1 ] .x ) * ( p_Line2.p[ 0 ].y - p_Line2.p[ 1 ].y ) ) -
-			( ( p_Line2.p[ 0 ].x - p_Line2.p[ 1 ].x ) * ( p_Line1.p[ 0 ].y - p_Line1.p[ 1 ].y ) );
+		// Resources: http://answers.yahoo.com/question/index?qid=20100821030217AAISaE6
 
-		// The line is parallel, what to do?
-		if( Parallel == 0.0f )
-		{
-			return BIT_FALSE;
-		}
+		// Calcuate the area from the 3 points
+		Vector3_f32 A( p_Line.p[ 1 ].x - p_Point.x,			p_Line.p[ 1 ].y - p_Point.y,		0.0f );
+		Vector3_f32 B( p_Line.p[ 1 ].x - p_Line.p[ 0 ].x,	p_Line.p[ 1 ].y - p_Line.p[ 0 ].y,	0.0f  );
+		
+		BIT_FLOAT32 Area = A.Cross( B ).Magnitude( ) * 0.5f;
 
-		// Calculate the X coordinate
-		BIT_FLOAT32 A = ( p_Line1.p[ 0 ].x * p_Line1.p[ 1 ].y - p_Line1.p[ 0 ].y * p_Line1.p[ 1 ].x  );
-		BIT_FLOAT32 B = ( p_Line2.p[ 0 ].x * p_Line2.p[ 1 ].y - p_Line2.p[ 0 ].y * p_Line2.p[ 1 ].x  );
-
-		BIT_FLOAT32 X = 
-			( A * ( p_Line2.p[ 0 ].x  - p_Line2.p[ 1 ].x ) ) -
-			( B * ( p_Line1.p[ 0 ].x  - p_Line1.p[ 1 ].x ) );
-		X /= Parallel;
-
-		BIT_FLOAT32 Y =
-			( A * ( p_Line2.p[ 0 ].y  - p_Line2.p[ 1 ].y ) ) -
-			( B * ( p_Line1.p[ 0 ].y  - p_Line1.p[ 1 ].y ) );
-		Y /= Parallel;
-
-		p_Intersection.x = X;
-		p_Intersection.y = Y;
-		p_Intersection.z = 0.0f;
-
-		// Check if the lines actually are crossing each other.
-		BIT_FLOAT32 LineMagnitudes[ 2 ] =
-		{
-			Vector3_f32( p_Line1.p[ 0 ] - p_Line1.p[ 1 ] ).Magnitude( ),
-			Vector3_f32( p_Line1.p[ 0 ] - p_Line1.p[ 1 ] ).Magnitude( )
-		};
-
-		BIT_FLOAT32 PointMagnitudes[ 4 ] =
-		{
-			Vector3_f32( p_Intersection - p_Line1.p[ 0 ] ).Magnitude( ),
-			Vector3_f32( p_Intersection - p_Line1.p[ 1 ] ).Magnitude( ),
-			Vector3_f32( p_Intersection - p_Line2.p[ 1 ] ).Magnitude( ),
-			Vector3_f32( p_Intersection - p_Line2.p[ 1 ] ).Magnitude( ),
-		};
-
-		if( ( PointMagnitudes[ 0 ] > LineMagnitudes[ 0 ] ) ||
-			( PointMagnitudes[ 1 ] > LineMagnitudes[ 0 ] ) ||
-			( PointMagnitudes[ 2 ] > LineMagnitudes[ 1 ] ) ||
-			( PointMagnitudes[ 3 ] > LineMagnitudes[ 1 ] ) )
+		// Use the epsilon function to make sure that things wont get way too buggy
+		if( !EqualEpsilon( Area, 0.0f ) )
 		{
 			return BIT_FALSE;
 		}
 
 		return BIT_TRUE;
 	}
+
+	BIT_API BIT_BOOL IntersectionPoint2Circle(	Vector2_f32 p_Point, Circle p_Circle )
+	{
+		if( Vector2_f32( p_Point - p_Circle.Position ).Magnitude( ) > p_Circle.Radius )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionPoint2Quad( Vector2_f32 p_Point, Quad p_Quad )
+	{
+		Vector2_f32 Size = p_Quad.Size / 2.0f;
+
+		if( p_Point.x > ( p_Quad.Positsion.x + Size.x ) ||
+			p_Point.x < ( p_Quad.Positsion.x - Size.x ) ||
+			p_Point.y > ( p_Quad.Positsion.y + Size.y ) ||
+			p_Point.y < ( p_Quad.Positsion.y - Size.y ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	// Point 3
+	BIT_API BIT_BOOL IntersectionPoint3Line3( Vector3_f32 p_Point, Line3 p_Line )
+	{
+		// Resources: http://answers.yahoo.com/question/index?qid=20100821030217AAISaE6
+
+		// Calcuate the area from the 3 points
+		BIT_FLOAT32 Area = 
+			Vector3_f32( p_Line.p[ 1 ] - p_Point ).Cross(
+			Vector3_f32( p_Line.p[ 1 ] - p_Line.p[ 0 ] ) ).Magnitude( ) * 0.5f;
+
+		// Use the epsilon function to make sure that things wont get way too buggy
+		if( !EqualEpsilon( Area, 0.0f ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionPoint3Sphere( Vector3_f32 p_Point, Sphere p_Sphere )
+	{
+		if( Vector3_f32( p_Point - p_Sphere.Position ).Magnitude( ) > p_Sphere.Radius )
+		{
+			return BIT_FALSE;
+		}
+		
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionPoint3Box( Vector3_f32 p_Point, Box p_Box )
+	{
+		Vector3_f32 Size = p_Box.Size / 2.0f;
+
+		if( p_Point.x > ( p_Box.Positsion.x + Size.x ) ||
+			p_Point.x < ( p_Box.Positsion.x - Size.x ) ||
+			p_Point.y > ( p_Box.Positsion.y + Size.y ) ||
+			p_Point.y < ( p_Box.Positsion.y - Size.y ) ||
+			p_Point.z > ( p_Box.Positsion.z + Size.z ) ||
+			p_Point.z < ( p_Box.Positsion.z - Size.z ) )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	// Line 2
+	BIT_API BIT_BOOL IntersectionLine2Line2( Line2 p_Line1,	Line2 p_Line2, Vector2_f32 & p_Intersection )
+	{
+		// http://mathworld.wolfram.com/Line-LineIntersection.html
+		// ( Same as in 3D )
+		Vector3_f32 da( p_Line1.p[ 1 ].x - p_Line1.p[ 0 ].x, p_Line1.p[ 1 ].y - p_Line1.p[ 0 ].y, 0.0f );
+		Vector3_f32 db( p_Line2.p[ 1 ].x - p_Line2.p[ 0 ].x, p_Line2.p[ 1 ].y - p_Line2.p[ 0 ].y, 0.0f );
+		Vector3_f32 dc( p_Line2.p[ 0 ].x - p_Line1.p[ 0 ].x, p_Line2.p[ 0 ].y - p_Line1.p[ 0 ].y, 0.0f );
+
+		// The lines are not coplanar
+		if( dc.Dot( da.Cross( db ) ) != 0.0f )
+		{
+			return BIT_FALSE;
+		}
+	
+		Vector3_f32 cs = da.Cross( db );
+		BIT_FLOAT32 s = dc.Cross( db ).Dot( da.Cross( db ) ) /
+			( ( cs.x * cs.x ) + ( cs.y * cs.y )+ ( cs.z * cs.z ) );
+
+		if (s < 0.0f && s > 1.0f)
+		{
+			Vector3_f32 Intersection3D = Vector3_f32( p_Line1.p[ 0 ].x, p_Line1.p[ 0 ].y, 0.0f ) + ( da * Vector3_f32( s, s, s ) );
+			p_Intersection.x = Intersection3D.x;
+			p_Intersection.y = Intersection3D.y;
+			
+			return BIT_FALSE;
+		}
+	
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionLine2Circle( Line2 p_Line, Circle p_Circle )
+	{
+		BIT_FLOAT32 k = ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) /
+						( p_Line.p[ 0 ].x - p_Line.p[ 1 ].x );
+
+		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y - p_Circle.Position.y ) - ( k * p_Line.p[ 0 ].x - p_Circle.Position.x  ); 
+
+		BIT_FLOAT32 a = ( k * k ) + 1;
+		BIT_FLOAT32 b = 2.0f * k * m;
+		BIT_FLOAT32 c = ( m * m ) - ( p_Circle.Radius * p_Circle.Radius );
+
+		BIT_FLOAT32 z = ( b * b ) - ( 4.0f * a * c );
+
+		// The line missed the circle
+		if( z < 0.0f )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_UINT32 IntersectionLine2Circle(	Line2 p_Line, Circle p_Circle,
+		Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 )
+	{
+		BIT_FLOAT32 k = ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) /
+						( p_Line.p[ 0 ].x - p_Line.p[ 1 ].x );
+
+		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y - p_Circle.Position.y ) - ( k * p_Line.p[ 0 ].x - p_Circle.Position.x  ); 
+
+		BIT_FLOAT32 a = ( k * k ) + 1;
+		BIT_FLOAT32 b = 2.0f * k * m;
+		BIT_FLOAT32 c = ( m * m ) - ( p_Circle.Radius * p_Circle.Radius );
+
+		BIT_FLOAT32 z = ( b * b ) - ( 4.0f * a * c );
+
+		// The line missed the circle
+		if( z < 0.0f )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionLine2Quad( Line2 p_Line, Quad p_Quad )
+	{
+		// Low and high coordinates of the quad
+		Vector2_f32 QuadLow = p_Quad.GetLowCoords( );
+		Vector2_f32 QuadHigh = p_Quad.GetHighCoords( );
+		Vector2_f32 Direction = p_Line.GetDirection( );
+
+		// Check if the line is parallel with the quad.
+		for( BIT_MEMSIZE i = 0; i < 2; i++ )
+		{
+			if( Direction[ i ] == 0.0f )
+			{
+				// Is the line intersecting with the quad.
+				if( Direction[ i ] >= QuadLow[ i ] ||
+					Direction[ i ] <= QuadHigh[ i ] )
+				{
+					return BIT_TRUE;
+				}
+				else
+				{
+					return BIT_FALSE;
+				}
+			}
+		}
+
+		// So the line isn't axis aligned...
+
+		// Variables from the line's equation: y = kx + m
+		BIT_FLOAT32 a = 0.0f;
+		BIT_FLOAT32 k = ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) /
+						( p_Line.p[ 0 ].x - p_Line.p[ 1 ].x );
+		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y ) - ( k * p_Line.p[ 0 ].x ); 
+		
+
+		// X low
+		a = ( k * QuadLow.x ) + m;
+		if( a >= QuadLow.y && a <= QuadHigh.y )
+		{
+			return BIT_TRUE;
+		}
+
+		// X high
+		a = ( k * QuadHigh.x ) + m;
+		if( a >= QuadLow.y && a <= QuadHigh.y )
+		{
+			return BIT_TRUE;
+		}
+
+		// Y low
+		a = ( QuadLow.y - m ) / k;
+		if( a >= QuadLow.x && a <= QuadHigh.x )
+		{
+			return BIT_TRUE;
+		}
+
+		// Y high
+		a = ( QuadHigh.y - m ) / k;
+		if( a >= QuadLow.x && a <= QuadHigh.x )
+		{
+			return BIT_TRUE;
+		}
+
+		return BIT_FALSE;
+	}
+
+	// Line 3
+	BIT_API BIT_BOOL IntersectionLine3Line3( Line3 p_Line1,	Line3 p_Line2, Vector3_f32 & p_Intersection )
+	{
+		// http://mathworld.wolfram.com/Line-LineIntersection.html
+		// in 3d; will also work in 2d if z components are 0
+		Vector3_f32 da = p_Line1.p[ 1 ] - p_Line1.p[ 0 ]; 
+		Vector3_f32 db = p_Line2.p[ 1 ] - p_Line2.p[ 0 ];
+		Vector3_f32 dc = p_Line2.p[ 0 ] - p_Line1.p[ 0 ];
+
+		// The lines are not coplanar
+		if( dc.Dot( da.Cross( db ) ) != 0.0f )
+		{
+			return BIT_FALSE;
+		}
+	
+		Vector3_f32 cs = da.Cross( db );
+		BIT_FLOAT32 s = dc.Cross( db ).Dot( da.Cross( db ) ) /
+			( ( cs.x * cs.x ) + ( cs.y * cs.y )+ ( cs.z * cs.z ) );
+
+		if (s < 0.0f && s > 1.0f)
+		{
+			p_Intersection = p_Line1.p[ 0 ] + ( da * Vector3_f32( s, s, s ) );
+			return BIT_FALSE;
+		}
+	
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_BOOL IntersectionLine3Sphere( Line3 p_Line, Sphere p_Sphere )
+	{
+				// Resources: http://stackoverflow.com/questions/6533856/ray-sphere-intersection
+
+		const BIT_FLOAT32 xA = p_Line.p[ 0 ].x;
+		const BIT_FLOAT32 yA = p_Line.p[ 0 ].y;
+		const BIT_FLOAT32 zA = p_Line.p[ 0 ].z;
+		const BIT_FLOAT32 xB = p_Line.p[ 1 ].x;
+		const BIT_FLOAT32 yB = p_Line.p[ 1 ].y;
+		const BIT_FLOAT32 zB = p_Line.p[ 1 ].z;
+		const BIT_FLOAT32 xC = p_Sphere.Position.x;
+		const BIT_FLOAT32 yC = p_Sphere.Position.y;
+		const BIT_FLOAT32 zC = p_Sphere.Position.z;
+		const BIT_FLOAT32 r	 = p_Sphere.Radius;
+
+		const BIT_FLOAT32 a = ( (xB-xA) * (xB-xA) ) + ( (yB-yA) * (yB-yA) ) + ( (zB-zA) * (zB-zA) );
+		const BIT_FLOAT32 b = 2.0f *( (xB-xA) * (xA-xC) + (yB-yA) * (yA-yC) + (zB-zA) * (zA-zC) );
+		const BIT_FLOAT32 c = ( (xA-xC) * (xA-xC) ) + ( (yA-yC) * (yA-yC) ) + ( (zA-zC) * (zA-zC) ) - ( r * r );
+
+		// Get the delta( data under the root
+		const BIT_FLOAT32 Delta = ( b * b ) - ( 4.0f * a * c );
+
+		// No intersection at all
+		if( Delta < 0.0f )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	BIT_API BIT_UINT32 IntersectionLine3Sphere(	Line3 p_Line, Sphere p_Sphere,
+		Vector3_f32 & p_Point1, Vector3_f32 & p_Point2 )
+	{
+		// Resources: http://stackoverflow.com/questions/6533856/ray-sphere-intersection
+
+		const BIT_FLOAT32 xA = p_Line.p[ 0 ].x;
+		const BIT_FLOAT32 yA = p_Line.p[ 0 ].y;
+		const BIT_FLOAT32 zA = p_Line.p[ 0 ].z;
+		const BIT_FLOAT32 xB = p_Line.p[ 1 ].x;
+		const BIT_FLOAT32 yB = p_Line.p[ 1 ].y;
+		const BIT_FLOAT32 zB = p_Line.p[ 1 ].z;
+		const BIT_FLOAT32 xC = p_Sphere.Position.x;
+		const BIT_FLOAT32 yC = p_Sphere.Position.y;
+		const BIT_FLOAT32 zC = p_Sphere.Position.z;
+		const BIT_FLOAT32 r	 = p_Sphere.Radius;
+
+		const BIT_FLOAT32 a = ( (xB-xA) * (xB-xA) ) + ( (yB-yA) * (yB-yA) ) + ( (zB-zA) * (zB-zA) );
+		const BIT_FLOAT32 b = 2.0f *( (xB-xA) * (xA-xC) + (yB-yA) * (yA-yC) + (zB-zA) * (zA-zC) );
+		const BIT_FLOAT32 c = ( (xA-xC) * (xA-xC) ) + ( (yA-yC) * (yA-yC) ) + ( (zA-zC) * (zA-zC) ) - ( r * r );
+
+		// Get the delta( data under the root
+		const BIT_FLOAT32 Delta = ( b * b ) - ( 4.0f * a * c );
+
+		// No intersection at all
+		if( Delta < 0.0f )
+		{
+			return 0;
+		}
+
+		// Find the intersection points
+		BIT_FLOAT32 DeltaSqrt = sqrt( Delta );
+	
+		// Full equation 1
+		BIT_FLOAT32 u1 = ( -b - DeltaSqrt ) / ( 2.0f * a );
+
+		// Set the first interpolation point
+		p_Point1.x = xA + ( u1 * ( xB - xA ) );
+		p_Point1.y = yA + ( u1 * ( yB - yA ) );
+		p_Point1.z = zA + ( u1 * ( zB - zA ) );
+
+		// Are we just getting 1 intersection point?
+		if( EqualEpsilon( Delta, 0.0f ) )
+		{
+			return 1;
+		}
+
+		// The line is going through 2 points
+		// Full equation 2
+		BIT_FLOAT32 u2 = ( -b + DeltaSqrt ) / ( 2.0f * a );
+
+		// Set the first interpolation point
+		p_Point2.x = xA + ( u2 * ( xB - xA ) );
+		p_Point2.y = yA + ( u2 * ( yB - yA ) );
+		p_Point2.z = zA + ( u2 * ( zB - zA ) );
+
+		return 2;
+	}
+
+	BIT_API BIT_BOOL IntersectionLine3Box( Line3 p_Line, Box p_Box )
+	{
+		// Resources: http://www.codercorner.com/RayAABB.cpp
+
+		Vector3_f32 BoxExtents, Diff, Dir, fAWdU;
+
+		// Get the high/abs(low) values for the bound box
+		BoxExtents = p_Box.GetHighCoords( );
+
+		// Check X
+		Dir.x = 0.5f * ( p_Line.p[ 1 ].x - p_Line.p[ 0 ].x );
+		Diff.x = ( 0.5f * ( p_Line.p[ 1 ].x + p_Line.p[ 0 ].x ) ) - p_Box.Positsion.x;
+		fAWdU.x = fabsf( Dir.x );
+		if( fabsf( Diff.x ) > BoxExtents.x + fAWdU.x )
+		{
+			return BIT_FALSE;
+		}
+			
+		// Check Y
+		Dir.y = 0.5f * ( p_Line.p[ 1 ].y - p_Line.p[ 0 ].y );
+		Diff.y = ( 0.5f * ( p_Line.p[ 1 ].y + p_Line.p[ 0 ].y ) ) - p_Box.Positsion.y;
+		fAWdU.y = fabsf(Dir.y);
+		if( fabsf( Diff.y ) > BoxExtents.y + fAWdU.y )
+		{
+			return BIT_FALSE;
+		}
+
+		// Check Z
+		Dir.z = 0.5f * ( p_Line.p[ 1 ].z - p_Line.p[ 0 ].z );
+		Diff.z = ( 0.5f * ( p_Line.p[ 1 ].z + p_Line.p[ 0 ].z ) ) - p_Box.Positsion.z;
+		fAWdU.z = fabsf(Dir.z);
+		if( fabsf( Diff.z ) > BoxExtents.z + fAWdU.z )
+		{
+			return BIT_FALSE;
+		}
+
+		// Final check
+		float f;
+		f = Dir.y * Diff.z - Dir.z * Diff.y;
+		if( fabsf(f) > BoxExtents.y*fAWdU.z + BoxExtents.z*fAWdU.y )
+		{
+			return BIT_FALSE;
+		}
+
+		f = Dir.z * Diff.x - Dir.x * Diff.z;
+		if( fabsf(f) > BoxExtents.x*fAWdU.z + BoxExtents.z*fAWdU.x )
+		{
+			return BIT_FALSE;
+		}
+
+		f = Dir.x * Diff.y - Dir.y * Diff.x;
+		if( fabsf(f) > BoxExtents.x*fAWdU.y + BoxExtents.y*fAWdU.x )
+		{
+			return BIT_FALSE;
+		}
+		
+		return BIT_TRUE;
+	}
+
+	// Circle
+	BIT_API BIT_SINT32 IntersectionCircleCircle( Circle p_Circle1, Circle p_Circle2 )
+	{
+		BIT_FLOAT32 Distance = Vector2_f32( p_Circle1.Position - p_Circle2.Position ).Magnitude( );
+
+		// No solutions
+		if( Distance > ( p_Circle1.Radius + p_Circle2.Radius ) )
+		{
+			return -1;
+		}
+
+		// Inside each other but no solutions
+		if( Distance < abs( p_Circle1.Radius - p_Circle2.Radius ) )
+		{
+			return 0;
+		}
+	
+		// Infinite numbers of solutions
+		if( ( Distance == 0 ) && ( p_Circle1.Radius == p_Circle2.Radius ) )
+		{
+			return 0;
+		};
+
+		// One solution
+		if( Distance == p_Circle1.Radius + p_Circle2.Radius )
+		{
+			return 1;
+		}
+
+		// Two solutions
+		return 2;
+	}
+
+	BIT_API BIT_SINT32 IntersectionCircleCircle( Circle p_Circle1, Circle p_Circle2,
+		Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 )
+	{
+		BIT_FLOAT32 Distance = Vector2_f32( p_Circle1.Position - p_Circle2.Position ).Magnitude( );
+
+		// No solutions
+		if( Distance > ( p_Circle1.Radius + p_Circle2.Radius ) )
+		{
+			return -1;
+		}
+
+		// Inside each other but no solutions
+		if( Distance < abs( p_Circle1.Radius - p_Circle2.Radius ) )
+		{
+			return 0;
+		}
+	
+		// Infinite numbers of solutions
+		if( ( Distance == 0 ) && ( p_Circle1.Radius == p_Circle2.Radius ) )
+		{
+			return 0;
+		};
+
+		// Tiangle width
+		BIT_FLOAT32 A = (	( p_Circle1.Radius * p_Circle1.Radius ) -
+							( p_Circle2.Radius * p_Circle2.Radius ) +
+							( Distance * Distance ) ) /
+							( 2.0f * Distance );
+		
+		// Triangle Height
+		BIT_FLOAT32 H = sqrt( ( p_Circle1.Radius * p_Circle1.Radius ) - ( A * A ) );
+
+		// Corner vector
+		Vector2_f32 Corner = p_Circle1.Position +
+			(( p_Circle2.Position - p_Circle1.Position ) * A ) / Distance;
+
+		// One solution
+		if( Distance == p_Circle1.Radius + p_Circle2.Radius )
+		{
+			p_Point1 = Corner;
+			return 1;
+		}
+
+		// Two solutions
+		p_Point1 = Vector2_f32( Corner.x + ( H * ( p_Circle2.Position.y - p_Circle1.Position.y ) / Distance ),
+								Corner.y - ( H * ( p_Circle2.Position.x - p_Circle1.Position.x ) / Distance ) );
+
+		p_Point2 = Vector2_f32( Corner.x - ( H * ( p_Circle2.Position.y - p_Circle1.Position.y ) / Distance ),
+								Corner.y + ( H * ( p_Circle2.Position.x - p_Circle1.Position.x ) / Distance ) );
+
+		return 2;
+	}
+
+	BIT_API BIT_BOOL IntersectionCircleQuad( Circle p_Circle, Quad p_Quad )
+	{
+		// Is the center of the circle inside the quad?
+		if( IntersectionPoint2Quad( p_Circle.Position, p_Quad ) )
+		{
+			return BIT_TRUE;
+		}
+
+		Vector2_f32 QuadLow = p_Quad.GetLowCoords( );
+		Vector2_f32 QuadHigh = p_Quad.GetHighCoords( );
+
+		// Get the closest coordinate ( circle origin - quad boarder )
+		Vector2_f32 Closest;
+		Closest.x = Clamp< BIT_FLOAT32 >( p_Circle.Position.x, QuadLow.x, QuadHigh.x );
+		Closest.y = Clamp< BIT_FLOAT32 >( p_Circle.Position.y, QuadLow.y, QuadHigh.y );
+
+		// Calculate the distance
+		BIT_FLOAT32 Distance = Vector2_f32( p_Circle.Position - Closest ).Magnitude( );
+
+		if( Distance > p_Circle.Radius )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	// Quad
+	BIT_API BIT_BOOL IntersectionQuadQuad( Quad p_Quad1, Quad p_Quad2 )
+	{
+		// Pre-calculate all the points in the first quad
+		Vector2_f32 QuadPoints[ 4 ] =
+		{
+				p_Quad1.Positsion - ( p_Quad1.Size / 2.0f ),
+				Vector2_f32(	p_Quad1.Positsion.x + ( p_Quad1.Size.x / 2.0f ),
+								p_Quad1.Positsion.y - ( p_Quad1.Size.y / 2.0f ) ),
+				p_Quad1.Positsion + ( p_Quad1.Size / 2.0f ),
+				Vector2_f32(	p_Quad1.Positsion.x - ( p_Quad1.Size.x / 2.0f ),
+								p_Quad1.Positsion.y + ( p_Quad1.Size.y / 2.0f ) )
+		};
+
+		// Calculate the low and high values of the bound box we are testing all the points against.
+		Vector2_f32 Low(	p_Quad2.Positsion - ( p_Quad2.Size / 2.0f )	);
+		Vector2_f32 High(	p_Quad2.Positsion + ( p_Quad2.Size / 2.0f )	);
+
+		// Go through all the points and check if any of them are inside the bounding box.
+		for( BIT_MEMSIZE i = 0; i < 4; i++ )
+		{
+			if( QuadPoints[ i ].x <= High.x && QuadPoints[ i ].x >= Low.x &&
+				QuadPoints[ i ].y <= High.y && QuadPoints[ i ].y >= Low.y )
+			{
+				return BIT_TRUE;
+			}
+		}
+
+		return BIT_FALSE;
+	}
+
+	// Sphere
+	BIT_API BIT_SINT32 IntersectionSphereSphere( Sphere p_Sphere1, Sphere p_Sphere2 )
+	{
+		BIT_FLOAT32 Distance = Vector3_f32( p_Sphere1.Position - p_Sphere2.Position ).Magnitude( );
+
+		// No solutions
+		if( Distance > ( p_Sphere1.Radius + p_Sphere2.Radius ) )
+		{
+			return -1;
+		}
+
+		// Inside each other but no solutions
+		if( Distance < abs( p_Sphere1.Radius - p_Sphere2.Radius ) )
+		{
+			return 0;
+		}
+	
+		// Infinite numbers of solutions
+		if( ( Distance == 0 ) && ( p_Sphere1.Radius == p_Sphere2.Radius ) )
+		{
+			return 0;
+		};
+
+		// One solution
+		if( Distance == p_Sphere1.Radius + p_Sphere2.Radius )
+		{
+			return 1;
+		}
+
+		// Two solutions
+		return 2;
+	}
+
+	BIT_API BIT_BOOL IntersectionSphereBox( Sphere p_Sphere, Box p_Box )
+	{
+		// Is the center of the circle inside the quad?
+		if( IntersectionPoint3Box( p_Sphere.Position, p_Box ) )
+		{
+			return BIT_TRUE;
+		}
+
+		Vector3_f32 BoxLow = p_Box.GetLowCoords( );
+		Vector3_f32 BoxHigh = p_Box.GetHighCoords( );
+
+		// Get the closest coordinate ( circle origin - quad boarder )
+		Vector3_f32 Closest;
+		Closest.x = Clamp< BIT_FLOAT32 >( p_Sphere.Position.x, BoxLow.x, BoxHigh.x );
+		Closest.y = Clamp< BIT_FLOAT32 >( p_Sphere.Position.y, BoxLow.y, BoxHigh.y );
+		Closest.z = Clamp< BIT_FLOAT32 >( p_Sphere.Position.z, BoxLow.z, BoxHigh.z );
+
+		// Calculate the distance
+		BIT_FLOAT32 Distance = Vector3_f32( p_Sphere.Position - Closest ).Magnitude( );
+
+		if( Distance > p_Sphere.Radius )
+		{
+			return BIT_FALSE;
+		}
+
+		return BIT_TRUE;
+	}
+
+	// Box
+	BIT_API BIT_BOOL IntersectionBoxBox( Box p_Box1, Box p_Box2 )
+	{
+		// Pre-calculate all the points in the first quad
+		Vector3_f32 BoxPoints[ 8 ] =
+		{
+			p_Box1.Positsion - ( p_Box1.Size / 2.0f ),
+
+			Vector3_f32(	p_Box1.Positsion.x + ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y - ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z - ( p_Box1.Size.z / 2.0f )	),
+
+			Vector3_f32(	p_Box1.Positsion.x + ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y + ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z - ( p_Box1.Size.z / 2.0f )	),
+
+			Vector3_f32(	p_Box1.Positsion.x - ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y + ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z - ( p_Box1.Size.z / 2.0f )	),
+
+
+
+			Vector3_f32(	p_Box1.Positsion.x - ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y - ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z + ( p_Box1.Size.z / 2.0f )	),
+
+			Vector3_f32(	p_Box1.Positsion.x + ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y - ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z + ( p_Box1.Size.z / 2.0f )	),
+
+			p_Box1.Positsion + ( p_Box1.Size / 2.0f ),
+
+			Vector3_f32(	p_Box1.Positsion.x - ( p_Box1.Size.x / 2.0f ),
+							p_Box1.Positsion.y + ( p_Box1.Size.y / 2.0f ),
+							p_Box1.Positsion.z + ( p_Box1.Size.z / 2.0f )	)
+
+		};
+
+		// Calculate the low and high values of the bound box we are testing all the points against.
+		Vector3_f32 Low(	p_Box2.Positsion - ( p_Box2.Size / 2.0f )	);
+		Vector3_f32 High(	p_Box2.Positsion + ( p_Box2.Size / 2.0f )	);
+
+		// Go through all the points and check if any of them are inside the bounding box.
+		for( BIT_MEMSIZE i = 0; i < 8; i++ )
+		{
+			if( BoxPoints[ i ].x <= High.x && BoxPoints[ i ].x >= Low.x &&
+				BoxPoints[ i ].y <= High.y && BoxPoints[ i ].y >= Low.y &&
+				BoxPoints[ i ].z <= High.z && BoxPoints[ i ].z >= Low.z )
+			{
+				return BIT_TRUE;
+			}
+		}
+
+		return BIT_FALSE;
+	}
+
+	
+
 
 	// Quadratic equation solver
 	BIT_API BIT_UINT32 QuadraticEquation( const BIT_FLOAT32 p_A, const BIT_FLOAT32 p_B,
@@ -96,21 +722,21 @@ namespace Bit
 		// Returning the numbers of roots
 
 		// Root data
-		BIT_FLOAT32 Z = ( p_B * p_B ) - (4 * p_A * p_C);
+		BIT_FLOAT32 z = ( p_B * p_B ) - ( 4.0f * p_A * p_C );
 
 		// Roots were found
-		if( Z < 0.0f )
+		if( z < 0.0f )
 		{
 			return 0;
 		}
-		else if( Z == 0.0f )
+		else if( z == 0.0f )
 		{
 			p_X1 = -p_B / ( 2.0f * p_A );
 			return 1;
 		}
 		
 		// Else if we have 2 roots
-		BIT_FLOAT32 Root = sqrt( Z );
+		BIT_FLOAT32 Root = sqrt( z );
 		p_X1 = (-p_B - Root) / ( 2.0f * p_A );
 		p_X2 = (-p_B + Root) / ( 2.0f * p_A );
 

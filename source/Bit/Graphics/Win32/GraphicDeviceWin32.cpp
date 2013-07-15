@@ -24,10 +24,14 @@
 
 #include <Bit/Graphics/Win32/GraphicDeviceWin32.hpp>
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/OpenGL/FramebufferOpenGL.hpp>
+//#include <Bit/Graphics/OpenGL/RenderbufferOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/TextureOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/PostProcessingBloomOpenGL.hpp>
+#include <Bit/Graphics/ModelOBJ.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -88,7 +92,7 @@ namespace Bit
 
 		
 		// //////////////////////////////////////////////
-		// !NOTE! SKIT THIS FOR NOW!
+		// !NOTE! SKIP THIS FOR NOW!
 		/*if( p_Devices & Bit::GraphicDevice::Device_OpenGL_3_1 )
 		{
 			GLVersionMajor = 3;
@@ -284,8 +288,28 @@ namespace Bit
 
 		SwapBuffers( m_DeviceContext );
 	}
+
+	void GraphicDeviceWin32::BindDefaultFramebuffer( )
+	{
+		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+	}
+
+	void GraphicDeviceWin32::BindDefaultShaderProgram( )
+	{
+		glUseProgram( 0 );
+	}
 	
 	// Create functions for different renderer elements
+	Framebuffer * GraphicDeviceWin32::CreateFramebuffer( ) const
+	{
+		return new FramebufferOpenGL( );
+	}
+
+	/*Renderbuffer * GraphicDeviceWin32::CreateRenderbuffer( ) const
+	{
+		return new RenderbufferOpenGL( );
+	}*/
+
 	VertexObject * GraphicDeviceWin32::CreateVertexObject( ) const
 	{
 		// Make sure we support OpenGL vertex objects
@@ -334,7 +358,52 @@ namespace Bit
 			return BIT_NULL;
 		}
 
-		return new TextureOpenGL( );
+		BIT_BOOL OpenGL2 = ( m_DeviceType == Device_OpenGL_2_1 );
+		return new TextureOpenGL( OpenGL2 );
+	}
+
+	Model * GraphicDeviceWin32::CreateModel( Model::eModelType p_Type ) const
+	{
+		switch( p_Type )
+		{
+		case Model::Model_OBJ:
+			{
+				return new ModelOBJ( *reinterpret_cast< const GraphicDevice *>( this ) );
+			}
+			break;
+
+		default:
+			break;
+		}
+
+		return BIT_NULL;
+	}
+
+	PostProcessingBloom * GraphicDeviceWin32::CreatePostProcessingBloom( VertexObject * p_pVertexObject, Texture * p_pTexture )
+	{
+		ShaderProgram * pShaderProgram = BIT_NULL;
+		Shader * pVertexShader = BIT_NULL;
+		Shader * pFragmentShader = BIT_NULL;
+
+		// Create the shader program
+		if( ( pShaderProgram = CreateShaderProgram( ) ) == BIT_NULL )
+		{
+			bitTrace( "[GraphicDeviceWin32::CreatePostProcessingBloom] Can not create the shader program\n" );
+			return BIT_NULL;
+		}
+
+		if( ( pVertexShader = CreateShader( Bit::Shader::Vertex ) ) == BIT_NULL )
+		{
+			bitTrace( "[GraphicDeviceWin32::CreatePostProcessingBloom] Can not create the vertex shader\n" );
+			return BIT_NULL;
+		}
+		if( ( pFragmentShader = CreateShader( Bit::Shader::Fragment ) ) == BIT_NULL )
+		{
+			bitTrace( "[GraphicDeviceWin32::CreatePostProcessingBloom] Can not create the vertex shader\n" );
+			return BIT_NULL;
+		}
+
+		return new PostProcessingBloomOpenGL( pShaderProgram, pVertexShader,pFragmentShader, p_pVertexObject, p_pTexture );
 	}
 
 	// Clear functions
@@ -382,23 +451,18 @@ namespace Bit
 		m_StencilTestStatus = BIT_TRUE;
 	}
 
-	void GraphicDeviceWin32::EnableFaceCulling( BIT_UINT32 p_FaceCulling )
+	void GraphicDeviceWin32::EnableFaceCulling( eCulling p_FaceCulling )
 	{
-		/*GLenum Mode = GL_FRONT;
-		if( p_FaceCulling == BIT_RENDERER_BACKFACE_CULLING )
+		GLenum Mode = GL_FRONT;
+		if( p_FaceCulling == Culling_BackFace )
 		{
 			Mode = GL_BACK;
-		}
-		// else if the culling isn't front face culling, return ( failed )
-		else if( p_FaceCulling != BIT_RENDERER_FRONTFACE_CULLING )
-		{
-			return;
 		}
 
 		glEnable( GL_CULL_FACE );
 		glCullFace( Mode );
 		m_FaceCullingStatus = BIT_TRUE;
-		m_FaceCullingType = p_FaceCulling;*/
+		m_FaceCullingType = p_FaceCulling;
 	}
 
 	void GraphicDeviceWin32::EnableSmoothLines( )

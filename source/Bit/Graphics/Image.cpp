@@ -76,34 +76,30 @@ namespace Bit
 		DeallocateData( );
 	}
 
-	BIT_UINT32 Image::ReadFile( const std::string p_pFilePath )
+	BIT_UINT32 Image::ReadFile( const char * p_pFilePath )
 	{
 		// Get the file's extension
-		/*char FileExtension[4];
-		GetFileExtension( p_pFilePath.c_str( ), FileExtension, 4 );
+		std::string FileExtension = GetFileExtension( p_pFilePath );
 
-		if( strcmp( FileExtension, "TGA" ) == 0 )
+		if( FileExtension == "TGA" )
 		{
-			return ReadTGA( p_pFileName );
+			return ReadTGA( p_pFilePath );
 		}
-		else if( strcmp( FileExtension, "PNG" ) == 0 )
+		else if( FileExtension == "PNG" )
 		{
-			bitTrace( BIT_NULL, "[Bit::Image::ReadFile] <ERROR> "
-				"Not supporting PNG images yet.\n" );
+			bitTrace( BIT_NULL, "[Bit::Image::ReadFile] Not supporting PNG images yet.\n" );
 			return BIT_ERROR;
 		}
 
-		bitTrace( BIT_NULL, "[Bit::Image::ReadFile] <ERROR> "
-			"Unknow extension: %s.\n", FileExtension );*/
+		bitTrace( BIT_NULL, "[Bit::Image::ReadFile] Unknow extension: %s.\n", FileExtension );
 
-		return ReadTGA( p_pFilePath );
-		//return BIT_ERROR;
+		return BIT_ERROR;
 	}
 
-	BIT_UINT32 Image::ReadTGA( const std::string p_pFilePath )
+	BIT_UINT32 Image::ReadTGA( const char * p_pFilePath )
 	{
 		// Open the file
-		std::ifstream File( p_pFilePath.c_str( ), std::ios::binary );
+		std::ifstream File( p_pFilePath, std::ios::binary );
 		if(File.is_open() == false)
 		{
 			return BIT_ERROR_OPEN_FILE;
@@ -125,8 +121,7 @@ namespace Bit
 		if( (Type[1] != 0 || Type[2] != 2) && Type[2] != 3 )
 		{
 			File.close();
-			bitTrace( "[Image::ReadTGA] <ERROR> "
-				"Wrong TGA type.\n" );
+			bitTrace( "[Image::ReadTGA] Wrong TGA type.\n" );
 			return BIT_ERROR;
 		}
 
@@ -139,8 +134,7 @@ namespace Bit
 		if(m_Depth != 3 && m_Depth != 4)
 		{
 			File.close();
-			bitTrace( "[Image::ReadTGA] <ERROR> "
-				"Not a 24 or 32 bit depth image.\n" );
+			bitTrace( "[Image::ReadTGA] Not a 24 or 32 bit depth image.\n" );
 			return BIT_ERROR;
 		}
 
@@ -176,16 +170,14 @@ namespace Bit
 		// Make sure the data pointer isn't NULL
 		if(p_pData == BIT_NULL)
 		{
-			bitTrace( "[Image::AddData] <ERROR> "
-				"Passed NULL pointer.\n" );
+			bitTrace( "[Image::AddData] Passed NULL pointer.\n" );
 			return BIT_ERROR;
 		}
 
 		// Also, we don't accept the width/height/depth to be equal to zero.
 		if( p_Size.x == 0 || p_Size.y == 0 || p_Depth == 0)
 		{
-			bitTrace( "[Image::AddData] <ERROR> "
-				"With/Height/Depth is 0.\n" );
+			bitTrace( "[Image::AddData] With/Height/Depth is 0.\n" );
 			return BIT_ERROR;
 		}
 
@@ -281,7 +273,7 @@ namespace Bit
 	void Image::BGR_To_RGB( )
 	{
 		// Make sure we have any data to swap
-		if(ContainsData() == BIT_FALSE)
+		if( ContainsData( ) == BIT_FALSE )
 		{
 			bitTrace( "[Image::BGR_To_RGB] <ERROR> "
 				"Image not containing any data.\n" );
@@ -293,11 +285,11 @@ namespace Bit
 		BIT_BYTE TemporaryByte = 0;
 
 		// Loop through the data we want to swap
-		for (int i = 0; i < Size; i += 3 )
+		for( BIT_UINT32 i = 0; i < Size; i += 3 )
 		{
-			TemporaryByte = m_pData[i];
-			m_pData[i] = m_pData[i + 2];
-			m_pData[i + 2] = TemporaryByte;
+			TemporaryByte = m_pData[ i ];
+			m_pData[ i ] = m_pData[ i + 2 ];
+			m_pData[ i + 2 ] = TemporaryByte;
 		}
 
 	}
@@ -305,10 +297,9 @@ namespace Bit
 	void Image::BGRA_To_RGBA( )
 	{
 		// Make sure we have any data to swap
-		if(ContainsData() == BIT_FALSE)
+		if( ContainsData( ) == BIT_FALSE )
 		{
-			bitTrace( "[Image::BGRA_To_RGBA] <ERROR> "
-				"Image not containing any data.\n" );
+			bitTrace( "[Image::BGRA_To_RGBA] Image not containing any data.\n" );
 			return;
 		}
 
@@ -316,11 +307,11 @@ namespace Bit
 		BIT_BYTE TemporaryByte = 0;
 
 		// Loop through the data we want to swap
-		for (int i = 0; i < Size; i += 4 )
+		for ( BIT_UINT32 i = 0; i < Size; i += 4 )
 		{
-			TemporaryByte = m_pData[i];
-			m_pData[i] = m_pData[i + 2];
-			m_pData[i + 2] = TemporaryByte;
+			TemporaryByte = m_pData[ i ];
+			m_pData[ i ] = m_pData[ i + 2 ];
+			m_pData[ i + 2 ] = TemporaryByte;
 		}
 	}
 

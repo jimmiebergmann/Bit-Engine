@@ -47,6 +47,13 @@ namespace Bit
 		{
 		}
 
+		Vector3( T a )
+		{
+			this->x = a;
+			this->y = a;
+			this->z = a;
+		}
+
 		Vector3( T x, T y, T z )
 		{
 			this->x = x;
@@ -80,12 +87,23 @@ namespace Bit
 			this->z = static_cast< T >( p_Vector.z );
 		}
 
+		// Operators
 		const Vector3< T > & operator = ( const Vector3< T > p_Vector )
 		{
 			this->x = p_Vector.x;
 			this->y = p_Vector.y;
 			this->z = p_Vector.z;
 			return *this;
+		}
+
+		BIT_BOOL operator == ( const Vector2< T > p_Vector )
+		{
+			return ( this->x == p_Vector.x ) && ( this->y == p_Vector.y ) && ( this->z == p_Vector.z );
+		}
+
+		BIT_BOOL operator != ( const Vector2< T > p_Vector )
+		{
+			return ( this->x != p_Vector.x ) || ( this->y != p_Vector.y ) || ( this->z!= p_Vector.z );
 		}
 
 		const Vector3< T > & operator += ( const Vector3< T > p_Vector )
@@ -125,6 +143,11 @@ namespace Bit
 			return Vector3< T >( this->x + p_Vector.x, this->y + p_Vector.y, this->z + p_Vector.z );
 		}
 
+		const Vector3< T > operator - ( ) const
+		{
+			return Vector3< T >( -this->x, -this->y, -this->z );
+		}
+
 		const Vector3< T > operator - ( const Vector3< T > p_Vector ) const
 		{
 			return Vector3< T >( this->x - p_Vector.x, this->y - p_Vector.y, this->z - p_Vector.z );
@@ -150,6 +173,12 @@ namespace Bit
 			return Vector3< T >( this->x / p_Value, this->y / p_Value, this->z / p_Value );
 		}
 
+		T operator [ ] ( const BIT_UINT32 & p_Index )
+		{
+			return *( &x + p_Index );
+		}
+
+		// Useful functions
 		const BIT_FLOAT32 Magnitude( ) const
 		{
 			return sqrt( ( x*x ) + ( y*y ) + ( z*z ) );
@@ -221,6 +250,26 @@ namespace Bit
 			z = tz;
 		}
 
+		void Rotate( const BIT_FLOAT32 p_Angle, const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+		{
+			// Create a rotation quaternion
+			BIT_FLOAT32 qx = p_X * Bit::SinDegrees( p_Angle / 2.0f );
+			BIT_FLOAT32 qy = p_Y * Bit::SinDegrees( p_Angle / 2.0f );
+			BIT_FLOAT32 qz = p_Z * Bit::SinDegrees(  p_Angle / 2.0f );
+			BIT_FLOAT32 qw = Bit::CosDegrees( p_Angle / 2.0f );
+
+			// Convert our vector into a quaternion
+			BIT_FLOAT32 vx = x;
+			BIT_FLOAT32 vy = y;
+			BIT_FLOAT32 vz = z;
+			BIT_FLOAT32 vw = 0.0f;
+
+			// Quaternion multiplication(ignore the w component)
+			x = vy * qz - vz * qy + vw * qx + vx * qw;
+			y = vz * qx - vx * qz + vw * qy + vy * qw;
+			z = vx * qy - vy * qx + vw * qz + vz * qw;	
+		}
+
 		void RotateY( BIT_FLOAT64 p_Angle )
 		{
 			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
@@ -260,7 +309,14 @@ namespace Bit
 
 		static BIT_FLOAT64 AngleBetweenVectors( Vector3< T > p_Vec1, Vector3< T > p_Vec2 )
 		{
-			return Bit::RadiansToDegrees( acos( p_Vec1.Dot( p_Vec2 ) ) );
+			BIT_FLOAT64 Angle = acos( p_Vec1.Dot( p_Vec2 ) );
+
+			if( isnan( Angle ) )
+			{
+				return 0.0f;
+			}
+
+			return Bit::RadiansToDegrees( Angle );
 		}
 
 

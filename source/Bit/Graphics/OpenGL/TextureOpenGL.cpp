@@ -28,11 +28,23 @@
 
 namespace Bit
 {
+
+	// OpenGL constants
+	static const GLenum OpenGLTypes[ 17 ] = 
+	{
+		0, GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT,
+		GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT,
+		GL_UNSIGNED_INT, GL_INT, 0, 0, GL_FLOAT, GL_DOUBLE, GL_BYTE, 0
+	};
+
+
 	// Constructor/destrucotr
-	TextureOpenGL::TextureOpenGL( ) :
+	TextureOpenGL::TextureOpenGL( const BIT_BOOL p_OpenGL2 ) :
 		m_ID( 0 )
 	{
 		m_Loaded = BIT_FALSE;
+		m_Format = 0;
+		m_OpenGL2 = p_OpenGL2;
 	}
 
 	TextureOpenGL::~TextureOpenGL ( )
@@ -47,8 +59,15 @@ namespace Bit
 	}
 
 	// General public functions
-	BIT_UINT32 TextureOpenGL::Load( const Image & p_Image)
+	BIT_UINT32 TextureOpenGL::Load( const Image & p_Image, const BIT_BOOL p_Mipmapping )
 	{
+		// Check if the image already is loaded
+		if( m_Loaded )
+		{
+			bitTrace( "[TextureOpenGL::Load] Already loaded.\n" );
+			return BIT_ERROR;
+		}
+
 		// Make sure the image class contains any data at all.
 		if( p_Image.ContainsData() == BIT_FALSE )
 		{
@@ -64,16 +83,38 @@ namespace Bit
 			return BIT_ERROR;
 		}
 
-		GLint OpenGLTextureFormats[2] = { GL_RGB, GL_RGBA };
-		GLint Format = OpenGLTextureFormats[Depth - 3];
+		static const GLint OpenGLTextureFormats[2] = { GL_RGB, GL_RGBA };
+		GLint Format = OpenGLTextureFormats[ Depth - 3 ];
+		m_Format = Depth - 2;
 
 		// Generate an OpenGL texture id.
 		glGenTextures( 1, &m_ID );
 		glBindTexture( GL_TEXTURE_2D, m_ID );
 
-		Vector2_ui32 Size = p_Image.GetSize( );
-		glTexImage2D ( GL_TEXTURE_2D, 0, Format, Size.x, Size.y, 0,
+		// Generate the mipmap ( Opengl > 1.4 style )
+		if( m_OpenGL2 && p_Mipmapping )
+		{
+			glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE ); 
+		}
+
+		// Set the texure data
+		m_Size = p_Image.GetSize( );
+		glTexImage2D ( GL_TEXTURE_2D, 0, Format, m_Size.x, m_Size.y, 0,
 			(GLenum)Format, GL_UNSIGNED_BYTE, (GLvoid *)p_Image.GetData() );
+
+		// Generate the mipmap ( Opengl 3.x style )
+		if( !m_OpenGL2 && p_Mipmapping )
+		{
+			glGenerateMipmap( GL_TEXTURE_2D );
+		}
+
+		// Add anisotropy filtering
+		if( p_Mipmapping )
+		{
+			GLfloat Levels;
+			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &Levels );
+			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 8.0f );
+		}
 
 		// Unbind the texture
 		glBindTexture( GL_TEXTURE_2D, 0 );
@@ -83,9 +124,64 @@ namespace Bit
 	}
 
 	BIT_UINT32 TextureOpenGL::Load( Vector2_ui32 p_Size, const BIT_UINT32 p_Format,
-		const BIT_UINT32 p_Type, BIT_BYTE * p_Data )
+		const BIT_UINT32 p_InternalFormat, const BIT_UINT32 p_FormatType, void * p_Data )
 	{
-		return BIT_ERROR;
+		// Check if the image already is loaded
+		if( m_Loaded )
+		{
+			bitTrace( "[TextureOpenGL::Load] Already loaded.\n" );
+			return BIT_ERROR;
+		}
+
+		// Check if the formats are correct
+		if( p_Format < 1 || p_Format > 4 )
+		{
+			bitTrace( "[TextureOpenGL::Load] Wrong format.\n" );
+			return BIT_ERROR;
+		}
+		if( p_InternalFormat < 1 || p_InternalFormat > 4 )
+		{
+			bitTrace( "[TextureOpenGL::Load] Wrong internal format.\n" );
+			return BIT_ERROR;
+		}
+		if( p_FormatType < 1 || p_FormatType > 16 )
+		{
+			bitTrace( "[TextureOpenGL::Load] Wrong format type.\n" );
+			return BIT_ERROR;
+		}
+
+		// Set the size and format
+		m_Size = p_Size;
+		m_Format = p_Format;
+
+		// OpenGL formats
+		static const GLint OpenGLTextureFormats[ 4 ] = { GL_RGB, GL_RGBA, GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL };
+
+		// Get the needed opengl attributes
+		GLenum Format = OpenGLTextureFormats[ p_Format - 1];
+		GLint InternalFormat = OpenGLTextureFormats[ p_InternalFormat - 1];
+		GLint FormatType = OpenGLTypes[ p_FormatType ];
+
+		// Make sure we are using a valid format type
+		if( FormatType == 0 )
+		{
+			bitTrace( "[TextureOpenGL::Load] Parsed invalid format type.\n" );
+			return BIT_ERROR;
+		}
+
+		// Let's create the texture
+		glGenTextures( 1, &m_ID );
+		glBindTexture( GL_TEXTURE_2D, m_ID );
+
+		// Set the data
+		glTexImage2D ( GL_TEXTURE_2D, 0, InternalFormat, p_Size.x, p_Size.y, 0,
+			Format, FormatType, (GLvoid *)p_Data );
+
+		// Unbind the texture
+		glBindTexture( GL_TEXTURE_2D, 0 );
+
+		m_Loaded = BIT_OK;
+		return BIT_OK;
 	}
 
 	void TextureOpenGL::Bind( BIT_UINT32 p_Index )
@@ -100,7 +196,7 @@ namespace Bit
 	}
 
 	// Set functions
-	BIT_UINT32 TextureOpenGL::SetFilters( eFilter * p_pFilters )
+	BIT_UINT32 TextureOpenGL::SetFilters( const eFilter * p_pFilters )
 	{
 		// This code is working, but I don't know about it's efficiency...
 		if( p_pFilters == BIT_NULL ||
@@ -155,6 +251,12 @@ namespace Bit
 				break;
 			case Filter_Linear:
 				Param = GL_LINEAR;
+				break;
+			case Filter_Nearest_Mipmap:
+				Param = GL_NEAREST_MIPMAP_NEAREST;
+				break;
+			case Filter_Linear_Mipmap:
+				Param = GL_LINEAR_MIPMAP_LINEAR;
 				break;
 			case Filter_Repeat:
 				Param = GL_REPEAT;

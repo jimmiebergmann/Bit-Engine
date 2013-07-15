@@ -26,6 +26,7 @@
 #define __BIT_GRAPHICS_VERTEX_OBJECT_HPP__
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/System/Vector2.hpp>
 
 // How to use:
 // 1. Create the vertex object via your graphic device.
@@ -40,24 +41,39 @@ namespace Bit
 
 	public:
 
-		// Public enum
+		// Public enums
 		enum eRenderMode
 		{
 			RenderMode_Triangles = 0,
 			RenderMode_Lines = 1,
 			RenderMode_LineStrip = 2
 		};
+
+		enum eVertexType
+		{
+			Vertex_None = 0,
+			Vertex_Position = 1,
+			Vertex_Texture = 2,
+			Vertex_Normal = 4,
+			Vertex_Tangent = 8,
+			Vertex_Binormal = 16
+		};
 		
 		// Destructor
 		virtual ~VertexObject( ) { }
 
 		// Virtual public functions
-		virtual BIT_UINT32 Load( BIT_UINT32 p_PieceCount, BIT_UINT32 p_PieceSize ) = 0;
+		virtual BIT_UINT32 Load( const BIT_UINT32 p_PieceCount, const BIT_UINT32 p_PieceSize ) = 0;
+		virtual BIT_UINT32 LoadFullscreenQuad( const Vector2_ui32 p_Size ) = 0;
 		virtual BIT_UINT32 Unload( ) = 0;
-		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, BIT_UINT32 p_DataType ) = 0;
-		virtual BIT_UINT32 UpdateVertexBuffer( const BIT_UINT32 p_Index, void * p_pBuffer,
-		const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize ) = 0;
-		virtual void Render(eRenderMode p_Mode) = 0;
+		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const BIT_UINT32 p_DataType ) = 0;
+		virtual BIT_UINT32 UpdateVertexBuffer( const BIT_UINT32 p_Index, const void * p_pBuffer,
+			const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize ) = 0;
+		virtual void Render( const eRenderMode p_Mode ) = 0;
+
+		// Static publuc function
+		static void GenerateTangents( const BIT_FLOAT32 * p_pVertexPositions, const BIT_FLOAT32 * p_pTexturePositions,
+			BIT_FLOAT32 * p_pTangents, BIT_FLOAT32 * p_pBinormals, const BIT_UINT32 p_TriangleCount );
 
 		// Public inline functions
 		BIT_INLINE BIT_BOOL IsLoaded( ) const { return m_Loaded; }

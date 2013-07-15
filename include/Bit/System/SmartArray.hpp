@@ -23,39 +23,55 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_LINE_HPP__
-#define __BIT_SYSTEM_LINE_HPP__
+#ifndef __BIT_SYSTEM_SMART_ARRAY_HPP__
+#define __BIT_SYSTEM_SMART_ARRAY_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/System/Vector2.hpp>
-#include <Bit/System/Vector3.hpp>
 
 namespace Bit
 {
 
-	class Line
+	template <typename T>
+	class SmartArray
 	{
 
 	public:
 
-		// Construcotrs
-		Line( );
-		Line( const Line & p_Line );
-		Line( const Vector3_f32 p_P1, const Vector3_f32 p_P2 );
-		Line( const Vector2_f32 p_P1, const Vector2_f32 p_P2 );
-		Line( const BIT_FLOAT32 p_P1_1, const BIT_FLOAT32 p_P1_2,
-			const BIT_FLOAT32 p_P2_1, const BIT_FLOAT32 p_P2_2 );
-		Line( const BIT_FLOAT32 p_P1_1, const BIT_FLOAT32 p_P1_2, const BIT_FLOAT32 p_P1_3,
-			const BIT_FLOAT32 p_P2_1, const BIT_FLOAT32 p_P2_2, const BIT_FLOAT32 p_P2_3 );
+		// Construcotrs/destructor
+		SmartArray( const BIT_MEMSIZE p_Size )
+		{
+			m_pPointer = new T[ p_Size ];
+		}
+
+		SmartArray( T * p_pPointer )
+		{
+			m_pPointer = p_pPointer;
+		}
+
+		~SmartArray( )
+		{
+			if( m_pPointer )
+			{
+				delete [ ] m_pPointer;
+			}
+		}
 
 		// Public functions
-		BIT_FLOAT32 Length( ) const;
+		T * Get( ) const
+		{
+			return m_pPointer;
+		}
 
-		// Intersection functions
-		BIT_BOOL IntersectionLine2( Line p_Line, Vector3_f32 & p_Intersection );
+		// Operators
+		operator T * ( ) const
+		{
+			return m_pPointer;
+		}
 
-		// Public variables
-		Vector3_f32 p[ 2 ];
+	private:
+
+		// Private variables
+		T * m_pPointer;
 
 	};
 

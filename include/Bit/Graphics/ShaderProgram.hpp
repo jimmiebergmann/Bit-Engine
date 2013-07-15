@@ -39,10 +39,10 @@ namespace Bit
 	public:
 
 		// Destructor
-		virtual ~ShaderProgram() { }
+		virtual ~ShaderProgram( ) { }
 
 		// General public functions
-		virtual BIT_UINT32 AttachShaders( Shader * p_Shader ) = 0;
+		virtual BIT_UINT32 AttachShaders( const Shader * p_Shader ) = 0;
 		virtual BIT_UINT32 Link( ) = 0;
 		virtual void Bind( ) = 0;
 		virtual void Unbind( ) = 0;

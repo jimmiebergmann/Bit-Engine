@@ -189,6 +189,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="../../../Bit-Engine/lib/Windows/32/Static/bit-graphics.lib"
 				OutputFile="$(OutDir)\$(ProjectName)-d.dll"
 				ImportLibrary="$(TargetDir)$(TargetName).lib"
 			/>
@@ -260,6 +261,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="../../../Bit-Engine/lib/Windows/32/Static/bit-graphics.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -288,6 +290,22 @@
 	</References>
 	<Files>
 		<File
+			RelativePath="..\..\source\Bit\System\Box.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Box.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\Circle.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Circle.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\include\Bit\DataTypes.hpp"
 			>
 		</File>
@@ -300,11 +318,19 @@
 			>
 		</File>
 		<File
-			RelativePath="..\..\source\Bit\System\Line.cpp"
+			RelativePath="..\..\source\Bit\System\Line2.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\include\Bit\System\Line.hpp"
+			RelativePath="..\..\include\Bit\System\Line2.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\Line3.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Line3.hpp"
 			>
 		</File>
 		<File
@@ -324,6 +350,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\System\MatrixManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\MatrixManager.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\System\MemoryLeak.cpp"
 			>
 		</File>
@@ -332,11 +366,43 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\source\Bit\System\Quad.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Quad.hpp"
+			>
+		</File>
+		<File
 			RelativePath="..\..\source\Bit\System\Randomizer.cpp"
 			>
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\System\Randomizer.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\ResourceManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\ResourceManager.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\SmartArray.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\SmartPointer.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\Sphere.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Sphere.hpp"
 			>
 		</File>
 		<File

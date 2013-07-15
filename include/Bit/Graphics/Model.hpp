@@ -26,11 +26,8 @@
 #define __BIT_GRAPHICS_MODEL_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/System/Vector2.hpp>
-#include <Bit/System/Vector3.hpp>
 #include <Bit/Graphics/VertexObject.hpp>
-#include <vector>
-#include <string>
+#include <Bit/Graphics/Texture.hpp>
 
 namespace Bit
 {
@@ -40,50 +37,42 @@ namespace Bit
 
 	public:
 
-		// Public structures
-		struct Triangle
+		// Public enum
+		enum eModelType
 		{
-			BIT_SINT32 PositionIndex[ 3 ];
-			BIT_SINT32 TextureIndex[ 3 ];
-			BIT_SINT32 NormalIndex[ 3 ];
+			Model_None = 1,
+			Model_OBJ = 2
 		};
 
-		// Constructor/destructor
-		Model( );
-		~Model( );
+		// Destructor
+		virtual ~Model( ) { }
 
-		// Public functions
-		BIT_UINT32 ReadFile( std::string p_FilePath );
-		BIT_UINT32 ReadOBJ( std::string p_FilePath );
-		BIT_UINT32 LoadVertexObject( VertexObject & p_VertexObject );
-		void DeallocateData( );
-		BIT_INLINE BIT_BOOL IsLoaded( ) const { return m_Loaded; }
+		// Virtual public functions
+		virtual BIT_UINT32 ReadFile( const char * p_pFilePath ) = 0;
+		virtual BIT_UINT32 Load( const BIT_UINT32 m_VertexElementBits, const Texture::eFilter * p_pTextureFilters,
+			const BIT_BOOL p_Mipmapping ) = 0;
+		virtual void Unload( ) = 0;
+		virtual void Render( const VertexObject::eRenderMode p_Mode ) = 0;
 
-		// Set functions
-		// ...
+		// Virtual get functions
+		virtual std::string GetName( ) const = 0;
+		virtual BIT_UINT32 GetVertexGroupCount( ) const = 0;
+		virtual BIT_UINT32 GetTriangleCount( ) const = 0;
+		virtual BIT_UINT32 GetPositionCoordinateCount( ) const = 0;
+		virtual BIT_UINT32 GetTextureCoordinateCount( ) const = 0;
+		virtual BIT_UINT32 GetNormalCoordinateCount( ) const = 0;
+		virtual BIT_UINT32 GetTextureCount( ) const = 0;
+		virtual BIT_UINT32 GetAnimationCount( ) const = 0;
+		virtual BIT_BOOL ContainsRagdoll( ) const = 0;
 
-		// Get functions
-		BIT_UINT32 GetVertexPositionCount( ) const;
-		BIT_UINT32 GetVertexTextureCount( ) const;
-		BIT_UINT32 GetVertexNormalCount( ) const;
-		BIT_UINT32 GetTriangleCount( ) const;
-		BIT_UINT32 GetVertexPosition( BIT_UINT32 p_Index, Vector3_f32 p_Coord ) const;
-		BIT_UINT32 GetVertexTexture( BIT_UINT32 p_Index, Vector2_f32 p_Coord ) const;
-		BIT_UINT32 GetVertexNormal( BIT_UINT32 p_Index, Vector3_f32 p_Coord ) const;
-		BIT_UINT32 GetTriangle( BIT_UINT32 p_Index, Triangle p_Triangle ) const;
+		// Public inline get functions
+		BIT_INLINE BIT_BOOL IsLoaded( ) { return m_Loaded; }
+		BIT_INLINE eModelType GetType( ) { return m_Type; }
 
-	private:
+	protected:
 
-		// Private functions
-		void DecodeOBJFaces( std::string p_String, BIT_SINT32 & p_Position,
-			BIT_SINT32 & p_Texture, BIT_SINT32 & p_Normal );
-
-		// Private variables
 		BIT_BOOL m_Loaded;
-		std::vector< Vector3_f32 > m_VertexPositions;
-		std::vector< Vector2_f32 > m_VertexTextures;
-		std::vector< Vector3_f32 > m_VertexNormals;
-		std::vector< Triangle > m_Triangles;
+		eModelType m_Type;
 
 	};
 

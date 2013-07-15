@@ -59,7 +59,6 @@ namespace Bit
 	const BIT_UINT32 BIT_TYPE_FLOAT64 = 14;
 	const BIT_UINT32 BIT_TYPE_BYTE = 15;
 	const BIT_UINT32 BIT_TYPE_BOOL = 16;
-
 */
 
 	static const GLenum OpenGLTypes[ 17 ] = 
@@ -77,7 +76,7 @@ namespace Bit
 	};
 
 	// Static private variables
-	GLenum VertexObjectOpenGL::s_RenderModes[ 3 ] = { GL_TRIANGLES, GL_TRIANGLES, GL_TRIANGLES };
+	GLenum VertexObjectOpenGL::s_RenderModes[ 3 ] = { GL_TRIANGLES, GL_LINES, GL_LINE_STRIP };
 
 
 	// Constructor / Destructor
@@ -94,11 +93,11 @@ namespace Bit
 	}
 
 	// Virtual public functions
-	BIT_UINT32 VertexObjectOpenGL::Load( BIT_UINT32 p_PieceCount, BIT_UINT32 p_PieceSize )
+	BIT_UINT32 VertexObjectOpenGL::Load( const BIT_UINT32 p_PieceCount, const BIT_UINT32 p_PieceSize )
 	{
 		if( m_Loaded || !m_Buffers.size( ) )
 		{
-			bitTrace( "[ VertexObjectOpenGL::Load] Already loaded or no buffers are available.\n" );
+			bitTrace( "[ VertexObjectOpenGL::Load] Already loaded or no buffers are available\n" );
 			return BIT_ERROR;
 		}
 
@@ -126,11 +125,67 @@ namespace Bit
 			glEnableVertexAttribArray( i );
 		}
 
-		// Unbind the Arrau buffer
+		// Unbind the Array buffer
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
 		// Calculate the total piece size
 		m_TotalPieceSize = p_PieceCount * p_PieceSize;
+
+		// We are done, everything is fine
+		m_Loaded = BIT_TRUE;
+		return BIT_OK;
+	}
+
+	BIT_UINT32 VertexObjectOpenGL::LoadFullscreenQuad( const Vector2_ui32 p_Size )
+	{
+		// Make sure that the vertex object isn't alrady loaded.
+		if( m_Loaded )
+		{
+			bitTrace( "[ VertexObjectOpenGL::LoadFullscreenQuad] Already loaded\n" );
+			return BIT_ERROR;
+		}
+
+		// Load the vertex buffer object
+		glGenVertexArrays( 1, &m_VertexArrayObject );
+		glBindVertexArray( m_VertexArrayObject );
+ 
+		// Allocate memory for the VBOs
+		m_VertexBufferObjectCount = 2;
+		m_pVertexBufferObjects = new GLuint [ 2 ];
+		
+		// Generate the VBOs
+		glGenBuffers( m_VertexBufferObjectCount, m_pVertexBufferObjects );
+
+
+		const BIT_FLOAT32 VertexPositions[ 18 ] =
+		{
+			0.0f, 0.0f, 0.0f,	p_Size.x, 0.0f, 0.0f,		p_Size.x, p_Size.y, 0.0f,
+			0.0f, 0.0f, 0.0f,	p_Size.x, p_Size.y, 0.0f,	0.0f, p_Size.y, 0.0f
+		};
+
+		const BIT_FLOAT32 VertexTextures[ 12 ] =
+		{
+			0.0f, 0.0f,		1.0f, 0.0f,		1.0f, 1.0f,	
+			0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f
+		};
+
+		// Add the vertex position data
+		glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObjects[ 0 ] );
+		glBufferData( GL_ARRAY_BUFFER, (GLsizeiptr)72, VertexPositions, GL_STATIC_DRAW );
+		glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+		glEnableVertexAttribArray( 0 );
+
+		// Add the texture position data
+		glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObjects[ 1 ] );
+		glBufferData( GL_ARRAY_BUFFER, (GLsizeiptr)48, VertexTextures, GL_STATIC_DRAW );
+		glVertexAttribPointer( (GLuint)0, 2, GL_FLOAT, GL_FALSE, 0, 0 ); 
+		glEnableVertexAttribArray( 1 );
+
+		// Unbind the Array buffer
+		glBindBuffer( GL_ARRAY_BUFFER, 0 );
+
+		// Set the total piece size
+		m_TotalPieceSize = 6;
 
 		// We are done, everything is fine
 		m_Loaded = BIT_TRUE;
@@ -143,7 +198,7 @@ namespace Bit
 		{
 			// Delete the VBOs
 			glBindBuffer ( GL_ARRAY_BUFFER, 0 );
-			glDeleteBuffers( 3, m_pVertexBufferObjects );
+			glDeleteBuffers( m_VertexBufferObjectCount, m_pVertexBufferObjects );
 			delete [ ] m_pVertexBufferObjects;
 			m_pVertexBufferObjects = BIT_NULL;
 		}
@@ -160,7 +215,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 VertexObjectOpenGL::AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, BIT_UINT32 p_DataType )
+	BIT_UINT32 VertexObjectOpenGL::AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const BIT_UINT32 p_DataType )
 	{
 		if( m_Loaded )
 		{
@@ -195,7 +250,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 VertexObjectOpenGL::UpdateVertexBuffer( const BIT_UINT32 p_Index, void * p_pBuffer,
+	BIT_UINT32 VertexObjectOpenGL::UpdateVertexBuffer( const BIT_UINT32 p_Index, const void * p_pBuffer,
 		const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize )
 	{
 		if( !m_Loaded )
@@ -220,7 +275,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	void VertexObjectOpenGL::Render( eRenderMode p_Mode )
+	void VertexObjectOpenGL::Render( const eRenderMode p_Mode )
 	{
 		if( !m_Loaded )
 		{

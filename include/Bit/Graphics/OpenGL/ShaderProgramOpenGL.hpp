@@ -42,7 +42,7 @@ namespace Bit
 		virtual ~ShaderProgramOpenGL( );
 
 		// Public general functions
-		virtual BIT_UINT32 AttachShaders( Shader * p_Shader );
+		virtual BIT_UINT32 AttachShaders( const Shader * p_Shader );
 		virtual BIT_UINT32 Link( );
 		virtual void Bind( );
 		virtual void Unbind( );

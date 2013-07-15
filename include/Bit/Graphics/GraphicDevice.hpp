@@ -27,10 +27,14 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Window.hpp>
+#include <Bit/Graphics/Framebuffer.hpp>
+//#include <Bit/Graphics/Renderbuffer.hpp>
 #include <Bit/Graphics/VertexObject.hpp>
 #include <Bit/Graphics/ShaderProgram.hpp>
 #include <Bit/Graphics/Shader.hpp>
 #include <Bit/Graphics/Texture.hpp>
+#include <Bit/Graphics/Model.hpp>
+#include <Bit/Graphics/PostProcessingBloom.hpp>
 
 namespace Bit
 {
@@ -40,11 +44,17 @@ namespace Bit
 	public:
 
 		// Public enums
-		enum eDevices
+		enum eDevice
 		{
 			Device_Any = 0,			// Picking the most fitting and newest one.
 			Device_OpenGL_2_1 = 1,	// OpenGL 2.1 context
 			Device_OpenGL_3_1 = 2,	// OpenGL 3.1 context
+		};
+
+		enum eCulling
+		{
+			Culling_FrontFace = 0,
+			Culling_BackFace = 1
 		};
 
 
@@ -55,15 +65,21 @@ namespace Bit
 		virtual BIT_UINT32 Open( const Window & p_Window, const BIT_UINT32 p_Devices ) = 0;
 		virtual BIT_UINT32 Close( ) = 0;
 		virtual void Present( ) = 0;
+		virtual void BindDefaultFramebuffer( ) = 0;
+		virtual void BindDefaultShaderProgram( ) = 0;
 
 		// Public functions
 		BIT_INLINE BIT_BOOL IsOpen( ) const { return m_Open; }
 
 		// Create functions for different renderer elements
+		virtual Framebuffer * CreateFramebuffer( ) const = 0;
+		//virtual Renderbuffer * CreateRenderbuffer( ) const = 0;
 		virtual VertexObject * CreateVertexObject( ) const = 0;
 		virtual ShaderProgram * CreateShaderProgram( ) const = 0;
 		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const = 0;
 		virtual Texture * CreateTexture( ) const = 0;
+		virtual Model * CreateModel( Model::eModelType p_Type ) const = 0;
+		virtual PostProcessingBloom * CreatePostProcessingBloom( VertexObject * p_pVertexObject, Texture * p_pTexture ) = 0;
 
 		// Clear functions
 		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits ) = 0;
@@ -75,7 +91,7 @@ namespace Bit
 		virtual void EnableAlpha( ) = 0;
 		virtual void EnableDepthTest( ) = 0;
 		virtual void EnableStencilTest( ) = 0;
-		virtual void EnableFaceCulling( BIT_UINT32 p_FaceCulling ) = 0;
+		virtual void EnableFaceCulling( eCulling p_FaceCulling ) = 0;
 		virtual void EnableSmoothLines( ) = 0;
 
 		// Disable functions
@@ -101,7 +117,7 @@ namespace Bit
 		BIT_INLINE BIT_BOOL GetAlphaStatus( ) const { return m_AlphaStatus; }
 		BIT_INLINE BIT_BOOL GetDepthTestStatus( ) const { return m_DepthTestStatus; }
 		BIT_INLINE BIT_BOOL GetStencilTestStatus( ) const { return m_StencilTestStatus; }
-		BIT_INLINE BIT_BOOL GetFaceFullingStatus( ) const { return m_FaceCullingStatus; }
+		BIT_INLINE BIT_BOOL GetFaceCullingStatus( ) const { return m_FaceCullingStatus; }
 		BIT_INLINE BIT_UINT32 GetFaceCullingType( ) const { return m_FaceCullingType; }
 		BIT_INLINE BIT_BOOL GetSmoothLinesStatus( ) const { return m_SmoothLinesStatus; }
 		BIT_INLINE Vector2_si32 GetViewportSize( ) const { return m_ViewportHigh - m_ViewportLow; }
@@ -112,7 +128,7 @@ namespace Bit
 
 		// Protected functions
 		BIT_BOOL m_Open;
-		BIT_UINT32 m_DeviceType;
+		eDevice m_DeviceType;
 		Vector2_si32 m_ViewportLow;
 		Vector2_si32 m_ViewportHigh;
 
