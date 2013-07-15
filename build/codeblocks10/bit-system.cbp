@@ -47,6 +47,7 @@
 		<Unit filename="../../include/Bit/DataTypes.hpp" />
 		<Unit filename="../../include/Bit/System.hpp" />
 		<Unit filename="../../include/Bit/System/Debugger.hpp" />
+		<Unit filename="../../include/Bit/System/Line.hpp" />
 		<Unit filename="../../include/Bit/System/Math.hpp" />
 		<Unit filename="../../include/Bit/System/Matrix4x4.hpp" />
 		<Unit filename="../../include/Bit/System/MemoryLeak.hpp" />
@@ -56,6 +57,7 @@
 		<Unit filename="../../include/Bit/System/Vector3.hpp" />
 		<Unit filename="../../source/Bit/System.cpp" />
 		<Unit filename="../../source/Bit/System/Debugger.cpp" />
+		<Unit filename="../../source/Bit/System/Line.cpp" />
 		<Unit filename="../../source/Bit/System/Math.cpp" />
 		<Unit filename="../../source/Bit/System/Matrix4x4.cpp" />
 		<Unit filename="../../source/Bit/System/MemoryLeak.cpp" />
