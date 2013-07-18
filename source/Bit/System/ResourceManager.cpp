@@ -34,7 +34,7 @@ namespace Bit
 	// Set the private static variables
 	BIT_BOOL ResourceManager::m_Initialized = BIT_FALSE;
 	GraphicDevice * ResourceManager::m_pGraphicDevice = BIT_NULL;
-	ResourceManager::TextureMap ResourceManager::m_Textures;
+	TextureMap ResourceManager::m_Textures;
 	Texture::eFilter * ResourceManager::m_DefaultTextureFilters = BIT_NULL;
 	Texture * ResourceManager::m_ErrorTexture = BIT_NULL;
 
@@ -54,7 +54,7 @@ namespace Bit
 
 
 		// Set the default texture filters
-		if( !p_DefaultTextureFilters == BIT_NULL )
+		if( p_DefaultTextureFilters != BIT_NULL )
 		{
 			// Find the filter size
 			BIT_UINT32 FilterSize = 8;
@@ -117,7 +117,7 @@ namespace Bit
 		// Set the initialized flag to false
 		m_Initialized = BIT_FALSE;
 	}
-	
+
 	// Get functions
 	GraphicDevice * ResourceManager::GetGraphicDevice( )
 	{
@@ -162,7 +162,7 @@ namespace Bit
 			{
 				return BIT_NULL;
 			}
-			
+
 			// Load the texture
 			if( pTexture->Load( ImageFile, p_Mipmapping ) != BIT_OK )
 			{

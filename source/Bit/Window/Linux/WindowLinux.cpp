@@ -24,6 +24,8 @@
 
 #include <Bit/Window/Linux/WindowLinux.hpp>
 
+#ifdef BIT_PLATFORM_LINUX
+
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -349,11 +351,31 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_BOOL WindowLinux::Show( const BIT_BOOL p_State )
+	BIT_UINT32 WindowLinux::Show( const BIT_BOOL p_State )
 	{
 		// No code here yet.
 
 		return BIT_ERROR;
+	}
+
+	BIT_UINT32 WindowLinux::ShowCursor( const BIT_BOOL p_State )
+	{
+		//::ShowCursor( p_State );
+		return BIT_OK;
+	}
+
+	BIT_UINT32 WindowLinux::SetCursorPosition( Vector2_si32 p_Position )
+	{
+		//SetCursorPos( p_Position.x, p_Position.y );
+		return BIT_OK;
+	}
+
+	Vector2_si32 WindowLinux::GetCursorScreenPosition( )
+	{
+		//POINT Point;
+		//GetCursorPos( &Point );
+		//return Vector2_si32( Point.x, Point.y );
+		return Vector2_si32( 0, 0 );
 	}
 
 	// Set functions
@@ -382,3 +404,5 @@ namespace Bit
 
 
 }
+
+#endif

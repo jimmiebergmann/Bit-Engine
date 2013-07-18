@@ -24,6 +24,7 @@
 
 
 #include <Bit/System/Math.hpp>
+#include <stdlib.h>
 #include <Bit/System/Vector2.hpp>
 #include <Bit/System/Vector3.hpp>
 #include <Bit/System/Line2.hpp>
@@ -41,7 +42,7 @@ namespace Bit
 
 
 
-		
+
 
 	// Point 2
 	BIT_API BIT_BOOL IntersectionPoint2Line2( Vector2_f32 p_Point, Line2 p_Line )
@@ -51,7 +52,7 @@ namespace Bit
 		// Calcuate the area from the 3 points
 		Vector3_f32 A( p_Line.p[ 1 ].x - p_Point.x,			p_Line.p[ 1 ].y - p_Point.y,		0.0f );
 		Vector3_f32 B( p_Line.p[ 1 ].x - p_Line.p[ 0 ].x,	p_Line.p[ 1 ].y - p_Line.p[ 0 ].y,	0.0f  );
-		
+
 		BIT_FLOAT32 Area = A.Cross( B ).Magnitude( ) * 0.5f;
 
 		// Use the epsilon function to make sure that things wont get way too buggy
@@ -94,7 +95,7 @@ namespace Bit
 		// Resources: http://answers.yahoo.com/question/index?qid=20100821030217AAISaE6
 
 		// Calcuate the area from the 3 points
-		BIT_FLOAT32 Area = 
+		BIT_FLOAT32 Area =
 			Vector3_f32( p_Line.p[ 1 ] - p_Point ).Cross(
 			Vector3_f32( p_Line.p[ 1 ] - p_Line.p[ 0 ] ) ).Magnitude( ) * 0.5f;
 
@@ -113,7 +114,7 @@ namespace Bit
 		{
 			return BIT_FALSE;
 		}
-		
+
 		return BIT_TRUE;
 	}
 
@@ -148,7 +149,7 @@ namespace Bit
 		{
 			return BIT_FALSE;
 		}
-	
+
 		Vector3_f32 cs = da.Cross( db );
 		BIT_FLOAT32 s = dc.Cross( db ).Dot( da.Cross( db ) ) /
 			( ( cs.x * cs.x ) + ( cs.y * cs.y )+ ( cs.z * cs.z ) );
@@ -158,10 +159,10 @@ namespace Bit
 			Vector3_f32 Intersection3D = Vector3_f32( p_Line1.p[ 0 ].x, p_Line1.p[ 0 ].y, 0.0f ) + ( da * Vector3_f32( s, s, s ) );
 			p_Intersection.x = Intersection3D.x;
 			p_Intersection.y = Intersection3D.y;
-			
+
 			return BIT_FALSE;
 		}
-	
+
 		return BIT_TRUE;
 	}
 
@@ -170,7 +171,7 @@ namespace Bit
 		BIT_FLOAT32 k = ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) /
 						( p_Line.p[ 0 ].x - p_Line.p[ 1 ].x );
 
-		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y - p_Circle.Position.y ) - ( k * p_Line.p[ 0 ].x - p_Circle.Position.x  ); 
+		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y - p_Circle.Position.y ) - ( k * p_Line.p[ 0 ].x - p_Circle.Position.x  );
 
 		BIT_FLOAT32 a = ( k * k ) + 1;
 		BIT_FLOAT32 b = 2.0f * k * m;
@@ -193,7 +194,7 @@ namespace Bit
 		BIT_FLOAT32 k = ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) /
 						( p_Line.p[ 0 ].x - p_Line.p[ 1 ].x );
 
-		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y - p_Circle.Position.y ) - ( k * p_Line.p[ 0 ].x - p_Circle.Position.x  ); 
+		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y - p_Circle.Position.y ) - ( k * p_Line.p[ 0 ].x - p_Circle.Position.x  );
 
 		BIT_FLOAT32 a = ( k * k ) + 1;
 		BIT_FLOAT32 b = 2.0f * k * m;
@@ -241,8 +242,8 @@ namespace Bit
 		BIT_FLOAT32 a = 0.0f;
 		BIT_FLOAT32 k = ( p_Line.p[ 0 ].y - p_Line.p[ 1 ].y ) /
 						( p_Line.p[ 0 ].x - p_Line.p[ 1 ].x );
-		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y ) - ( k * p_Line.p[ 0 ].x ); 
-		
+		BIT_FLOAT32 m = ( p_Line.p[ 0 ].y ) - ( k * p_Line.p[ 0 ].x );
+
 
 		// X low
 		a = ( k * QuadLow.x ) + m;
@@ -280,7 +281,7 @@ namespace Bit
 	{
 		// http://mathworld.wolfram.com/Line-LineIntersection.html
 		// in 3d; will also work in 2d if z components are 0
-		Vector3_f32 da = p_Line1.p[ 1 ] - p_Line1.p[ 0 ]; 
+		Vector3_f32 da = p_Line1.p[ 1 ] - p_Line1.p[ 0 ];
 		Vector3_f32 db = p_Line2.p[ 1 ] - p_Line2.p[ 0 ];
 		Vector3_f32 dc = p_Line2.p[ 0 ] - p_Line1.p[ 0 ];
 
@@ -289,7 +290,7 @@ namespace Bit
 		{
 			return BIT_FALSE;
 		}
-	
+
 		Vector3_f32 cs = da.Cross( db );
 		BIT_FLOAT32 s = dc.Cross( db ).Dot( da.Cross( db ) ) /
 			( ( cs.x * cs.x ) + ( cs.y * cs.y )+ ( cs.z * cs.z ) );
@@ -299,7 +300,7 @@ namespace Bit
 			p_Intersection = p_Line1.p[ 0 ] + ( da * Vector3_f32( s, s, s ) );
 			return BIT_FALSE;
 		}
-	
+
 		return BIT_TRUE;
 	}
 
@@ -365,7 +366,7 @@ namespace Bit
 
 		// Find the intersection points
 		BIT_FLOAT32 DeltaSqrt = sqrt( Delta );
-	
+
 		// Full equation 1
 		BIT_FLOAT32 u1 = ( -b - DeltaSqrt ) / ( 2.0f * a );
 
@@ -409,7 +410,7 @@ namespace Bit
 		{
 			return BIT_FALSE;
 		}
-			
+
 		// Check Y
 		Dir.y = 0.5f * ( p_Line.p[ 1 ].y - p_Line.p[ 0 ].y );
 		Diff.y = ( 0.5f * ( p_Line.p[ 1 ].y + p_Line.p[ 0 ].y ) ) - p_Box.Positsion.y;
@@ -447,7 +448,7 @@ namespace Bit
 		{
 			return BIT_FALSE;
 		}
-		
+
 		return BIT_TRUE;
 	}
 
@@ -467,7 +468,7 @@ namespace Bit
 		{
 			return 0;
 		}
-	
+
 		// Infinite numbers of solutions
 		if( ( Distance == 0 ) && ( p_Circle1.Radius == p_Circle2.Radius ) )
 		{
@@ -500,7 +501,7 @@ namespace Bit
 		{
 			return 0;
 		}
-	
+
 		// Infinite numbers of solutions
 		if( ( Distance == 0 ) && ( p_Circle1.Radius == p_Circle2.Radius ) )
 		{
@@ -512,7 +513,7 @@ namespace Bit
 							( p_Circle2.Radius * p_Circle2.Radius ) +
 							( Distance * Distance ) ) /
 							( 2.0f * Distance );
-		
+
 		// Triangle Height
 		BIT_FLOAT32 H = sqrt( ( p_Circle1.Radius * p_Circle1.Radius ) - ( A * A ) );
 
@@ -611,7 +612,7 @@ namespace Bit
 		{
 			return 0;
 		}
-	
+
 		// Infinite numbers of solutions
 		if( ( Distance == 0 ) && ( p_Sphere1.Radius == p_Sphere2.Radius ) )
 		{
@@ -712,7 +713,7 @@ namespace Bit
 		return BIT_FALSE;
 	}
 
-	
+
 
 
 	// Quadratic equation solver
@@ -734,7 +735,7 @@ namespace Bit
 			p_X1 = -p_B / ( 2.0f * p_A );
 			return 1;
 		}
-		
+
 		// Else if we have 2 roots
 		BIT_FLOAT32 Root = sqrt( z );
 		p_X1 = (-p_B - Root) / ( 2.0f * p_A );

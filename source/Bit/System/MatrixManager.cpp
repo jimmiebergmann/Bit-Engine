@@ -112,27 +112,27 @@ namespace Bit
 		return m_Mode;
 	}
 
-	Matrix4x4 MatrixManager::GetMatrix( )
+	Matrix4x4 & MatrixManager::GetMatrix( )
 	{
 		return m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( );
 	}
 
-	Matrix4x4 MatrixManager::GetMatrix( const eMode p_Mode )
+	Matrix4x4 & MatrixManager::GetMatrix( const eMode p_Mode )
 	{
 		return m_MatrixStacks[ (BIT_MEMSIZE)p_Mode ].top( );
 	}
 
-	Matrix4x4 MatrixManager::GetProjectionMatrix( )
+	Matrix4x4 & MatrixManager::GetProjectionMatrix( )
 	{
 		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_Projection ].top( );
 	}
 
-	Matrix4x4 MatrixManager::GetViewMatrix( )
+	Matrix4x4 & MatrixManager::GetViewMatrix( )
 	{
 		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_View ].top( );
 	}
 
-	Matrix4x4 MatrixManager::GetModelMatrix( )
+	Matrix4x4 & MatrixManager::GetModelMatrix( )
 	{
 		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_Model ].top( );
 	}

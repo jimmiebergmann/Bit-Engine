@@ -1,28 +1,31 @@
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-// 
+//
 // This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
-// 
+//
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute
 // it freely, subject to the following restrictions:
-// 
+//
 // 1. The origin of this software must not be misrepresented;
 //    you must not claim that you wrote the original software.
 //    If you use this software in a product, an acknowledgment
 //    in the product documentation would be appreciated but
 //    is not required.
-// 
+//
 // 2. Altered source versions must be plainly marked as such,
 //    and must not be misrepresented as being the original software.
-// 
+//
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Window/Win32/WindowWin32.hpp>
+
+#ifdef BIT_PLATFORM_WIN32
+
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -65,7 +68,7 @@ namespace Bit
 
 		// Let's fill a window class with information
 		WNDCLASS WinClass;
-	
+
 		HINSTANCE WinInstance = GetModuleHandle( BIT_NULL ); // Grab any old handle
 		WinClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 		WinClass.lpfnWndProc = ( WNDPROC )WindowWin32::WindowProcStatic;
@@ -108,7 +111,7 @@ namespace Bit
 		// Set the window decoration style
 		if( p_Style == Bit::Window::Style_All )
 		{
-			m_Style |= Bit::Window::Style_All; 
+			m_Style |= Bit::Window::Style_All;
 			ExStyle = WS_EX_APPWINDOW;
 			Style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_BORDER;
 		}
@@ -359,7 +362,7 @@ namespace Bit
 				Bit::Event Event;
 				Event.Type = Bit::Event::Moved;
 				m_Position = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
-				Event.Position = m_Position; 
+				Event.Position = m_Position;
 				m_EventQueue.push_back( Event );
 			}
 			break;
@@ -460,7 +463,7 @@ namespace Bit
 	{
 		int len;
 		int slength = (int)p_String.length() + 1;
-		len = MultiByteToWideChar(CP_ACP, 0, p_String.c_str(), slength, 0, 0); 
+		len = MultiByteToWideChar(CP_ACP, 0, p_String.c_str(), slength, 0, 0);
 		wchar_t* buf = new wchar_t[len];
 		MultiByteToWideChar(CP_ACP, 0, p_String.c_str(), slength, buf, len);
 		std::wstring r(buf);
@@ -469,3 +472,5 @@ namespace Bit
 	}
 
 }
+
+#endif

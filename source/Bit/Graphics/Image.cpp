@@ -87,11 +87,11 @@ namespace Bit
 		}
 		else if( FileExtension == "PNG" )
 		{
-			bitTrace( BIT_NULL, "[Bit::Image::ReadFile] Not supporting PNG images yet.\n" );
+			bitTrace( "[Bit::Image::ReadFile] Not supporting PNG images yet.\n" );
 			return BIT_ERROR;
 		}
 
-		bitTrace( BIT_NULL, "[Bit::Image::ReadFile] Unknow extension: %s.\n", FileExtension );
+		bitTrace( "[Bit::Image::ReadFile] Unknow extension: %s.\n", FileExtension.c_str( ) );
 
 		return BIT_ERROR;
 	}
@@ -114,7 +114,7 @@ namespace Bit
 		File.seekg(12);
 
 		// Read the info data
-		File.read((char*)Info, sizeof(unsigned char) * 6); 
+		File.read((char*)Info, sizeof(unsigned char) * 6);
 
 		// Check if the image is either a color or greyscale image
 		// 2 == color, 3 == greyscale
@@ -140,7 +140,7 @@ namespace Bit
 
 		// Deallocate the old image data
 		DeallocateData();
-		
+
 		// Get the full size of the image data and allocate memory for the data
 		BIT_UINT32 ImageSize = GetDataSize( );
 		m_pData = new BIT_BYTE[ImageSize];
@@ -191,7 +191,7 @@ namespace Bit
 
 	void Image::SetPixel( const BIT_UINT32 p_Index, Pixel p_Pixel )
 	{
-		if( m_pData == BIT_NULL || 
+		if( m_pData == BIT_NULL ||
 			p_Index >= (m_Size.x * m_Size.y) )
 		{
 			return;
@@ -201,7 +201,7 @@ namespace Bit
 		m_pData[ ( p_Index * m_Depth ) ] = p_Pixel.m_R;
 		m_pData[ ( p_Index * m_Depth ) + 1 ] = p_Pixel.m_G;
 		m_pData[ ( p_Index * m_Depth ) + 2 ] = p_Pixel.m_B;
-		
+
 		// Are we using the alpha channel?
 		if( m_Depth == 4 )
 		{
@@ -280,7 +280,7 @@ namespace Bit
 			return;
 		}
 
-		
+
 		BIT_UINT32 Size = GetDataSize( );
 		BIT_BYTE TemporaryByte = 0;
 

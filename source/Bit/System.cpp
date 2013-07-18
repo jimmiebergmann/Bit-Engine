@@ -24,6 +24,7 @@
 
 
 #include <Bit/System.hpp>
+#include <string.h>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 

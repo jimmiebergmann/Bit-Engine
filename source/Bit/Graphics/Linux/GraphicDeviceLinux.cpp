@@ -23,10 +23,18 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/Linux/GraphicDeviceLinux.hpp>
+
+#ifdef BIT_PLATFORM_LINUX
+
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/OpenGL/FramebufferOpenGL.hpp>
+//#include <Bit/Graphics/OpenGL/RenderbufferOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>
 #include <Bit/Graphics/OpenGL/TextureOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/PostProcessingBloomOpenGL.hpp>
+#include <Bit/Graphics/ModelOBJ.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -206,7 +214,27 @@ namespace Bit
 		glXSwapBuffers( m_pDisplay, m_Window );
 	}
 
+	void GraphicDeviceLinux::BindDefaultFramebuffer( )
+	{
+		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+	}
+
+	void GraphicDeviceLinux::BindDefaultShaderProgram( )
+	{
+		glUseProgram( 0 );
+	}
+
 	// Create functions for different renderer elements
+	Framebuffer * GraphicDeviceLinux::CreateFramebuffer( ) const
+	{
+		return new FramebufferOpenGL( );
+	}
+
+	/*Renderbuffer * GraphicDeviceLinux::CreateRenderbuffer( ) const
+	{
+		return new RenderbufferOpenGL( );
+	}*/
+
     VertexObject * GraphicDeviceLinux::CreateVertexObject( ) const
     {
         // Make sure we support OpenGL vertex objects
@@ -256,7 +284,52 @@ namespace Bit
 			return BIT_NULL;
 		}
 
-		return new TextureOpenGL( );
+		BIT_BOOL OpenGL2 = ( m_DeviceType == Device_OpenGL_2_1 );
+		return new TextureOpenGL( OpenGL2 );
+	}
+
+	Model * GraphicDeviceLinux::CreateModel( Model::eModelType p_Type ) const
+	{
+		switch( p_Type )
+		{
+		case Model::Model_OBJ:
+			{
+				return new ModelOBJ( *reinterpret_cast< const GraphicDevice *>( this ) );
+			}
+			break;
+
+		default:
+			break;
+		}
+
+		return BIT_NULL;
+	}
+
+	PostProcessingBloom * GraphicDeviceLinux::CreatePostProcessingBloom( VertexObject * p_pVertexObject, Texture * p_pTexture )
+	{
+		ShaderProgram * pShaderProgram = BIT_NULL;
+		Shader * pVertexShader = BIT_NULL;
+		Shader * pFragmentShader = BIT_NULL;
+
+		// Create the shader program
+		if( ( pShaderProgram = CreateShaderProgram( ) ) == BIT_NULL )
+		{
+			bitTrace( "[GraphicDeviceLinux::CreatePostProcessingBloom] Can not create the shader program\n" );
+			return BIT_NULL;
+		}
+
+		if( ( pVertexShader = CreateShader( Bit::Shader::Vertex ) ) == BIT_NULL )
+		{
+			bitTrace( "[GraphicDeviceLinux::CreatePostProcessingBloom] Can not create the vertex shader\n" );
+			return BIT_NULL;
+		}
+		if( ( pFragmentShader = CreateShader( Bit::Shader::Fragment ) ) == BIT_NULL )
+		{
+			bitTrace( "[GraphicDeviceLinux::CreatePostProcessingBloom] Can not create the vertex shader\n" );
+			return BIT_NULL;
+		}
+
+		return new PostProcessingBloomOpenGL( pShaderProgram, pVertexShader,pFragmentShader, p_pVertexObject, p_pTexture );
 	}
 
 	// Clear functions
@@ -304,7 +377,7 @@ namespace Bit
 		m_StencilTestStatus = BIT_TRUE;
     }
 
-    void GraphicDeviceLinux::EnableFaceCulling( BIT_UINT32 p_FaceCulling )
+    void GraphicDeviceLinux::EnableFaceCulling( eCulling p_FaceCulling )
     {
         /*GLenum Mode = GL_FRONT;
 		if( p_FaceCulling == BIT_RENDERER_BACKFACE_CULLING )
@@ -406,3 +479,5 @@ namespace Bit
 
 
 }
+
+#endif

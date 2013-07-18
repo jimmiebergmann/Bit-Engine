@@ -1,23 +1,23 @@
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-// 
+//
 // This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
-// 
+//
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute
 // it freely, subject to the following restrictions:
-// 
+//
 // 1. The origin of this software must not be misrepresented;
 //    you must not claim that you wrote the original software.
 //    If you use this software in a product, an acknowledgment
 //    in the product documentation would be appreciated but
 //    is not required.
-// 
+//
 // 2. Altered source versions must be plainly marked as such,
 //    and must not be misrepresented as being the original software.
-// 
+//
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
@@ -52,13 +52,13 @@ namespace Bit
 	void FramebufferOpenGL::Bind( )
 	{
 		// Bind the framebuffer
-		glBindFramebuffer( GL_FRAMEBUFFER, m_FramebufferObject ); 
+		glBindFramebuffer( GL_FRAMEBUFFER, m_FramebufferObject );
 	}
 
 	void FramebufferOpenGL::Unbind( )
 	{
 		// Unbind the framebuffer
-		glBindFramebuffer( GL_FRAMEBUFFER, 0 ); 
+		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 	}
 
 	BIT_UINT32 FramebufferOpenGL::Attach( const Texture * p_pTexture )
@@ -112,25 +112,25 @@ namespace Bit
 		}
 
 		// Bind the framebuffer
-		glBindFramebuffer( GL_FRAMEBUFFER, m_FramebufferObject ); 
+		glBindFramebuffer( GL_FRAMEBUFFER, m_FramebufferObject );
 
 		// Attach the texture
 		glFramebufferTexture2D( GL_FRAMEBUFFER, Attachment,
 			GL_TEXTURE_2D, pTextureOpenGL->GetID( ), 0 );
-	
+
 
 		// Check the framebuffer status!
-		GLenum Status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
-		if( Status != GL_FRAMEBUFFER_COMPLETE )
+		GLenum FramebufferStatus = glCheckFramebufferStatus( GL_FRAMEBUFFER );
+		if( FramebufferStatus != GL_FRAMEBUFFER_COMPLETE )
 		{
 			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
 			bitTrace( "[FramebufferOpenGL::Attach(Texture)] Framebuffer error.\n" );
 			return BIT_ERROR;
-		} 
+		}
 
 		// unbind the framebuffer
-		glBindFramebuffer( GL_FRAMEBUFFER, 0 ); 
+		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
 		// Increment the color attachment counter.
 		m_ColorAttachmentCount++;

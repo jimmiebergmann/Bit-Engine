@@ -1,23 +1,23 @@
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-// 
+//
 // This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
-// 
+//
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute
 // it freely, subject to the following restrictions:
-// 
+//
 // 1. The origin of this software must not be misrepresented;
 //    you must not claim that you wrote the original software.
 //    If you use this software in a product, an acknowledgment
 //    in the product documentation would be appreciated but
 //    is not required.
-// 
+//
 // 2. Altered source versions must be plainly marked as such,
 //    and must not be misrepresented as being the original software.
-// 
+//
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ namespace Bit
 	GL_SHORT
 	GL_UNSIGNED_SHORT
 	GL_INT
-	GL_UNSIGNED_INT 
+	GL_UNSIGNED_INT
 	GL_HALF_FLOAT
 	GL_FLOAT
 	GL_DOUBLE
@@ -61,7 +61,7 @@ namespace Bit
 	const BIT_UINT32 BIT_TYPE_BOOL = 16;
 */
 
-	static const GLenum OpenGLTypes[ 17 ] = 
+	static const GLenum OpenGLTypes[ 17 ] =
 	{
 		0, GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT,
 		GL_UNSIGNED_BYTE, GL_BYTE, GL_UNSIGNED_SHORT, GL_SHORT,
@@ -104,11 +104,11 @@ namespace Bit
 		// Load the vertex buffer object
 		glGenVertexArrays( 1, &m_VertexArrayObject );
 		glBindVertexArray( m_VertexArrayObject );
- 
+
 		// Allocate memory for the VBOs
 		m_VertexBufferObjectCount = m_Buffers.size( );
 		m_pVertexBufferObjects = new GLuint [ m_VertexBufferObjectCount ];
-		
+
 		// Generate the VBOs
 		glGenBuffers( m_VertexBufferObjectCount, m_pVertexBufferObjects );
 
@@ -118,10 +118,10 @@ namespace Bit
 			// Let's load it
 			BIT_UINT32 ElementCount = m_Buffers[ i ].DimensionCount;
 			BIT_UINT32 TotalBufferSize = p_PieceCount * p_PieceSize * ElementCount * m_Buffers[ i ].TypeSize;
-			
+
 			glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObjects[ i ] );
 			glBufferData( GL_ARRAY_BUFFER, (GLsizeiptr)TotalBufferSize, m_Buffers[i].pBuffer, GL_STATIC_DRAW );
-			glVertexAttribPointer( (GLuint)i, ElementCount, m_Buffers[ i ].Type, GL_FALSE, 0, 0 ); 
+			glVertexAttribPointer( (GLuint)i, ElementCount, m_Buffers[ i ].Type, GL_FALSE, 0, 0 );
 			glEnableVertexAttribArray( i );
 		}
 
@@ -148,24 +148,28 @@ namespace Bit
 		// Load the vertex buffer object
 		glGenVertexArrays( 1, &m_VertexArrayObject );
 		glBindVertexArray( m_VertexArrayObject );
- 
+
 		// Allocate memory for the VBOs
 		m_VertexBufferObjectCount = 2;
 		m_pVertexBufferObjects = new GLuint [ 2 ];
-		
+
 		// Generate the VBOs
 		glGenBuffers( m_VertexBufferObjectCount, m_pVertexBufferObjects );
 
 
 		const BIT_FLOAT32 VertexPositions[ 18 ] =
 		{
-			0.0f, 0.0f, 0.0f,	p_Size.x, 0.0f, 0.0f,		p_Size.x, p_Size.y, 0.0f,
-			0.0f, 0.0f, 0.0f,	p_Size.x, p_Size.y, 0.0f,	0.0f, p_Size.y, 0.0f
+			0.0f, 0.0f, 0.0f,
+			static_cast<const BIT_FLOAT32>(p_Size.x), 0.0f, 0.0f,
+			static_cast<const BIT_FLOAT32>(p_Size.x), static_cast<const BIT_FLOAT32>(p_Size.y), 0.0f,
+			0.0f, 0.0f, 0.0f,
+			static_cast<const BIT_FLOAT32>(p_Size.x), static_cast<const BIT_FLOAT32>(p_Size.y), 0.0f,
+			0.0f, static_cast<const BIT_FLOAT32>(p_Size.y), 0.0f
 		};
 
 		const BIT_FLOAT32 VertexTextures[ 12 ] =
 		{
-			0.0f, 0.0f,		1.0f, 0.0f,		1.0f, 1.0f,	
+			0.0f, 0.0f,		1.0f, 0.0f,		1.0f, 1.0f,
 			0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f
 		};
 
@@ -178,7 +182,7 @@ namespace Bit
 		// Add the texture position data
 		glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObjects[ 1 ] );
 		glBufferData( GL_ARRAY_BUFFER, (GLsizeiptr)48, VertexTextures, GL_STATIC_DRAW );
-		glVertexAttribPointer( (GLuint)0, 2, GL_FLOAT, GL_FALSE, 0, 0 ); 
+		glVertexAttribPointer( (GLuint)0, 2, GL_FLOAT, GL_FALSE, 0, 0 );
 		glEnableVertexAttribArray( 1 );
 
 		// Unbind the Array buffer
@@ -238,7 +242,7 @@ namespace Bit
 			bitTrace( "[ VertexObjectOpenGL::AddVertexBuffer] Wrong data type.\n" );
 			return BIT_ERROR;
 		}
-		
+
 		// Add the buffer to a temporary struct which is being used in the Load function.
 		BufferStruct BufferData;
 		BufferData.pBuffer = p_pBuffer;
@@ -246,7 +250,7 @@ namespace Bit
 		BufferData.Type = Type;
 		BufferData.TypeSize = TypeSize;
 		m_Buffers.push_back( BufferData );
-		
+
 		return BIT_OK;
 	}
 
@@ -265,7 +269,7 @@ namespace Bit
 			bitTrace( "[ VertexObjectOpenGL::AddVertexBuffer] Index is out of bound.\n" );
 			return BIT_ERROR;
 		}
-		
+
 		// Bind and update the buffer
 		glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObjects[ p_Index ] );
 

@@ -65,11 +65,11 @@ namespace Bit
 
 		// Get functions
 		static eMode GetMode( );
-		static Matrix4x4 GetMatrix( );
-		static Matrix4x4 GetMatrix( const eMode p_Mode );
-		static Matrix4x4 GetProjectionMatrix( );
-		static Matrix4x4 GetViewMatrix( );
-		static Matrix4x4 GetModelMatrix( );
+		static Matrix4x4 & GetMatrix( );
+		static Matrix4x4 & GetMatrix( const eMode p_Mode );
+		static Matrix4x4 & GetProjectionMatrix( );
+		static Matrix4x4 & GetViewMatrix( );
+		static Matrix4x4 & GetModelMatrix( );
 
 
 	private:

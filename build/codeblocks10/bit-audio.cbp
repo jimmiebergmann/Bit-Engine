@@ -17,6 +17,7 @@
 					<Add option="-g" />
 					<Add option="-W" />
 					<Add option="-O0" />
+					<Add option="-std=gnu++0x" />
 					<Add option="-D_DEBUG" />
 					<Add option="-DBIT_STATIC_LIB" />
 					<Add directory="../../include" />
@@ -36,6 +37,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-W" />
+					<Add option="-std=gnu++0x" />
 					<Add option="-DNDEBUG" />
 					<Add option="-DBIT_STATIC_LIB" />
 					<Add directory="../../include" />
@@ -47,7 +49,11 @@
 			</Target>
 		</Build>
 		<Unit filename="../../include/Bit/Audio.hpp" />
+		<Unit filename="../../include/Bit/Audio/AudioBuffer.hpp" />
+		<Unit filename="../../include/Bit/Audio/XM.hpp" />
 		<Unit filename="../../source/Bit/Audio.cpp" />
+		<Unit filename="../../source/Bit/Audio/AudioBuffer.cpp" />
+		<Unit filename="../../source/Bit/Audio/XM.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

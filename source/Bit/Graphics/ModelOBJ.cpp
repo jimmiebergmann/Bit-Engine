@@ -28,6 +28,12 @@
 #include <Bit/System/MatrixManager.hpp>
 #include <Bit/System/SmartArray.hpp>
 #include <fstream>
+
+#ifdef BIT_PLATFORM_LINUX
+    #include <stdio.h>
+    #define sscanf_s sscanf
+#endif
+
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -75,7 +81,7 @@ namespace Bit
 		for( VertexGroupIterator it_vg = m_VertexGroups.begin( ); it_vg != m_VertexGroups.end( ); it_vg++ )
 		{
 			for( MaterialGroupIterator it_mg = (*it_vg)->Materials.begin( ); it_mg != (*it_vg)->Materials.end( ); it_mg++ )
-			{ 
+			{
 				// Get the material textures
 				Texture * pDiffuseTexture = BIT_NULL;
 				Texture * pNormalTexture = BIT_NULL;
@@ -137,7 +143,7 @@ namespace Bit
 				{
 					pPositionBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
 					CreateVertexPositions( it_mg, pPositionBuffer, TriangleCount );
-					
+
 					// Add the position buffer
 					if( pRenderObject->pVertexObject->AddVertexBuffer( pPositionBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
 					{
@@ -163,7 +169,7 @@ namespace Bit
 				{
 					pNormalBuffer = new BIT_FLOAT32[ TriangleCount * 9 ];
 					CreateVertexNormals( it_mg, pNormalBuffer, TriangleCount );
-					
+
 					// Add the position buffer
 					if( pRenderObject->pVertexObject->AddVertexBuffer( pNormalBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
 					{
@@ -171,7 +177,7 @@ namespace Bit
 						return BIT_ERROR;
 					}
 				}
-				// Tangent / binormal positions	
+				// Tangent / binormal positions
 				if( ( CalculateTangents || CalculateBinormals ) &&
 					CalculatePositions && CalculateTextures )
 				{
@@ -190,7 +196,7 @@ namespace Bit
 					VertexObject::GenerateTangents( pPositionBuffer, pTextureBuffer,
 						pTangentBuffer, pBinormalBuffer, TriangleCount );
 					//CreateVertexTangentsBinormals( it_mg, pTangentBuffer, pBinormalBuffer, TriangleCount );
-			
+
 					// Add the position buffer
 					if( CalculateTangents )
 					{
@@ -241,10 +247,10 @@ namespace Bit
 					delete [ ] pBinormalBuffer;
 				}
 
-				
+
 			}
 		}
-	
+
 
 		return BIT_OK;
 	}
@@ -257,7 +263,7 @@ namespace Bit
 		m_TexturePositions.clear( );
 		m_NormalPositions.clear( );
 		m_Textures.clear( );
-		
+
 		// Clear the materials
 		for( MaterialIterator it = m_Materials.begin( ); it != m_Materials.end( ); it++ )
 		{
@@ -276,7 +282,7 @@ namespace Bit
 			delete m_VertexGroups[ i ];
 		}
 		m_VertexGroups.clear( );
-		
+
 		// Clear the render objects
 		for( BIT_MEMSIZE i = 0; i < m_RenderObjects.size( ); i++ )
 		{
@@ -286,7 +292,7 @@ namespace Bit
 			// Null the textures
 			m_RenderObjects[ i ]->pTextureDiffuse = BIT_NULL;
 			m_RenderObjects[ i ]->pTextureNormal = BIT_NULL;
-			
+
 			// Unload the vertex object
 			delete m_RenderObjects[ i ]->pVertexObject;
 
@@ -417,9 +423,9 @@ namespace Bit
 		// Keep on reading until we reach any stream flag
 		while( CurrentPosition < FileSize )
 		{
-			// Get the current line 
+			// Get the current line
 			CurrentPosition += GetLine( LineBuffer, 128, &Data[ CurrentPosition ] );
-			
+
 			// Manage the current line
 			// Ignore comments
 			switch( LineBuffer[ 0 ] )
@@ -628,9 +634,9 @@ namespace Bit
 		// Keep on reading until we reach any stream flag
 		while( CurrentPosition < FileSize )
 		{
-			// Get the current line 
+			// Get the current line
 			CurrentPosition += GetLine( LineBuffer, 128, &Data[ CurrentPosition ] );
-			
+
 			// Ignore spaces and tabs, Have been seen in material files
 			for( BIT_MEMSIZE i = 0; i < 128; i++ )
 			{
@@ -640,7 +646,7 @@ namespace Bit
 					break;
 				}
 			}
-			
+
 			// Scan for the data
 			if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "newmtl %s", TextBuffer64, sizeof( TextBuffer64 ) ) == 1 )
 			{
@@ -660,7 +666,7 @@ namespace Bit
 				}
 
 				// Set the diffuse texture path
-				pMaterial->DiffuseTexture = DirectoryPath + std::string( (char *)TextBuffer128 ); 
+				pMaterial->DiffuseTexture = DirectoryPath + std::string( (char *)TextBuffer128 );
 			}
 			// Scan for bump texture
 			else if( sscanf_s( (const char *)&LineBuffer[ LinePosition ], "map_Disp %s", TextBuffer128, sizeof( TextBuffer128 ) ) == 1 )
@@ -672,7 +678,7 @@ namespace Bit
 				}
 
 				// Set the diffuse texture path
-				pMaterial->NormalTexture = DirectoryPath + std::string( (char *)TextBuffer128 ); 
+				pMaterial->NormalTexture = DirectoryPath + std::string( (char *)TextBuffer128 );
 			}
 		}
 
@@ -802,7 +808,7 @@ namespace Bit
 						{
 							(*it_mg)->ContainsTexturePositions = BIT_FALSE;
 						}
-					}	
+					}
 				}
 			}
 		}
@@ -868,7 +874,7 @@ namespace Bit
 
 	}
 
-	
+
 
 	void ModelOBJ::CreateVertexTangentsBinormals( const MaterialGroupIterator & p_MatGroupIt, BIT_FLOAT32 * p_pTangents,
 		BIT_FLOAT32 * p_pBinormals, const BIT_UINT32 p_TriangleCount )
@@ -932,11 +938,11 @@ namespace Bit
 			// Increment the triangle index
 			ti++;
 		}
-	
-	
+
+
 	}
 
-	
+
 
 
 }

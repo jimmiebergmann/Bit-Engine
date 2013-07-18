@@ -1,0 +1,54 @@
+CC		= g++
+CFLAGS		= -W -Wall
+AR		= ar rcs
+RM		= rm -f
+OBJ_PATH        = obj/Linux/32/Debug
+LIB_PATH        = lib/Linux/32
+INCLUDE_PATH	= include
+SOURCE_PATH	= source
+EXTLIBS_PATH	= extlibs
+
+# Libraries
+LIB_PREFIX	= lib
+LIB_BIT_PREFIX	= bit-
+LIB_AUDIO	= $(LIB_BIT_PREFIX)audio
+LIB_GRAPHICS	= $(LIB_BIT_PREFIX)graphics
+LIB_NETOWKR	= $(LIB_BIT_PREFIX)network
+LIB_SYSTEM	= $(LIB_BIT_PREFIX)system
+LIB_WINDOW	= $(LIB_BIT_PREFIX)window
+
+
+# All target
+all: debug
+
+test = Hello world
+
+# Debug target
+debug: $(LIB_PATH)/$(LIB_PREFIX)$(LIB_SYSTEM).a
+	$(info -----------------------------------) 
+	$(info Building DEBUG profile )
+	$(info -----------------------------------)
+
+
+# System target
+$(LIB_PATH)/$(LIB_PREFIX)$(LIB_SYSTEM).a: $(OBJ_PATH)/Randomizer.o
+	$(info target: System)
+	mkdir -p $(LIB_PATH)
+	$(AR) $@ $^
+
+
+# Randomizer target
+$(OBJ_PATH)/Randomizer.o: source/Bit/System/Randomizer.cpp
+	$(info target: Randomizer.o)
+	mkdir -p $(OBJ_PATH)
+	$(CC) -I$(INCLUDE_PATH) -c $< -o $@	
+
+
+# Clean target
+.PHONY: clean cleanall
+
+clean:
+	$(RM) -rf obj
+
+cleanall: clean
+	$(RM) -rf lib

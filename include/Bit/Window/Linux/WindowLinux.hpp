@@ -30,6 +30,7 @@
 #ifdef BIT_PLATFORM_LINUX
 
 #include <Bit/Window/Window.hpp>
+#include <Bit/System/Vector2.hpp>
 #include <X11/Xlib.h>
 
 namespace Bit
@@ -51,7 +52,10 @@ namespace Bit
                     const BIT_UINT32 p_Style );
 		virtual BIT_UINT32 Close( );
 		virtual BIT_UINT32 Update( );
-		virtual BIT_BOOL Show( const BIT_BOOL p_State );
+		virtual BIT_UINT32 Show( const BIT_BOOL p_State );
+		virtual BIT_UINT32 ShowCursor( const BIT_BOOL p_State );
+		virtual BIT_UINT32 SetCursorPosition( Vector2_si32 p_Position );
+		virtual Vector2_si32 GetCursorScreenPosition( );
 
 		// Set functions
 		virtual BIT_UINT32 SetTitle( std::string p_Title );

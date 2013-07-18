@@ -267,7 +267,7 @@ namespace Bit
 			// Quaternion multiplication(ignore the w component)
 			x = vy * qz - vz * qy + vw * qx + vx * qw;
 			y = vz * qx - vx * qz + vw * qy + vy * qw;
-			z = vx * qy - vy * qx + vw * qz + vz * qw;	
+			z = vx * qy - vy * qx + vw * qz + vz * qw;
 		}
 
 		void RotateY( BIT_FLOAT64 p_Angle )

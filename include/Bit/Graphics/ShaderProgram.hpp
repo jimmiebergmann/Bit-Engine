@@ -53,8 +53,8 @@ namespace Bit
 		virtual void SetUniform2f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 ) = 0;
 		virtual void SetUniform3f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 ) = 0;
 		virtual void SetUniform4f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 ) = 0;
-		virtual void SetUniformMatrix4x4f( const char * p_Location, Matrix4x4 & p_Matrix ) = 0;
-		virtual void SetAttributeLocation( const char * p_Location, BIT_UINT32 p_Index ) = 0;
+		virtual void SetUniformMatrix4x4f( const char * p_Location, const Matrix4x4 & p_Matrix ) = 0;
+		virtual void SetAttributeLocation( const char * p_Location, const BIT_UINT32 p_Index ) = 0;
 
 	protected:
 

@@ -27,7 +27,7 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Framebuffer.hpp>
-#include <Bit/Graphics/OpenGL/Opengl.hpp>
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
 
 namespace Bit
 {

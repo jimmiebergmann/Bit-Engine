@@ -17,6 +17,7 @@
 					<Add option="-g" />
 					<Add option="-W" />
 					<Add option="-O0" />
+					<Add option="-std=gnu++0x" />
 					<Add option="-D_DEBUG" />
 					<Add option="-DBIT_STATIC_LIB" />
 					<Add directory="../../include" />
@@ -36,6 +37,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-W" />
+					<Add option="-std=gnu++0x" />
 					<Add option="-DNDEBUG" />
 					<Add option="-DBIT_STATIC_LIB" />
 					<Add directory="../../include" />
@@ -48,8 +50,10 @@
 		</Build>
 		<Unit filename="../../include/Bit/Window/Event.hpp" />
 		<Unit filename="../../include/Bit/Window/Linux/WindowLinux.hpp" />
+		<Unit filename="../../include/Bit/Window/Win32/WindowWin32.hpp" />
 		<Unit filename="../../include/Bit/Window/Window.hpp" />
 		<Unit filename="../../source/Bit/Window/Linux/WindowLinux.cpp" />
+		<Unit filename="../../source/Bit/Window/Win32/WindowWin32.cpp" />
 		<Unit filename="../../source/Bit/Window/Window.cpp" />
 		<Extensions>
 			<code_completion />
