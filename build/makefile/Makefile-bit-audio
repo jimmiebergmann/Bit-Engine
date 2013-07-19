@@ -1,6 +1,6 @@
 ################################################
 #
-#	Bit Engine - System Makefile
+#	Bit Engine - Audio Makefile
 #
 ################################################
 
@@ -12,7 +12,7 @@ RM				= rm -f
 MKDIR			= mkdir -p
 OBJ_PATH        = obj/Linux/32
 LIB_PATH        = lib/Linux/32
-LIB_NAME		= bit-system
+LIB_NAME		= bit-audio
 EXTLIBS_PATH	= extlibs
 DEBUG_POSTFIX	= -d
 
@@ -40,8 +40,8 @@ release_dynamic:
 
 
 # Library target
-CPP = $(shell find source/Bit/System -type f -name "*.cpp" )
-CPP += source/Bit/System.cpp
+CPP = $(shell find source/Bit/Audio -type f -name "*.cpp" )
+CPP += source/Bit/Audio.cpp
 OBJ_DEBUG_STATIC = $(addprefix $(OBJ_PATH)/debug_static/$(LIB_NAME)/, $(patsubst %.cpp, %.o, $(CPP)))
 OBJ_RELEASE_STATIC = $(addprefix $(OBJ_PATH)/release_static/$(LIB_NAME)/, $(patsubst %.cpp, %.o, $(CPP)))
 
