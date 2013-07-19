@@ -12,15 +12,10 @@ RM				= rm -f
 MKDIR			= mkdir -p
 OBJ_PATH        = obj/Linux/32
 LIB_PATH        = lib/Linux/32
+LIB_NAME		= bit-system
 EXTLIBS_PATH	= extlibs
 DEBUG_POSTFIX	= -d
 
-# Libraries
-LIB_AUDIO		= bit-audio
-LIB_GRAPHICS	= bit-graphics
-LIB_NETWORK		= bit-network
-LIB_SYSTEM		= bit-system
-LIB_WINDOW		= bit-window
 
 
 # All target
@@ -30,7 +25,7 @@ all: debug_static debug_dynamic release_static release_dynamic
 # DEBUG targets
 # Static DEBUG target
 debug_static: CCFLAGS += -g -W -O0
-debug_static: $(LIB_PATH)/$(LIB_SYSTEM)$(DEBUG_POSTFIX).a
+debug_static: $(LIB_PATH)/$(LIB_NAME)$(DEBUG_POSTFIX).a
 
 
 # Dynamic DEBUG target
@@ -39,7 +34,7 @@ debug_dynamic:
 
 # RELEASE targets
 # Static RELEASE target
-release_static: $(LIB_PATH)/$(LIB_SYSTEM).a
+release_static: $(LIB_PATH)/$(LIB_NAME).a
 
 # Dynamic RELEASE target
 release_dynamic:
@@ -49,27 +44,27 @@ release_dynamic:
 # System targets
 SYSTEM_CPP = $(shell find source/Bit/System -type f -name "*.cpp" )
 SYSTEM_CPP += source/Bit/System.cpp
-SYSTEM_OBJ_DEBUG_STATIC = $(addprefix $(OBJ_PATH)/debug_static/$(LIB_SYSTEM)/, $(patsubst %.cpp, %.o, $(SYSTEM_CPP)))
-SYSTEM_OBJ_RELEASE_STATIC = $(addprefix $(OBJ_PATH)/release_static/$(LIB_SYSTEM)/, $(patsubst %.cpp, %.o, $(SYSTEM_CPP)))
+SYSTEM_OBJ_DEBUG_STATIC = $(addprefix $(OBJ_PATH)/debug_static/$(LIB_NAME)/, $(patsubst %.cpp, %.o, $(SYSTEM_CPP)))
+SYSTEM_OBJ_RELEASE_STATIC = $(addprefix $(OBJ_PATH)/release_static/$(LIB_NAME)/, $(patsubst %.cpp, %.o, $(SYSTEM_CPP)))
 
 # Static debug system target
-$(LIB_PATH)/$(LIB_SYSTEM)$(DEBUG_POSTFIX).a: $(SYSTEM_OBJ_DEBUG_STATIC)
+$(LIB_PATH)/$(LIB_NAME)$(DEBUG_POSTFIX).a: $(SYSTEM_OBJ_DEBUG_STATIC)
 	$(MKDIR) $(LIB_PATH)
 	$(AR) $@ $^
 # Static release system target
-$(LIB_PATH)/$(LIB_SYSTEM).a: $(SYSTEM_OBJ_RELEASE_STATIC)
+$(LIB_PATH)/$(LIB_NAME).a: $(SYSTEM_OBJ_RELEASE_STATIC)
 	$(MKDIR) $(LIB_PATH)
 	$(AR) $@ $^
 
 # System objects
 # Static debug system objects
-$(OBJ_PATH)/debug_static/$(LIB_SYSTEM)/%.o: %.cpp
+$(OBJ_PATH)/debug_static/$(LIB_NAME)/%.o: %.cpp
 	$(MKDIR) $(dir $@)
 	$(CC) $(CCFLAGS) $(addprefix -I, $(CCPATHS)) -c $< -o $@
 	@echo Compiling: $<
 
 # Static release system objects
-$(OBJ_PATH)/release_static/$(LIB_SYSTEM)/%.o: %.cpp
+$(OBJ_PATH)/release_static/$(LIB_NAME)/%.o: %.cpp
 	$(MKDIR) $(dir $@)
 	$(CC) $(CCFLAGS) $(addprefix -I, $(CCPATHS)) -c $< -o $@
 	@echo Compiling: $<
@@ -77,7 +72,7 @@ $(OBJ_PATH)/release_static/$(LIB_SYSTEM)/%.o: %.cpp
 
 
 # Clean target
-.PHONY: clean cleanall
+.PHONY: clean cleanall cleandebug_static cleandebug_release
 
 clean:
 	$(RM) -rf obj
@@ -85,3 +80,8 @@ clean:
 cleanall: clean
 	$(RM) -rf lib
 
+cleandebug_static:
+	$(RM) -rf $(OBJ_PATH)/debug_static
+
+cleandebug_release:
+	$(RM) -rf $(OBJ_PATH)/release_static
