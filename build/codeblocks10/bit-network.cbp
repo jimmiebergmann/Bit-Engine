@@ -3,15 +3,16 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="bit-network" />
+		<Option makefile="build/makefile/Makefile-bit-network" />
 		<Option makefile_is_custom="1" />
-		<Option execution_dir="/home/oc3/Git/Bit-Engine" />
+		<Option execution_dir="../../../Bit-Engine" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="debug_static">
 				<Option output="../../lib/Linux/32/bit-network-d" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../obj/Linux/32/codeblocks10/bit-network/Debug" />
+				<Option object_output="../../obj/Linux/32/bit-network/debug_static" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -32,7 +33,7 @@
 			<Target title="release_static">
 				<Option output="../../lib/Linux/32/bit-network" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../obj/Linux/32/codeblocks10/bit-network/Release" />
+				<Option object_output="../../obj/Linux/32/bit-network/release_static" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />

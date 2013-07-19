@@ -4,7 +4,7 @@
 		<Project filename="bit-audio.cbp" />
 		<Project filename="bit-graphics.cbp" />
 		<Project filename="bit-network.cbp" />
-		<Project filename="bit-system.cbp" />
-		<Project filename="bit-window.cbp" active="1" />
+		<Project filename="bit-system.cbp" active="1" />
+		<Project filename="bit-window.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

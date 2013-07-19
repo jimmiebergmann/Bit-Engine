@@ -3,7 +3,9 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="bit-system" />
-		<Option execution_dir="/home/oc3/Git/Bit-Engine" />
+		<Option makefile="build/makefile/Makefile-bit-system" />
+		<Option makefile_is_custom="1" />
+		<Option execution_dir="../../../Bit-Engine" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
