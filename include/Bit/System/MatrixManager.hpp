@@ -54,6 +54,7 @@ namespace Bit
 			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
 		static void LoadOrthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
 			const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
+		static void LoadLookAt( const Vector3_f32 p_Eye, const Vector3_f32 p_Center, const Vector3_f32 p_Up );
 		static void Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
 		static void RotateX( const BIT_FLOAT32 p_Angle );
 		static void RotateY( const BIT_FLOAT32 p_Angle );

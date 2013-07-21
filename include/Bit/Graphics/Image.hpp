@@ -50,7 +50,7 @@ namespace Bit
 		BIT_BYTE m_G;
 		BIT_BYTE m_B;
 		BIT_BYTE m_A;
-		
+
 	};
 
 
@@ -80,7 +80,7 @@ namespace Bit
 		Vector2_ui32 GetSize( ) const;
 		BIT_UINT32 GetDataSize( ) const;
 		BIT_UINT32 GetDepth( ) const;
-		
+
 
 	private:
 
@@ -96,5 +96,7 @@ namespace Bit
 	};
 
 }
+
+
 
 #endif

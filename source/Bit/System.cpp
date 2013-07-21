@@ -148,6 +148,13 @@ namespace Bit
 		return Extension;
 	}
 
+/*
+    Texture * BIT_API GetATest( )
+    {
+
+    return BIT_NULL;
+    }*/
+
 	// Get line functions.
 	BIT_UINT32 BIT_API GetLine( BIT_SCHAR8 * p_Destination, BIT_UINT32 p_DestinationSize, const BIT_SCHAR8 * p_Source )
 	{
@@ -172,3 +179,9 @@ namespace Bit
 	}
 
 }
+
+
+
+
+
+

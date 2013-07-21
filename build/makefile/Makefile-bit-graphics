@@ -41,6 +41,8 @@ release_dynamic:
 
 # Library target
 CPP = $(shell find source/Bit/Graphics -type f -name "*.cpp" )
+CPP += $(shell find source/Bit/System -type f -name "*.cpp" )
+CPP += source/Bit/System.cpp
 OBJ_DEBUG_STATIC = $(addprefix $(OBJ_PATH)/debug_static/$(LIB_NAME)/, $(patsubst %.cpp, %.o, $(CPP)))
 OBJ_RELEASE_STATIC = $(addprefix $(OBJ_PATH)/release_static/$(LIB_NAME)/, $(patsubst %.cpp, %.o, $(CPP)))
 

@@ -75,6 +75,11 @@ namespace Bit
 		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Orthographic( p_Left, p_Right, p_Bottom, p_Top, p_ZNear, p_ZFar );
 	}
 
+	void MatrixManager::LoadLookAt( const Vector3_f32 p_Eye, const Vector3_f32 p_Center, const Vector3_f32 p_Up )
+	{
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).LookAt( p_Eye, p_Center, p_Up );
+	}
+
 	void MatrixManager::Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
 	{
 		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Translate( p_X, p_Y, p_Z );
