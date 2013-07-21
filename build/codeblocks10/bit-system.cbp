@@ -4,7 +4,6 @@
 	<Project>
 		<Option title="bit-system" />
 		<Option makefile="build/makefile/Makefile-bit-system" />
-		<Option makefile_is_custom="1" />
 		<Option execution_dir="../../../Bit-Engine" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
@@ -49,6 +48,20 @@
 				<ResourceCompiler>
 					<Add directory="../../include" />
 				</ResourceCompiler>
+			</Target>
+			<Target title="debug_dynamic">
+				<Option output="../../lib/Linux/32/Dynamic/bit-system-d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../obj/Linux/32/bit-system/Dynamic/debug_static" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-D_DEBUG" />
+					<Add option="-DBIT_EXPORTS" />
+					<Add directory="../../include" />
+					<Add directory="../../extlibs/include" />
+				</Compiler>
 			</Target>
 		</Build>
 		<Unit filename="../../include/Bit/DataTypes.hpp" />

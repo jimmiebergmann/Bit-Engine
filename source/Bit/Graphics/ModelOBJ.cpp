@@ -96,6 +96,7 @@ namespace Bit
 						{
 							// We found the material we are looking for.
 							// Get the textures
+
 							pDiffuseTexture = ResourceManager::GetTexture( (*it_mat)->DiffuseTexture, p_pTextureFilters, p_Mipmapping );
 							pNormalTexture = ResourceManager::GetTexture( (*it_mat)->NormalTexture, p_pTextureFilters, p_Mipmapping );
 							break;

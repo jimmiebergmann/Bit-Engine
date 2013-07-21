@@ -67,9 +67,6 @@ namespace Bit
 		static BIT_UINT32 LoadErrorTexture( );
 
 		// Private typedefs
-		/*typedef stdext::hash_map <std::string, Texture *> TextureMap;
-		typedef TextureMap::iterator TextureIterator;
-*/
 		// Private variables
 		static BIT_BOOL m_Initialized;
 		static GraphicDevice * m_pGraphicDevice;
@@ -80,5 +77,6 @@ namespace Bit
 	};
 
 }
+
 
 #endif

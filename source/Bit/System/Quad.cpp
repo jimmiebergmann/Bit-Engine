@@ -86,10 +86,10 @@ namespace Bit
 	{
 		return IntersectionCircleQuad( p_Circle, *this );
 	}
-	
+
 	BIT_BOOL Quad::Intersection( Quad p_Quad )
 	{
 		return IntersectionQuadQuad( *this, p_Quad);
 	}
-	
+
 }

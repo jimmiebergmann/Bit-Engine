@@ -26,6 +26,7 @@
 #define __BIT_SYSTEM_HPP__
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/Graphics/Texture.hpp>
 #include <string>
 
 namespace Bit
@@ -43,5 +44,7 @@ namespace Bit
 	BIT_UINT32 BIT_API GetLine( BIT_SCHAR8 * p_Destination, BIT_UINT32 p_DestinationSize, const BIT_SCHAR8 * p_Source );
 
 }
+
+
 
 #endif

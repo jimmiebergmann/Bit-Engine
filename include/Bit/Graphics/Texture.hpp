@@ -30,7 +30,7 @@
 
 namespace Bit
 {
-	class BIT_API Texture 
+	class BIT_API Texture
 	{
 
 	public:
@@ -69,7 +69,7 @@ namespace Bit
 		BIT_INLINE Vector2_ui32 GetSize( ) const { return m_Size; };
 		BIT_INLINE BIT_UINT32 GetFormat( ) const { return m_Format; };
 		BIT_INLINE BIT_BOOL IsLoaded( ) const { return m_Loaded; };
-		
+
 	protected:
 
 		// Protexted variables
@@ -79,5 +79,7 @@ namespace Bit
 
 	};
 }
+
+
 
 #endif

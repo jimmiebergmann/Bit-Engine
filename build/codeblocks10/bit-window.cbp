@@ -4,7 +4,6 @@
 	<Project>
 		<Option title="bit-window" />
 		<Option makefile="build/makefile/Makefile-bit-window" />
-		<Option makefile_is_custom="1" />
 		<Option execution_dir="../../../Bit-Engine" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />

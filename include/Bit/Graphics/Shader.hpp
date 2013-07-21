@@ -55,7 +55,7 @@ namespace Bit
 
 		// Set functions
 		BIT_INLINE void SetSource( std::string p_Source ) { m_ShaderSource = p_Source; };
-		
+
 		// "inline" Get public functions
 		BIT_INLINE eShaderType GetType( ) const { return m_ShaderType; }
 		BIT_INLINE std::string GetSource( ) const { return m_ShaderSource; }
@@ -71,5 +71,6 @@ namespace Bit
 	};
 
 }
+
 
 #endif
