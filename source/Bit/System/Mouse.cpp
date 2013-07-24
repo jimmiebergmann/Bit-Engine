@@ -22,45 +22,38 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_EVENT_HPP__
-#define __BIT_WINDOW_EVENT_HPP__
-
-#include <Bit/DataTypes.hpp>
-#include <Bit/System/Keyboard.hpp>
 #include <Bit/System/Mouse.hpp>
-#include <Bit/System/Vector2.hpp>
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	struct Event
-	{
+    // Constructor
+    Mouse::Mouse( )
+    {
 
-		enum eEventType
-		{
-			None = 0,
-			Closed = 1,
-			Moved = 2,
-			Resized = 3,
-			GainedFocus = 4,
-			LostFocus = 5,
-			KeyPressed = 6,
-			KeyReleased = 7,
-			MouseMoved = 8,
-			MouseButtonPressed = 9,
-			MouseButtonReleased = 10
-		};
+    }
 
-		eEventType Type;
+    // Get state functions
+    BIT_BOOL Mouse::ButtonIsDown( eButton p_Button )
+    {
+        return BIT_FALSE;
+    }
 
-		Bit::Vector2_si32 Size;
-		Bit::Vector2_si32 Position;
-		Bit::Vector2_si32 MousePosition;
-		Keyboard::eKey Key;
-		Mouse::eButton Button;
+    BIT_BOOL Mouse::ButtonIsUp( eButton p_Button )
+    {
+        return BIT_FALSE;
+    }
 
-	};
+    BIT_BOOL Mouse::ButtonIsJustPressed( eButton p_Button )
+    {
+        return BIT_FALSE;
+    }
+
+    BIT_BOOL Mouse::ButtonIsJustReleased( eButton p_Button )
+    {
+        return BIT_FALSE;
+    }
 
 }
-
-#endif

@@ -31,6 +31,7 @@
 	#include <sys/time.h>
 #endif
 
+#include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 
@@ -82,7 +83,9 @@ namespace Bit
 
 			timeval Time;
 			gettimeofday( &Time, 0 );
-			return Time.tv_sec + ( Time.tv_usec * 0.000001 );
+
+			return  static_cast< BIT_FLOAT64 >( Time.tv_sec ) +
+					static_cast< BIT_FLOAT64 >( Time.tv_usec ) * 0.000001f;
 
 		#endif
 	}

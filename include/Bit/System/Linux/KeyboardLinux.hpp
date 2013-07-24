@@ -22,45 +22,58 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_EVENT_HPP__
-#define __BIT_WINDOW_EVENT_HPP__
+#ifndef __BIT_SYSTEM_KEYBOARD_LINUX_HPP__
+#define __BIT_SYSTEM_KEYBOARD_LINUX_HPP__
 
 #include <Bit/DataTypes.hpp>
+
+#ifdef BIT_PLATFORM_LINUX
+
 #include <Bit/System/Keyboard.hpp>
-#include <Bit/System/Mouse.hpp>
-#include <Bit/System/Vector2.hpp>
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
 
 namespace Bit
 {
 
-	struct Event
-	{
+    class BIT_API KeyboardLinux : public Keyboard
+    {
 
-		enum eEventType
-		{
-			None = 0,
-			Closed = 1,
-			Moved = 2,
-			Resized = 3,
-			GainedFocus = 4,
-			LostFocus = 5,
-			KeyPressed = 6,
-			KeyReleased = 7,
-			MouseMoved = 8,
-			MouseButtonPressed = 9,
-			MouseButtonReleased = 10
-		};
+    public:
 
-		eEventType Type;
+        // Constructor/destructor
+        KeyboardLinux( );
+        virtual ~KeyboardLinux( );
 
-		Bit::Vector2_si32 Size;
-		Bit::Vector2_si32 Position;
-		Bit::Vector2_si32 MousePosition;
-		Keyboard::eKey Key;
-		Mouse::eButton Button;
+         // Public general functions
+        virtual void Update( );
 
-	};
+        // Key translation function for platform keys
+        virtual eKey TranslateKey( const BIT_UINT32 p_Key );
+
+        // Get state functions
+        virtual BIT_BOOL KeyIsDown( eKey p_Key );
+        virtual BIT_BOOL KeyIsUp( eKey p_Key );
+        virtual BIT_BOOL KeyIsJustPressed( eKey p_Key );
+        virtual BIT_BOOL KeyIsJustReleased( eKey p_Key );
+
+    private:
+
+        // Private functions
+        BIT_BOOL GetKeyStatus( eKey p_Key );
+
+        // Private variables
+        ::Display * m_pDisplay;
+
+
+    };
+
+    // Use this function for keyboard creation!
+	// Function for Keyboard allocation
+	BIT_API Keyboard * CreateKeyboard( );
 
 }
+
+#endif
 
 #endif
