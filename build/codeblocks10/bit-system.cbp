@@ -4,6 +4,7 @@
 	<Project>
 		<Option title="bit-system" />
 		<Option makefile="build/makefile/Makefile-bit-system" />
+		<Option makefile_is_custom="1" />
 		<Option execution_dir="../../../Bit-Engine" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
@@ -69,12 +70,16 @@
 		<Unit filename="../../include/Bit/System/Box.hpp" />
 		<Unit filename="../../include/Bit/System/Circle.hpp" />
 		<Unit filename="../../include/Bit/System/Debugger.hpp" />
+		<Unit filename="../../include/Bit/System/Keyboard.hpp" />
 		<Unit filename="../../include/Bit/System/Line2.hpp" />
 		<Unit filename="../../include/Bit/System/Line3.hpp" />
+		<Unit filename="../../include/Bit/System/Linux/KeyboardLinux.hpp" />
+		<Unit filename="../../include/Bit/System/Linux/MouseLinux.hpp" />
 		<Unit filename="../../include/Bit/System/Math.hpp" />
 		<Unit filename="../../include/Bit/System/Matrix4x4.hpp" />
 		<Unit filename="../../include/Bit/System/MatrixManager.hpp" />
 		<Unit filename="../../include/Bit/System/MemoryLeak.hpp" />
+		<Unit filename="../../include/Bit/System/Mouse.hpp" />
 		<Unit filename="../../include/Bit/System/Quad.hpp" />
 		<Unit filename="../../include/Bit/System/Randomizer.hpp" />
 		<Unit filename="../../include/Bit/System/ResourceManager.hpp" />
@@ -88,12 +93,16 @@
 		<Unit filename="../../source/Bit/System/Box.cpp" />
 		<Unit filename="../../source/Bit/System/Circle.cpp" />
 		<Unit filename="../../source/Bit/System/Debugger.cpp" />
+		<Unit filename="../../source/Bit/System/Keyboard.cpp" />
 		<Unit filename="../../source/Bit/System/Line2.cpp" />
 		<Unit filename="../../source/Bit/System/Line3.cpp" />
+		<Unit filename="../../source/Bit/System/Linux/KeyboardLinux.cpp" />
+		<Unit filename="../../source/Bit/System/Linux/MouseLinux.cpp" />
 		<Unit filename="../../source/Bit/System/Math.cpp" />
 		<Unit filename="../../source/Bit/System/Matrix4x4.cpp" />
 		<Unit filename="../../source/Bit/System/MatrixManager.cpp" />
 		<Unit filename="../../source/Bit/System/MemoryLeak.cpp" />
+		<Unit filename="../../source/Bit/System/Mouse.cpp" />
 		<Unit filename="../../source/Bit/System/Quad.cpp" />
 		<Unit filename="../../source/Bit/System/Randomizer.cpp" />
 		<Unit filename="../../source/Bit/System/ResourceManager.cpp" />

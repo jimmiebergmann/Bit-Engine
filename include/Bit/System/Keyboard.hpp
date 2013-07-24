@@ -22,44 +22,49 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_EVENT_HPP__
-#define __BIT_WINDOW_EVENT_HPP__
+#ifndef __BIT_SYSTEM_KEYBOARD_HPP__
+#define __BIT_SYSTEM_KEYBOARD_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/System/Keyboard.hpp>
-#include <Bit/System/Mouse.hpp>
-#include <Bit/System/Vector2.hpp>
 
 namespace Bit
 {
 
-	struct Event
-	{
+    class BIT_API Keyboard
+    {
 
-		enum eEventType
-		{
-			None = 0,
-			Closed = 1,
-			Moved = 2,
-			Resized = 3,
-			GainedFocus = 4,
-			LostFocus = 5,
-			KeyPressed = 6,
-			KeyReleased = 7,
-			MouseMoved = 8,
-			MouseButtonPressed = 9,
-			MouseButtonReleased = 10
-		};
+    public:
 
-		eEventType Type;
+        // Public enum
+        enum eKey
+        {
+            Key_None = 0,
+            Key_A,
+            Key_B,
+            Key_C,
+            Key_Count
+        };
 
-		Bit::Vector2_si32 Size;
-		Bit::Vector2_si32 Position;
-		Bit::Vector2_si32 MousePosition;
-		Keyboard::eKey Key;
-		Mouse::eButton Button;
+        // Constructors/destructors
+		virtual ~Keyboard( ) {}
 
-	};
+        // Public general functions
+        virtual void Update( ) = 0;
+
+        // Key translation function for platform keys
+        virtual eKey TranslateKey( const BIT_UINT32 p_Key ) = 0;
+
+        // Get state functions
+        virtual BIT_BOOL KeyIsDown( eKey p_Key ) = 0;
+        virtual BIT_BOOL KeyIsUp( eKey p_Key ) = 0;
+        virtual BIT_BOOL KeyIsJustPressed( eKey p_Key ) = 0;
+        virtual BIT_BOOL KeyIsJustReleased( eKey p_Key ) = 0;
+
+    };
+
+    // Use this function for keyboard creation!
+	// Function for Keyboard allocation
+	BIT_API Keyboard * CreateKeyboard( );
 
 }
 

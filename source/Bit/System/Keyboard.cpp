@@ -22,45 +22,28 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_EVENT_HPP__
-#define __BIT_WINDOW_EVENT_HPP__
-
-#include <Bit/DataTypes.hpp>
 #include <Bit/System/Keyboard.hpp>
-#include <Bit/System/Mouse.hpp>
-#include <Bit/System/Vector2.hpp>
+
+// Platform independent
+#ifdef BIT_PLATFORM_WIN32
+	#include <Bit/System/Win32/keyboardWin32.hpp>
+	typedef Bit::KeyboardWin32 KeyboardPlatformType;
+	#undef CreateWindow
+#elif defined( BIT_PLATFORM_LINUX )
+	#include <Bit/System/Linux/KeyboardLinux.hpp>
+	typedef Bit::KeyboardLinux KeyboardPlatformType;
+#endif
+
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	struct Event
+	// Function for Keyboard allocation
+	BIT_API Keyboard * CreateKeyboard( )
 	{
-
-		enum eEventType
-		{
-			None = 0,
-			Closed = 1,
-			Moved = 2,
-			Resized = 3,
-			GainedFocus = 4,
-			LostFocus = 5,
-			KeyPressed = 6,
-			KeyReleased = 7,
-			MouseMoved = 8,
-			MouseButtonPressed = 9,
-			MouseButtonReleased = 10
-		};
-
-		eEventType Type;
-
-		Bit::Vector2_si32 Size;
-		Bit::Vector2_si32 Position;
-		Bit::Vector2_si32 MousePosition;
-		Keyboard::eKey Key;
-		Mouse::eButton Button;
-
-	};
+	    return new KeyboardPlatformType( );
+	}
 
 }
-
-#endif

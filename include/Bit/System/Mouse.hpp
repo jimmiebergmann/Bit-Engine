@@ -22,44 +22,56 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_EVENT_HPP__
-#define __BIT_WINDOW_EVENT_HPP__
+#ifndef __BIT_SYSTEM_MOUSE_HPP__
+#define __BIT_SYSTEM_MOUSE_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/System/Keyboard.hpp>
-#include <Bit/System/Mouse.hpp>
-#include <Bit/System/Vector2.hpp>
 
 namespace Bit
 {
 
-	struct Event
-	{
+    class BIT_API Mouse
+    {
 
-		enum eEventType
-		{
-			None = 0,
-			Closed = 1,
-			Moved = 2,
-			Resized = 3,
-			GainedFocus = 4,
-			LostFocus = 5,
-			KeyPressed = 6,
-			KeyReleased = 7,
-			MouseMoved = 8,
-			MouseButtonPressed = 9,
-			MouseButtonReleased = 10
-		};
+    public:
 
-		eEventType Type;
+        // Public enum
 
-		Bit::Vector2_si32 Size;
-		Bit::Vector2_si32 Position;
-		Bit::Vector2_si32 MousePosition;
-		Keyboard::eKey Key;
-		Mouse::eButton Button;
+        #ifdef BIT_PLATFORM_WIN32
 
-	};
+            enum eButton
+            {
+               Button_1 = 1,
+               Button_2 = 2,
+               Button_3 = 3
+            };
+
+         #elif defined( BIT_PLATFORM_LINUX )
+
+            enum eButton
+            {
+               Button_1 = 1,
+               Button_2 = 2,
+               Button_3 = 3
+            };
+
+        #endif
+
+
+        // Constructor
+        Mouse( );
+
+        // Get state functions
+        BIT_BOOL ButtonIsDown( eButton p_Button );
+        BIT_BOOL ButtonIsUp( eButton p_Button );
+        BIT_BOOL ButtonIsJustPressed( eButton p_Button );
+        BIT_BOOL ButtonIsJustReleased( eButton p_Button );
+
+    private:
+
+
+
+    };
 
 }
 
