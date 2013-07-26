@@ -7,8 +7,8 @@
 MAKE 				= make -f
 MAKEFILE_PATH		= build/makefile
 MAKEFILE_AUDIO		= Makefile-bit-audio
-MAKEFILE_GRAPHICS		= Makefile-bit-graphics
-MAKEFILE_NETWORK		= Makefile-bit-network
+MAKEFILE_GRAPHICS	= Makefile-bit-graphics
+MAKEFILE_NETWORK	= Makefile-bit-network
 MAKEFILE_SYSTEM		= Makefile-bit-system
 MAKEFILE_WINDOW		= Makefile-bit-window
 
