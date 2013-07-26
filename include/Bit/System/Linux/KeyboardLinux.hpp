@@ -32,6 +32,7 @@
 #include <Bit/System/Keyboard.hpp>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#include <vector>
 
 namespace Bit
 {
@@ -64,7 +65,13 @@ namespace Bit
 
         // Private variables
         ::Display * m_pDisplay;
+        KeySym m_KeyTranslations[ Key_Count ];
+        BIT_BOOL m_CurrentKeyState[ Key_Count ];
+        BIT_BOOL m_PreviousKeyState[ Key_Count ];
+        std::vector< eKey > m_ChangedKeys;
 
+        // Private statics
+        static const BIT_UINT32 s_ReservedKeyCount = 64;
 
     };
 

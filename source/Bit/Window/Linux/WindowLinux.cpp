@@ -292,7 +292,8 @@ namespace Bit
                     m_EventQueue.push_back( Event );
 		        }
 		        break;
-		        case KeyPress:
+		        // TEMPORARY DISABLED
+		       /* case KeyPress:
 		        {
                     // Get the right key index
                     KeySym Key = XLookupKeysym( &E.xkey, 0 );
@@ -313,7 +314,7 @@ namespace Bit
                     Event.Key = Key;
                     m_EventQueue.push_back( Event );
 		        }
-		        break;
+		        break;*/
                 case MotionNotify:
 		        {
 		            Bit::Event Event;
@@ -322,7 +323,8 @@ namespace Bit
                     m_EventQueue.push_back( Event );
 		        }
 		        break;
-		        case ButtonPress:
+                // TEMPORARY DISABLED
+		      /*  case ButtonPress:
 		        {
 		            Bit::Event Event;
                     Event.Type = Bit::Event::MouseButtonPressed;
@@ -339,7 +341,7 @@ namespace Bit
                     Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
                     m_EventQueue.push_back( Event );
 		        }
-		        break;
+		        break;*/
 		        default:
 		        {
                     // ...
