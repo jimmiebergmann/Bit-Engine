@@ -119,7 +119,8 @@ namespace Bit
         m_KeyTranslations[ Key_Backspace ] = XK_BackSpace;
         m_KeyTranslations[ Key_Break ] = XK_Break;
         m_KeyTranslations[ Key_Capslock ] = XK_Caps_Lock;
-        m_KeyTranslations[ Key_Control ] = XK_Control_L;
+        m_KeyTranslations[ Key_Control_L ] = XK_Control_L;
+        m_KeyTranslations[ Key_Control_R ] = XK_Control_R;
         m_KeyTranslations[ Key_Delete ] = XK_Delete;
         m_KeyTranslations[ Key_End ] = XK_End;
         m_KeyTranslations[ key_Espace ] = XK_Escape;
@@ -130,9 +131,11 @@ namespace Bit
         m_KeyTranslations[ Key_Print ] = XK_Print;
         m_KeyTranslations[ Key_Return ] = XK_Return;
         m_KeyTranslations[ Key_ScrollLock ] = XK_Scroll_Lock;
-        m_KeyTranslations[ Key_Shift ] = XK_Shift_L;
+        m_KeyTranslations[ Key_Shift_L ] = XK_Shift_L;
+        m_KeyTranslations[ Key_Shift_R ] = XK_Shift_R;
         m_KeyTranslations[ Key_Space ] = XK_space;
-        m_KeyTranslations[ key_Super ] = XK_Super_L;
+        m_KeyTranslations[ key_Super_L ] = XK_Super_L;
+        m_KeyTranslations[ key_Super_R ] = XK_Super_R;
         m_KeyTranslations[ Key_Tab ] = XK_Tab;
 
 
