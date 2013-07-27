@@ -105,7 +105,8 @@ namespace Bit
             Key_Backspace,
             Key_Break,
             Key_Capslock,
-            Key_Control,
+            Key_Control_L,
+            Key_Control_R,
             Key_Delete,
             Key_End,
             key_Espace,
@@ -116,9 +117,11 @@ namespace Bit
             Key_Print,
             Key_Return,
             Key_ScrollLock,
-            Key_Shift,
+            Key_Shift_L,
+            Key_Shift_R,
             Key_Space,
-            key_Super,
+            key_Super_L,
+            key_Super_R,
             Key_Tab,
 
             // Media keys
