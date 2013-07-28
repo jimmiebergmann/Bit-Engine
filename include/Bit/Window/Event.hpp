@@ -57,7 +57,8 @@ namespace Bit
 		Bit::Vector2_si32 Position;
 		Bit::Vector2_si32 MousePosition;
 		Keyboard::eKey Key;
-		Mouse::eButton Button;
+		//Mouse::eButton Button;
+		BIT_UINT32 Button;
 
 	};
 

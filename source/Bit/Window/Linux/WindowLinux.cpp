@@ -358,8 +358,7 @@ namespace Bit
                     m_EventQueue.push_back( Event );
 		        }
 		        break;
-                // TEMPORARY DISABLED
-		      /*  case ButtonPress:
+		        case ButtonPress:
 		        {
 		            Bit::Event Event;
                     Event.Type = Bit::Event::MouseButtonPressed;
@@ -376,7 +375,7 @@ namespace Bit
                     Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
                     m_EventQueue.push_back( Event );
 		        }
-		        break;*/
+		        break;
 		        default:
 		        {
                     // ...
