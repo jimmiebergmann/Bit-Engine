@@ -293,18 +293,22 @@ namespace Bit
 		        }
 		        break;
 		        // TEMPORARY DISABLED
-		       /* case KeyPress:
+		        case KeyPress:
 		        {
                     // Get the right key index
                     KeySym Key = XLookupKeysym( &E.xkey, 0 );
 
+                    //bitTrace( "WindowLinux Key: %i  %i\n", Key, E.xkey );
+
+
+/*
 		            Bit::Event Event;
                     Event.Type = Bit::Event::KeyPressed;
                     Event.Key = Key;
-                    m_EventQueue.push_back( Event );
+                    m_EventQueue.push_back( Event );*/
 		        }
 		        break;
-                case KeyRelease:
+               /* case KeyRelease:
 		        {
 		            // Get the right key index
                     KeySym Key = XLookupKeysym( &E.xkey, 0 );
