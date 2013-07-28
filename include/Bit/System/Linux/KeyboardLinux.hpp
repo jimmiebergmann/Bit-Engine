@@ -50,7 +50,8 @@ namespace Bit
         virtual void Update( );
 
         // Key translation function for platform keys
-        virtual eKey TranslateKey( const BIT_UINT32 p_Key );
+        virtual eKey TranslateKeyToBitKey( const BIT_UINT16 p_Key );
+        virtual BIT_UINT16 TranslateKeyToSystemKey( const eKey p_Key );
 
         // Get state functions
         virtual BIT_BOOL KeyIsDown( eKey p_Key );
@@ -65,10 +66,12 @@ namespace Bit
 
         // Private variables
         ::Display * m_pDisplay;
-        KeySym m_KeyTranslations[ Key_Count ];
         BIT_BOOL m_CurrentKeyState[ Key_Count ];
         BIT_BOOL m_PreviousKeyState[ Key_Count ];
         std::vector< eKey > m_ChangedKeys;
+        KeySym m_KeyTranslationsBit[ Key_Count ];
+        eKey m_KeyTranslationsSystem[ 65536 ];
+
 
         // Private statics
         static const BIT_UINT32 s_ReservedKeyCount = 64;

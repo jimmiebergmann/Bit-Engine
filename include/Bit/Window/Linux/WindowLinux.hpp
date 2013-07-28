@@ -30,6 +30,7 @@
 #ifdef BIT_PLATFORM_LINUX
 
 #include <Bit/Window/Window.hpp>
+#include <Bit/System/Keyboard.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <X11/Xlib.h>
 
@@ -71,7 +72,7 @@ namespace Bit
 		::Display * m_pDisplay;
 		int m_Screen;
 		::Window m_Window;
-		//:: Colormap m_ColorMap;
+		Keyboard * m_pKeyboard;
 
 	};
 

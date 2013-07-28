@@ -125,7 +125,7 @@ namespace Bit
             Key_Dollar,
             Key_End,
             Key_Equal,
-            key_Espace,
+            Key_Escape,
             Key_Exclam,
             Key_Greater,
             Key_Home,
@@ -133,6 +133,7 @@ namespace Bit
             Key_Less,
             Key_Minus,
             Key_Number,
+            Key_NumLock,
             Key_O_Diaeresis,
             Key_PageDown,
             Key_PageUp,
@@ -182,7 +183,8 @@ namespace Bit
         virtual void Update( ) = 0;
 
         // Key translation function for platform keys
-        virtual eKey TranslateKey( const BIT_UINT32 p_Key ) = 0;
+        virtual eKey TranslateKeyToBitKey( const BIT_UINT16 p_Key ) = 0;
+        virtual BIT_UINT16 TranslateKeyToSystemKey( const eKey p_Key ) = 0;
 
         // Get state functions
         virtual BIT_BOOL KeyIsDown( eKey p_Key ) = 0;
