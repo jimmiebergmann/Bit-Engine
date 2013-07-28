@@ -115,8 +115,11 @@ namespace Bit
         m_KeyTranslations[ Key_Right ] = XK_Right;
         m_KeyTranslations[ Key_Up ] = XK_Up;
 
-        m_KeyTranslations[ Key_Alt ] = XK_Alt_L;
+        m_KeyTranslations[ Key_Alt_L ] = XK_Alt_L;
+        m_KeyTranslations[ Key_Alt_R ] = XK_Alt_R;
         m_KeyTranslations[ Key_Backspace ] = XK_BackSpace;
+        m_KeyTranslations[ Key_Bracket_L ] = XK_bracketleft;
+        m_KeyTranslations[ Key_Bracket_R ] = XK_bracketright;
         m_KeyTranslations[ Key_Break ] = XK_Break;
         m_KeyTranslations[ Key_Capslock ] = XK_Caps_Lock;
         m_KeyTranslations[ Key_Control_L ] = XK_Control_L;
@@ -131,6 +134,7 @@ namespace Bit
         m_KeyTranslations[ Key_Print ] = XK_Print;
         m_KeyTranslations[ Key_Return ] = XK_Return;
         m_KeyTranslations[ Key_ScrollLock ] = XK_Scroll_Lock;
+        m_KeyTranslations[ Key_Section] = XK_section;
         m_KeyTranslations[ Key_Shift_L ] = XK_Shift_L;
         m_KeyTranslations[ Key_Shift_R ] = XK_Shift_R;
         m_KeyTranslations[ Key_Space ] = XK_space;
@@ -138,7 +142,57 @@ namespace Bit
         m_KeyTranslations[ key_Super_R ] = XK_Super_R;
         m_KeyTranslations[ Key_Tab ] = XK_Tab;
 
+        // New unsorted keys
+        m_KeyTranslations[ Key_Asterisk ] = XK_asterisk;
+        m_KeyTranslations[ Key_Plus ] = XK_plus;
+        m_KeyTranslations[ Key_Comma ] = XK_comma;
+        m_KeyTranslations[ Key_Minus ] = XK_minus;
+        m_KeyTranslations[ Key_Period ] = XK_period;
+        m_KeyTranslations[ Key_Slash ] = XK_slash;
+        m_KeyTranslations[ Key_Colon ] = XK_colon;
+        m_KeyTranslations[ Key_SemiColon ] = XK_semicolon;
+        m_KeyTranslations[ Key_Less ] = XK_less;
+        m_KeyTranslations[ Key_Equal ] = XK_equal;
+        m_KeyTranslations[ Key_Greater ] = XK_greater;
+        m_KeyTranslations[ Key_Question ] = XK_question;
+        m_KeyTranslations[ Key_Underscore ] = XK_underscore;
+        m_KeyTranslations[ Key_A_Diaeresis ] = XK_Adiaeresis;
+        m_KeyTranslations[ Key_A_Ring ] = XK_Aring;
+        m_KeyTranslations[ Key_O_Diaeresis ] = XK_Odiaeresis;
 
+        m_KeyTranslations[ Key_Exclam ] = XK_exclam;       // !
+        m_KeyTranslations[ Key_Quote ] = XK_quotedbl;     // "
+        m_KeyTranslations[ Key_Number ] = XK_numbersign;   // #
+        m_KeyTranslations[ Key_Dollar ] = XK_dollar;       // $
+        m_KeyTranslations[ Key_Percent ] = XK_percent;      // %
+        m_KeyTranslations[ Key_Ampersand ] = XK_ampersand;    // &
+        m_KeyTranslations[ Key_Apostrophe ] = XK_apostrophe;   // ´
+        m_KeyTranslations[ Key_Parenthesis_Left ] = XK_parenleft;
+        m_KeyTranslations[ Key_Parenthesis_Right ] = XK_parenright;
+        m_KeyTranslations[ Key_Brace_Left ] = XK_braceleft;    // }
+        m_KeyTranslations[ Key_Bar ] = XK_bar;          // |
+        m_KeyTranslations[ Key_Brace_Right ] = XK_braceright;   // {
+        m_KeyTranslations[ Key_Tilde ] = XK_asciitilde;   // ~
+
+
+
+//#define XK_exclam                        0x0021  /* U+0021 EXCLAMATION MARK */
+//#define XK_quotedbl                      0x0022  /* U+0022 QUOTATION MARK */
+//#define XK_numbersign                    0x0023  /* U+0023 NUMBER SIGN */
+//#define XK_dollar                        0x0024  /* U+0024 DOLLAR SIGN */
+//#define XK_percent                       0x0025  /* U+0025 PERCENT SIGN */
+//#define XK_ampersand                     0x0026  /* U+0026 AMPERSAND */
+//#define XK_apostrophe                    0x0027  /* U+0027 APOSTROPHE */
+//#define XK_parenleft                     0x0028  /* U+0028 LEFT PARENTHESIS */
+//#define XK_parenright                    0x0029  /* U+0029 RIGHT PARENTHESIS */
+//#define XK_asterisk                      0x002a  /* U+002A ASTERISK */
+//
+//#define XK_braceleft                     0x007b  /* U+007B LEFT CURLY BRACKET */
+//#define XK_bar                           0x007c  /* U+007C VERTICAL LINE */
+//#define XK_braceright                    0x007d  /* U+007D RIGHT CURLY BRACKET */
+//#define XK_asciitilde                    0x007e  /* U+007E TILDE */
+//
+//
 
 
         //    #define XK_Home                          0xff50
@@ -156,19 +210,6 @@ namespace Bit
 
             /* Misc functions */
 
-       //     #define XK_Select                        0xff60  /* Select, mark */
-      //      #define XK_Print                         0xff61
-       //     #define XK_Execute                       0xff62  /* Execute, run, do */
-      //      #define XK_Insert                        0xff63  /* Insert, insert here */
-       //     #define XK_Undo                          0xff65
-       //     #define XK_Redo                          0xff66  /* Redo, again */
-      //      #define XK_Menu                          0xff67
-      //      #define XK_Find                          0xff68  /* Find, search */
-      //      #define XK_Cancel                        0xff69  /* Cancel, stop, abort, exit */
-      //      #define XK_Help                          0xff6a  /* Help */
-      //      #define XK_Break                         0xff6b
-      //      #define XK_Mode_switch                   0xff7e  /* Character set switch */
-     //       #define XK_script_switch                 0xff7e  /* Alias for mode_switch */
      //       #define XK_Num_Lock                      0xff7f
 
 
@@ -295,10 +336,132 @@ namespace Bit
         }
 
         // Transalte the eKey to a KeySym
-        // ..
-        KeySym keyTranslation = m_KeyTranslations[ p_Key ];
 
-        // Get the key code
+
+
+        KeySym keyTranslation = 0;// m_KeyTranslations[ p_Key ];
+        switch( p_Key )
+        {
+            case Key_A:                 keyTranslation = XK_A;              break;
+            case Key_B:                 keyTranslation = XK_B;              break;
+            case Key_C:                 keyTranslation = XK_C;              break;
+            case Key_D:                 keyTranslation = XK_D;              break;
+            case Key_E:                 keyTranslation = XK_E;              break;
+            case Key_F:                 keyTranslation = XK_F;              break;
+            case Key_G:                 keyTranslation = XK_G;              break;
+            case Key_H:                 keyTranslation = XK_H;              break;
+            case Key_I:                 keyTranslation = XK_I;              break;
+            case Key_J:                 keyTranslation = XK_J;              break;
+            case Key_K:                 keyTranslation = XK_K;              break;
+            case Key_L:                 keyTranslation = XK_L;              break;
+            case Key_M:                 keyTranslation = XK_M;              break;
+            case Key_N:                 keyTranslation = XK_N;              break;
+            case Key_O:                 keyTranslation = XK_O;              break;
+            case Key_P:                 keyTranslation = XK_P;              break;
+            case Key_Q:                 keyTranslation = XK_Q;              break;
+            case Key_R:                 keyTranslation = XK_R;              break;
+            case Key_S:                 keyTranslation = XK_S;              break;
+            case Key_T:                 keyTranslation = XK_T;              break;
+            case Key_U:                 keyTranslation = XK_U;              break;
+            case Key_V:                 keyTranslation = XK_V;              break;
+            case Key_W:                 keyTranslation = XK_W;              break;
+            case Key_X:                 keyTranslation = XK_X;              break;
+            case Key_Y:                 keyTranslation = XK_Y;              break;
+            case Key_Z:                 keyTranslation = XK_Z;              break;
+
+            case Key_0:                 keyTranslation = XK_0;              break;
+            case Key_1:                 keyTranslation = XK_1;              break;
+            case Key_2:                 keyTranslation = XK_2;              break;
+            case Key_3:                 keyTranslation = XK_3;              break;
+            case Key_4:                 keyTranslation = XK_4;              break;
+            case Key_5:                 keyTranslation = XK_5;              break;
+            case Key_6:                 keyTranslation = XK_6;              break;
+            case Key_7:                 keyTranslation = XK_7;              break;
+            case Key_8:                 keyTranslation = XK_8;              break;
+            case Key_9:                 keyTranslation = XK_9;              break;
+
+            case Key_F1:                keyTranslation = XK_F1;             break;
+            case Key_F2:                keyTranslation = XK_F2;             break;
+            case Key_F3:                keyTranslation = XK_F3;             break;
+            case Key_F4:                keyTranslation = XK_F4;             break;
+            case Key_F5:                keyTranslation = XK_F5;             break;
+            case Key_F6:                keyTranslation = XK_F6;             break;
+            case Key_F7:                keyTranslation = XK_F7;             break;
+            case Key_F8:                keyTranslation = XK_F8;             break;
+            case Key_F9:                keyTranslation = XK_F9;             break;
+            case Key_F10:               keyTranslation = XK_F10;            break;
+            case Key_F11:               keyTranslation = XK_F11;            break;
+            case Key_F12:               keyTranslation = XK_F12;            break;
+
+            case Key_Down:              keyTranslation = XK_Down;           break;
+            case Key_Left:              keyTranslation = XK_Left;           break;
+            case Key_Right:             keyTranslation = XK_Right;          break;
+            case Key_Up:                keyTranslation = XK_Up;             break;
+
+            case Key_A_Diaeresis:       keyTranslation = XK_Adiaeresis;     break;
+            case Key_A_Ring:            keyTranslation = XK_Aring;          break;
+            case Key_Alt_L:             keyTranslation = XK_Alt_L;          break;
+            case Key_Alt_R:             keyTranslation = XK_Alt_R;          break;
+            case Key_Ampersand:         keyTranslation = XK_ampersand;      break;
+            case Key_Apostrophe:        keyTranslation = XK_apostrophe;     break;
+            case Key_Asterisk:          keyTranslation = XK_asterisk;       break;
+            case Key_BackSlash:         keyTranslation = XK_backslash;      break;
+            case Key_Backspace:         keyTranslation = XK_BackSpace;      break;
+            case Key_Bar:               keyTranslation = XK_bar;            break;
+            case Key_Brace_Left:        keyTranslation = XK_braceleft;      break;
+            case Key_Brace_Right:       keyTranslation = XK_braceright;     break;
+            case Key_Bracket_L:         keyTranslation = XK_bracketleft;    break;
+            case Key_Bracket_R:         keyTranslation = XK_bracketright;   break;
+            case Key_Break:             keyTranslation = XK_Break;          break;
+            case Key_Capslock:          keyTranslation = XK_Caps_Lock;      break;
+            case Key_Colon:             keyTranslation = XK_colon;          break;
+            case Key_Control_L:         keyTranslation = XK_Control_L;      break;
+            case Key_Control_R:         keyTranslation = XK_Control_R;      break;
+            case Key_Comma:             keyTranslation = XK_comma;          break;
+            case Key_Delete:            keyTranslation = XK_Delete;         break;
+            case Key_Dollar:            keyTranslation = XK_dollar;         break;
+            case Key_End:               keyTranslation = XK_End;            break;
+            case Key_Equal:             keyTranslation = XK_equal;          break;
+            case key_Espace:            keyTranslation = XK_Escape;         break;
+            case Key_Exclam:            keyTranslation = XK_exclam;         break;
+            case Key_Greater:           keyTranslation = XK_greater;        break;
+            case Key_Home:              keyTranslation = XK_Home;           break;
+            case Key_Insert:            keyTranslation = XK_Insert;         break;
+            case Key_Less:              keyTranslation = XK_less;           break;
+            case Key_Minus:             keyTranslation = XK_minus;          break;
+            case Key_Number:            keyTranslation = XK_numbersign;     break;
+            case Key_O_Diaeresis:       keyTranslation = XK_Odiaeresis;     break;
+            case Key_PageDown:          keyTranslation = XK_Page_Down;      break;
+            case Key_PageUp:            keyTranslation = XK_Page_Up;        break;
+            case Key_Parenthesis_Left:  keyTranslation = XK_parenleft;      break;
+            case Key_Parenthesis_Right: keyTranslation = XK_parenright;     break;
+            case Key_Percent:           keyTranslation = XK_percent;        break;
+            case Key_Period:            keyTranslation = XK_period;         break;
+            case Key_Plus:              keyTranslation = XK_plus;           break;
+            case Key_Print:             keyTranslation = XK_Print;          break;
+            case Key_Question:          keyTranslation = XK_question;       break;
+            case Key_Quote:             keyTranslation = XK_quotedbl;       break;
+            case Key_Return:            keyTranslation = XK_Return;         break;
+            case Key_ScrollLock:        keyTranslation = XK_Scroll_Lock;    break;
+            case Key_Section:           keyTranslation = XK_section;        break;
+            case Key_SemiColon:         keyTranslation = XK_semicolon;      break;
+            case Key_Shift_L:           keyTranslation = XK_Shift_L;        break;
+            case Key_Shift_R:           keyTranslation = XK_Shift_R;        break;
+            case Key_Slash:             keyTranslation = XK_slash;          break;
+            case Key_Space:             keyTranslation = XK_space;          break;
+            case key_Super_L:           keyTranslation = XK_Super_L;        break;
+            case key_Super_R:           keyTranslation = XK_Super_R;        break;
+            case Key_Tab:               keyTranslation = XK_Tab;            break;
+            case Key_Tilde:             keyTranslation = XK_dead_grave;     break;
+            case Key_Underscore:        keyTranslation = XK_underscore;     break;
+
+            default: return BIT_FALSE;
+        }
+
+
+
+
+        // Get the case key code
         KeyCode Code = XKeysymToKeycode( m_pDisplay, keyTranslation );
 
         // Get the status for all keys
