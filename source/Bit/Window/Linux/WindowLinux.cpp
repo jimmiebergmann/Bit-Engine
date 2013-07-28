@@ -57,14 +57,25 @@ namespace Bit
 	// Constructors/destructors
 	WindowLinux::WindowLinux( ) :
          m_pDisplay( BIT_NULL ),
-         m_Screen( 0 )
+         m_Screen( 0 ),
+         m_pKeyboard( BIT_NULL )
 	{
         m_Open = BIT_FALSE;
+
+        // Create the keyboard
+        m_pKeyboard = CreateKeyboard();
 	}
 
 	WindowLinux::~WindowLinux( )
 	{
+	    // Close the window
         Close( );
+        	    // Delete the keyboard
+	    if( m_pKeyboard )
+	    {
+	        delete m_pKeyboard;
+	        m_pKeyboard = BIT_NULL;
+	    }
 	}
 
 	// Public functions
@@ -82,6 +93,12 @@ namespace Bit
 	BIT_UINT32 WindowLinux::Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 		const std::string p_Title, const BIT_UINT32 p_Style )
 	{
+	    // Make sure that the keyboard is ok
+	    if( m_pKeyboard == BIT_NULL )
+	    {
+	        bitTrace( "[WindowLinux::Create] NULL keyboard." );
+            return BIT_ERROR;
+	    }
 
         // open a connection with X server
 	    if( ( m_pDisplay = XOpenDisplay( BIT_NULL ) ) == BIT_NULL )
@@ -97,7 +114,7 @@ namespace Bit
 	    // Get the screen
 	    m_Screen = DefaultScreen( m_pDisplay );
 
-        // Creat the window attricutes
+        // Creat the window attributes
         XSetWindowAttributes WindowAttributes;
         WindowAttributes.colormap = DefaultColormap( m_pDisplay, m_Screen );
         WindowAttributes.event_mask =   KeyPressMask | KeyReleaseMask |
@@ -296,29 +313,43 @@ namespace Bit
 		        case KeyPress:
 		        {
                     // Get the right key index
-                    KeySym Key = XLookupKeysym( &E.xkey, 0 );
+                    KeySym Keysym = XLookupKeysym( &E.xkey, 0 );
 
-                    //bitTrace( "WindowLinux Key: %i  %i\n", Key, E.xkey );
+                    // not supporting more than 2^16 keys
+                    if( Keysym < 65536 )
+                    {
+                        Keyboard::eKey Key = m_pKeyboard->TranslateKeyToBitKey( static_cast< BIT_UINT16 >( Keysym ) );
 
-
-/*
-		            Bit::Event Event;
-                    Event.Type = Bit::Event::KeyPressed;
-                    Event.Key = Key;
-                    m_EventQueue.push_back( Event );*/
-		        }
+                        if( Key != Keyboard::Key_None )
+                        {
+                            Bit::Event Event;
+                            Event.Type = Bit::Event::KeyPressed;
+                            Event.Key = Key;
+                            m_EventQueue.push_back( Event );
+                        }
+                    }
+                }
 		        break;
-               /* case KeyRelease:
+                case KeyRelease:
 		        {
 		            // Get the right key index
-                    KeySym Key = XLookupKeysym( &E.xkey, 0 );
+                    KeySym Keysym = XLookupKeysym( &E.xkey, 0 );
 
-		            Bit::Event Event;
-                    Event.Type = Bit::Event::KeyReleased;
-                    Event.Key = Key;
-                    m_EventQueue.push_back( Event );
+                    // not supporting more than 2^16 keys
+                    if( Keysym < 65536 )
+                    {
+                        Keyboard::eKey Key = m_pKeyboard->TranslateKeyToBitKey( static_cast< BIT_UINT16 >( Keysym ) );
+
+                        if( Key != Keyboard::Key_None )
+                        {
+                            Bit::Event Event;
+                            Event.Type = Bit::Event::KeyPressed;
+                            Event.Key = Key;
+                            m_EventQueue.push_back( Event );
+                        }
+                    }
 		        }
-		        break;*/
+		        break;
                 case MotionNotify:
 		        {
 		            Bit::Event Event;
