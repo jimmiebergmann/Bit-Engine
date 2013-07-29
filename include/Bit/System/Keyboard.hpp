@@ -38,8 +38,6 @@ namespace Bit
         // Public enum
         enum eKey
         {
-            Key_None = 0,
-
             // Alphabet keys
             Key_A,
             Key_B,
@@ -173,7 +171,8 @@ namespace Bit
 
 
             // Key counter (not a key)
-            Key_Count
+            Key_Count,
+            Key_None
         };
 
         // Constructors/destructors

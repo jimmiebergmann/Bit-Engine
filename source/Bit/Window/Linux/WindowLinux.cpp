@@ -58,12 +58,14 @@ namespace Bit
 	WindowLinux::WindowLinux( ) :
          m_pDisplay( BIT_NULL ),
          m_Screen( 0 ),
-         m_pKeyboard( BIT_NULL )
+         m_pKeyboard( BIT_NULL ),
+         m_pMouse( BIT_NULL )
 	{
         m_Open = BIT_FALSE;
 
-        // Create the keyboard
-        m_pKeyboard = CreateKeyboard();
+        // Create the keyboard and mouse
+        m_pKeyboard = CreateKeyboard( );
+        m_pMouse = CreateMouse( );
 	}
 
 	WindowLinux::~WindowLinux( )
@@ -93,10 +95,15 @@ namespace Bit
 	BIT_UINT32 WindowLinux::Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits,
 		const std::string p_Title, const BIT_UINT32 p_Style )
 	{
-	    // Make sure that the keyboard is ok
+	    // Make sure that the keyboard and mouse is ok
 	    if( m_pKeyboard == BIT_NULL )
 	    {
 	        bitTrace( "[WindowLinux::Create] NULL keyboard." );
+            return BIT_ERROR;
+	    }
+	    if( m_pMouse == BIT_NULL )
+	    {
+	        bitTrace( "[WindowLinux::Create] NULL Mouse." );
             return BIT_ERROR;
 	    }
 
@@ -360,20 +367,38 @@ namespace Bit
 		        break;
 		        case ButtonPress:
 		        {
-		            Bit::Event Event;
-                    Event.Type = Bit::Event::MouseButtonPressed;
-                    Event.Button = E.xbutton.button;
-                    Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
-                    m_EventQueue.push_back( Event );
+                    // not supporting more than 2^16 keys
+                    if( E.xbutton.button <= Mouse::Button_Count )
+                    {
+                        Mouse::eButton Button = m_pMouse->TranslateButtonToBitKey( static_cast< BIT_UINT16 >( E.xbutton.button ) );
+
+                        if( Button != Mouse::Button_None )
+                        {
+                            Bit::Event Event;
+                            Event.Type = Bit::Event::MouseButtonPressed;
+                            Event.Button = Button;
+                            Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
+                            m_EventQueue.push_back( Event );
+                        }
+                    }
 		        }
 		        break;
                 case ButtonRelease:
 		        {
-		            Bit::Event Event;
-                    Event.Type = Bit::Event::MouseButtonReleased;
-                    Event.Button = E.xbutton.button;
-                    Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
-                    m_EventQueue.push_back( Event );
+		            // not supporting more than 2^16 keys
+                    if( E.xbutton.button <= Mouse::Button_Count )
+                    {
+                        Mouse::eButton Button = m_pMouse->TranslateButtonToBitKey( static_cast< BIT_UINT16 >( E.xbutton.button ) );
+
+                        if( Button != Mouse::Button_None )
+                        {
+                            Bit::Event Event;
+                            Event.Type = Bit::Event::MouseButtonReleased;
+                            Event.Button = Button;
+                            Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
+                            m_EventQueue.push_back( Event );
+                        }
+                    }
 		        }
 		        break;
 		        default:

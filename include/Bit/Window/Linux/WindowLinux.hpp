@@ -31,6 +31,7 @@
 
 #include <Bit/Window/Window.hpp>
 #include <Bit/System/Keyboard.hpp>
+#include <Bit/System/Mouse.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <X11/Xlib.h>
 
@@ -73,6 +74,7 @@ namespace Bit
 		int m_Screen;
 		::Window m_Window;
 		Keyboard * m_pKeyboard;
+		Mouse * m_pMouse;
 
 	};
 
