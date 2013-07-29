@@ -78,10 +78,6 @@ namespace Bit
 
     };
 
-    // Use this function for keyboard creation!
-	// Function for Keyboard allocation
-	BIT_API Keyboard * CreateKeyboard( );
-
 }
 
 #endif
