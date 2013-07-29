@@ -301,6 +301,7 @@ namespace Bit
 
     KeyboardLinux::~KeyboardLinux( )
     {
+        // Close the connection with X server
         if( m_pDisplay )
         {
             XCloseDisplay( m_pDisplay );

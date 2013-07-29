@@ -36,42 +36,33 @@ namespace Bit
     public:
 
         // Public enum
-
-        #ifdef BIT_PLATFORM_WIN32
-
-            enum eButton
-            {
-               Button_1 = 1,
-               Button_2 = 2,
-               Button_3 = 3
-            };
-
-         #elif defined( BIT_PLATFORM_LINUX )
-
-            enum eButton
-            {
-               Button_1 = 1,
-               Button_2 = 2,
-               Button_3 = 3
-            };
-
-        #endif
+        enum eButton
+        {
+            Button_None,
+            Button_1,
+            Button_2,
+            Button_3,
+            Button_Count
+        };
 
 
-        // Constructor
-        Mouse( );
+        // Destructor
+        virtual ~Mouse( ) { }
+
+        // Public general functions
+        virtual void Update( ) = 0;
 
         // Get state functions
-        BIT_BOOL ButtonIsDown( eButton p_Button );
-        BIT_BOOL ButtonIsUp( eButton p_Button );
-        BIT_BOOL ButtonIsJustPressed( eButton p_Button );
-        BIT_BOOL ButtonIsJustReleased( eButton p_Button );
-
-    private:
-
-
+        virtual BIT_BOOL ButtonIsDown( eButton p_Button ) = 0;
+        virtual BIT_BOOL ButtonIsUp( eButton p_Button ) = 0;
+        virtual BIT_BOOL ButtonIsJustPressed( eButton p_Button ) = 0;
+        virtual BIT_BOOL ButtonIsJustReleased( eButton p_Button ) = 0;
 
     };
+
+    // Use this function for mouse creation!
+	// Function for mouse allocation
+	BIT_API Mouse * CreateMouse( );
 
 }
 

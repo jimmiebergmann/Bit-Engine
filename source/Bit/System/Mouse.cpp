@@ -23,37 +23,28 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Mouse.hpp>
+
+// Platform independent
+#ifdef BIT_PLATFORM_WIN32
+	#include <Bit/System/Win32/MouseWin32.hpp>
+	typedef Bit::MouseWin32 MousePlatformType;
+	#undef CreateWindow
+#elif defined( BIT_PLATFORM_LINUX )
+	#include <Bit/System/Linux/MouseLinux.hpp>
+	typedef Bit::MouseLinux MousePlatformType;
+#endif
+
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-    // Constructor
-    Mouse::Mouse( )
-    {
-
-    }
-
-    // Get state functions
-    BIT_BOOL Mouse::ButtonIsDown( eButton p_Button )
-    {
-        return BIT_FALSE;
-    }
-
-    BIT_BOOL Mouse::ButtonIsUp( eButton p_Button )
-    {
-        return BIT_FALSE;
-    }
-
-    BIT_BOOL Mouse::ButtonIsJustPressed( eButton p_Button )
-    {
-        return BIT_FALSE;
-    }
-
-    BIT_BOOL Mouse::ButtonIsJustReleased( eButton p_Button )
-    {
-        return BIT_FALSE;
-    }
+    // Use this function for mouse creation!
+	// Function for mouse allocation
+	BIT_API Mouse * CreateMouse( )
+	{
+	    return new MousePlatformType( );
+	}
 
 }
