@@ -38,11 +38,12 @@ namespace Bit
         // Public enum
         enum eButton
         {
-            Button_None,
             Button_1,
             Button_2,
             Button_3,
-            Button_Count
+
+            Button_Count,
+            Button_None
         };
 
 
@@ -51,6 +52,10 @@ namespace Bit
 
         // Public general functions
         virtual void Update( ) = 0;
+
+        // Button translation function for platform keys
+        virtual eButton TranslateButtonToBitKey( const BIT_UINT16 p_Button ) = 0;
+        virtual BIT_UINT16 TranslateButtonToSystemKey( const eButton p_Button ) = 0;
 
         // Get state functions
         virtual BIT_BOOL ButtonIsDown( eButton p_Button ) = 0;

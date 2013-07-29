@@ -49,6 +49,10 @@ namespace Bit
         // Public general functions
         virtual void Update( );
 
+        // Button translation function for platform keys
+        virtual eButton TranslateButtonToBitKey( const BIT_UINT16 p_Button );
+        virtual BIT_UINT16 TranslateButtonToSystemKey( const eButton p_Button );
+
         // Get state functions
         virtual BIT_BOOL ButtonIsDown( eButton p_Button );
         virtual BIT_BOOL ButtonIsUp( eButton p_Button );
@@ -66,6 +70,7 @@ namespace Bit
         BIT_BOOL m_PreviousButtonState[ Button_Count ];
         std::vector< eButton > m_ChangedButtons;
         BIT_UINT32 m_ButtonTranslationsBit[ Button_Count ];
+        eButton m_ButtonTranslationsSystem[ 8 ];
       /*  KeySym m_KeyTranslationsBit[ Key_Count ];
         eKey m_KeyTranslationsSystem[ 65536 ];
 */

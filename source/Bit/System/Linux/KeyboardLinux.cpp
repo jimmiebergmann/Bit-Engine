@@ -327,16 +327,6 @@ namespace Bit
     Keyboard::eKey KeyboardLinux::TranslateKeyToBitKey( const BIT_UINT16 p_Key )
     {
         return m_KeyTranslationsSystem[ p_Key ];
-        /*switch( p_Key )
-        {
-            case XK_w: return Key_W;
-            case XK_a: return Key_A;
-            //case XK_S: return Key_W;
-            case XK_d: return Key_D;
-            default: return Keyboard::Key_None;
-        }
-
-        return Keyboard::Key_None;*/
     }
 
     BIT_UINT16 KeyboardLinux::TranslateKeyToSystemKey( const eKey p_Key )

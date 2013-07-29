@@ -48,12 +48,12 @@ namespace Bit
         {
             m_ButtonTranslationsBit[ i ] = 0;
         }
- /*
+
         // Clear the system button translations
-        for( BIT_MEMSIZE i = 0; i < 65536; i++ )
+        for( BIT_MEMSIZE i = 0; i < 8; i++ )
         {
-            m_KeyTranslationsSystem[ i ] = Key_None;
-        }*/
+            m_ButtonTranslationsSystem[ i ] = Button_None;
+        }
 
         // Clear the button states
         for( BIT_MEMSIZE i = 0; i < Mouse::Button_Count; i++ )
@@ -67,10 +67,15 @@ namespace Bit
         m_ChangedButtons.resize( s_ReservedButtonCount );
 
 
-        // Set the button translations
+        // Set the BIT button translations
         m_ButtonTranslationsBit[ Button_1 ] = 0x0100;
         m_ButtonTranslationsBit[ Button_2 ] = 0x0200;
         m_ButtonTranslationsBit[ Button_3 ] = 0x0400;
+
+        //  Set the SYSTEM button translations
+        m_ButtonTranslationsSystem[ 1 ] = Button_1;
+        m_ButtonTranslationsSystem[ 2 ] = Button_2;
+        m_ButtonTranslationsSystem[ 3 ] = Button_3;
     }
     MouseLinux::~MouseLinux( )
     {
@@ -94,6 +99,17 @@ namespace Bit
            m_PreviousButtonState[ m_ChangedButtons[ i ] ] = m_CurrentButtonState[ m_ChangedButtons[ i ]  ];
         }
         m_ChangedButtons.clear( );
+    }
+
+    // Button translation function for platform keys
+    Mouse::eButton MouseLinux::TranslateButtonToBitKey( const BIT_UINT16 p_Button )
+    {
+        return m_ButtonTranslationsSystem[ p_Button ];
+    }
+
+    BIT_UINT16 MouseLinux::TranslateButtonToSystemKey( const eButton p_Button )
+    {
+         return m_ButtonTranslationsBit[ static_cast< BIT_UINT16 >( p_Button ) ];
     }
 
     // Get state functions
