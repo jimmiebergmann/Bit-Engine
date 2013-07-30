@@ -47,6 +47,7 @@ namespace Bit
 		{
 			p_Event = m_EventQueue.front( );
 			m_EventQueue.pop_front( );
+
 			return BIT_TRUE;
 		}
 
