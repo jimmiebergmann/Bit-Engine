@@ -26,6 +26,8 @@
 
 #ifdef BIT_PLATFORM_LINUX
 
+#include <X11/Xatom.h>
+#include <X11/Xutil.h>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -163,6 +165,7 @@ namespace Bit
         // Set the window title
         SetTitle( p_Title.c_str( ) );
 
+
         // Let's set up the window decoration and the functionality
         ::Atom PropertyAtom = XInternAtom( m_pDisplay, "_MOTIF_WM_HINTS", false );
         if( PropertyAtom )
@@ -181,6 +184,7 @@ namespace Bit
             Hints.Functions = 0;
             Hints.Decorations = 0;
 
+
             // Go through all the styles we want to apply to the window
             if( p_Style == Bit::Window::Style_All )
             {
@@ -189,6 +193,13 @@ namespace Bit
             }
             else
             {
+                // Always set the resize and maximize functions and decorations.
+                // Some window managers seems to require this.
+                // Resizing can be disabled.
+                Hints.Functions |= MWM_FUNC_RESIZE | MWM_FUNC_MAXIMIZE;
+                Hints.Decorations |= MWM_DECOR_RESIZEH | MWM_DECOR_MAXIMIZE;
+
+
                 if( p_Style & Bit::Window::Style_Close )
                 {
                      Hints.Functions |= MWM_FUNC_CLOSE;
@@ -200,22 +211,32 @@ namespace Bit
                      Hints.Decorations |= MWM_DECOR_MINIMIZE;
                 }
 
-                if( p_Style & Bit::Window::Style_Resize )
-                {
-                     Hints.Functions |= MWM_FUNC_RESIZE | MWM_FUNC_MAXIMIZE;
-                     Hints.Decorations |= MWM_DECOR_RESIZEH | MWM_DECOR_MAXIMIZE;
-                }
-
                 if( p_Style & Bit::Window::Style_TitleBar )
                 {
-                     Hints.Functions |= MWM_FUNC_MOVE;
-                     Hints.Decorations |= MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MENU;
+                     Hints.Functions |= MWM_FUNC_MOVE | MWM_FUNC_MINIMIZE;
+                     Hints.Decorations |= MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_MENU | MWM_DECOR_MINIMIZE;
                 }
             }
 
             // Apply the changes
             XChangeProperty( m_pDisplay, m_Window, PropertyAtom, PropertyAtom, 32, PropModeReplace, (unsigned char *) &Hints, 5 );
 
+            // Force x server to disable window resizing
+            if (!( p_Style & Bit::Window::Style_Resize ) )
+            {
+                XSizeHints * SizeHints = XAllocSizeHints( );
+                SizeHints->flags = PMinSize | PMaxSize;
+                SizeHints->min_width = p_Size.x;
+                SizeHints->min_height = p_Size.y;
+                SizeHints->max_width = p_Size.x;
+                SizeHints->max_height = p_Size.y;
+
+                // Set the hints
+                XSetWMNormalHints( m_pDisplay, m_Window, SizeHints);
+
+                // Free the size hints
+                XFree(SizeHints);
+            }
         }
         else
         {
