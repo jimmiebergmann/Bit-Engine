@@ -65,6 +65,9 @@ namespace Bit
         void SetCurrentKeyState( const eKey p_Key, const BIT_BOOL p_State );
         void SetPreviousKeyState( const eKey p_Key, const BIT_BOOL p_State );
 
+        // Public static varialbes
+        static const BIT_UINT32 s_ReservedKeyCount = 64;
+
     private:
 
         // Private functions
@@ -77,10 +80,6 @@ namespace Bit
         std::vector< eKey > m_ChangedKeys;
         KeySym m_KeyTranslationsBit[ Key_Count ];
         eKey m_KeyTranslationsSystem[ 65536 ];
-
-
-        // Private statics
-        static const BIT_UINT32 s_ReservedKeyCount = 64;
 
     };
 

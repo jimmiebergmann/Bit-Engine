@@ -66,6 +66,13 @@ namespace Bit
         // Create the keyboard and mouse
         m_pKeyboard = new KeyboardLinux( );
         m_pMouse = new MouseLinux( );
+
+        // Clear and reserve space for the input vecotrs
+        m_PressedKeys.clear( );
+        m_PressedKeys.reserve( KeyboardLinux::s_ReservedKeyCount );
+        m_PressedButtons.clear( );
+        m_PressedButtons.reserve( MouseLinux::s_ReservedButtonCount );
+
 	}
 
 	WindowLinux::~WindowLinux( )
@@ -291,7 +298,6 @@ namespace Bit
 		            if( E.xconfigure.width != m_Size.x || E.xconfigure.height != m_Size.y )
 		            {
 		                m_Size = Bit::Vector2_ui32( E.xconfigure.width, E.xconfigure.height );
-		                // Make sure to calculate the position as well size it may change when you resize the window
                         m_Position = Bit::Vector2_si32( E.xconfigure.x, E.xconfigure.y );
 
                         Event.Type = Bit::Event::Resized;
@@ -324,6 +330,11 @@ namespace Bit
                     m_EventQueue.push_back( Event );
 		        }
 		        break;
+
+		        // The key and button events are a little special for x server.
+		        // Let's just grab the just[pressed][released] events and elulate the
+		        // KeyIsDown / ButtonIsDown events. Else, we'll get key register gaps that are
+		        // depending on the keyboard speed. If that makes sense...
 		        case KeyPress:
 		        {
                     // Get the right key index
@@ -343,12 +354,23 @@ namespace Bit
                                 JustPressedEvent.Type = Bit::Event::KeyJustPressed;
                                 JustPressedEvent.Key = Key;
                                 m_EventQueue.push_back( JustPressedEvent );
-                            }
 
-                            // Add the event for the KeyPressed event
-                            Event.Type = Bit::Event::KeyPressed;
-                            Event.Key = Key;
-                            m_EventQueue.push_back( Event );
+                                // Add the event to the input vector if it's not already in the list
+                                BIT_BOOL NotInList = BIT_TRUE;
+                                for( BIT_MEMSIZE i = 0; i < m_PressedKeys.size( ); i++ )
+                                {
+                                    if( Key == m_PressedKeys[ i ] )
+                                    {
+                                        NotInList = BIT_FALSE;
+                                        break;
+                                    }
+                                }
+                                if( NotInList )
+                                {
+                                    m_PressedKeys.push_back( Key );
+                                }
+
+                            }
 
                             // Set the keyboard state
                             m_pKeyboard->SetCurrentKeyState( Key, BIT_TRUE );
@@ -394,6 +416,16 @@ namespace Bit
 
                                 // Set the keyboard state
                                 m_pKeyboard->SetCurrentKeyState( Key, BIT_FALSE );
+
+                                 // Remove the key from the input vector
+                                for( BIT_MEMSIZE i = 0; i < m_PressedKeys.size( ); i++ )
+                                {
+                                    if( Key == m_PressedKeys[ i ] )
+                                    {
+                                        m_PressedKeys.erase( m_PressedKeys.begin( ) + i );
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -422,13 +454,22 @@ namespace Bit
                                 JustPressedEvent.Type = Bit::Event::ButtonJustPressed;
                                 JustPressedEvent.Button = Button;
                                 m_EventQueue.push_back( JustPressedEvent );
-                            }
 
-                            // Add the event for the ButtonPressed event
-                            Event.Type = Bit::Event::ButtonPressed;
-                            Event.Button = Button;
-                            Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
-                            m_EventQueue.push_back( Event );
+                                // Add the event to the input vector if it's not already in the list
+                                BIT_BOOL NotInList = BIT_TRUE;
+                                for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+                                {
+                                    if( Button == m_PressedButtons[ i ] )
+                                    {
+                                        NotInList = BIT_FALSE;
+                                        break;
+                                    }
+                                }
+                                if( NotInList )
+                                {
+                                    m_PressedButtons.push_back( Button );
+                                }
+                            }
 
                             // Set the mouse state
                             m_pMouse->SetCurrentButtonState( Button, BIT_TRUE );
@@ -452,6 +493,16 @@ namespace Bit
 
                             // Set the mouse state
                             m_pMouse->SetCurrentButtonState( Button, BIT_FALSE );
+
+                             // Remove the key from the input vector
+                            for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+                            {
+                                if( Button == m_PressedButtons[ i ] )
+                                {
+                                    m_PressedButtons.erase( m_PressedButtons.begin( ) + i );
+                                    break;
+                                }
+                            }
                         }
                     }
 		        }
@@ -466,8 +517,19 @@ namespace Bit
 
 		// Add additional keyboard and mouse events.
 		// We need to fill up some event gaps.
-		// ...
-
+		// Add the event to the input vector if it's not already in the list
+        for( BIT_MEMSIZE i = 0; i < m_PressedKeys.size( ); i++ )
+        {
+            Event.Type = Bit::Event::KeyPressed;
+            Event.Key = m_PressedKeys[ i ];
+            m_EventQueue.push_back( Event );
+        }
+        for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+        {
+            Event.Type = Bit::Event::ButtonPressed;
+            Event.Button = m_PressedButtons[ i ];
+            m_EventQueue.push_back( Event );
+        }
 
 		return BIT_OK;
 	}
