@@ -64,19 +64,26 @@ namespace Bit
         m_Open = BIT_FALSE;
 
         // Create the keyboard and mouse
-        m_pKeyboard = CreateKeyboard( );
-        m_pMouse = CreateMouse( );
+        m_pKeyboard = new KeyboardLinux( );
+        m_pMouse = new MouseLinux( );
 	}
 
 	WindowLinux::~WindowLinux( )
 	{
 	    // Close the window
         Close( );
-        	    // Delete the keyboard
+
+        // Delete the keyboard adn mouse
 	    if( m_pKeyboard )
 	    {
 	        delete m_pKeyboard;
 	        m_pKeyboard = BIT_NULL;
+	    }
+
+	    if( m_pMouse )
+	    {
+	        delete m_pMouse;
+	        m_pMouse = BIT_NULL;
 	    }
 	}
 
@@ -240,10 +247,16 @@ namespace Bit
 
 	BIT_UINT32 WindowLinux::Update( )
 	{
-		if( m_pDisplay == BIT_NULL )
+	    // Make sure that the window is open
+		if( m_Open == BIT_FALSE )
 		{
 		    return BIT_ERROR;
 		}
+
+        // Update the keyboard and mouse events
+        m_pKeyboard->Update( );
+        m_pMouse->Update( );
+
 
         // Declare an x server event.
 		XEvent E;
@@ -316,9 +329,10 @@ namespace Bit
                     m_EventQueue.push_back( Event );
 		        }
 		        break;
-		        // TEMPORARY DISABLED
 		        case KeyPress:
 		        {
+
+		           //bitTrace( "[window] Key pressed\n" );
                     // Get the right key index
                     KeySym Keysym = XLookupKeysym( &E.xkey, 0 );
 
@@ -329,10 +343,23 @@ namespace Bit
 
                         if( Key != Keyboard::Key_None )
                         {
+                            // Was the key just pressed? (KeyJustPressed event)
+                            if( !m_pKeyboard->GetPreviousKeyState( Key ) )
+                            {
+                                Bit::Event JustPressedEvent;
+                                JustPressedEvent.Type = Bit::Event::KeyJustPressed;
+                                JustPressedEvent.Key = Key;
+                                m_EventQueue.push_back( JustPressedEvent );
+                            }
+
+                            // Create the event for the KeyPressed event.
                             Bit::Event Event;
                             Event.Type = Bit::Event::KeyPressed;
                             Event.Key = Key;
                             m_EventQueue.push_back( Event );
+
+                            // Set the keyboard state
+                            m_pKeyboard->SetCurrentKeyState( Key, BIT_TRUE );
                         }
                     }
                 }
@@ -349,10 +376,34 @@ namespace Bit
 
                         if( Key != Keyboard::Key_None )
                         {
-                            Bit::Event Event;
-                            Event.Type = Bit::Event::KeyPressed;
-                            Event.Key = Key;
-                            m_EventQueue.push_back( Event );
+                            // Is the key really "just" released?
+                            BIT_BOOL JustReleased = BIT_TRUE;
+
+                            // Check if the key just was pressed(check for KeyPress event)
+                            if( XEventsQueued( m_pDisplay, QueuedAfterReading ) )
+                            {
+                                XEvent NewEvent;
+                                XPeekEvent( m_pDisplay, &NewEvent );
+
+                                // Set the flag fales if the time for the two events are the same
+                                if( NewEvent.type == KeyPress && NewEvent.xkey.time == E.xkey.time  &&
+                                   NewEvent.xkey.keycode == E.xkey.keycode )
+                                {
+                                    JustReleased = BIT_FALSE;
+                                }
+                            }
+
+                            // Yes, the key is just released.
+                            if( JustReleased )
+                            {
+                                Bit::Event Event;
+                                Event.Type = Bit::Event::KeyJustReleased;
+                                Event.Key = Key;
+                                m_EventQueue.push_back( Event );
+
+                                // Set the keyboard state
+                                m_pKeyboard->SetCurrentKeyState( Key, BIT_FALSE );
+                            }
                         }
                     }
 		        }
@@ -375,7 +426,7 @@ namespace Bit
                         if( Button != Mouse::Button_None )
                         {
                             Bit::Event Event;
-                            Event.Type = Bit::Event::MouseButtonPressed;
+                            Event.Type = Bit::Event::ButtonPressed;
                             Event.Button = Button;
                             Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
                             m_EventQueue.push_back( Event );
@@ -393,7 +444,7 @@ namespace Bit
                         if( Button != Mouse::Button_None )
                         {
                             Bit::Event Event;
-                            Event.Type = Bit::Event::MouseButtonReleased;
+                            Event.Type = Bit::Event::ButtonJustReleased;
                             Event.Button = Button;
                             Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
                             m_EventQueue.push_back( Event );
@@ -408,6 +459,10 @@ namespace Bit
 		        break;
 		    }
 		}
+
+		// Add additional keyboard and mouse events.
+		// We need to fill up some event gaps.
+
 
 		return BIT_OK;
 	}

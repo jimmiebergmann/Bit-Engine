@@ -113,7 +113,7 @@ namespace Bit
     }
 
     // Get state functions
-    BIT_BOOL MouseLinux::ButtonIsDown( eButton p_Button )
+    BIT_BOOL MouseLinux::ButtonIsDown( const eButton p_Button )
     {
         const BIT_BOOL ButtonState = GetButtonStatus( p_Button );
 
@@ -129,7 +129,7 @@ namespace Bit
         return ( m_CurrentButtonState[ p_Button ] = ButtonState );
     }
 
-    BIT_BOOL MouseLinux::ButtonIsUp( eButton p_Button )
+    BIT_BOOL MouseLinux::ButtonIsUp( const eButton p_Button )
     {
         const BIT_BOOL ButtonState = GetButtonStatus( p_Button );
 
@@ -145,7 +145,7 @@ namespace Bit
         return !( m_CurrentButtonState[ p_Button ] = ButtonState );
     }
 
-    BIT_BOOL MouseLinux::ButtonIsJustPressed( eButton p_Button )
+    BIT_BOOL MouseLinux::ButtonIsJustPressed( const eButton p_Button )
     {
         const BIT_BOOL ButtonState = GetButtonStatus( p_Button );
 
@@ -161,7 +161,7 @@ namespace Bit
         return ( m_CurrentButtonState[ p_Button ] = ButtonState )  && !m_PreviousButtonState[ p_Button ];
     }
 
-    BIT_BOOL MouseLinux::ButtonIsJustReleased( eButton p_Button )
+    BIT_BOOL MouseLinux::ButtonIsJustReleased( const eButton p_Button )
     {
          const BIT_BOOL ButtonState = GetButtonStatus( p_Button );
 
@@ -178,7 +178,7 @@ namespace Bit
     }
 
     // Private functions
-    BIT_BOOL MouseLinux::GetButtonStatus( eButton p_Button )
+    BIT_BOOL MouseLinux::GetButtonStatus( const eButton p_Button )
     {
         // Required variables for the XQueryPointer function
         ::Window RootReturn, ChildReturn;

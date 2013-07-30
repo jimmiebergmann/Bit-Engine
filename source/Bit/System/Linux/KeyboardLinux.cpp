@@ -85,7 +85,7 @@ namespace Bit
         m_KeyTranslationsBit[ Key_Q ] = XK_q;
         m_KeyTranslationsBit[ Key_R ] = XK_r;
         m_KeyTranslationsBit[ Key_S ] = XK_s;
-        m_KeyTranslationsBit[ Key_T ] = XK_y;
+        m_KeyTranslationsBit[ Key_T ] = XK_t;
         m_KeyTranslationsBit[ Key_U ] = XK_u;
         m_KeyTranslationsBit[ Key_V ] = XK_v;
         m_KeyTranslationsBit[ Key_W ] = XK_w;
@@ -202,7 +202,7 @@ namespace Bit
         m_KeyTranslationsSystem[ XK_q ] = Key_Q;
         m_KeyTranslationsSystem[ XK_r ] = Key_R;
         m_KeyTranslationsSystem[ XK_s ] = Key_S;
-        m_KeyTranslationsSystem[ XK_y ] = Key_T;
+        m_KeyTranslationsSystem[ XK_t ] = Key_T;
         m_KeyTranslationsSystem[ XK_u ] = Key_U;
         m_KeyTranslationsSystem[ XK_v ] = Key_V;
         m_KeyTranslationsSystem[ XK_w ] = Key_W;
@@ -335,7 +335,7 @@ namespace Bit
     }
 
     // Get state functions
-    BIT_BOOL KeyboardLinux::KeyIsDown( eKey p_Key )
+    BIT_BOOL KeyboardLinux::KeyIsDown( const eKey p_Key )
     {
         const BIT_BOOL KeyState = GetKeyStatus( p_Key );
 
@@ -351,7 +351,7 @@ namespace Bit
         return ( m_CurrentKeyState[ p_Key ] = KeyState );
     }
 
-    BIT_BOOL KeyboardLinux::KeyIsUp( eKey p_Key )
+    BIT_BOOL KeyboardLinux::KeyIsUp( const eKey p_Key )
     {
         const BIT_BOOL KeyState = GetKeyStatus( p_Key );
 
@@ -367,7 +367,7 @@ namespace Bit
         return !( m_CurrentKeyState[ p_Key ] = KeyState );
     }
 
-    BIT_BOOL KeyboardLinux::KeyIsJustPressed( eKey p_Key )
+    BIT_BOOL KeyboardLinux::KeyIsJustPressed( const eKey p_Key )
     {
         const BIT_BOOL KeyState = GetKeyStatus( p_Key );
 
@@ -383,7 +383,7 @@ namespace Bit
         return ( m_CurrentKeyState[ p_Key ] = KeyState )  && !m_PreviousKeyState[ p_Key ];
     }
 
-    BIT_BOOL KeyboardLinux::KeyIsJustReleased( eKey p_Key )
+    BIT_BOOL KeyboardLinux::KeyIsJustReleased( const eKey p_Key )
     {
         const BIT_BOOL KeyState = GetKeyStatus( p_Key );
 
@@ -399,8 +399,40 @@ namespace Bit
         return !( m_CurrentKeyState[ p_Key ] = KeyState )  && m_PreviousKeyState[ p_Key ];
     }
 
+    BIT_BOOL KeyboardLinux::GetCurrentKeyState( const eKey p_Key )
+    {
+        return m_CurrentKeyState[ p_Key ];
+    }
+
+    BIT_BOOL KeyboardLinux::GetPreviousKeyState( const eKey p_Key )
+    {
+         return m_PreviousKeyState[ p_Key ];
+    }
+
+    // Set state functions
+    void KeyboardLinux::SetCurrentKeyState( const eKey p_Key, const BIT_BOOL p_State )
+    {
+        // Push the key to the changed key vector.
+        if( m_CurrentKeyState[ p_Key ] != p_State )
+        {
+            // Push back the reserved key if we have space for the changed key
+            if( m_ChangedKeys.size( ) < s_ReservedKeyCount )
+            {
+                m_ChangedKeys.push_back( p_Key );
+            }
+        }
+
+        // Set the current state
+        m_CurrentKeyState[ p_Key ] = p_State;
+    }
+
+    void KeyboardLinux::SetPreviousKeyState( const eKey p_Key, const BIT_BOOL p_State )
+    {
+        m_PreviousKeyState[ p_Key ] = p_State;
+    }
+
     // Private functions
-    BIT_BOOL KeyboardLinux::GetKeyStatus( eKey p_Key )
+    BIT_BOOL KeyboardLinux::GetKeyStatus( const eKey p_Key )
     {
         // Make sure that the connection to X server is established.
         if( m_pDisplay == BIT_NULL )

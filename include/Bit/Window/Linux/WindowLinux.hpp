@@ -30,8 +30,8 @@
 #ifdef BIT_PLATFORM_LINUX
 
 #include <Bit/Window/Window.hpp>
-#include <Bit/System/Keyboard.hpp>
-#include <Bit/System/Mouse.hpp>
+#include <Bit/System/Linux/KeyboardLinux.hpp>
+#include <Bit/System/Linux/MouseLinux.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <X11/Xlib.h>
 
@@ -73,8 +73,8 @@ namespace Bit
 		::Display * m_pDisplay;
 		int m_Screen;
 		::Window m_Window;
-		Keyboard * m_pKeyboard;
-		Mouse * m_pMouse;
+		KeyboardLinux * m_pKeyboard;
+		MouseLinux * m_pMouse;
 
 	};
 

@@ -54,15 +54,21 @@ namespace Bit
         virtual BIT_UINT16 TranslateKeyToSystemKey( const eKey p_Key );
 
         // Get state functions
-        virtual BIT_BOOL KeyIsDown( eKey p_Key );
-        virtual BIT_BOOL KeyIsUp( eKey p_Key );
-        virtual BIT_BOOL KeyIsJustPressed( eKey p_Key );
-        virtual BIT_BOOL KeyIsJustReleased( eKey p_Key );
+        virtual BIT_BOOL KeyIsDown( const eKey p_Key );
+        virtual BIT_BOOL KeyIsUp( const eKey p_Key );
+        virtual BIT_BOOL KeyIsJustPressed( const eKey p_Key );
+        virtual BIT_BOOL KeyIsJustReleased( const eKey p_Key );
+        BIT_BOOL GetCurrentKeyState( const eKey p_Key );
+        BIT_BOOL GetPreviousKeyState( const eKey p_Key );
+
+        // Set state functions
+        void SetCurrentKeyState( const eKey p_Key, const BIT_BOOL p_State );
+        void SetPreviousKeyState( const eKey p_Key, const BIT_BOOL p_State );
 
     private:
 
         // Private functions
-        BIT_BOOL GetKeyStatus( eKey p_Key );
+        BIT_BOOL GetKeyStatus( const eKey p_Key );
 
         // Private variables
         ::Display * m_pDisplay;
