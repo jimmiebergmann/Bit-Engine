@@ -73,6 +73,7 @@ namespace Bit
 		virtual BIT_UINT32 SetTitle( std::string p_Title ) = 0;
 
 		// Get functions
+		BIT_INLINE BIT_UINT32 GetEventCount( ) const { return m_EventQueue.size( ); }
 		BIT_INLINE Vector2_ui32 GetSize( ) const { return m_Size; }
 		BIT_INLINE Vector2_si32 GetPosition( ) const { return m_Position; }
 		BIT_INLINE BIT_UINT32 GetBits( ) const { return m_Bits; }

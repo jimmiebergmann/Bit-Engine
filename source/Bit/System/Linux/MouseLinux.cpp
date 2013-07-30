@@ -177,6 +177,38 @@ namespace Bit
         return !( m_CurrentButtonState[ p_Button ] = ButtonState )  && m_PreviousButtonState[ p_Button ];
     }
 
+    BIT_BOOL MouseLinux::GetCurrentButtonState( const eButton p_Button )
+    {
+        return m_CurrentButtonState[ p_Button ];
+    }
+
+    BIT_BOOL MouseLinux::GetPreviousButtonState( const eButton p_Button )
+    {
+         return m_PreviousButtonState[ p_Button ];
+    }
+
+    // Set state functions
+    void MouseLinux::SetCurrentButtonState( const eButton p_Button, const BIT_BOOL p_State )
+    {
+         // Push the key to the changed key vector.
+        if( m_CurrentButtonState[ p_Button ] != p_State )
+        {
+            // Push back the reserved key if we have space for the changed key
+            if( m_ChangedButtons.size( ) < s_ReservedButtonCount )
+            {
+                m_ChangedButtons.push_back( p_Button );
+            }
+        }
+
+        // Set the current state
+        m_CurrentButtonState[ p_Button ] = p_State;
+    }
+
+    void MouseLinux::SetPreviousButtonState( const eButton p_Button, const BIT_BOOL p_State )
+    {
+        m_PreviousButtonState[ p_Button ] = p_State;
+    }
+
     // Private functions
     BIT_BOOL MouseLinux::GetButtonStatus( const eButton p_Button )
     {

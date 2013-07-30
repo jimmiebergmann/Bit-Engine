@@ -261,6 +261,9 @@ namespace Bit
         // Declare an x server event.
 		XEvent E;
 
+		// Declare our event
+		Bit::Event Event;
+
 		// Loop through all the events
 		while( XPending( m_pDisplay ) > 0 & m_Open )
 		{
@@ -269,18 +272,14 @@ namespace Bit
 
 		    switch( E.type )
 		    {
-
                 case ClientMessage:
 		        {
                     // This is ahacky way of checking if we closed the window
 		            if( *XGetAtomName( m_pDisplay, E.xclient.message_type ) == *"WM_PROTOCOLS" )
 		            {
-		                Bit::Event Event;
 		                Event.Type = Bit::Event::Closed;
 		                m_EventQueue.push_back( Event );
 
-		                // Remember to actually close the window
-		                //Close( );
                         return BIT_OK;
 		            }
 		        }
@@ -295,7 +294,6 @@ namespace Bit
 		                // Make sure to calculate the position as well size it may change when you resize the window
                         m_Position = Bit::Vector2_si32( E.xconfigure.x, E.xconfigure.y );
 
-                        Bit::Event Event;
                         Event.Type = Bit::Event::Resized;
                         Event.Size = m_Size;
                         m_EventQueue.push_back( Event );
@@ -307,7 +305,6 @@ namespace Bit
 		            {
 		                m_Position = Bit::Vector2_si32( E.xconfigure.x, E.xconfigure.y );
 
-                        Bit::Event Event;
                         Event.Type = Bit::Event::Moved;
                         Event.Position = m_Position;
                         m_EventQueue.push_back( Event );
@@ -317,22 +314,18 @@ namespace Bit
 		        break;
 		        case FocusIn:
 		        {
-		            Bit::Event Event;
                     Event.Type = Bit::Event::GainedFocus;
                     m_EventQueue.push_back( Event );
 		        }
 		        break;
 		        case FocusOut:
 		        {
-		            Bit::Event Event;
                     Event.Type = Bit::Event::LostFocus;
                     m_EventQueue.push_back( Event );
 		        }
 		        break;
 		        case KeyPress:
 		        {
-
-		           //bitTrace( "[window] Key pressed\n" );
                     // Get the right key index
                     KeySym Keysym = XLookupKeysym( &E.xkey, 0 );
 
@@ -352,8 +345,7 @@ namespace Bit
                                 m_EventQueue.push_back( JustPressedEvent );
                             }
 
-                            // Create the event for the KeyPressed event.
-                            Bit::Event Event;
+                            // Add the event for the KeyPressed event
                             Event.Type = Bit::Event::KeyPressed;
                             Event.Key = Key;
                             m_EventQueue.push_back( Event );
@@ -396,7 +388,6 @@ namespace Bit
                             // Yes, the key is just released.
                             if( JustReleased )
                             {
-                                Bit::Event Event;
                                 Event.Type = Bit::Event::KeyJustReleased;
                                 Event.Key = Key;
                                 m_EventQueue.push_back( Event );
@@ -410,7 +401,6 @@ namespace Bit
 		        break;
                 case MotionNotify:
 		        {
-		            Bit::Event Event;
                     Event.Type = Bit::Event::MouseMoved;
                     Event.MousePosition = Bit::Vector2_si32( E.xmotion.x, E.xmotion.y );
                     m_EventQueue.push_back( Event );
@@ -425,11 +415,23 @@ namespace Bit
 
                         if( Button != Mouse::Button_None )
                         {
-                            Bit::Event Event;
+                            // Was the button just pressed? (ButtonJustPressed event)
+                            if( !m_pMouse->GetPreviousButtonState( Button ) )
+                            {
+                                Bit::Event JustPressedEvent;
+                                JustPressedEvent.Type = Bit::Event::ButtonJustPressed;
+                                JustPressedEvent.Button = Button;
+                                m_EventQueue.push_back( JustPressedEvent );
+                            }
+
+                            // Add the event for the ButtonPressed event
                             Event.Type = Bit::Event::ButtonPressed;
                             Event.Button = Button;
                             Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
                             m_EventQueue.push_back( Event );
+
+                            // Set the mouse state
+                            m_pMouse->SetCurrentButtonState( Button, BIT_TRUE );
                         }
                     }
 		        }
@@ -443,11 +445,13 @@ namespace Bit
 
                         if( Button != Mouse::Button_None )
                         {
-                            Bit::Event Event;
                             Event.Type = Bit::Event::ButtonJustReleased;
                             Event.Button = Button;
                             Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
                             m_EventQueue.push_back( Event );
+
+                            // Set the mouse state
+                            m_pMouse->SetCurrentButtonState( Button, BIT_FALSE );
                         }
                     }
 		        }
@@ -462,6 +466,7 @@ namespace Bit
 
 		// Add additional keyboard and mouse events.
 		// We need to fill up some event gaps.
+		// ...
 
 
 		return BIT_OK;

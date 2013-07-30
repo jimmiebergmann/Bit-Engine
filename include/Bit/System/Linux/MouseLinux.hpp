@@ -54,10 +54,16 @@ namespace Bit
         virtual BIT_UINT16 TranslateButtonToSystemKey( const eButton p_Button );
 
         // Get state functions
-        virtual BIT_BOOL ButtonIsDown( eButton p_Button );
-        virtual BIT_BOOL ButtonIsUp( eButton p_Button );
-        virtual BIT_BOOL ButtonIsJustPressed( eButton p_Button );
-        virtual BIT_BOOL ButtonIsJustReleased( eButton p_Button );
+        virtual BIT_BOOL ButtonIsDown( const eButton p_Button );
+        virtual BIT_BOOL ButtonIsUp( const eButton p_Button );
+        virtual BIT_BOOL ButtonIsJustPressed( const eButton p_Button );
+        virtual BIT_BOOL ButtonIsJustReleased( const eButton p_Button );
+        BIT_BOOL GetCurrentButtonState( const eButton p_Button );
+        BIT_BOOL GetPreviousButtonState( const eButton p_Button );
+
+        // Set state functions
+        void SetCurrentButtonState( const eButton p_Button, const BIT_BOOL p_State );
+        void SetPreviousButtonState( const eButton p_Button, const BIT_BOOL p_State );
 
     private:
 
