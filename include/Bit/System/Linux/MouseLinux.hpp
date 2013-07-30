@@ -65,6 +65,9 @@ namespace Bit
         void SetCurrentButtonState( const eButton p_Button, const BIT_BOOL p_State );
         void SetPreviousButtonState( const eButton p_Button, const BIT_BOOL p_State );
 
+        // Public static varialbes
+        static const BIT_UINT32 s_ReservedButtonCount = 16;
+
     private:
 
         // Private functions
@@ -77,12 +80,6 @@ namespace Bit
         std::vector< eButton > m_ChangedButtons;
         BIT_UINT32 m_ButtonTranslationsBit[ Button_Count ];
         eButton m_ButtonTranslationsSystem[ 8 ];
-      /*  KeySym m_KeyTranslationsBit[ Key_Count ];
-        eKey m_KeyTranslationsSystem[ 65536 ];
-*/
-
-        // Private statics
-        static const BIT_UINT32 s_ReservedButtonCount = 16;
 
     };
 

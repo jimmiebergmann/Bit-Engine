@@ -34,6 +34,7 @@
 #include <Bit/System/Linux/MouseLinux.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <X11/Xlib.h>
+#include <vector>
 
 namespace Bit
 {
@@ -75,6 +76,8 @@ namespace Bit
 		::Window m_Window;
 		KeyboardLinux * m_pKeyboard;
 		MouseLinux * m_pMouse;
+		std::vector< Keyboard::eKey > m_PressedKeys;
+		std::vector< Mouse::eButton > m_PressedButtons;
 
 	};
 
