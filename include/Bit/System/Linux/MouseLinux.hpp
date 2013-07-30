@@ -62,7 +62,7 @@ namespace Bit
     private:
 
         // Private functions
-        BIT_BOOL GetButtonStatus( eButton p_Button );
+        BIT_BOOL GetButtonStatus( const eButton p_Button );
 
         // Private variables
         ::Display * m_pDisplay;

@@ -168,8 +168,6 @@ namespace Bit
             Key_VolumeLow,
 */
 
-
-
             // Key counter (not a key)
             Key_Count,
             Key_None
@@ -186,10 +184,10 @@ namespace Bit
         virtual BIT_UINT16 TranslateKeyToSystemKey( const eKey p_Key ) = 0;
 
         // Get state functions
-        virtual BIT_BOOL KeyIsDown( eKey p_Key ) = 0;
-        virtual BIT_BOOL KeyIsUp( eKey p_Key ) = 0;
-        virtual BIT_BOOL KeyIsJustPressed( eKey p_Key ) = 0;
-        virtual BIT_BOOL KeyIsJustReleased( eKey p_Key ) = 0;
+        virtual BIT_BOOL KeyIsDown( const eKey p_Key ) = 0;
+        virtual BIT_BOOL KeyIsUp( const eKey p_Key ) = 0;
+        virtual BIT_BOOL KeyIsJustPressed( const eKey p_Key ) = 0;
+        virtual BIT_BOOL KeyIsJustReleased( const eKey p_Key ) = 0;
 
     };
 

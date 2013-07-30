@@ -39,16 +39,18 @@ namespace Bit
 		enum eEventType
 		{
 			None = 0,
-			Closed = 1,
-			Moved = 2,
-			Resized = 3,
-			GainedFocus = 4,
-			LostFocus = 5,
-			KeyPressed = 6,
-			KeyReleased = 7,
-			MouseMoved = 8,
-			MouseButtonPressed = 9,
-			MouseButtonReleased = 10
+			Closed,
+			Moved,
+			Resized,
+			GainedFocus,
+			LostFocus,
+			KeyPressed,
+			KeyJustPressed,
+			KeyJustReleased,
+			MouseMoved,
+			ButtonPressed,
+			ButtonJustPressed,
+			ButtonJustReleased,
 		};
 
 		eEventType Type;
