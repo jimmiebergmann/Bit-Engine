@@ -34,6 +34,7 @@
 	#define  _vsnprintf_s vsnprintf
 	#include <iostream>
 #endif
+#include <iostream>
 
 #include <cstdio>
 #include <stdarg.h>
@@ -60,17 +61,17 @@ namespace Bit
 		ReturnVal = _vsnprintf_s( CompleteMessage, 1023, p_pMessage, ArgPtr );
 		va_end( ArgPtr );
 		CompleteMessage[ 1023 ] = 0;
-
+/*
 		// Output the message
 		#ifdef BIT_PLATFORM_WIN32
 
 			OutputDebugStringA( CompleteMessage );
 
 		#elif defined( BIT_PLATFORM_LINUX )
-
+*/
 			std::cout << CompleteMessage;
 
-		#endif
+		//#endif
 
 	}
 
