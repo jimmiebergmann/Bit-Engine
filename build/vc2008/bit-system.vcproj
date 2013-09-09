@@ -289,6 +289,26 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="Win32"
+			>
+			<File
+				RelativePath="..\..\source\Bit\System\Win32\KeyboardWin32.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\System\Win32\KeyboardWin32.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\source\Bit\System\Win32\MouseWin32.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\include\Bit\System\Win32\MouseWin32.hpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\source\Bit\System\Box.cpp"
 			>
@@ -315,6 +335,14 @@
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\System\Debugger.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\Keyboard.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Keyboard.hpp"
 			>
 		</File>
 		<File
@@ -363,6 +391,14 @@
 		</File>
 		<File
 			RelativePath="..\..\include\Bit\System\MemoryLeak.hpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\source\Bit\System\Mouse.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\include\Bit\System\Mouse.hpp"
 			>
 		</File>
 		<File
