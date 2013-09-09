@@ -379,13 +379,13 @@ namespace Bit
 
     void GraphicDeviceLinux::EnableFaceCulling( eCulling p_FaceCulling )
     {
-        /*GLenum Mode = GL_FRONT;
-		if( p_FaceCulling == BIT_RENDERER_BACKFACE_CULLING )
+        GLenum Mode = GL_FRONT;
+		if( p_FaceCulling == eCulling::Culling_BackFace )
 		{
 			Mode = GL_BACK;
 		}
 		// else if the culling isn't front face culling, return ( failed )
-		else if( p_FaceCulling != BIT_RENDERER_FRONTFACE_CULLING )
+		else if( p_FaceCulling != eCulling::Culling_FrontFace )
 		{
 			return;
 		}
@@ -393,7 +393,7 @@ namespace Bit
 		glEnable( GL_CULL_FACE );
 		glCullFace( Mode );
 		m_FaceCullingStatus = BIT_TRUE;
-		m_FaceCullingType = p_FaceCulling;*/
+		m_FaceCullingType = p_FaceCulling;
     }
 
     void GraphicDeviceLinux::EnableSmoothLines( )

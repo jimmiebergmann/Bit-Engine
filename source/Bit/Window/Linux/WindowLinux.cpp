@@ -471,10 +471,10 @@ namespace Bit
                             // Was the button just pressed? (ButtonJustPressed event)
                             if( !m_pMouse->GetPreviousButtonState( Button ) )
                             {
-                                Bit::Event JustPressedEvent;
-                                JustPressedEvent.Type = Bit::Event::ButtonJustPressed;
-                                JustPressedEvent.Button = Button;
-                                m_EventQueue.push_back( JustPressedEvent );
+                                Event.Type = Bit::Event::ButtonJustPressed;
+                                Event.Button = Button;
+                                Event.MousePosition = Bit::Vector2_si32( E.xbutton.x, E.xbutton.y );
+                                m_EventQueue.push_back( Event );
 
                                 // Add the event to the input vector if it's not already in the list
                                 BIT_BOOL NotInList = BIT_TRUE;
