@@ -37,15 +37,40 @@ namespace Bit
 	WindowWin32::WindowWin32( ) :
 		m_DeviceContext( BIT_NULL ),
 		m_Window( BIT_NULL ),
-		m_RegisteredClass( BIT_FALSE )
+		m_RegisteredClass( BIT_FALSE ),
+        m_pKeyboard( BIT_NULL ),
+        m_pMouse( BIT_NULL )
 	{
 		m_Open = BIT_FALSE;
 		m_Focused = BIT_FALSE;
+
+		// Create the keyboard and mouse
+        m_pKeyboard = new KeyboardWin32( );
+        m_pMouse = new MouseWin32( );
+
+        // Clear and reserve space for the input vecotrs
+        m_PressedKeys.clear( );
+        m_PressedKeys.reserve( KeyboardWin32::s_ReservedKeyCount );
+        m_PressedButtons.clear( );
+        m_PressedButtons.reserve( MouseWin32::s_ReservedButtonCount );
 	}
 
 	WindowWin32::~WindowWin32( )
 	{
 		Close( );
+
+		// Delete the keyboard adn mouse
+	    if( m_pKeyboard )
+	    {
+	        delete m_pKeyboard;
+	        m_pKeyboard = BIT_NULL;
+	    }
+
+	    if( m_pMouse )
+	    {
+	        delete m_pMouse;
+	        m_pMouse = BIT_NULL;
+	    }
 	}
 
 	// Public functions
@@ -237,6 +262,10 @@ namespace Bit
 		// Clear the event queue
 		m_EventQueue.clear( );
 
+		// Update the keyboard and mouse events
+        m_pKeyboard->Update( );
+        m_pMouse->Update( );
+
 		// Go through all the window event messages
 		MSG Message;
 		while( PeekMessage( &Message, NULL, NULL, NULL, PM_REMOVE ))
@@ -244,6 +273,25 @@ namespace Bit
 			TranslateMessage( &Message );
 			DispatchMessage( &Message );
 		}
+
+		// Add additional keyboard and mouse events.
+		// We need to fill up some event gaps.
+		// Add the event to the input vector if it's not already in the list
+		Bit::Event Event;
+        for( BIT_MEMSIZE i = 0; i < m_PressedKeys.size( ); i++ )
+        {
+            Event.Type = Bit::Event::KeyPressed;
+            Event.Key = m_PressedKeys[ i ];
+            m_EventQueue.push_back( Event );
+			m_pKeyboard->SetCurrentKeyState( m_PressedKeys[ i ], BIT_TRUE );
+        }
+        for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+        {
+            Event.Type = Bit::Event::ButtonPressed;
+            Event.Button = m_PressedButtons[ i ];
+            m_EventQueue.push_back( Event );
+			m_pMouse->SetCurrentButtonState( m_PressedButtons[ i ], BIT_TRUE );
+        }
 
 		return BIT_OK;
 	}
@@ -321,11 +369,13 @@ namespace Bit
 	LRESULT WindowWin32::WindowProc( HWND p_HWND, UINT p_Message,
 		WPARAM p_WParam, LPARAM p_LParam )
 	{
+		// Declare our event
+		Bit::Event Event;
+
 		switch(p_Message)
 		{
 			case WM_CLOSE:
 			{
-				Bit::Event Event;
 				Event.Type = Bit::Event::Closed;
 				m_EventQueue.push_back( Event );
 
@@ -336,7 +386,6 @@ namespace Bit
 			case WM_SETFOCUS:
 			{
 				m_Focused = BIT_TRUE;
-				Bit::Event Event;
 				Event.Type = Bit::Event::GainedFocus;
 				m_EventQueue.push_back( Event );
 			}
@@ -344,14 +393,12 @@ namespace Bit
 			case WM_KILLFOCUS:
 			{
 				m_Focused = BIT_FALSE;
-				Bit::Event Event;
 				Event.Type = Bit::Event::LostFocus;
 				m_EventQueue.push_back( Event );
 			}
 			break;
 			case WM_SIZE:
 			{
-				Bit::Event Event;
 				Event.Type = Bit::Event::Resized;
 				Event.Size = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
 				m_EventQueue.push_back( Event );
@@ -359,7 +406,6 @@ namespace Bit
 			break;
 			case WM_MOVE:
 			{
-				Bit::Event Event;
 				Event.Type = Bit::Event::Moved;
 				m_Position = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
 				Event.Position = m_Position;
@@ -368,82 +414,233 @@ namespace Bit
 			break;
 			case WM_KEYDOWN:
 			{
-				/*Bit::Event Event;
-				Event.Type = Bit::Event::KeyPressed;
-				Event.Key = LOWORD( p_WParam );
-				m_EventQueue.push_back( Event );*/
+                const Keyboard::eKey Key = m_pKeyboard->TranslateKeyToBitKey( static_cast< BIT_UINT16 >( LOWORD( p_WParam ) ) );
+
+                if( Key != Keyboard::Key_None )
+                {
+                    // Was the key just pressed? (KeyJustPressed event)
+                    if( !m_pKeyboard->GetPreviousKeyState( Key ) )
+                    {
+                        Event.Type = Bit::Event::KeyJustPressed;
+                        Event.Key = Key;
+                        m_EventQueue.push_back( Event );
+
+                        // Add the event to the input vector if it's not already in the list
+                        BIT_BOOL NotInList = BIT_TRUE;
+                        for( BIT_MEMSIZE i = 0; i < m_PressedKeys.size( ); i++ )
+                        {
+                            if( Key == m_PressedKeys[ i ] )
+                            {
+                                NotInList = BIT_FALSE;
+                                break;
+                            }
+                        }
+                        if( NotInList )
+                        {
+                            m_PressedKeys.push_back( Key );
+                        }
+
+                    }
+
+                    // Set the keyboard state
+                    m_pKeyboard->SetCurrentKeyState( Key, BIT_TRUE );
+                }
 			}
 			break;
 			case WM_KEYUP:
 			{
-				/*Bit::Event Event;
-				Event.Type = Bit::Event::KeyJustReleased;
-				Event.Key = LOWORD( p_WParam );
-				m_EventQueue.push_back( Event );*/
+                const Keyboard::eKey Key = m_pKeyboard->TranslateKeyToBitKey( static_cast< BIT_UINT16 >( LOWORD( p_WParam ) ) );
+
+                if( Key != Keyboard::Key_None )
+				{
+                    Event.Type = Bit::Event::KeyJustReleased;
+                    Event.Key = Key;
+                    m_EventQueue.push_back( Event );
+
+                    // Set the keyboard state
+                    m_pKeyboard->SetCurrentKeyState( Key, BIT_FALSE );
+
+                    // Remove the key from the input vector
+                    for( BIT_MEMSIZE i = 0; i < m_PressedKeys.size( ); i++ )
+                    {
+                        if( Key == m_PressedKeys[ i ] )
+                        {
+                            m_PressedKeys.erase( m_PressedKeys.begin( ) + i );
+                            break;
+                        }
+                    }
+				}
 			}
 			break;
 			case WM_MOUSEMOVE:
 			{
-				/*Bit::Event Event;
 				Event.Type = Bit::Event::MouseMoved;
 				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
-				m_EventQueue.push_back( Event );*/
+				m_EventQueue.push_back( Event );
 			}
 			break;
 
 			case WM_LBUTTONDOWN:
 			{
-				/*Bit::Event Event;
-				Event.Type = Bit::Event::ButtonPressed;
-				Event.Button = 1;
-				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
-				m_EventQueue.push_back( Event );*/
+				const Mouse::eButton Button = Bit::Mouse::Button_1;
+
+                // Was the button just pressed? (ButtonJustPressed event)
+                if( !m_pMouse->GetPreviousButtonState( Button ) )
+                {
+                    Event.Type = Bit::Event::ButtonJustPressed;
+                    Event.Button = Button;
+                    Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+                    m_EventQueue.push_back( Event );
+
+                    // Add the event to the input vector if it's not already in the list
+                    BIT_BOOL NotInList = BIT_TRUE;
+                    for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+                    {
+                        if( Button == m_PressedButtons[ i ] )
+                        {
+                            NotInList = BIT_FALSE;
+                            break;
+                        }
+                    }
+                    if( NotInList )
+                    {
+                        m_PressedButtons.push_back( Button );
+                    }
+				}
+
+                // Set the mouse state
+                m_pMouse->SetCurrentButtonState( Button, BIT_TRUE );
 			}
 			break;
 			case WM_MBUTTONDOWN:
 			{
-				/*Bit::Event Event;
-				Event.Type = Bit::Event::ButtonPressed;
-				Event.Button = 2;
-				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
-				m_EventQueue.push_back( Event );*/
+				const Mouse::eButton Button = Bit::Mouse::Button_2;
+
+                // Was the button just pressed? (ButtonJustPressed event)
+                if( !m_pMouse->GetPreviousButtonState( Button ) )
+                {
+                    Event.Type = Bit::Event::ButtonJustPressed;
+                    Event.Button = Button;
+                    Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+                    m_EventQueue.push_back( Event );
+
+                    // Add the event to the input vector if it's not already in the list
+                    BIT_BOOL NotInList = BIT_TRUE;
+                    for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+                    {
+                        if( Button == m_PressedButtons[ i ] )
+                        {
+                            NotInList = BIT_FALSE;
+                            break;
+                        }
+                    }
+                    if( NotInList )
+                    {
+                        m_PressedButtons.push_back( Button );
+                    }
+				}
+
+                // Set the mouse state
+                m_pMouse->SetCurrentButtonState( Button, BIT_TRUE );
 			}
 			break;
 			case WM_RBUTTONDOWN:
 			{
-				/*Bit::Event Event;
-				Event.Type = Bit::Event::ButtonPressed;
-				Event.Button = 3;
-				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
-				m_EventQueue.push_back( Event );*/
+				const Mouse::eButton Button = Bit::Mouse::Button_3;
+
+                // Was the button just pressed? (ButtonJustPressed event)
+                if( !m_pMouse->GetPreviousButtonState( Button ) )
+                {
+                    Event.Type = Bit::Event::ButtonJustPressed;
+                    Event.Button = Button;
+                    Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+                    m_EventQueue.push_back( Event );
+
+                    // Add the event to the input vector if it's not already in the list
+                    BIT_BOOL NotInList = BIT_TRUE;
+                    for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+                    {
+                        if( Button == m_PressedButtons[ i ] )
+                        {
+                            NotInList = BIT_FALSE;
+                            break;
+                        }
+                    }
+                    if( NotInList )
+                    {
+                        m_PressedButtons.push_back( Button );
+                    }
+				}
+
+                // Set the mouse state
+                m_pMouse->SetCurrentButtonState( Button, BIT_TRUE );
 			}
 			break;
 
 			case WM_LBUTTONUP:
 			{
-				/*Bit::Event Event;
-				Event.Type = Bit::Event::ButtonJustReleased;
-				Event.Button = 1;
-				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
-				m_EventQueue.push_back( Event );*/
+				const Mouse::eButton Button = Bit::Mouse::Button_1;
+                Event.Type = Bit::Event::ButtonJustReleased;
+                Event.Button = Button;
+                Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+                m_EventQueue.push_back( Event );
+
+                // Set the mouse state
+                m_pMouse->SetCurrentButtonState( Button, BIT_FALSE );
+
+                // Remove the key from the input vector
+                for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+                {
+                    if( Button == m_PressedButtons[ i ] )
+                    {
+                        m_PressedButtons.erase( m_PressedButtons.begin( ) + i );
+                        break;
+                    }
+                }
 			}
 			break;
 			case WM_MBUTTONUP:
 			{
-				/*Bit::Event Event;
-				Event.Type = Bit::Event::ButtonJustReleased;
-				Event.Button = 2;
-				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
-				m_EventQueue.push_back( Event );*/
+				const Mouse::eButton Button = Bit::Mouse::Button_2;
+                Event.Type = Bit::Event::ButtonJustReleased;
+                Event.Button = Button;
+                Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+                m_EventQueue.push_back( Event );
+
+                // Set the mouse state
+                m_pMouse->SetCurrentButtonState( Button, BIT_FALSE );
+
+                // Remove the key from the input vector
+                for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+                {
+                    if( Button == m_PressedButtons[ i ] )
+                    {
+                        m_PressedButtons.erase( m_PressedButtons.begin( ) + i );
+                        break;
+                    }
+                }
 			}
 			break;
 			case WM_RBUTTONUP:
 			{
-				/*Bit::Event Event;
-				Event.Type = Bit::Event::ButtonJustReleased;
-				Event.Button = 3;
-				Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
-				m_EventQueue.push_back( Event );*/
+				const Mouse::eButton Button = Bit::Mouse::Button_3;
+                Event.Type = Bit::Event::ButtonJustReleased;
+                Event.Button = Button;
+                Event.MousePosition = Bit::Vector2_si32( LOWORD( p_LParam ), HIWORD( p_LParam ) );
+                m_EventQueue.push_back( Event );
+
+                // Set the mouse state
+                m_pMouse->SetCurrentButtonState( Button, BIT_FALSE );
+
+                // Remove the key from the input vector
+                for( BIT_MEMSIZE i = 0; i < m_PressedButtons.size( ); i++ )
+                {
+                    if( Button == m_PressedButtons[ i ] )
+                    {
+                        m_PressedButtons.erase( m_PressedButtons.begin( ) + i );
+                        break;
+                    }
+                }
 			}
 			break;
 

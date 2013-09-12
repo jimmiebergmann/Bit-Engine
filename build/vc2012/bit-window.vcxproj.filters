@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Window\Event.hpp" />
+    <ClInclude Include="..\..\include\Bit\Window\Window.hpp" />
+    <ClInclude Include="..\..\include\Bit\Window\Win32\WindowWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Win32">
+      <UniqueIdentifier>{497cc18d-4ac1-490d-a168-c980fb9c778d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Window\Window.cpp" />
+    <ClCompile Include="..\..\source\Bit\Window\Win32\WindowWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

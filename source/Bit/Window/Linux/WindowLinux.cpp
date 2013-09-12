@@ -371,10 +371,9 @@ namespace Bit
                             // Was the key just pressed? (KeyJustPressed event)
                             if( !m_pKeyboard->GetPreviousKeyState( Key ) )
                             {
-                                Bit::Event JustPressedEvent;
-                                JustPressedEvent.Type = Bit::Event::KeyJustPressed;
-                                JustPressedEvent.Key = Key;
-                                m_EventQueue.push_back( JustPressedEvent );
+                                Event.Type = Bit::Event::KeyJustPressed;
+                                Event.Key = Key;
+                                m_EventQueue.push_back( Event );
 
                                 // Add the event to the input vector if it's not already in the list
                                 BIT_BOOL NotInList = BIT_TRUE;

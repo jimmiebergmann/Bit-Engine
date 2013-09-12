@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\System\Box.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Circle.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Debugger.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Keyboard.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Line2.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Line3.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Math.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Matrix4x4.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\MatrixManager.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\MemoryLeak.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Mouse.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Quad.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\ResourceManager.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Sphere.cpp" />
+    <ClCompile Include="..\..\source\Bit\System.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Win32\KeyboardWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\System\Box.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Circle.hpp" />
+    <ClInclude Include="..\..\include\Bit\DataTypes.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Debugger.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Keyboard.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Line2.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Line3.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\MatrixManager.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\MemoryLeak.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Mouse.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Quad.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\ResourceManager.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\SmartArray.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\SmartPointer.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Sphere.hpp" />
+    <ClInclude Include="..\..\include\Bit\System.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Win32\KeyboardWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Win32\MouseWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Win32">
+      <UniqueIdentifier>{5ebb15fd-cedb-4e58-a512-6356c1ee0194}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
