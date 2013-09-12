@@ -67,12 +67,13 @@
     <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
-    <OutDir>$(SolutionDir)/../../lib/Windows/32/Static\</OutDir>
-    <IntDir>$(SolutionDir)/../../obj/Windows/32/vc2008/bit-network/Static_Debug\</IntDir>
+    <OutDir>$(SolutionDir)..\..\lib\Windows\32\Static\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-network\Static_Debug\</IntDir>
+    <TargetName>$(ProjectName)-d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
-    <OutDir>$(SolutionDir)/../../lib/Windows/32/Static\</OutDir>
-    <IntDir>$(SolutionDir)/../../obj/Windows/32/vc2008/bit-network/Static_Release\</IntDir>
+    <OutDir>$(SolutionDir)..\..\lib\Windows\32\Static\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-network\Static_Release\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
     <OutDir>$(SolutionDir)/../../lib/Windows/32/Dynamic\</OutDir>
