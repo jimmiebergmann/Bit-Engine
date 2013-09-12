@@ -74,11 +74,9 @@ namespace Bit
         BIT_BOOL GetKeyStatus( const eKey p_Key );
 
         // Private variables
-        //::Display * m_pDisplay;
         BIT_BOOL m_CurrentKeyState[ Key_Count ];
         BIT_BOOL m_PreviousKeyState[ Key_Count ];
         std::vector< eKey > m_ChangedKeys;
-        //KeySym m_KeyTranslationsBit[ Key_Count ];
 		BIT_UINT32 m_KeyTranslationsBit[ Key_Count ];
         eKey m_KeyTranslationsSystem[ 65536 ];
 

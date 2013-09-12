@@ -74,7 +74,6 @@ namespace Bit
         BIT_BOOL GetButtonStatus( const eButton p_Button );
 
         // Private variables
-        //::Display * m_pDisplay;
         BIT_BOOL m_CurrentButtonState[ Button_Count ];
         BIT_BOOL m_PreviousButtonState[ Button_Count ];
         std::vector< eButton > m_ChangedButtons;

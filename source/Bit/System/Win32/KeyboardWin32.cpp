@@ -34,13 +34,8 @@ namespace Bit
 {
 
 	// Constructor/destructor
-    KeyboardWin32::KeyboardWin32( )/* :
-        m_pDisplay( BIT_NULL )*/
+    KeyboardWin32::KeyboardWin32( )
     {
-/*
-        // Connect to X server
-        m_pDisplay = XOpenDisplay( NULL );
-*/
         // Clear the bit key translations
         // NOT REQUIRED WHEN ALL THE KEY CODES ARE SET
         for( BIT_MEMSIZE i = 0; i < Keyboard::Key_Count; i++ )
@@ -105,81 +100,66 @@ namespace Bit
         m_KeyTranslationsBit[ Key_8 ] = '8';
         m_KeyTranslationsBit[ Key_9 ] = '9';
 
-        m_KeyTranslationsBit[ Key_F1 ] = VK_F1;
-        m_KeyTranslationsBit[ Key_F2 ] = VK_F2;
-        m_KeyTranslationsBit[ Key_F3 ] = VK_F3;
-        m_KeyTranslationsBit[ Key_F4 ] = VK_F4;
-        m_KeyTranslationsBit[ Key_F5 ] = VK_F5;
-        m_KeyTranslationsBit[ Key_F6 ] = VK_F6;
-        m_KeyTranslationsBit[ Key_F7 ] = VK_F7;
-        m_KeyTranslationsBit[ Key_F8 ] = VK_F8;
-        m_KeyTranslationsBit[ Key_F9 ] = VK_F9;
+        m_KeyTranslationsBit[ Key_F1 ]	= VK_F1;
+        m_KeyTranslationsBit[ Key_F2 ]	= VK_F2;
+        m_KeyTranslationsBit[ Key_F3 ]	= VK_F3;
+        m_KeyTranslationsBit[ Key_F4 ]	= VK_F4;
+        m_KeyTranslationsBit[ Key_F5 ]	= VK_F5;
+        m_KeyTranslationsBit[ Key_F6 ]	= VK_F6;
+        m_KeyTranslationsBit[ Key_F7 ]	= VK_F7;
+        m_KeyTranslationsBit[ Key_F8 ]	= VK_F8;
+        m_KeyTranslationsBit[ Key_F9 ]	= VK_F9;
         m_KeyTranslationsBit[ Key_F10 ] = VK_F10;
         m_KeyTranslationsBit[ Key_F11 ] = VK_F11;
         m_KeyTranslationsBit[ Key_F12 ] = VK_F12;
 
-        m_KeyTranslationsBit[ Key_Down ] = VK_DOWN;
-        m_KeyTranslationsBit[ Key_Left ] = VK_LEFT;
-        m_KeyTranslationsBit[ Key_Right ] = VK_RIGHT;
-        m_KeyTranslationsBit[ Key_Up ] = VK_UP;
+        m_KeyTranslationsBit[ Key_Down ]	= VK_DOWN;
+        m_KeyTranslationsBit[ Key_Left ]	= VK_LEFT;
+        m_KeyTranslationsBit[ Key_Right ]	= VK_RIGHT;
+        m_KeyTranslationsBit[ Key_Up ]		= VK_UP;
 
-        //m_KeyTranslationsBit[ Key_A_Diaeresis ]       = XK_Adiaeresis;
-        //m_KeyTranslationsBit[ Key_A_Ring ]            = XK_Aring;
         m_KeyTranslationsBit[ Key_Alt_L ]             = VK_LMENU;
         m_KeyTranslationsBit[ Key_Alt_R ]             = VK_RMENU;
-        //m_KeyTranslationsBit[ Key_Ampersand ]         = XK_ampersand;
-        //m_KeyTranslationsBit[ Key_Apostrophe ]        = XK_apostrophe;
-        //m_KeyTranslationsBit[ Key_Asterisk ]          = XK_asterisk;
-        m_KeyTranslationsBit[ Key_BackSlash ]         = VK_OEM_5;
+        ///m_KeyTranslationsBit[ Key_BackSlash ]      = VK_OEM_5;
         m_KeyTranslationsBit[ Key_Backspace ]         = VK_BACK;
-        //m_KeyTranslationsBit[ Key_Bar ]               = XK_bar;
-        //m_KeyTranslationsBit[ Key_Brace_Left ]        = XK_braceleft;
-        //m_KeyTranslationsBit[ Key_Brace_Right ]       = XK_braceright;
+        //m_KeyTranslationsBit[ Key_Brace_Left ]      = XK_braceleft;
+        //m_KeyTranslationsBit[ Key_Brace_Right ]     = XK_braceright;
         m_KeyTranslationsBit[ Key_Bracket_L ]         = VK_OEM_4;
         m_KeyTranslationsBit[ Key_Bracket_R ]         = VK_OEM_6;
         m_KeyTranslationsBit[ Key_Break ]             = VK_PAUSE;
         m_KeyTranslationsBit[ Key_Capslock ]          = VK_CAPITAL;
-        //m_KeyTranslationsBit[ Key_Colon ]             = XK_colon;
+        //m_KeyTranslationsBit[ Key_Colon ]           = XK_colon;
         m_KeyTranslationsBit[ Key_Control_L ]         = VK_LCONTROL;
         m_KeyTranslationsBit[ Key_Control_R ]         = VK_RCONTROL;
         m_KeyTranslationsBit[ Key_Comma ]             = VK_OEM_COMMA;
         m_KeyTranslationsBit[ Key_Delete ]            = VK_DELETE;
-        //m_KeyTranslationsBit[ Key_Dollar ]            = XK_dollar;
         m_KeyTranslationsBit[ Key_End ]               = VK_END;
-        m_KeyTranslationsBit[ Key_Equal ]             = VK_OEM_PLUS;
+        ///m_KeyTranslationsBit[ Key_Equal ]          = VK_OEM_PLUS;
         m_KeyTranslationsBit[ Key_Escape ]            = VK_ESCAPE;
-        //m_KeyTranslationsBit[ Key_Exclam ]            = XK_exclam;
-        //m_KeyTranslationsBit[ Key_Greater ]           = XK_greater;
+        //m_KeyTranslationsBit[ Key_Greater ]         = XK_greater;
         m_KeyTranslationsBit[ Key_Home ]              = VK_HOME;
         m_KeyTranslationsBit[ Key_Insert ]            = VK_INSERT;
-        //m_KeyTranslationsBit[ Key_Less ]              = XK_less;
+        //m_KeyTranslationsBit[ Key_Less ]            = XK_less;
         m_KeyTranslationsBit[ Key_Minus ]             = VK_OEM_MINUS;
-        //m_KeyTranslationsBit[ Key_Number ]            = XK_numbersign;
         m_KeyTranslationsBit[ Key_NumLock ]           = VK_NUMLOCK;
-        //m_KeyTranslationsBit[ Key_O_Diaeresis ]       = XK_Odiaeresis;
         m_KeyTranslationsBit[ Key_PageDown ]          = VK_NEXT;
         m_KeyTranslationsBit[ Key_PageUp ]            = VK_PRIOR;
-        //m_KeyTranslationsBit[ Key_Parenthesis_Left ]  = XK_parenleft;
-        //m_KeyTranslationsBit[ Key_Parenthesis_Right ] = XK_parenright;
-        //m_KeyTranslationsBit[ Key_Percent ]           = XK_percent;
         m_KeyTranslationsBit[ Key_Period ]            = VK_OEM_PERIOD;
         m_KeyTranslationsBit[ Key_Plus ]              = VK_ADD;
         m_KeyTranslationsBit[ Key_Print ]             = VK_SNAPSHOT;
-        //m_KeyTranslationsBit[ Key_Question ]          = XK_question;
-        m_KeyTranslationsBit[ Key_Quote ]             = VK_OEM_7;
+        ///m_KeyTranslationsBit[ Key_Quote ]          = VK_OEM_7;
         m_KeyTranslationsBit[ Key_Return ]            = VK_RETURN;
         m_KeyTranslationsBit[ Key_ScrollLock ]        = VK_SCROLL;
-        //m_KeyTranslationsBit[ Key_Section ]           = XK_section;
         m_KeyTranslationsBit[ Key_SemiColon ]         = VK_OEM_1;
         m_KeyTranslationsBit[ Key_Shift_L ]           = VK_LSHIFT ;
         m_KeyTranslationsBit[ Key_Shift_R ]           = VK_RSHIFT ;
-        m_KeyTranslationsBit[ Key_Slash ]             = VK_OEM_2;
+        ///m_KeyTranslationsBit[ Key_Slash ]          = VK_OEM_2;
         m_KeyTranslationsBit[ Key_Space ]             = VK_SPACE;
         m_KeyTranslationsBit[ key_Super_L ]           = VK_LWIN;
         m_KeyTranslationsBit[ key_Super_R ]           = VK_RWIN ;
         m_KeyTranslationsBit[ Key_Tab ]               = VK_TAB;
-        m_KeyTranslationsBit[ Key_Tilde ]             = VK_OEM_3;
-        //m_KeyTranslationsBit[ Key_Underscore ]        = XK_underscore;
+        ///m_KeyTranslationsBit[ Key_Tilde ]          = VK_OEM_3;
+        //m_KeyTranslationsBit[ Key_Underscore ]      = XK_underscore;
 
 
 
@@ -224,83 +204,67 @@ namespace Bit
         m_KeyTranslationsSystem[ '8' ] = Key_8;
         m_KeyTranslationsSystem[ '9' ] = Key_9;
 
-        m_KeyTranslationsSystem[ VK_F1 ] = Key_F1;
-        m_KeyTranslationsSystem[ VK_F2 ] = Key_F2;
-        m_KeyTranslationsSystem[ VK_F3 ] = Key_F3;
-        m_KeyTranslationsSystem[ VK_F4 ] = Key_F4;
-        m_KeyTranslationsSystem[ VK_F5 ] = Key_F5;
-        m_KeyTranslationsSystem[ VK_F6 ] = Key_F6;
-        m_KeyTranslationsSystem[ VK_F7 ] = Key_F7;
-        m_KeyTranslationsSystem[ VK_F8 ] = Key_F8;
-        m_KeyTranslationsSystem[ VK_F9 ] = Key_F9;
-        m_KeyTranslationsSystem[ VK_F10 ] = Key_F10;
-        m_KeyTranslationsSystem[ VK_F11 ] = Key_F11;
-        m_KeyTranslationsSystem[ VK_F12 ] = Key_F12;
+        m_KeyTranslationsSystem[ VK_F1 ]	= Key_F1;
+        m_KeyTranslationsSystem[ VK_F2 ]	= Key_F2;
+        m_KeyTranslationsSystem[ VK_F3 ]	= Key_F3;
+        m_KeyTranslationsSystem[ VK_F4 ]	= Key_F4;
+        m_KeyTranslationsSystem[ VK_F5 ]	= Key_F5;
+        m_KeyTranslationsSystem[ VK_F6 ]	= Key_F6;
+        m_KeyTranslationsSystem[ VK_F7 ]	= Key_F7;
+        m_KeyTranslationsSystem[ VK_F8 ]	= Key_F8;
+        m_KeyTranslationsSystem[ VK_F9 ]	= Key_F9;
+        m_KeyTranslationsSystem[ VK_F10 ]	= Key_F10;
+        m_KeyTranslationsSystem[ VK_F11 ]	= Key_F11;
+        m_KeyTranslationsSystem[ VK_F12 ]	= Key_F12;
 
-        m_KeyTranslationsSystem[ VK_DOWN ] = Key_Down;
-        m_KeyTranslationsSystem[ VK_LEFT ] = Key_Left;
+        m_KeyTranslationsSystem[ VK_DOWN ]	= Key_Down;
+        m_KeyTranslationsSystem[ VK_LEFT ]	= Key_Left;
         m_KeyTranslationsSystem[ VK_RIGHT ] = Key_Right;
-        m_KeyTranslationsSystem[ VK_UP ] = Key_Up;
-/*
-        m_KeyTranslationsSystem[ XK_Adiaeresis ]        = Key_A_Diaeresis;
-        m_KeyTranslationsSystem[ XK_Aring ]             = Key_A_Ring;
-        m_KeyTranslationsSystem[ XK_Alt_L ]             = Key_Alt_L;
-        m_KeyTranslationsSystem[ XK_Alt_R ]             = Key_Alt_R;
-        m_KeyTranslationsSystem[ XK_ampersand ]         = Key_Ampersand;
-        m_KeyTranslationsSystem[ XK_apostrophe ]        = Key_Apostrophe;
-        m_KeyTranslationsSystem[ XK_asterisk ]          = Key_Asterisk;
-        m_KeyTranslationsSystem[ XK_backslash ]         = Key_BackSlash;
-        m_KeyTranslationsSystem[ XK_BackSpace ]         = Key_Backspace;
-        m_KeyTranslationsSystem[ XK_bar ]               = Key_Bar;
-        m_KeyTranslationsSystem[ XK_braceleft ]         = Key_Brace_Left;
-        m_KeyTranslationsSystem[ XK_braceright ]        = Key_Brace_Right;
-        m_KeyTranslationsSystem[ XK_bracketleft ]       = Key_Bracket_L;
-        m_KeyTranslationsSystem[ XK_bracketright ]      = Key_Bracket_R;
-        m_KeyTranslationsSystem[ XK_Break ]             = Key_Break;
-        m_KeyTranslationsSystem[ XK_Caps_Lock ]         = Key_Capslock;
-        m_KeyTranslationsSystem[ XK_colon ]             = Key_Colon;
-        m_KeyTranslationsSystem[ XK_Control_L ]         = Key_Control_L;
-        m_KeyTranslationsSystem[ XK_Control_R ]         = Key_Control_R;
-        m_KeyTranslationsSystem[ XK_comma ]             = Key_Comma;
-        m_KeyTranslationsSystem[ XK_Delete ]            = Key_Delete;
-        m_KeyTranslationsSystem[ XK_dollar ]            = Key_Dollar;
-        m_KeyTranslationsSystem[ XK_End ]               = Key_End;
-        m_KeyTranslationsSystem[ XK_equal ]             = Key_Equal;
-        m_KeyTranslationsSystem[ XK_Escape ]            = Key_Escape;
-        m_KeyTranslationsSystem[ XK_exclam ]            = Key_Exclam;
-        m_KeyTranslationsSystem[ XK_greater ]           = Key_Greater;
-        m_KeyTranslationsSystem[ XK_Home ]              = Key_Home;
-        m_KeyTranslationsSystem[ XK_Insert ]            = Key_Insert;
-        m_KeyTranslationsSystem[ XK_less ]              = Key_Less;
-        m_KeyTranslationsSystem[ XK_minus ]             = Key_Minus;
-        m_KeyTranslationsSystem[ XK_numbersign ]        = Key_Number;
-        m_KeyTranslationsSystem[ XK_Num_Lock ]          = Key_NumLock;
-        m_KeyTranslationsSystem[ XK_Odiaeresis ]        = Key_O_Diaeresis;
-        m_KeyTranslationsSystem[ XK_Page_Down ]         = Key_PageDown;
-        m_KeyTranslationsSystem[ XK_Page_Up ]           = Key_PageUp;
-        m_KeyTranslationsSystem[ XK_parenleft ]         = Key_Parenthesis_Left;
-        m_KeyTranslationsSystem[ XK_parenright ]        = Key_Parenthesis_Right;
-        m_KeyTranslationsSystem[ XK_percent ]           = Key_Percent;
-        m_KeyTranslationsSystem[ XK_period ]            = Key_Period;
-        m_KeyTranslationsSystem[ XK_plus ]              = Key_Plus;
-        m_KeyTranslationsSystem[ XK_Print ]             = Key_Print;
-        m_KeyTranslationsSystem[ XK_question ]          = Key_Question;
-        m_KeyTranslationsSystem[ XK_quotedbl ]          = Key_Quote;
-        m_KeyTranslationsSystem[ XK_Return ]            = Key_Return;
-        m_KeyTranslationsSystem[ XK_Scroll_Lock ]       = Key_ScrollLock;
-        m_KeyTranslationsSystem[ XK_section ]           = Key_Section;
-        m_KeyTranslationsSystem[ XK_semicolon ]         = Key_SemiColon;
-        m_KeyTranslationsSystem[ XK_Shift_L ]           = Key_Shift_L;
-        m_KeyTranslationsSystem[ XK_Shift_R ]           = Key_Shift_R;
-        m_KeyTranslationsSystem[ XK_slash ]             = Key_Slash;
-        m_KeyTranslationsSystem[ XK_space ]             = Key_Space;
-        m_KeyTranslationsSystem[ XK_Super_L ]           = key_Super_L;
-        m_KeyTranslationsSystem[ XK_Super_R ]           = key_Super_R;
-        m_KeyTranslationsSystem[ XK_Tab ]               = Key_Tab;
-        m_KeyTranslationsSystem[ XK_dead_grave ]        = Key_Tilde;
-        m_KeyTranslationsSystem[ XK_underscore ]        = Key_Underscore;
-*/
+        m_KeyTranslationsSystem[ VK_UP ]	= Key_Up;
 
+
+		m_KeyTranslationsSystem[ VK_LMENU ]             = Key_Alt_L;
+        m_KeyTranslationsSystem[ VK_RMENU ]             = Key_Alt_R ;
+        ///m_KeyTranslationsSystem[ Key_BackSlash ]     = VK_OEM_5;
+        m_KeyTranslationsSystem[ VK_BACK ]              = Key_Backspace ;
+        //m_KeyTranslationsSystem[ Key_Brace_Left ]     = XK_braceleft;
+        //m_KeyTranslationsSystem[ Key_Brace_Right ]    = XK_braceright;
+        m_KeyTranslationsSystem[ VK_OEM_4 ]             = Key_Bracket_L;
+        m_KeyTranslationsSystem[ VK_OEM_6 ]             = Key_Bracket_R;
+        m_KeyTranslationsSystem[ VK_PAUSE ]             = Key_Break;
+        m_KeyTranslationsSystem[ VK_CAPITAL ]           = Key_Capslock;
+        //m_KeyTranslationsSystem[ Key_Colon ]          = XK_colon;
+        m_KeyTranslationsSystem[ VK_LCONTROL ]          = Key_Control_L;
+        m_KeyTranslationsSystem[ VK_RCONTROL ]          = Key_Control_R;
+        m_KeyTranslationsSystem[ VK_OEM_COMMA ]         = Key_Comma;
+        m_KeyTranslationsSystem[ VK_DELETE ]            = Key_Delete;
+        m_KeyTranslationsSystem[ VK_END ]               = Key_End;
+        ///m_KeyTranslationsSystem[ Key_Equal ]         = VK_OEM_PLUS;
+        m_KeyTranslationsSystem[ VK_ESCAPE ]            = Key_Escape;
+        //m_KeyTranslationsSystem[ Key_Greater ]        = XK_greater;
+        m_KeyTranslationsSystem[ VK_HOME ]              = Key_Home;
+        m_KeyTranslationsSystem[ VK_INSERT ]            = Key_Insert;
+        //m_KeyTranslationsSystem[ Key_Less ]           = XK_less;
+        m_KeyTranslationsSystem[ VK_OEM_MINUS ]         = Key_Minus;
+        m_KeyTranslationsSystem[ VK_NUMLOCK ]           = Key_NumLock;
+        m_KeyTranslationsSystem[ VK_NEXT ]              = Key_PageDown;
+        m_KeyTranslationsSystem[ VK_PRIOR ]				= Key_PageUp;
+        m_KeyTranslationsSystem[ VK_OEM_PERIOD ]        = Key_Period;
+        m_KeyTranslationsSystem[ VK_ADD ]				= Key_Plus;
+        m_KeyTranslationsSystem[ VK_SNAPSHOT ]          = Key_Print;
+        ///m_KeyTranslationsSystem[ Key_Quote ]         = VK_OEM_7;
+        m_KeyTranslationsSystem[ VK_RETURN ]            = Key_Return;
+        m_KeyTranslationsSystem[ VK_SCROLL ]			= Key_ScrollLock;
+        m_KeyTranslationsSystem[ VK_OEM_1 ]				= Key_SemiColon;
+        m_KeyTranslationsSystem[ VK_LSHIFT ]			= Key_Shift_L;
+        m_KeyTranslationsSystem[ VK_RSHIFT ]			= Key_Shift_R;
+        ///m_KeyTranslationsSystem[ Key_Slash ]         = VK_OEM_2;
+        m_KeyTranslationsSystem[ VK_SPACE ]             = Key_Space;
+        m_KeyTranslationsSystem[ VK_LWIN ]				= key_Super_L;
+        m_KeyTranslationsSystem[ VK_RWIN ]				= key_Super_R ;
+        m_KeyTranslationsSystem[ VK_TAB ]               = Key_Tab;
+        ///m_KeyTranslationsSystem[ Key_Tilde ]         = VK_OEM_3;
+        //m_KeyTranslationsSystem[ Key_Underscore ]     = XK_underscore;
 
     }
 

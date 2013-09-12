@@ -30,8 +30,11 @@
 #ifdef BIT_PLATFORM_WIN32
 
 #include <Bit/Window/Window.hpp>
+#include <Bit/System/Win32/KeyboardWin32.hpp>
+#include <Bit/System/Win32/MouseWin32.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <windows.h>
+#include <vector>
 
 namespace Bit
 {
@@ -76,6 +79,10 @@ namespace Bit
 		HDC		m_DeviceContext;
 		HWND	m_Window;
 		BIT_BOOL m_RegisteredClass;
+		KeyboardWin32 * m_pKeyboard;
+		MouseWin32 * m_pMouse;
+		std::vector< Keyboard::eKey > m_PressedKeys;
+		std::vector< Mouse::eButton > m_PressedButtons;
 
 	};
 

@@ -39,10 +39,8 @@ namespace Bit
     // Constructor/destructor
     MouseWin32::MouseWin32( )
     {
-       /* // Connect to X server
-        m_pDisplay = XOpenDisplay( NULL );
-
-        // Clear the bit button translations
+       
+		// Clear the bit button translations
         // NOT REQUIRED WHEN ALL THE BUTTON CODES ARE SET
         for( BIT_MEMSIZE i = 0; i < Mouse::Button_Count; i++ )
         {
@@ -68,32 +66,23 @@ namespace Bit
 
 
         // Set the BIT button translations
-        m_ButtonTranslationsBit[ Button_1 ] = 0x0100;
-        m_ButtonTranslationsBit[ Button_2 ] = 0x0200;
-        m_ButtonTranslationsBit[ Button_3 ] = 0x0400;
+        m_ButtonTranslationsBit[ Button_1 ] = 0;
+        m_ButtonTranslationsBit[ Button_2 ] = 1;
+        m_ButtonTranslationsBit[ Button_3 ] = 2;
 
         //  Set the SYSTEM button translations
-        m_ButtonTranslationsSystem[ 1 ] = Button_1;
-        m_ButtonTranslationsSystem[ 2 ] = Button_2;
-        m_ButtonTranslationsSystem[ 3 ] = Button_3;*/
+        m_ButtonTranslationsSystem[ 0 ] = Button_1;
+        m_ButtonTranslationsSystem[ 1 ] = Button_2;
+        m_ButtonTranslationsSystem[ 2 ] = Button_3;
     }
     MouseWin32::~MouseWin32( )
     {
-        // Close the connection with X server
-       /* if( m_pDisplay )
-        {
-            XCloseDisplay( m_pDisplay );
-        }*/
+
     }
 
      // Public general functions
     void MouseWin32::Update( )
     {
-       /* if( m_pDisplay == BIT_NULL )
-        {
-            return;
-        }*/
-
         for( BIT_MEMSIZE i = 0; i < m_ChangedButtons.size( ); i++ )
         {
            m_PreviousButtonState[ m_ChangedButtons[ i ] ] = m_CurrentButtonState[ m_ChangedButtons[ i ]  ];
