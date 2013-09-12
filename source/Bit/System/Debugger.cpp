@@ -61,17 +61,14 @@ namespace Bit
 		ReturnVal = _vsnprintf_s( CompleteMessage, 1023, p_pMessage, ArgPtr );
 		va_end( ArgPtr );
 		CompleteMessage[ 1023 ] = 0;
-/*
-		// Output the message
+
+		// Output the message in the visual studio output(for win32 only)
 		#ifdef BIT_PLATFORM_WIN32
-
 			OutputDebugStringA( CompleteMessage );
+		#endif
 
-		#elif defined( BIT_PLATFORM_LINUX )
-*/
-			std::cout << CompleteMessage;
-
-		//#endif
+		// Also print the message in the console
+		std::cout << CompleteMessage;
 
 	}
 
