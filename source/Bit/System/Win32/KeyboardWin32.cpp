@@ -151,8 +151,8 @@ namespace Bit
         m_KeyTranslationsBit[ Key_Return ]            = VK_RETURN;
         m_KeyTranslationsBit[ Key_ScrollLock ]        = VK_SCROLL;
         m_KeyTranslationsBit[ Key_SemiColon ]         = VK_OEM_1;
-        m_KeyTranslationsBit[ Key_Shift_L ]           = VK_LSHIFT ;
-        m_KeyTranslationsBit[ Key_Shift_R ]           = VK_RSHIFT ;
+        m_KeyTranslationsBit[ Key_Shift_L ]           = VK_LSHIFT;
+        m_KeyTranslationsBit[ Key_Shift_R ]           = VK_RSHIFT;
         ///m_KeyTranslationsBit[ Key_Slash ]          = VK_OEM_2;
         m_KeyTranslationsBit[ Key_Space ]             = VK_SPACE;
         m_KeyTranslationsBit[ key_Super_L ]           = VK_LWIN;

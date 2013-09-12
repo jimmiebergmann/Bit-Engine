@@ -414,7 +414,37 @@ namespace Bit
 			break;
 			case WM_KEYDOWN:
 			{
-                const Keyboard::eKey Key = m_pKeyboard->TranslateKeyToBitKey( static_cast< BIT_UINT16 >( LOWORD( p_WParam ) ) );
+				Keyboard::eKey Key = Keyboard::Key_None;
+
+				switch( p_WParam )
+				{
+					case VK_SHIFT:
+					{
+						UINT scancode = MapVirtualKey( VK_RSHIFT, MAPVK_VK_TO_VSC );
+						Key = ( ( (p_LParam & 0x01FF0000 ) >> 16 ) == scancode) ? Keyboard::Key_Shift_R : Keyboard::Key_Shift_L;
+					}
+					break;
+					case VK_MENU: // Alt key
+					{
+						Key = ( HIWORD( p_LParam ) & KF_EXTENDED ) ? Keyboard::Key_Alt_R : Keyboard::Key_Alt_L;
+					}
+					break;
+					case VK_CONTROL:
+					{
+						if( GetAsyncKeyState( VK_RMENU ) == 0 )
+						{
+							Key = ( HIWORD( p_LParam ) & KF_EXTENDED ) ? Keyboard::Key_Control_R : Keyboard::Key_Control_L;
+						}
+					}
+					break;
+					// No special key was handled, check the regualar keys.
+					default:
+					{
+						// Get the right key code from the keyboard class.
+						Key = m_pKeyboard->TranslateKeyToBitKey( static_cast< BIT_UINT16 >( LOWORD( p_WParam ) ) );
+					}
+					break;
+				}
 
                 if( Key != Keyboard::Key_None )
                 {
@@ -449,7 +479,35 @@ namespace Bit
 			break;
 			case WM_KEYUP:
 			{
-                const Keyboard::eKey Key = m_pKeyboard->TranslateKeyToBitKey( static_cast< BIT_UINT16 >( LOWORD( p_WParam ) ) );
+                Keyboard::eKey Key = Keyboard::Key_None;
+
+				// Under Win32, we need to check some extra checks for some certain keys. (sigh)
+				switch( p_WParam )
+				{
+					case VK_SHIFT:
+					{
+						UINT scancode = MapVirtualKey( VK_RSHIFT, MAPVK_VK_TO_VSC );
+						Key = ( ( (p_LParam & 0x01FF0000 ) >> 16 ) == scancode) ? Keyboard::Key_Shift_R : Keyboard::Key_Shift_L;
+					}
+					break;
+					case VK_MENU: // Alt key
+					{
+						Key = ( HIWORD( p_LParam ) & KF_EXTENDED ) ? Keyboard::Key_Alt_R : Keyboard::Key_Alt_L;
+					}
+					break;
+					case VK_CONTROL:
+					{
+						Key = ( HIWORD( p_LParam ) & KF_EXTENDED ) ? Keyboard::Key_Control_R : Keyboard::Key_Control_L;
+					}
+					break;
+					// No special key was handled, check the regualar keys.
+					default:
+					{
+						// Get the right key code from the keyboard class.
+						 Key = m_pKeyboard->TranslateKeyToBitKey( static_cast< BIT_UINT16 >( LOWORD( p_WParam ) ) );
+					}
+					break;
+				}
 
                 if( Key != Keyboard::Key_None )
 				{
