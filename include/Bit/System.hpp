@@ -29,6 +29,10 @@
 #include <Bit/Graphics/Texture.hpp>
 #include <string>
 
+// Very useful macro for check single bits
+#define bitBitShiftLeft(n)       (1 << (n))
+#define bitCheckBit(n,i) ((bool)(((n) & bitBitShiftLeft(i)) != 0)) // <- Use this one
+
 namespace Bit
 {
 

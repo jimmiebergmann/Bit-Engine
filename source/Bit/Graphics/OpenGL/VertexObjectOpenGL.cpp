@@ -291,4 +291,16 @@ namespace Bit
 		glBindVertexArray( 0 );
 	}
 
+	void VertexObjectOpenGL::Render( const eRenderMode p_Mode, BIT_UINT32 p_Start, BIT_UINT32 p_Length )
+	{
+		if( !m_Loaded )
+		{
+			return;
+		}
+
+		glBindVertexArray( m_VertexArrayObject );
+		glDrawArrays( s_RenderModes[ (int)( p_Mode ) ], p_Start, p_Length );
+		glBindVertexArray( 0 );
+	}
+
 }

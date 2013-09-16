@@ -52,6 +52,7 @@ namespace Bit
 		virtual BIT_UINT32 UpdateVertexBuffer( const BIT_UINT32 p_Index, const void * p_pBuffer,
 			const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize );
 		virtual void Render( const eRenderMode p_Mode );
+		virtual void Render( const eRenderMode p_Mode, BIT_UINT32 p_Start, BIT_UINT32 p_Length );
 
 	private:
 

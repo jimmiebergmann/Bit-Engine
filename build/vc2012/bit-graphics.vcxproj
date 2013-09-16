@@ -70,6 +70,8 @@
     <OutDir>$(SolutionDir)..\..\lib\Windows\32\Static\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-graphics\Static_Debug\</IntDir>
     <TargetName>$(ProjectName)-d</TargetName>
+    <IncludePath>..\..\..\Bit-Engine\extlibs\include\Freetype;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\Bit-Engine\extlibs\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\Windows\32\Static\</OutDir>
