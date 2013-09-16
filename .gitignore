@@ -20,6 +20,7 @@ bin
 *.opensdf
 *.layout
 *.depend
+*.filters
 
 # Extra #
 *.tga

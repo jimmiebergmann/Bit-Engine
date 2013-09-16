@@ -33,6 +33,16 @@
 #define bitBitShiftLeft(n)       (1 << (n))
 #define bitCheckBit(n,i) ((bool)(((n) & bitBitShiftLeft(i)) != 0)) // <- Use this one
 
+// Sleep
+#ifdef BIT_PLATFORM_WIN32
+#include <windows.h>
+#undef CreateWindow
+#define bitSleep(x) ( Sleep( x ) )
+#elif PLATFORM_LINUX
+#include <unistd.h>
+#define bitSleep(x) ( usleep( x * 1000 ) )
+#endif
+
 namespace Bit
 {
 
