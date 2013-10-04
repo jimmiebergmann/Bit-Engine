@@ -22,37 +22,51 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_NETWORK_HPP__
-#define __BIT_NETWORK_HPP__
+
+#ifndef __BIT_NETWORK_ADDRESS_HPP__
+#define __BIT_NETWORK_ADDRESS_HPP__
 
 #include <Bit/DataTypes.hpp>
-
-#ifdef BIT_PLATFORM_WIN32
-	#include <windows.h> // <winsock2.h>
-#elif BIT_PLATFORM_LINUX
-    #include <sys/socket.h>
-    #include <netinet/in.h>
-    #include <fcntl.h>
-    #include "../Utility/Thread/Thread.h"
-#endif
+#include <string>
 
 namespace Bit
 {
-
 	namespace Net
 	{
 
-#ifdef BIT_PLATFORM_WIN32
-		#define CloseSocket( x ) closesocket( x )
-		typedef SOCKET Socket;
-#elif BIT_PLATFORM_LINUX
-		#define CloseSocket( x ) close( x )
-		typedef unsigned int Socket;
-#endif
+		class Address
+		{
+		public:
 
-		BIT_UINT32 StartUp( );
-		void ShutDown( );
+			typedef BIT_UINT64 AddressIndex;
 
+			Address();
+			Address( const BIT_UINT8 p_A, const BIT_UINT8 p_B, const BIT_UINT8 p_C,
+				const BIT_UINT8 p_D, const BIT_UINT16 p_Port );
+			Address( const BIT_UINT32 p_Address, BIT_UINT16 p_Port );
+			Address( BIT_UINT16 p_Port );
+			BIT_BOOL SetAddressByString( std::string p_String );
+			BIT_UINT32 GetAddress() const;
+			BIT_UINT8 GetA() const;
+			BIT_UINT8 GetB() const;
+			BIT_UINT8 GetC() const;
+			BIT_UINT8 GetD() const;
+			BIT_UINT16 GetPort() const;
+			AddressIndex GetAddressIndex() const;
+			void SetPortValue( BIT_UINT16 p_Port );
+			/*void SetA( BIT_UINT8 p_A );
+			void SetB( BIT_UINT8 p_B );
+			void SetC( BIT_UINT8 p_C );
+			void SetD( BIT_UINT8 p_D );*/
+			BIT_BOOL operator == (const Address & p_Address) const;
+			BIT_BOOL operator != (const Address & p_Address) const;
+
+		private:
+
+			BIT_UINT32 m_Address;
+			BIT_UINT16 m_Port;
+
+		};
 	}
 
 }

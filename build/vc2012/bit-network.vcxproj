@@ -150,9 +150,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Network.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Address.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\TCP.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\TCP.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="bit-system.vcxproj">
