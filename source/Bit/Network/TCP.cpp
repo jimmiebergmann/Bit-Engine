@@ -59,7 +59,7 @@ namespace Bit
 			// Create the socket
 			if( ( m_Socket = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )
 			{
-				bitTrace( "[Bit::Net::TCP::Connect()] Can not create the socket.\n" );
+				bitTrace( "[Bit::Net::TCP::Connect()] Can not create the socket: %i\n", GetLastError( )  );
 				return BIT_ERROR;
 			}
 
@@ -73,7 +73,7 @@ namespace Bit
 			if( connect( m_Socket, (const sockaddr*)&service, sizeof(sockaddr_in)) == SOCKET_ERROR)
 			{
 				bitTrace( "[Bit::Net::TCP::Connect()] "
-					"Can not connect to the server: %i.\n", GetLastError() );
+					"Can not connect to the server: %i\n", GetLastError( ) );
 
 				CloseSocket( m_Socket );
 				return BIT_ERROR;
@@ -94,7 +94,6 @@ namespace Bit
 				return BIT_OK;
 			}
 
-
 			return BIT_ERROR;
 		}
 
@@ -109,11 +108,11 @@ namespace Bit
 			// Create the socket
 			if( ( m_Socket = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )
 			{
-				bitTrace( "[Bit::Net::TCP::Host()] Can not create the socket.\n" );
+				bitTrace( "[Bit::Net::TCP::Host()] Can not create the socket: %i\n", GetLastError( ) );
 				return BIT_ERROR;
 			}
 
-			// create an object that's holding the host data
+			// Create an object that's holding the host data
 			sockaddr_in service;
 			service.sin_family = AF_INET;
 			service.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -122,7 +121,7 @@ namespace Bit
 			// Bind
 			if( bind( m_Socket, (const sockaddr*)&service, sizeof(sockaddr_in)) == SOCKET_ERROR )
 			{
-				bitTrace( BIT_NULL, "[Bit::Net::TCP::Host()] Can not bind the socket.\n" );
+				bitTrace( "[Bit::Net::TCP::Host()] Can not bind the socket: %i\n", GetLastError( ) );
 				CloseSocket( m_Socket );
 				return BIT_ERROR;
 			}
@@ -130,7 +129,7 @@ namespace Bit
 			// Listen for incomming clients
 			if( listen( m_Socket, SOMAXCONN ) == SOCKET_ERROR )
 			{
-				bitTrace( "[Bit::Net::TCP::Host()] Can not listen for clients.\n" );
+				bitTrace( "[Bit::Net::TCP::Host()] Can not listen for clients: %i\n", GetLastError( ) );
 				return BIT_ERROR;
 			}
 
@@ -138,11 +137,15 @@ namespace Bit
 			Socket AcceptSocket = 0;
 			if( ( AcceptSocket = accept( m_Socket, NULL, NULL ) ) == SOCKET_ERROR )
 			{
-				bitTrace( "[Bit::Net::TCP::Host()] Can not accept the client.\n" );
+				bitTrace( "[Bit::Net::TCP::Host()] Can not accept the client: %i\n", GetLastError( ) );
 				return BIT_ERROR;
 			}
+
+			// Replace and close the old socket
+			CloseSocket( m_Socket );
 			m_Socket = AcceptSocket;
 
+			// The connection established.
 			m_Established = BIT_TRUE;
 			m_Type = Bit::Net::Server;
 			return BIT_OK;
