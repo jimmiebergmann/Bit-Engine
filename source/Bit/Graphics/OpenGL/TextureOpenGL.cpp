@@ -123,8 +123,8 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 TextureOpenGL::Load( Vector2_ui32 p_Size, const BIT_UINT32 p_Format,
-		const BIT_UINT32 p_InternalFormat, const BIT_UINT32 p_FormatType, void * p_Data )
+	BIT_UINT32 TextureOpenGL::Load( Vector2_ui32 p_Size, const eColorComponent p_Format,
+		const eColorComponent p_InternalFormat, const eDataType p_FormatType, void * p_Data )
 	{
 		// Check if the image already is loaded
 		if( m_Loaded )

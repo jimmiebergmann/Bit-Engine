@@ -146,7 +146,7 @@ namespace Bit
 					CreateVertexPositions( it_mg, pPositionBuffer, TriangleCount );
 
 					// Add the position buffer
-					if( pRenderObject->pVertexObject->AddVertexBuffer( pPositionBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
+					if( pRenderObject->pVertexObject->AddVertexBuffer( pPositionBuffer, 3, Bit::Type_Float32 ) != BIT_OK )
 					{
 						bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the vertex position buffer\n" );
 						return BIT_ERROR;
@@ -159,7 +159,7 @@ namespace Bit
 					CreateVertexTextures( it_mg, pTextureBuffer, TriangleCount );
 
 					// Add the position buffer
-					if( pRenderObject->pVertexObject->AddVertexBuffer( pTextureBuffer, 2, BIT_TYPE_FLOAT32 ) != BIT_OK )
+					if( pRenderObject->pVertexObject->AddVertexBuffer( pTextureBuffer, 2, Bit::Type_Float32 ) != BIT_OK )
 					{
 						bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the texture position buffer\n" );
 						return BIT_ERROR;
@@ -172,7 +172,7 @@ namespace Bit
 					CreateVertexNormals( it_mg, pNormalBuffer, TriangleCount );
 
 					// Add the position buffer
-					if( pRenderObject->pVertexObject->AddVertexBuffer( pNormalBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
+					if( pRenderObject->pVertexObject->AddVertexBuffer( pNormalBuffer, 3, Bit::Type_Float32 ) != BIT_OK )
 					{
 						bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the normal position buffer\n" );
 						return BIT_ERROR;
@@ -201,7 +201,7 @@ namespace Bit
 					// Add the position buffer
 					if( CalculateTangents )
 					{
-						if( pRenderObject->pVertexObject->AddVertexBuffer( pTangentBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
+						if( pRenderObject->pVertexObject->AddVertexBuffer( pTangentBuffer, 3, Bit::Type_Float32 ) != BIT_OK )
 						{
 							bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the tangent position buffer\n" );
 							return BIT_ERROR;
@@ -209,7 +209,7 @@ namespace Bit
 					}
 					if( CalculateBinormals )
 					{
-						if( pRenderObject->pVertexObject->AddVertexBuffer( pBinormalBuffer, 3, BIT_TYPE_FLOAT32 ) != BIT_OK )
+						if( pRenderObject->pVertexObject->AddVertexBuffer( pBinormalBuffer, 3, Bit::Type_Float32 ) != BIT_OK )
 						{
 							bitTrace( "[ModelOBJ::LoadVertexObjects] Can not add the binormals position buffer\n" );
 							return BIT_ERROR;

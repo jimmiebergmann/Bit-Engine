@@ -66,7 +66,7 @@ namespace Bit
 		virtual BIT_UINT32 Load( const BIT_UINT32 p_PieceCount, const BIT_UINT32 p_PieceSize ) = 0;
 		virtual BIT_UINT32 LoadFullscreenQuad( const Vector2_ui32 p_Size ) = 0;
 		virtual BIT_UINT32 Unload( ) = 0;
-		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const BIT_UINT32 p_DataType ) = 0;
+		virtual BIT_UINT32 AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const eDataType p_DataType ) = 0;
 		virtual BIT_UINT32 UpdateVertexBuffer( const BIT_UINT32 p_Index, const void * p_pBuffer,
 			const BIT_UINT32 p_Offset, const BIT_UINT32 p_DataSize ) = 0;
 		virtual void Render( const eRenderMode p_Mode ) = 0;

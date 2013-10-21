@@ -663,8 +663,8 @@ namespace Bit
 
 		// Create the Vertex object
 		m_pVertexObject = m_pRenderer->CreateVertexObject();
-		m_pVertexObject->AddVertexBuffer( pVertexCoords, 3, BIT_TYPE_FLOAT32 );
-		m_pVertexObject->AddVertexBuffer( pTextureCoords, 2, BIT_TYPE_FLOAT32 );
+		m_pVertexObject->AddVertexBuffer( pVertexCoords, 3, Bit::Type_Float32 );
+		m_pVertexObject->AddVertexBuffer( pTextureCoords, 2, Bit::Type_Float32 );
 		// Load the vertex object.
 		if( m_pVertexObject->Load( m_TotalGlyphs * 2, 3 ) != BIT_OK )
 		{
@@ -684,7 +684,7 @@ namespace Bit
 
 		// Create the texture and load it, set the filters as well.
 		m_pTexture = m_pRenderer->CreateTexture( );
-		if( m_pTexture->Load( m_TextureSize, BIT_RGBA, BIT_RGBA, BIT_TYPE_UCHAR8, pPixelBuffer ) != BIT_OK)
+		if( m_pTexture->Load( m_TextureSize, Bit::RGBA, Bit::RGBA, Bit::Type_UChar8, pPixelBuffer ) != BIT_OK)
 		{
 			bitTrace( BIT_NULL, "[Bit::Font::Load] <ERROR> "
 				"Can not load the texture.\n");

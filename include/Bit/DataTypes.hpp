@@ -105,32 +105,13 @@ typedef std::size_t			BIT_MEMSIZE;
 #define BIT_FALSE	false
 #define BIT_NULL	NULL
 
-// Type enums
-const BIT_UINT32 BIT_TYPE_NONE = 0;
-const BIT_UINT32 BIT_TYPE_UCHAR8 = 1;
-const BIT_UINT32 BIT_TYPE_SCHAR8 = 2;
-const BIT_UINT32 BIT_TYPE_UCHAR16 = 3;
-const BIT_UINT32 BIT_TYPE_SCHAR16 = 4;
-const BIT_UINT32 BIT_TYPE_UINT8 = 5;
-const BIT_UINT32 BIT_TYPE_SINT8 = 6;
-const BIT_UINT32 BIT_TYPE_UINT16 = 7;
-const BIT_UINT32 BIT_TYPE_SINT16 = 8;
-const BIT_UINT32 BIT_TYPE_UINT32 = 9;
-const BIT_UINT32 BIT_TYPE_SINT32 = 10;
-const BIT_UINT32 BIT_TYPE_UINT64 = 11;
-const BIT_UINT32 BIT_TYPE_SINT64 = 12;
-const BIT_UINT32 BIT_TYPE_FLOAT32 = 13;
-const BIT_UINT32 BIT_TYPE_FLOAT64 = 14;
-const BIT_UINT32 BIT_TYPE_BYTE = 15;
-const BIT_UINT32 BIT_TYPE_BOOL = 16;
-
 // Return codes
 const BIT_UINT32 BIT_OK					= 0;
 const BIT_UINT32 BIT_ERROR				= 1;
 const BIT_UINT32 BIT_ERROR_OPEN_FILE	= 2;
 
 // A plain None constant, impressed?
-const BIT_UINT32 BIT_NONE				=	0;
+const BIT_UINT32 BIT_NONE				= 0;
 
 // Math Constants
 const BIT_FLOAT64 BIT_PI				= 3.141592653589793238f;
@@ -142,18 +123,41 @@ const BIT_MEMSIZE BIT_MATRIX2X2_SIZE	= 4;
 const BIT_MEMSIZE BIT_MATRIX3X3_SIZE	= 9;
 const BIT_MEMSIZE BIT_MATRIX4X4_SIZE	= 16;
 
+namespace Bit
+{
 
-// Vertex object constants
-const BIT_UINT32 BIT_VERTEX_NONE		= 0;
-const BIT_UINT32 BIT_VERTEX_POSITION	= 1;
-const BIT_UINT32 BIT_VERTEX_TEXTURE		= 2;
-const BIT_UINT32 BIT_VERTEX_NORMAL		= 4;
+	// Data types
+	enum eDataType
+	{
+		Type_None = 0,
+		Type_UChar8 = 1,
+		Type_SChar8 = 2,
+		Type_UChar16 = 3,
+		Type_SChar16 = 4,
+		Type_UInt8 = 5,
+		Type_SInt8 = 6,
+		Type_UInt16 = 7,
+		Type_SInt16 = 8,
+		Type_UInt32 = 9,
+		Type_SInt32 = 10,
+		Type_UInt64 = 11,
+		Type_SInt64 = 12,
+		Type_Float32 = 13,
+		Type_Float64 = 14,
+		Type_Byte = 15,
+		Type_Bool = 16,
+	};
 
-// Color component types
-const BIT_UINT32 BIT_RGB				= 1;
-const BIT_UINT32 BIT_RGBA				= 2;
-const BIT_UINT32 BIT_DEPTH				= 3;
-const BIT_UINT32 BIT_DEPTH_STENCIL		= 4;
+	// Color component types
+	enum eColorComponent
+	{
+		RGB = 1,
+		RGBA = 2,
+		Depth = 3,
+		Depth_Stencil = 4
+	};
+
+}
 
 
 #endif

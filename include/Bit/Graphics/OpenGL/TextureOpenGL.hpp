@@ -42,8 +42,8 @@ namespace Bit
 
 		// General public functions
 		virtual BIT_UINT32 Load( const Image & p_Image, const BIT_BOOL p_Mipmapping );
-		virtual BIT_UINT32 Load( Vector2_ui32 p_Size, const BIT_UINT32 p_Format,
-			const BIT_UINT32 p_InternalFormat, const BIT_UINT32 p_FormatType, void * p_Data );
+		virtual BIT_UINT32 Load( Vector2_ui32 p_Size, const eColorComponent p_Format,
+			const eColorComponent p_InternalFormat, const eDataType p_FormatType, void * p_Data );
 		virtual void Bind( BIT_UINT32 p_Index );
 		virtual void Unbind( );
 

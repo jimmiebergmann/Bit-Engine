@@ -76,7 +76,7 @@ namespace Bit
 	};
 
 	// Static private variables
-	GLenum VertexObjectOpenGL::s_RenderModes[ 3 ] = { GL_TRIANGLES, GL_LINES, GL_LINE_STRIP };
+	static GLenum RenderModes[ 3 ] = { GL_TRIANGLES, GL_LINES, GL_LINE_STRIP };
 
 
 	// Constructor / Destructor
@@ -219,7 +219,7 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	BIT_UINT32 VertexObjectOpenGL::AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const BIT_UINT32 p_DataType )
+	BIT_UINT32 VertexObjectOpenGL::AddVertexBuffer( void * p_pBuffer, const BIT_UINT32 p_VertexDimensions, const eDataType p_DataType )
 	{
 		if( m_Loaded )
 		{
@@ -287,7 +287,7 @@ namespace Bit
 		}
 
 		glBindVertexArray( m_VertexArrayObject );
-		glDrawArrays( s_RenderModes[ (int)( p_Mode ) ], 0, m_TotalPieceSize );
+		glDrawArrays( RenderModes[ static_cast<int>( p_Mode ) ], 0, m_TotalPieceSize );
 		glBindVertexArray( 0 );
 	}
 
@@ -299,7 +299,7 @@ namespace Bit
 		}
 
 		glBindVertexArray( m_VertexArrayObject );
-		glDrawArrays( s_RenderModes[ (int)( p_Mode ) ], p_Start, p_Length );
+		glDrawArrays( RenderModes[ static_cast<int>( p_Mode ) ], p_Start, p_Length );
 		glBindVertexArray( 0 );
 	}
 
