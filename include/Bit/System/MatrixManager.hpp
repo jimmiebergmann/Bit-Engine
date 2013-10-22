@@ -41,43 +41,40 @@ namespace Bit
 		// Public enums
 		enum eMode
 		{
-			Mode_Projection = 0,
-			Mode_View = 1,
-			Mode_Model = 2
+			Mode_ModelView = 0,
+			Mode_Projection = 1
 		};
 
 		// Public functions
-		static void Push( );
-		static void Pop( );
 		static void LoadIdentity( );
-		static void LoadPerspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
-			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
+		static void LoadLookAt( const Vector3_f32 p_Eye, const Vector3_f32 p_Center, const Vector3_f32 p_Up );
 		static void LoadOrthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
 			const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
-		static void LoadLookAt( const Vector3_f32 p_Eye, const Vector3_f32 p_Center, const Vector3_f32 p_Up );
-		static void Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
+		static void LoadPerspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
+			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
+		static void Pop( );
+		static void Push( );
 		static void RotateX( const BIT_FLOAT32 p_Angle );
 		static void RotateY( const BIT_FLOAT32 p_Angle );
 		static void RotateZ( const BIT_FLOAT32 p_Angle );
+		static void Scale( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
+		static void Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
 
 		// Set functions
 		static void SetMode( const eMode p_Mode );
 		static void SetMatrix( const Matrix4x4 & p_Matrix );
 
 		// Get functions
-		static eMode GetMode( );
 		static Matrix4x4 & GetMatrix( );
 		static Matrix4x4 & GetMatrix( const eMode p_Mode );
+		static eMode GetMode( );
+		static Matrix4x4 & GetModelViewMatrix( );
 		static Matrix4x4 & GetProjectionMatrix( );
-		static Matrix4x4 & GetViewMatrix( );
-		static Matrix4x4 & GetModelMatrix( );
-
 
 	private:
 
 		static eMode m_Mode;
-		static std::stack< Matrix4x4 > m_MatrixStacks[ 3 ];
-		//static Matrix4x4 m_Matrices[ 2 ];
+		static std::stack< Matrix4x4 > m_MatrixStacks[ 2 ];
 
 	};
 

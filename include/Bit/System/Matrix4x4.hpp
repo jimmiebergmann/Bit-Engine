@@ -46,18 +46,19 @@ namespace Bit
 		
 		// Public functions
 		void Identity( );
-		void Position( Vector3_f32 p_Postion );
-		void Perspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
-			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
+		void LookAt( Vector3_f32 p_Eye, Vector3_f32 p_Center, Vector3_f32 p_Up );
 		void Orthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
 			const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
-		void LookAt( Vector3_f32 p_Eye, Vector3_f32 p_Center, Vector3_f32 p_Up );
-		void Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
-		void Scale( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
-		//void Rotate( const BIT_FLOAT32 p_Angle, const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z ); // Way too buggy
+		void Perspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
+			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
+		void Position( Vector3_f32 p_Postion );
 		void RotateX( const BIT_FLOAT32 p_Angle );
 		void RotateY( const BIT_FLOAT32 p_Angle );
 		void RotateZ( const BIT_FLOAT32 p_Angle );
+		void Scale( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
+		void Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
+
+		// Operators
 		Matrix4x4 operator * ( Matrix4x4 p_Mat );
 
 		// Public variables

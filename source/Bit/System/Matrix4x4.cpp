@@ -60,54 +60,6 @@ namespace Bit
 		m[12] =0;	m[13] = 0;		m[14] = 0;		m[15] = 1;
 	}
 
-	void Matrix4x4::Position( Bit::Vector3_f32 p_Postion )
-	{
-		m[0] = 1;	m[1] = 0;		m[2] = 0;		m[3] = 0;
-		m[4] = 0;	m[5] = 1;		m[6] = 0;		m[7] = 0;
-		m[8] = 0;	m[9] = 0;		m[10] = 1;		m[11] = 0;
-		m[12] = p_Postion.x;	m[13] = p_Postion.y;	m[14] = p_Postion.z;	m[15] = 1;
-	}
-
-	void Matrix4x4::Perspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
-		const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
-	{
-		BIT_FLOAT32 Sine, Cotangent, DeltaZ;
-		BIT_FLOAT32 Radians = p_Fov / 2.0f * BIT_FLOAT32( BIT_PI ) / 180.0f;
-
-		DeltaZ = p_ZFar - p_ZNear;
-		Sine = sin( Radians );
-		if (( DeltaZ == 0) || ( Sine == 0 ) || ( p_Aspect == 0 ))
-		{
-			return;
-		}
-		Cotangent = cos( Radians ) / Sine;
-
-		Identity();
-
-		m[0] = Cotangent / p_Aspect;
-		m[5] = Cotangent;
-		m[10] = -(p_ZFar + p_ZNear) / DeltaZ;
-		m[11] = -1;
-		m[14]= -2 * p_ZNear * p_ZFar / DeltaZ;
-		m[15] = 0;
-	}
-
-	void Matrix4x4::Orthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
-		const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
-	{
-		float TX =- ( p_Right + p_Left )/( p_Right - p_Left );
-		float TY =- ( p_Top + p_Bottom )/( p_Top - p_Bottom );
-		float TZ =- ( p_ZFar + p_ZNear)/( p_ZFar - p_ZNear );
-
-		Identity();
-		m[0] = 2/( p_Right - p_Left );
-		m[5] = 2.0f / ( p_Top- p_Bottom );
-		m[10] =- 2 / ( p_ZFar - p_ZNear );
-		m[12] = TX;
-		m[13] = TY;
-		m[14] = TZ;
-	}
-
 	void Matrix4x4::LookAt( Vector3_f32 p_Eye, Vector3_f32 p_Center, Vector3_f32 p_Up )
 	{
 		Vector3_f32 Forward = p_Center - p_Eye;
@@ -142,23 +94,53 @@ namespace Bit
 		}
 	}
 
-	void Matrix4x4::Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+	void Matrix4x4::Orthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
+		const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
 	{
-		Matrix4x4 dest(1, 0, 0, p_X,		0, 1, 0, p_Y,		0, 0, 1, p_Z,		0, 0, 0, 1);
-		*this = *this * dest;
+		float TX =- ( p_Right + p_Left )/( p_Right - p_Left );
+		float TY =- ( p_Top + p_Bottom )/( p_Top - p_Bottom );
+		float TZ =- ( p_ZFar + p_ZNear)/( p_ZFar - p_ZNear );
+
+		Identity();
+		m[0] = 2/( p_Right - p_Left );
+		m[5] = 2.0f / ( p_Top- p_Bottom );
+		m[10] =- 2 / ( p_ZFar - p_ZNear );
+		m[12] = TX;
+		m[13] = TY;
+		m[14] = TZ;
 	}
 
-	void Matrix4x4::Scale( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+	void Matrix4x4::Perspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
+		const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
 	{
-		m[0]	*= p_X;
-		m[5]	*= p_Y;
-		m[10]	*= p_Z;
-	}
-/*
-	void Matrix4x4::Rotate( const BIT_FLOAT32 p_Angle, const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
-	{
+		BIT_FLOAT32 Sine, Cotangent, DeltaZ;
+		BIT_FLOAT32 Radians = p_Fov / 2.0f * BIT_FLOAT32( BIT_PI ) / 180.0f;
 
-	}*/
+		DeltaZ = p_ZFar - p_ZNear;
+		Sine = sin( Radians );
+		if (( DeltaZ == 0) || ( Sine == 0 ) || ( p_Aspect == 0 ))
+		{
+			return;
+		}
+		Cotangent = cos( Radians ) / Sine;
+
+		Identity();
+
+		m[0] = Cotangent / p_Aspect;
+		m[5] = Cotangent;
+		m[10] = -(p_ZFar + p_ZNear) / DeltaZ;
+		m[11] = -1;
+		m[14]= -2 * p_ZNear * p_ZFar / DeltaZ;
+		m[15] = 0;
+	}
+
+	void Matrix4x4::Position( Bit::Vector3_f32 p_Postion )
+	{
+		m[0] = 1;	m[1] = 0;		m[2] = 0;		m[3] = 0;
+		m[4] = 0;	m[5] = 1;		m[6] = 0;		m[7] = 0;
+		m[8] = 0;	m[9] = 0;		m[10] = 1;		m[11] = 0;
+		m[12] = p_Postion.x;	m[13] = p_Postion.y;	m[14] = p_Postion.z;	m[15] = 1;
+	}
 
 	void Matrix4x4::RotateX( const BIT_FLOAT32 p_Angle )
 	{
@@ -220,6 +202,19 @@ namespace Bit
 
 
 		*this = *this * Dest;
+	}
+
+	void Matrix4x4::Scale( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+	{
+		m[0]	*= p_X;
+		m[5]	*= p_Y;
+		m[10]	*= p_Z;
+	}
+
+	void Matrix4x4::Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+	{
+		Matrix4x4 dest(1, 0, 0, p_X,		0, 1, 0, p_Y,		0, 0, 1, p_Z,		0, 0, 0, 1);
+		*this = *this * dest;
 	}
 
 	Matrix4x4 Matrix4x4::operator * ( Matrix4x4 p_Mat )

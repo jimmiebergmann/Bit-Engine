@@ -34,15 +34,36 @@ namespace Bit
 	std::deque< Matrix4x4 > DummyDeque( 1, DummyMatrix );
 
 	// Set the private static variables
-	MatrixManager::eMode MatrixManager::m_Mode = MatrixManager::Mode_Projection;
-	std::stack< Matrix4x4 > MatrixManager::m_MatrixStacks[ 3 ] =
+	MatrixManager::eMode MatrixManager::m_Mode = MatrixManager::Mode_ModelView;
+	std::stack< Matrix4x4 > MatrixManager::m_MatrixStacks[ 2 ] =
 	{
-		std::stack< Matrix4x4 >( DummyDeque ),
 		std::stack< Matrix4x4 >( DummyDeque ),
 		std::stack< Matrix4x4 >( DummyDeque )
 	};
 
 	// Public functions
+	void MatrixManager::LoadIdentity( )
+	{
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Identity( );
+	}
+
+	void MatrixManager::LoadLookAt( const Vector3_f32 p_Eye, const Vector3_f32 p_Center, const Vector3_f32 p_Up )
+	{
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).LookAt( p_Eye, p_Center, p_Up );
+	}
+
+	void MatrixManager::LoadOrthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
+			const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
+	{
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Orthographic( p_Left, p_Right, p_Bottom, p_Top, p_ZNear, p_ZFar );
+	}
+
+	void MatrixManager::LoadPerspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
+			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
+	{
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Perspective( p_Fov, p_Aspect, p_ZNear, p_ZFar );
+	}
+
 	void MatrixManager::Push( )
 	{
 		// Push the top
@@ -56,33 +77,6 @@ namespace Bit
 		{
 			m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].pop( );
 		}
-	}
-
-	void MatrixManager::LoadIdentity( )
-	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Identity( );
-	}
-
-	void MatrixManager::LoadPerspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
-			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
-	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Perspective( p_Fov, p_Aspect, p_ZNear, p_ZFar );
-	}
-
-	void MatrixManager::LoadOrthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
-			const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
-	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Orthographic( p_Left, p_Right, p_Bottom, p_Top, p_ZNear, p_ZFar );
-	}
-
-	void MatrixManager::LoadLookAt( const Vector3_f32 p_Eye, const Vector3_f32 p_Center, const Vector3_f32 p_Up )
-	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).LookAt( p_Eye, p_Center, p_Up );
-	}
-
-	void MatrixManager::Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
-	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Translate( p_X, p_Y, p_Z );
 	}
 
 	void MatrixManager::RotateX( const BIT_FLOAT32 p_Angle )
@@ -100,6 +94,16 @@ namespace Bit
 		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).RotateZ( p_Angle );
 	}
 
+	void MatrixManager::Scale( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+	{
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Scale( p_X, p_Y, p_Z );
+	}
+
+	void MatrixManager::Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+	{
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Translate( p_X, p_Y, p_Z );
+	}
+
 	// Set functions
 	void MatrixManager::SetMode( const eMode p_Mode )
 	{
@@ -112,11 +116,6 @@ namespace Bit
 	}
 
 	// Get functions
-	MatrixManager::eMode MatrixManager::GetMode( )
-	{
-		return m_Mode;
-	}
-
 	Matrix4x4 & MatrixManager::GetMatrix( )
 	{
 		return m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( );
@@ -127,19 +126,19 @@ namespace Bit
 		return m_MatrixStacks[ (BIT_MEMSIZE)p_Mode ].top( );
 	}
 
+	MatrixManager::eMode MatrixManager::GetMode( )
+	{
+		return m_Mode;
+	}
+
+	Matrix4x4 & MatrixManager::GetModelViewMatrix( )
+	{
+		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_ModelView ].top( );
+	}
+
 	Matrix4x4 & MatrixManager::GetProjectionMatrix( )
 	{
 		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_Projection ].top( );
-	}
-
-	Matrix4x4 & MatrixManager::GetViewMatrix( )
-	{
-		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_View ].top( );
-	}
-
-	Matrix4x4 & MatrixManager::GetModelMatrix( )
-	{
-		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_Model ].top( );
 	}
 
 }
