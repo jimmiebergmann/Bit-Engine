@@ -26,26 +26,81 @@
 #include <Bit/System/Randomizer.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
+// Help functions
+static BIT_UINT32 GetStringSeed( const std::string & p_Seed )
+{
+	BIT_UINT32 Seed = 0;
+	for( BIT_MEMSIZE i = 0; i < p_Seed.size(); i++ )
+	{
+		Seed += p_Seed[i] * ( i + 1 );
+	}
+
+	return Seed;
+}
+
 
 static BIT_UINT32 s_RandomSeed = 0;
-
 
 namespace Bit
 {
 
-	BIT_API void SeedRandomizer( BIT_SINT32 p_Seed )
+	// Randomizer class
+	// Constructors
+	Randomizer::Randomizer( ) :
+		m_Seed( 0 )
+	{
+	}
+
+	Randomizer::Randomizer( const BIT_UINT32 p_Seed ) :
+		m_Seed( p_Seed )
+	{
+	}
+
+	Randomizer::Randomizer( const std::string & p_Seed ) :
+		m_Seed( GetStringSeed( p_Seed ) )
+	{
+	}
+
+	// Randomizer function
+	BIT_SINT32 Randomizer::Randomize( const BIT_SINT32 p_To )
+	{
+		m_Seed = ( 214013 * m_Seed + 2531011 );
+		return ( ( m_Seed >> 16 ) & 0x0000FFFF ) % ( p_To +1 );
+	}
+
+	BIT_SINT32 Randomizer::Randomize( const BIT_SINT32 p_From, const BIT_SINT32 p_To )
+	{
+		m_Seed = ( 214013 * m_Seed + 2531011 );
+		return p_From + ( ( m_Seed >> 16 ) & 0x0000FFFF ) % ( p_To - ( p_From - 1 ) );
+	}
+
+	// Get functions
+	BIT_UINT32 Randomizer::GetSeed( ) const
+	{
+		return m_Seed;
+	}
+
+	// Set functions
+	void Randomizer::SetSeed( const BIT_SINT32 p_Seed )
+	{
+		m_Seed = p_Seed;
+	}
+
+	void Randomizer::SetSeed( const std::string & p_Seed )
+	{
+		m_Seed = GetStringSeed( p_Seed );
+	}
+
+
+	// Global randomizer functions
+	BIT_API void SeedRandomizer( const BIT_SINT32 p_Seed )
 	{
 		s_RandomSeed = p_Seed;
 	}
 
-	BIT_API void SeedRandomizer( std::string p_Seed )
+	BIT_API void SeedRandomizer( const std::string & p_Seed )
 	{
-		s_RandomSeed = 0;
-
-		for( BIT_MEMSIZE i = 0; i < p_Seed.size(); i++ )
-		{
-			s_RandomSeed += p_Seed[i] * ( i + 1 );
-		}
+		s_RandomSeed = GetStringSeed( p_Seed );
 	}
 
 	BIT_API BIT_UINT32 GetRandomizerSeed( )
@@ -53,13 +108,13 @@ namespace Bit
 		return s_RandomSeed;
 	}
 
-	BIT_API BIT_SINT32 RandomizeNumber( BIT_SINT32 p_To )
+	BIT_API BIT_SINT32 RandomizeNumber( const BIT_SINT32 p_To )
 	{
 		s_RandomSeed = ( 214013 * s_RandomSeed + 2531011 );
 		return ( ( s_RandomSeed >> 16 ) & 0x0000FFFF ) % ( p_To +1 );
 	}
 
-	BIT_API BIT_SINT32 RandomizeNumber( BIT_SINT32 p_From, BIT_SINT32 p_To )
+	BIT_API BIT_SINT32 RandomizeNumber( const BIT_SINT32 p_From, const BIT_SINT32 p_To )
 	{
 		s_RandomSeed = ( 214013 * s_RandomSeed + 2531011 );
 		return p_From + ( ( s_RandomSeed >> 16 ) & 0x0000FFFF ) % ( p_To - ( p_From - 1 ) );

@@ -32,11 +32,40 @@
 namespace Bit
 {
 
-	BIT_API void SeedRandomizer( BIT_SINT32 p_Seed );
-	BIT_API void SeedRandomizer( std::string p_Seed );
+	// Randomizer class
+	class BIT_API Randomizer
+	{
+
+	public:
+
+		// Constructors
+		Randomizer( );
+		Randomizer( const BIT_UINT32 p_Seed );
+		Randomizer( const std::string & p_Seed );
+
+		// Randomizer function
+		BIT_SINT32 Randomize( const BIT_SINT32 p_To );
+		BIT_SINT32 Randomize( const BIT_SINT32 p_From, const BIT_SINT32 p_To );
+
+		// Get functions
+		BIT_UINT32 GetSeed( ) const;
+
+		// Set functions
+		void SetSeed( const BIT_SINT32 p_Seed );
+		void SetSeed( const std::string & p_Seed );
+
+	private:
+
+		BIT_UINT32 m_Seed;
+
+	};
+
+	// Global randomizer functions
+	BIT_API void SeedRandomizer( const BIT_SINT32 p_Seed );
+	BIT_API void SeedRandomizer( const std::string & p_Seed );
 	BIT_API BIT_UINT32 GetRandomizerSeed( );
-	BIT_API BIT_SINT32 RandomizeNumber( BIT_SINT32 p_To );
-	BIT_API BIT_SINT32 RandomizeNumber( BIT_SINT32 p_From, BIT_SINT32 p_To );
+	BIT_API BIT_SINT32 RandomizeNumber( const BIT_SINT32 p_To );
+	BIT_API BIT_SINT32 RandomizeNumber( const BIT_SINT32 p_From, const BIT_SINT32 p_To );
 
 }
 
