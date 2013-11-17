@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_HPP__
-#define __BIT_WINDOW_HPP__
+#ifndef BIT_WINDOW_HPP
+#define BIT_WINDOW_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Event.hpp>

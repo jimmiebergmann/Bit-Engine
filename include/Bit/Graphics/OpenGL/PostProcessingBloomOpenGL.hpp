@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_POST_PROCESSING_BLOOM_OPENGL_HPP__
-#define __BIT_GRAPHICS_POST_PROCESSING_BLOOM_OPENGL_HPP__
+#ifndef BIT_GRAPHICS_POST_PROCESSING_BLOOM_OPENGL_HPP
+#define BIT_GRAPHICS_POST_PROCESSING_BLOOM_OPENGL_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/PostProcessingBloom.hpp>

@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_EVENT_HPP__
-#define __BIT_WINDOW_EVENT_HPP__
+#ifndef BIT_WINDOW_EVENT_HPP
+#define BIT_WINDOW_EVENT_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Keyboard.hpp>

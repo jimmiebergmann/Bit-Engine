@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_SYSTEM_VECTOR3_HPP__
-#define __BIT_SYSTEM_VECTOR3_HPP__
+#ifndef BIT_SYSTEM_VECTOR3_HPP
+#define BIT_SYSTEM_VECTOR3_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Math.hpp>

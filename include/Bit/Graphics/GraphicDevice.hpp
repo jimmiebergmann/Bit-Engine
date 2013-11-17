@@ -22,27 +22,13 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_HPP__
-#define __BIT_GRAPHICS_GRAPHIC_DEVICE_HPP__
+#ifndef BIT_GRAPHICS_GRAPHIC_DEVICE_HPP
+#define BIT_GRAPHICS_GRAPHIC_DEVICE_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Window.hpp>
 #include <Bit/Graphics/Shader.hpp>
 #include <Bit/Graphics/Model.hpp>
-
-
-
-/*
-#include <Bit/Graphics/Framebuffer.hpp>
-//#include <Bit/Graphics/Renderbuffer.hpp>
-#include <Bit/Graphics/VertexObject.hpp>
-#include <Bit/Graphics/ShaderProgram.hpp>
-#include <Bit/Graphics/Shader.hpp>
-#include <Bit/Graphics/Texture.hpp>
-#include <Bit/Graphics/Model.hpp>
-#include <Bit/Graphics/PostProcessingBloom.hpp>
-
-*/
 
 namespace Bit
 {

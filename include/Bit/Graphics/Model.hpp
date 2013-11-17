@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_MODEL_HPP__
-#define __BIT_GRAPHICS_MODEL_HPP__
+#ifndef BIT_GRAPHICS_MODEL_HPP
+#define BIT_GRAPHICS_MODEL_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/VertexObject.hpp>

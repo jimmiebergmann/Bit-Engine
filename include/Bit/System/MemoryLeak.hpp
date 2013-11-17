@@ -24,8 +24,8 @@
 
 // This is for Win32 only
 
-#ifndef __BIT_MEMORY_LEAK_HPP__
-#define __BIT_MEMORY_LEAK_HPP__
+#ifndef BIT_MEMORY_LEAK_HPP
+#define BIT_MEMORY_LEAK_HPP
 
 #include <Bit/DataTypes.hpp>
 

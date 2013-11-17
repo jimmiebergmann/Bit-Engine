@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_TEXTURE_OPENGL_HPP__
-#define __BIT_GRAPHICS_TEXTURE_OPENGL_HPP__
+#ifndef BIT_GRAPHICS_TEXTURE_OPENGL_HPP
+#define BIT_GRAPHICS_TEXTURE_OPENGL_HPP
 
 #include <Bit/Graphics/Texture.hpp>
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>

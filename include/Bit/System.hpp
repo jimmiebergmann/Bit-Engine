@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_SYSTEM_HPP__
-#define __BIT_SYSTEM_HPP__
+#ifndef BIT_SYSTEM_HPP
+#define BIT_SYSTEM_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Texture.hpp>

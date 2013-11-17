@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_RANDOMIZER_HPP__
-#define __BIT_SYSTEM_RANDOMIZER_HPP__
+#ifndef BIT_SYSTEM_RANDOMIZER_HPP
+#define BIT_SYSTEM_RANDOMIZER_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <string>

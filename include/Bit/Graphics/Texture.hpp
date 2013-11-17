@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_TEXTURE_HPP__
-#define __BIT_GRAPHICS_TEXTURE_HPP__
+#ifndef BIT_GRAPHICS_TEXTURE_HPP
+#define BIT_GRAPHICS_TEXTURE_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Image.hpp>

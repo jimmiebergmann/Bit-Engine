@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_SYSTEM_TIMER_HPP__
-#define __BIT_SYSTEM_TIMER_HPP__
+#ifndef BIT_SYSTEM_TIMER_HPP
+#define BIT_SYSTEM_TIMER_HPP
 
 #include <Bit/DataTypes.hpp>
 

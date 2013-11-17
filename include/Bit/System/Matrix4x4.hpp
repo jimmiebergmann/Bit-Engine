@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_SYSTEM_MATRXI4X4_HPP__
-#define __BIT_SYSTEM_MATRXI4X4_HPP__
+#ifndef BIT_SYSTEM_MATRXI4X4_HPP
+#define BIT_SYSTEM_MATRXI4X4_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Vector3.hpp>

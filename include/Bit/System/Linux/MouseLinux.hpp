@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_SYSTEM_MOUSE_LINUX_HPP__
-#define __BIT_SYSTEM_MOUSE_LINUX_HPP__
+#ifndef BIT_SYSTEM_MOUSE_LINUX_HPP
+#define BIT_SYSTEM_MOUSE_LINUX_HPP
 
 #include <Bit/DataTypes.hpp>
 

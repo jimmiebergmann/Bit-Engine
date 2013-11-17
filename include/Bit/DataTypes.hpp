@@ -26,8 +26,8 @@
 // The original header was written by Stuart ( teh_programerer@interactivelaboratories.com )
 
 
-#ifndef __BIT_DATATYPES_HPP__
-#define __BIT_DATATYPES_HPP__
+#ifndef BIT_DATA_TYPES_HPP
+#define BIT_DATA_TYPES_HPP
 
 // Define the bit engine version
 #define BIT_VERSION_MAJOR 0

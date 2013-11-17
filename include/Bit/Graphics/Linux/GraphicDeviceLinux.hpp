@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP__
-#define __BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP__
+#ifndef BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP
+#define BIT_GRAPHICS_GRAPHIC_DEVICE_LINUX_HPP
 
 #include <Bit/DataTypes.hpp>
 

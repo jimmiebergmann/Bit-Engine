@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_GRAPHICS_MODEL_OBJ_HPP__
-#define __BIT_GRAPHICS_MODEL_OBJ_HPP__
+#ifndef BIT_GRAPHICS_MODEL_OBJ_HPP
+#define BIT_GRAPHICS_MODEL_OBJ_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Model.hpp>

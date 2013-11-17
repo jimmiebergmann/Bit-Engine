@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_AUDIO_HPP__
-#define __BIT_AUDIO_HPP__
+#ifndef BIT_AUDIO_HPP
+#define BIT_AUDIO_HPP
 
 
 #endif

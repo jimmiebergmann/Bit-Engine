@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_WINDOW_WIN32_HPP__
-#define __BIT_WINDOW_WIN32_HPP__
+#ifndef BIT_WINDOW_WIN32_HPP
+#define BIT_WINDOW_WIN32_HPP
 
 #include <Bit/DataTypes.hpp>
 

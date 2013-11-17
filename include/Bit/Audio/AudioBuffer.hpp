@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_AUDIO_BUFFER_HPP__
-#define __BIT_AUDIO_BUFFER_HPP__
+#ifndef BIT_AUDIO_BUFFER_HPP
+#define BIT_AUDIO_BUFFER_HPP
 
 #include <Bit/DataTypes.hpp>
 

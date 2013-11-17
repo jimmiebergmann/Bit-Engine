@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_CIRCLE_HPP__
-#define __BIT_SYSTEM_CIRCLE_HPP__
+#ifndef BIT_SYSTEM_CIRCLE_HPP
+#define BIT_SYSTEM_CIRCLE_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Math.hpp>

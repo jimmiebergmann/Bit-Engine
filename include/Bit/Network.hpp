@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_NETWORK_HPP__
-#define __BIT_NETWORK_HPP__
+#ifndef BIT_NETWORK_HPP
+#define BIT_NETWORK_HPP
 
 #include <Bit/DataTypes.hpp>
 

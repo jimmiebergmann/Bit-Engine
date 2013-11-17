@@ -26,8 +26,8 @@
 // Right now, scaling wont work if you've rotaded the object.
 
 
-#ifndef __BIT_SYSTEM_MATRIX_MANAGER_HPP__
-#define __BIT_SYSTEM_MATRIX_MANAGER_HPP__
+#ifndef BIT_SYSTEM_MATRIX_MANAGER_HPP
+#define BIT_SYSTEM_MATRIX_MANAGER_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Matrix4x4.hpp>

@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_AUDIO_XM_HPP__
-#define __BIT_AUDIO_XM_HPP__
+#ifndef BIT_AUDIO_XM_HPP
+#define BIT_AUDIO_XM_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <vector>

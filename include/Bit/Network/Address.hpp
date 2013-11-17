@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_NETWORK_ADDRESS_HPP__
-#define __BIT_NETWORK_ADDRESS_HPP__
+#ifndef BIT_NETWORK_ADDRESS_HPP
+#define BIT_NETWORK_ADDRESS_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <string>

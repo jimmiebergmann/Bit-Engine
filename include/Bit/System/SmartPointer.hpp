@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_SMART_POINTER_HPP__
-#define __BIT_SYSTEM_SMART_POINTER_HPP__
+#ifndef BIT_SYSTEM_SMART_POINTER_HPP
+#define BIT_SYSTEM_SMART_POINTER_HPP
 
 #include <Bit/DataTypes.hpp>
 

@@ -1,5 +1,5 @@
-#ifndef __BIT_GRAPHICS_FRONT_HPP__
-#define __BIT_GRAPHICS_FRONT_HPP__
+#ifndef BIT_GRAPHICS_FRONT_HPP
+#define BIT_GRAPHICS_FRONT_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>

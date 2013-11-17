@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_NETWORK_TCP_HPP__
-#define __BIT_NETWORK_TCP_HPP__
+#ifndef BIT_NETWORK_TCP_HPP
+#define BIT_NETWORK_TCP_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Network.hpp>

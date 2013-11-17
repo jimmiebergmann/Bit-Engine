@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_SPHERE_HPP__
-#define __BIT_SYSTEM_SPHERE_HPP__
+#ifndef BIT_SYSTEM_SPHERE_HPP
+#define BIT_SYSTEM_SPHERE_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Math.hpp>

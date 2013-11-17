@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_MATH_HPP__
-#define __BIT_SYSTEM_MATH_HPP__
+#ifndef BIT_SYSTEM_MATH_HPP
+#define BIT_SYSTEM_MATH_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <cmath>

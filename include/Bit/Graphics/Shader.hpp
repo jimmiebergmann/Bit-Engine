@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_SHADER_HPP__
-#define __BIT_GRAPHICS_SHADER_HPP__
+#ifndef BIT_GRAPHICS_SHADER_HPP
+#define BIT_GRAPHICS_SHADER_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <string>

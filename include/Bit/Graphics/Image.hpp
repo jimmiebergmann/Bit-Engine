@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_IMAGE_HPP__
-#define __BIT_GRAPHICS_IMAGE_HPP__
+#ifndef BIT_GRAPHICS_IMAGE_HPP
+#define BIT_GRAPHICS_IMAGE_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Vector2.hpp>

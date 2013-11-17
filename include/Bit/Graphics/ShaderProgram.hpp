@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_SHADER_PROGRAM_HPP__
-#define __BIT_GRAPHICS_SHADER_PROGRAM_HPP__
+#ifndef BIT_GRAPHICS_SHADER_PROGRAM_HPP
+#define BIT_GRAPHICS_SHADER_PROGRAM_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/System/Matrix4x4.hpp>

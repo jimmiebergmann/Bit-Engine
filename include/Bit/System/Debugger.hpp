@@ -25,8 +25,8 @@
 // Note:
 // The original header was written by Stuart ( teh_programerer@interactivelaboratories.com )
 
-#ifndef __BIT_SYSTEM_DEBUGGER_HPP__
-#define __BIT_SYSTEM_DEBUGGER_HPP__
+#ifndef BIT_SYSTEM_DEBUGGER_HPP
+#define BIT_SYSTEM_DEBUGGER_HPP
 
 #include <Bit/DataTypes.hpp>
 

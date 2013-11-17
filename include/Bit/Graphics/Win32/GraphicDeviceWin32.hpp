@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP__
-#define __BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP__
+#ifndef BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP
+#define BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP
 
 #include <Bit/DataTypes.hpp>
 

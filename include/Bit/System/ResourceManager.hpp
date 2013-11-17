@@ -23,8 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __BIT_SYSTEM_RESOURCE_MANAGER_HPP__
-#define __BIT_SYSTEM_RESOURCE_MANAGER_HPP__
+#ifndef BIT_SYSTEM_RESOURCE_MANAGER_HPP
+#define BIT_SYSTEM_RESOURCE_MANAGER_HPP
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Texture.hpp>
