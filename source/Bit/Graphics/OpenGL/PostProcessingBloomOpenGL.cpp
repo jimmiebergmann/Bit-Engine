@@ -169,7 +169,9 @@ namespace Bit
 
 		// Create an orthographic matrix
 		Matrix4x4 ProjectionMatrix;
-		ProjectionMatrix.Orthographic( 0.0f, m_pTexture->GetSize( ).x, 0.0, m_pTexture->GetSize( ).y, -1.0, 1.0 );
+		ProjectionMatrix.Orthographic(	0.0f, static_cast<BIT_FLOAT32>( m_pTexture->GetSize( ).x ),
+										0.0f, static_cast<BIT_FLOAT32>( m_pTexture->GetSize( ).y ),
+										-1.0f, 1.0f );
 
 		// Set uniforms
 		m_pShaderProgram->Bind( );

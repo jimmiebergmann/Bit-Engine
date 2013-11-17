@@ -69,7 +69,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\Windows\32\Static\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-graphics\Static_Debug\</IntDir>
-    <TargetName>$(ProjectName)-d</TargetName>
+    <TargetName>$(ProjectName)-d-s</TargetName>
     <IncludePath>..\..\..\Bit-Engine\extlibs\include\Freetype;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -77,10 +77,14 @@
     <OutDir>$(SolutionDir)..\..\lib\Windows\32\Static\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-graphics\Static_Release\</IntDir>
     <IncludePath>..\..\..\Bit-Engine\extlibs\include\Freetype;$(IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)-s</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
-    <OutDir>$(SolutionDir)/../../lib/Windows/32/Dynamic\</OutDir>
-    <IntDir>$(SolutionDir)/../../obj/Windows/32/vc2008/bit-graphics/Dynamic_Debug/\</IntDir>
+    <OutDir>$(SolutionDir)..\..\lib\Windows\32\Dynamic\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-graphics\Dynamic_Debug\</IntDir>
+    <TargetName>$(ProjectName)-s</TargetName>
+    <IncludePath>..\..\..\Bit-Engine\extlibs\include\Freetype;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\Bit-Engine\extlibs\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
     <OutDir>$(SolutionDir)/../../lib/Windows/32/Dynamic\</OutDir>
@@ -131,7 +135,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>../../lib/Windows/32/Dynamic/bit-window-d.lib;../../lib/Windows/32/Dynamic/bit-system-d.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;freetype250_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)-d.dll</OutputFile>
     </Link>
   </ItemDefinitionGroup>

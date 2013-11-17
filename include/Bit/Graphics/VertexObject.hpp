@@ -32,7 +32,7 @@
 // 1. Create the vertex object via your graphic device.
 // 2. Add your buffers via AddVertexBuffer( ... )
 // 3. Load the vertex object via Load( ... )
-// 4. Clean up by called Clear( ) or deleting your vertex object pointer
+// 4. Clean up by calling Clear( ) or deleting your vertex object pointer
 
 namespace Bit
 {

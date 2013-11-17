@@ -145,8 +145,8 @@ namespace Bit
 	void Matrix4x4::RotateX( const BIT_FLOAT32 p_Angle )
 	{
 		Matrix4x4 Dest;
-		const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
-		const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
+		const BIT_FLOAT32 AngleSin = static_cast<BIT_FLOAT32>( SinDegrees( p_Angle ) );
+		const BIT_FLOAT32 AngleCos = static_cast<BIT_FLOAT32>( CosDegrees( p_Angle ) );
 
 		Dest.m[0] = 1;
 		Dest.m[5] = AngleCos;
@@ -161,8 +161,8 @@ namespace Bit
 	void Matrix4x4::RotateY( const BIT_FLOAT32 p_Angle )
 	{
 		Matrix4x4 Dest;
-		const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
-		const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
+		const BIT_FLOAT32 AngleSin = static_cast<BIT_FLOAT32>( SinDegrees( p_Angle ) );
+		const BIT_FLOAT32 AngleCos = static_cast<BIT_FLOAT32>( CosDegrees( p_Angle ) );
 
 		Dest.m[0] = AngleCos;
 		Dest.m[2] = AngleSin;
@@ -177,8 +177,8 @@ namespace Bit
 	void Matrix4x4::RotateZ( const BIT_FLOAT32 p_Angle )
 	{
 		Matrix4x4 Dest;
-		BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
-		BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
+		const BIT_FLOAT32 AngleSin = static_cast<BIT_FLOAT32>( SinDegrees( p_Angle ) );
+		const BIT_FLOAT32 AngleCos = static_cast<BIT_FLOAT32>( CosDegrees( p_Angle ) );
 
 		Dest.m[0] = AngleCos;
 		Dest.m[1] = -AngleSin;

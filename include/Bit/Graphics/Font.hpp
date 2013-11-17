@@ -24,13 +24,9 @@ namespace Bit
 	// Font glypth
 	struct Glyph
 	{
-		//BIT_UINT8 Index;
-		//Vector2_ui32 Size;
 		BIT_FLOAT32 Advance; // Total width of the character
 		BIT_UCHAR8 Index; // Texture / vertex index.
-		//Vector2_f32 RectLow;
-		//Vector2_f32 RectHigh;
-		//VertexObject * m_pVertexObject;
+
 	};
 
 	// Font class

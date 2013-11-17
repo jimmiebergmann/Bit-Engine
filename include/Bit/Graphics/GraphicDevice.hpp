@@ -27,6 +27,12 @@
 
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Window.hpp>
+#include <Bit/Graphics/Shader.hpp>
+#include <Bit/Graphics/Model.hpp>
+
+
+
+/*
 #include <Bit/Graphics/Framebuffer.hpp>
 //#include <Bit/Graphics/Renderbuffer.hpp>
 #include <Bit/Graphics/VertexObject.hpp>
@@ -36,8 +42,20 @@
 #include <Bit/Graphics/Model.hpp>
 #include <Bit/Graphics/PostProcessingBloom.hpp>
 
+*/
+
 namespace Bit
 {
+	
+	// Forward declarations
+	class Framebuffer;
+	class VertexObject;
+	class ShaderProgram;
+	class Texture;
+	class PostProcessingBloom;
+
+	
+	// Graphic Device class
 	class BIT_API GraphicDevice
 	{
 

@@ -26,11 +26,12 @@
 #define __BIT_GRAPHICS_FRAMEBUFFER_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Texture.hpp>
-
 
 namespace Bit
 {
+	// Forward declaractions
+	class Texture;
+
 	class BIT_API Framebuffer 
 	{
 

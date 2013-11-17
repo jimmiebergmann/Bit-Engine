@@ -76,8 +76,9 @@
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Static_Release\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
-    <OutDir>$(SolutionDir)/../../lib/Windows/32/Dynamic\</OutDir>
-    <IntDir>$(SolutionDir)/../../obj/Windows/32/vc2008/bit-system/Dynamic_Debug/\</IntDir>
+    <OutDir>$(SolutionDir)..\..\lib\Windows\32\Dynamic\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Dynamic_Debug\</IntDir>
+    <TargetName>$(ProjectName)-d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
     <OutDir>$(SolutionDir)/../../lib/Windows/32/Dynamic\</OutDir>
@@ -128,7 +129,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>../../../Bit-Engine/lib/Windows/32/Static/bit-graphics.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\..\..\lib\Windows\32\Dynamic\bit-graphics-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)-d.dll</OutputFile>
       <ImportLibrary>$(TargetDir)$(TargetName).lib</ImportLibrary>
     </Link>

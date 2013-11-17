@@ -53,12 +53,12 @@ namespace Bit
 	// Get functions functions
 	BIT_FLOAT32 Sphere::GetArea( ) const
 	{
-		return 4.0f * Radius * Radius * BIT_PI;
+		return 4.0f * Radius * Radius * static_cast<BIT_FLOAT32>( BIT_PI );
 	}
 
 	BIT_FLOAT32 Sphere::GetCircumference( ) const
 	{
-		return Radius * 2 * BIT_PI;
+		return Radius * 2 * static_cast<BIT_FLOAT32>( BIT_PI );
 	}
 
 	BIT_FLOAT32 Sphere::GetDiameter( ) const
@@ -68,7 +68,7 @@ namespace Bit
 
 	BIT_FLOAT32 Sphere::GetVolume( ) const
 	{
-		return ( 4.0f * Radius * Radius * Radius * BIT_PI ) / 3.0f;
+		return ( 4.0f * Radius * Radius * Radius * static_cast<BIT_FLOAT32>( BIT_PI ) ) / 3.0f;
 	}
 
 

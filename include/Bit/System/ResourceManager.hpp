@@ -27,21 +27,15 @@
 #define __BIT_SYSTEM_RESOURCE_MANAGER_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Graphics/Texture.hpp>
 #include <string>
-
-#ifdef BIT_PLATFORM_WIN32
-    #include <hash_map>
-    typedef stdext::hash_map <std::string, Bit::Texture *> TextureMap;
-    typedef TextureMap::iterator TextureIterator;
-#elif defined( BIT_PLATFORM_LINUX )
-    #include <unordered_map>
-    typedef std::unordered_map <std::string, Bit::Texture *> TextureMap;
-    typedef TextureMap::iterator TextureIterator;
-#endif
+#include <unordered_map>
 
 namespace Bit
 {
+
+	// Forward declarations
+	class GraphicDevice;
 
 	class BIT_API ResourceManager
 	{
@@ -67,6 +61,9 @@ namespace Bit
 		static BIT_UINT32 LoadErrorTexture( );
 
 		// Private typedefs
+		typedef std::unordered_map <std::string, Bit::Texture *> TextureMap;
+		typedef TextureMap::iterator TextureIterator;
+
 		// Private variables
 		static BIT_BOOL m_Initialized;
 		static GraphicDevice * m_pGraphicDevice;

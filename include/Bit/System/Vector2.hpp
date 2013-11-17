@@ -48,120 +48,120 @@ namespace Bit
 		{
 		}
 
-		Vector2( T a )
+		Vector2( T p_A )
 		{
-			this->x = a;
-			this->y = a;
+			x = p_A;
+			y = p_A;
 		}
 
-		Vector2( T x, T y )
+		Vector2( T p_X, T p_Y )
 		{
-			this->x = x;
-			this->y = y;
+			x = p_X;
+			y = p_Y;
 		}
 
 		// Cast between vectors
 		Vector2( const Vector2< BIT_SINT32 > & p_Vector )
 		{
-			this->x = static_cast< T >( p_Vector.x );
-			this->y = static_cast< T >( p_Vector.y );
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
 		}
 		Vector2( const Vector2< BIT_UINT32 > & p_Vector )
 		{
-			this->x = static_cast< T >( p_Vector.x );
-			this->y = static_cast< T >( p_Vector.y );
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
 		}
 		Vector2( const Vector2< BIT_FLOAT32 > & p_Vector )
 		{
-			this->x = static_cast< T >( p_Vector.x );
-			this->y = static_cast< T >( p_Vector.y );
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
 		}
 		Vector2( const Vector2< BIT_FLOAT64 > & p_Vector )
 		{
-			this->x = static_cast< T >( p_Vector.x );
-			this->y = static_cast< T >( p_Vector.y );
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
 		}
 
 		// Operators
 		const Vector2< T > & operator = ( const Vector2< T > p_Vector )
 		{
-			this->x = p_Vector.x;
-			this->y = p_Vector.y;
+			x = p_Vector.x;
+			y = p_Vector.y;
 			return *this;
 		}
 
 		BIT_BOOL operator == ( const Vector2< T > p_Vector )
 		{
-			return ( this->x == p_Vector.x ) && ( this->y == p_Vector.y );
+			return ( x == p_Vector.x ) && ( y == p_Vector.y );
 		}
 
 		BIT_BOOL operator != ( const Vector2< T > p_Vector )
 		{
-			return ( this->x != p_Vector.x ) || ( this->y != p_Vector.y );
+			return ( x != p_Vector.x ) || ( y != p_Vector.y );
 		}
 
 		const Vector2< T > & operator += ( const Vector2< T > p_Vector )
 		{
-			this->x += p_Vector.x;
-			this->y += p_Vector.y;
+			x += p_Vector.x;
+			y += p_Vector.y;
 			return *this;
 		}
 
 		const Vector2< T > & operator -= ( const Vector2< T > p_Vector )
 		{
-			this->x -= p_Vector.x;
-			this->y -= p_Vector.y;
+			x -= p_Vector.x;
+			y -= p_Vector.y;
 			return *this;
 		}
 
 		const Vector2< T > & operator *= ( const Vector2< T > p_Vector )
 		{
-			this->x *= p_Vector.x;
-			this->y *= p_Vector.y;
+			x *= p_Vector.x;
+			y *= p_Vector.y;
 			return *this;
 		}
 
 		const Vector2< T > & operator /= ( const Vector2< T > p_Vector )
 		{
-			this->x /= p_Vector.x;
-			this->y /= p_Vector.y;
+			x /= p_Vector.x;
+			y /= p_Vector.y;
 			return *this;
 		}
 
 		const Vector2< T > operator + ( const Vector2< T > p_Vector ) const
 		{
-			return Vector2< T >( this->x + p_Vector.x, this->y + p_Vector.y );
+			return Vector2< T >( x + p_Vector.x, y + p_Vector.y );
 		}
 
 		const Vector2< T > operator - ( ) const
 		{
-			return Vector2< T >( -this->x, -this->y );
+			return Vector2< T >( -x, -y );
 		}
 
 
 		const Vector2 <T > operator - ( const Vector2< T > p_Vector ) const
 		{
-			return Vector2< T >( this->x - p_Vector.x, this->y - p_Vector.y );
+			return Vector2< T >( x - p_Vector.x, y - p_Vector.y );
 		}
 
 		const Vector2< T > operator * ( const Vector2< T > p_Vector ) const
 		{
-			return Vector2< T >( this->x * p_Vector.x, this->y * p_Vector.y );
+			return Vector2< T >( x * p_Vector.x, y * p_Vector.y );
 		}
 
 		const Vector2< T > operator * ( const T p_Value ) const
 		{
-			return Vector2< T >( this->x * p_Value, this->y * p_Value );
+			return Vector2< T >( x * p_Value, y * p_Value );
 		}
 
 		const Vector2< T > operator / ( const Vector2< T > p_Vector ) const
 		{
-			return Vector2< T >( this->x / p_Vector.x, this->y / p_Vector.y );
+			return Vector2< T >( x / p_Vector.x, y / p_Vector.y );
 		}
 
 		const Vector2< T > operator / ( const T p_Value ) const
 		{
-			return Vector2< T >( this->x / p_Value, this->y / p_Value );
+			return Vector2< T >( x / p_Value, y / p_Value );
 		}
 
 		T operator [ ] ( const BIT_UINT32 & p_Index )
@@ -181,8 +181,8 @@ namespace Bit
 
 			if( isnan( Length ) )
 			{
-				return Vector2< T >( static_cast< T >( 0 ),
-					static_cast< T >( 0 ) );
+				return Vector2< T >(	static_cast< T >( 0 ),
+										static_cast< T >( 0 ) );
 			}
 
 			return Vector2< T >( ( x / Length ),( y / Length ) );
@@ -194,12 +194,12 @@ namespace Bit
 
 			if( isnan( Length ) )
 			{
-				return Vector2< T >( static_cast< T >( 0 ),
-					static_cast< T >( 0 ) );
+				return Vector2< T >(	static_cast< T >( 0 ),
+										static_cast< T >( 0 ) );
 			}
 
-			this->x /= Length;
-			this->y /= Length;
+			x /= Length;
+			y /= Length;
 			return *this;
 		}
 

@@ -22,6 +22,9 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+// TODO: Make sure to multiply a new matrix with the old one when you are transforming.
+// Right now, scaling wont work if you've rotaded the object.
+
 
 #ifndef __BIT_SYSTEM_MATRIX_MANAGER_HPP__
 #define __BIT_SYSTEM_MATRIX_MANAGER_HPP__

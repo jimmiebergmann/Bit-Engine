@@ -43,7 +43,7 @@
 #endif
 
 // Function for grabbing the opengl functions
-#ifdef BIT_PLATFORM_WIN32
+#if defined(BIT_PLATFORM_WIN32)
 	#define glGetProcAddress( p_Ext ) wglGetProcAddress( p_Ext )
 #elif defined( BIT_PLATFORM_LINUX )
 	#define glGetProcAddress( p_Ext ) glXGetProcAddress( ( const GLubyte *) p_Ext )

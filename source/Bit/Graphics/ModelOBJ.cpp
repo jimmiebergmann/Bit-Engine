@@ -133,11 +133,11 @@ namespace Bit
 				BIT_FLOAT32 * pBinormalBuffer = BIT_NULL;
 
 				// Calculation flags
-				BIT_BOOL CalculatePositions = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Position );
-				BIT_BOOL CalculateTextures = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Texture );
-				BIT_BOOL CalculateNormals = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Normal );
-				BIT_BOOL CalculateTangents = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Tangent );
-				BIT_BOOL CalculateBinormals = (BIT_BOOL)( m_VertexElementBits & VertexObject::Vertex_Binormal );
+				BIT_BOOL CalculatePositions = static_cast<BIT_BOOL>( m_VertexElementBits & VertexObject::Vertex_Position );
+				BIT_BOOL CalculateTextures = static_cast<BIT_BOOL>( m_VertexElementBits & VertexObject::Vertex_Texture );
+				BIT_BOOL CalculateNormals = static_cast<BIT_BOOL>( m_VertexElementBits & VertexObject::Vertex_Normal );
+				BIT_BOOL CalculateTangents = static_cast<BIT_BOOL>( m_VertexElementBits & VertexObject::Vertex_Tangent );
+				BIT_BOOL CalculateBinormals = static_cast<BIT_BOOL>( m_VertexElementBits & VertexObject::Vertex_Binormal );
 
 				// Vertex positions
 				if( CalculatePositions && (*it_mg)->ContainsVertexPositions )
@@ -397,7 +397,7 @@ namespace Bit
 
 		// Get the file size
 		fin.seekg( 0, std::fstream::end );
-		BIT_UINT32 FileSize = fin.tellg( );
+		const BIT_UINT32 FileSize = static_cast<BIT_UINT32>( fin.tellg( ) );
 		fin.seekg( 0, std::fstream::beg );
 
 		// Allocate and read the data
@@ -614,7 +614,7 @@ namespace Bit
 
 		// Get the file size
 		fin.seekg( 0, std::fstream::end );
-		BIT_UINT32 FileSize = fin.tellg( );
+		const BIT_UINT32 FileSize = static_cast<BIT_UINT32>(fin.tellg( ) );
 		fin.seekg( 0, std::fstream::beg );
 
 		// Allocate and read the data

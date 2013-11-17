@@ -23,8 +23,9 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/ResourceManager.hpp>
+#include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/Graphics/Image.hpp>
-#include <Bit/Audio/XM.hpp>
+//#include <Bit/Audio/XM.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -34,7 +35,7 @@ namespace Bit
 	// Set the private static variables
 	BIT_BOOL ResourceManager::m_Initialized = BIT_FALSE;
 	GraphicDevice * ResourceManager::m_pGraphicDevice = BIT_NULL;
-	TextureMap ResourceManager::m_Textures;
+	ResourceManager::TextureMap ResourceManager::m_Textures;
 	Texture::eFilter * ResourceManager::m_DefaultTextureFilters = BIT_NULL;
 	Texture * ResourceManager::m_ErrorTexture = BIT_NULL;
 

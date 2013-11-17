@@ -26,12 +26,14 @@
 #define __BIT_GRAPHICS_SHADER_PROGRAM_HPP__
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Shader.hpp>
 #include <Bit/System/Matrix4x4.hpp>
 #include <string>
 
 namespace Bit
 {
+
+	// Forward declaraction
+	class Shader;
 
 	class BIT_API ShaderProgram
 	{

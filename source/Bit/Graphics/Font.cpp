@@ -415,7 +415,7 @@ namespace Bit
 			}
 
 			// Add to the width.
-			Width += ( pGlyph->Advance * p_Scale );
+			Width += static_cast<BIT_UINT32>( pGlyph->Advance * p_Scale );
 		}
 
 		return Width;

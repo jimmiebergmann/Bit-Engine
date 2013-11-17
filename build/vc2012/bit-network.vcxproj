@@ -78,6 +78,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
     <OutDir>$(SolutionDir)/../../lib/Windows/32/Dynamic\</OutDir>
     <IntDir>$(SolutionDir)/../../obj/Windows/32/vc2008/bit-network/Dynamic_Debug/\</IntDir>
+    <TargetName>$(ProjectName)-d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
     <OutDir>$(SolutionDir)/../../lib/Windows/32/Dynamic\</OutDir>

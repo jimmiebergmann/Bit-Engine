@@ -47,130 +47,130 @@ namespace Bit
 		{
 		}
 
-		Vector3( T a )
+		Vector3( T p_A )
 		{
-			this->x = a;
-			this->y = a;
-			this->z = a;
+			x = p_A;
+			y = p_A;
+			z = p_A;
 		}
 
-		Vector3( T x, T y, T z )
+		Vector3( T p_X, T p_Y, T p_Z )
 		{
-			this->x = x;
-			this->y = y;
-			this->z = z;
+			x = p_X;
+			y = p_Y;
+			z = p_Z;
 		}
 
 		// Cast between vectors
 		Vector3( const Vector3< BIT_SINT32 > & p_Vector )
 		{
-			this->x = static_cast< T >( p_Vector.x );
-			this->y = static_cast< T >( p_Vector.y );
-			this->z = static_cast< T >( p_Vector.z );
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
+			z = static_cast< T >( p_Vector.z );
 		}
 		Vector3( const Vector3< BIT_UINT32 > & p_Vector )
 		{
-			this->x = static_cast< T >( p_Vector.x );
-			this->y = static_cast< T >( p_Vector.y );
-			this->z = static_cast< T >( p_Vector.z );
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
+			z = static_cast< T >( p_Vector.z );
 		}
 		Vector3( const Vector3< BIT_FLOAT32 > & p_Vector )
 		{
-			this->x = static_cast< T >( p_Vector.x );
-			this->y = static_cast< T >( p_Vector.y );
-			this->z = static_cast< T >( p_Vector.z );
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
+			z = static_cast< T >( p_Vector.z );
 		}
 		Vector3( const Vector3< BIT_FLOAT64 > & p_Vector )
 		{
-			this->x = static_cast< T >( p_Vector.x );
-			this->y = static_cast< T >( p_Vector.y );
-			this->z = static_cast< T >( p_Vector.z );
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
+			z = static_cast< T >( p_Vector.z );
 		}
 
 		// Operators
 		const Vector3< T > & operator = ( const Vector3< T > p_Vector )
 		{
-			this->x = p_Vector.x;
-			this->y = p_Vector.y;
-			this->z = p_Vector.z;
+			x = p_Vector.x;
+			y = p_Vector.y;
+			z = p_Vector.z;
 			return *this;
 		}
 
 		BIT_BOOL operator == ( const Vector2< T > p_Vector )
 		{
-			return ( this->x == p_Vector.x ) && ( this->y == p_Vector.y ) && ( this->z == p_Vector.z );
+			return ( x == p_Vector.x ) && ( y == p_Vector.y ) && ( z == p_Vector.z );
 		}
 
 		BIT_BOOL operator != ( const Vector2< T > p_Vector )
 		{
-			return ( this->x != p_Vector.x ) || ( this->y != p_Vector.y ) || ( this->z!= p_Vector.z );
+			return ( x != p_Vector.x ) || ( y != p_Vector.y ) || ( z!= p_Vector.z );
 		}
 
 		const Vector3< T > & operator += ( const Vector3< T > p_Vector )
 		{
-			this->x += p_Vector.x;
-			this->y += p_Vector.y;
-			this->z += p_Vector.z;
+			x += p_Vector.x;
+			y += p_Vector.y;
+			z += p_Vector.z;
 			return *this;
 		}
 
 		const Vector3< T > & operator -= ( const Vector3< T > p_Vector )
 		{
-			this->x -= p_Vector.x;
-			this->y -= p_Vector.y;
-			this->z -= p_Vector.z;
+			x -= p_Vector.x;
+			y -= p_Vector.y;
+			z -= p_Vector.z;
 			return *this;
 		}
 
 		const Vector3< T > & operator *= ( const Vector3< T > p_Vector )
 		{
-			this->x *= p_Vector.x;
-			this->y *= p_Vector.y;
-			this->z *= p_Vector.z;
+			x *= p_Vector.x;
+			y *= p_Vector.y;
+			z *= p_Vector.z;
 			return *this;
 		}
 
 		const Vector3< T > & operator /= ( const Vector3< T > p_Vector )
 		{
-			this->x /= p_Vector.x;
-			this->y /= p_Vector.y;
-			this->z /= p_Vector.z;
+			x /= p_Vector.x;
+			y /= p_Vector.y;
+			z /= p_Vector.z;
 			return *this;
 		}
 
 		const Vector3< T > operator + ( const Vector3< T > p_Vector ) const
 		{
-			return Vector3< T >( this->x + p_Vector.x, this->y + p_Vector.y, this->z + p_Vector.z );
+			return Vector3< T >( x + p_Vector.x, y + p_Vector.y, z + p_Vector.z );
 		}
 
 		const Vector3< T > operator - ( ) const
 		{
-			return Vector3< T >( -this->x, -this->y, -this->z );
+			return Vector3< T >( -x, -y, -z );
 		}
 
 		const Vector3< T > operator - ( const Vector3< T > p_Vector ) const
 		{
-			return Vector3< T >( this->x - p_Vector.x, this->y - p_Vector.y, this->z - p_Vector.z );
+			return Vector3< T >( x - p_Vector.x, y - p_Vector.y, z - p_Vector.z );
 		}
 
 		const Vector3< T > operator * ( const Vector3< T > p_Vector ) const
 		{
-			return Vector3< T >( this->x * p_Vector.x, this->y * p_Vector.y, this->z * p_Vector.z );
+			return Vector3< T >( x * p_Vector.x, y * p_Vector.y, z * p_Vector.z );
 		}
 
 		const Vector3< T > operator * ( const T p_Value ) const
 		{
-			return Vector3< T >( this->x * p_Value, this->y * p_Value, this->z * p_Value );
+			return Vector3< T >( x * p_Value, y * p_Value, z * p_Value );
 		}
 
 		const Vector3< T > operator / ( const Vector3< T > p_Vector ) const
 		{
-			return Vector3< T >( this->x / p_Vector.x, this->y / p_Vector.y, this->z / p_Vector.z );
+			return Vector3< T >( x / p_Vector.x, y / p_Vector.y, z / p_Vector.z );
 		}
 
 		const Vector3< T > operator / ( const T p_Value ) const
 		{
-			return Vector3< T >( this->x / p_Value, this->y / p_Value, this->z / p_Value );
+			return Vector3< T >( x / p_Value, y / p_Value, z / p_Value );
 		}
 
 		T operator [ ] ( const BIT_UINT32 & p_Index )
@@ -189,8 +189,8 @@ namespace Bit
 
 			if( isnan( Length ) )
 			{
-				return Vector3< T >( static_cast< T >( 0 ),
-					static_cast< T >( 0 ), static_cast< T >( 0 ) );
+				return Vector3< T >(	static_cast< T >( 0 ),
+										static_cast< T >( 0 ), static_cast< T >( 0 ) );
 			}
 
 			return Vector3< T >( ( x / Length ),( y / Length ), ( z / Length ) );
@@ -202,13 +202,13 @@ namespace Bit
 
 			if( isnan( Length ) )
 			{
-				return Vector3< T >( static_cast< T >( 0 ),
-					static_cast< T >( 0 ), static_cast< T >( 0 ) );
+				return Vector3< T >(	static_cast< T >( 0 ),
+										static_cast< T >( 0 ), static_cast< T >( 0 ) );
 			}
 
-			this->x /= Length;
-			this->y /= Length;
-			this->z /= Length;
+			x /= Length;
+			y /= Length;
+			z /= Length;
 			return *this;
 		}
 
