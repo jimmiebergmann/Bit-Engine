@@ -22,20 +22,20 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Audio/OpenAL/SoundOAL.hpp>
+#include <Bit/Audio/OpenAL/AudioOpenAL.hpp>
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-	SoundOAL::SoundOAL( ) :
+	AudioOpenAL::AudioOpenAL( ) :
 		m_Source( 0 ),
 		m_Buffer( 0 )
 	{
 		m_Loaded = BIT_FALSE;
 	}
 
-	SoundOAL::~SoundOAL( )
+	AudioOpenAL::~AudioOpenAL( )
 	{
 		if( m_Source )
 		{
@@ -48,7 +48,7 @@ namespace Bit
 		m_Loaded = BIT_FALSE;
 	}
 
-	BIT_UINT32 SoundOAL::Load( const AudioBuffer & p_pAudioBuffer, const BIT_BOOL p_Loop,
+	BIT_UINT32 AudioOpenAL::Load( const AudioBuffer & p_pAudioBuffer, const BIT_BOOL p_Loop,
 			const BIT_FLOAT32 p_Pitch, const BIT_FLOAT32 p_Volume, const Vector3_f32 p_Position )
 	{
 		// Generate the openal buffers
@@ -110,43 +110,43 @@ namespace Bit
 		return BIT_OK;
 	}
 
-	void SoundOAL::SetPosition( const Vector3_f32 p_Position )
+	void AudioOpenAL::SetPosition( const Vector3_f32 p_Position )
 	{
 		ALfloat Position[3] = { p_Position.x, p_Position.y, p_Position.z };
 		alSourcefv( m_Source, AL_POSITION, Position );
 	}
 
-	void SoundOAL::SetVolume( const BIT_FLOAT32 p_Volume )
+	void AudioOpenAL::SetVolume( const BIT_FLOAT32 p_Volume )
 	{
 		alSourcef( m_Source, AL_GAIN, p_Volume );
 	}
 
-	void SoundOAL::SetPitch( const BIT_FLOAT32 p_Pitch )
+	void AudioOpenAL::SetPitch( const BIT_FLOAT32 p_Pitch )
 	{
 		alSourcef( m_Source, AL_PITCH, p_Pitch ); 
 	}
 
-	void SoundOAL::SetLoop( const BIT_BOOL p_Loop )
+	void AudioOpenAL::SetLoop( const BIT_BOOL p_Loop )
 	{
 		alSourcei( m_Source, AL_LOOPING, p_Loop ); 
 	}
 
-	void SoundOAL::Play( )
+	void AudioOpenAL::Play( )
 	{
 		alSourcePlay( m_Source );
 	}
 
-	void SoundOAL::SetRelative( const BIT_BOOL p_Relative )
+	void AudioOpenAL::SetRelative( const BIT_BOOL p_Relative )
 	{
 		alSourcei( m_Source, AL_SOURCE_RELATIVE, p_Relative ); 
 	}
 
-	void SoundOAL::Pause( )
+	void AudioOpenAL::Pause( )
 	{
 		alSourcePause( m_Source );
 	}
 
-	void SoundOAL::Stop( )
+	void AudioOpenAL::Stop( )
 	{
 		alSourceStop( m_Source );
 	}

@@ -24,8 +24,8 @@
 
 #include <Bit/Audio/AudioDevice.hpp>
 
-#include <Bit/Audio/OpenAL/AudioDeviceOAL.hpp>
-typedef Bit::AudioDeviceOAL OpenALDevicePlatformType;
+#include <Bit/Audio/OpenAL/AudioDeviceOpenAL.hpp>
+typedef Bit::AudioDeviceOpenAL OpenALDevicePlatformType;
 
 #include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>

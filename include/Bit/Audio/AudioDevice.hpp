@@ -8,7 +8,7 @@ namespace Bit
 {
 
 	// Forward declarations
-	class Sound;
+	class Audio;
 	
 	class BIT_API AudioDevice
 	{
@@ -22,7 +22,7 @@ namespace Bit
 		virtual BIT_UINT32 Open( ) = 0;
 
 		// Create functions for different audio elements
-		virtual Sound * CreateSound( ) = 0;
+		virtual Audio * CreateAudio( ) = 0;
 
 		// Set functions
 		virtual void SetGlobalVolume( BIT_FLOAT32 p_Volume ) = 0;

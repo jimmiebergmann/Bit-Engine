@@ -25,20 +25,20 @@
 #ifndef BIT_AUDIO_SOUND_OPENAL_HPP
 #define BIT_AUDIO_SOUND_OPENAL_HPP
 
+#include <Bit/Audio/Audio.hpp>
 #include <Bit/Audio/OpenAL/OpenAL.hpp>
-#include <Bit/Audio/Sound.hpp>
 
 namespace Bit
 {
 	
-	class SoundOAL : public Sound
+	class AudioOpenAL : public Audio
 	{
 
 	public:
 
 		// Destructor
-		SoundOAL( );
-		~SoundOAL( );
+		AudioOpenAL( );
+		~AudioOpenAL( );
 
 		// Public general functions
 		virtual BIT_UINT32 Load(	const AudioBuffer & p_pAudioBuffer, const BIT_BOOL p_Loop = BIT_FALSE,

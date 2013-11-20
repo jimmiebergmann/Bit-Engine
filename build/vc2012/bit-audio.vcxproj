@@ -150,21 +150,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\source\Bit\Audio.cpp" />
     <ClCompile Include="..\..\source\Bit\Audio\AudioBuffer.cpp" />
     <ClCompile Include="..\..\source\Bit\Audio\AudioDevice.cpp" />
-    <ClCompile Include="..\..\source\Bit\Audio\OpenAL\AudioDeviceOAL.cpp" />
-    <ClCompile Include="..\..\source\Bit\Audio\SoundOAL.cpp" />
+    <ClCompile Include="..\..\source\Bit\Audio\OpenAL\AudioDeviceOpenAL.cpp" />
+    <ClCompile Include="..\..\source\Bit\Audio\AudioOpenAL.cpp" />
     <ClCompile Include="..\..\source\Bit\Audio\XM.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\Bit\Audio.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\AudioBuffer.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\AudioDevice.hpp" />
-    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\AudioDeviceOAL.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\AudioDeviceOpenAL.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenAL.hpp" />
-    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\SoundOAL.hpp" />
-    <ClInclude Include="..\..\include\Bit\Audio\Sound.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\AudioOpenAL.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\Audio.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\XM.hpp" />
   </ItemGroup>
   <ItemGroup>

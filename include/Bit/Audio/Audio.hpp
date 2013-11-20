@@ -22,9 +22,48 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+#ifndef BIT_AUDIO_AUDIO_HPP
+#define BIT_AUDIO_AUDIO_HPP
 
-#ifndef BIT_AUDIO_HPP
-#define BIT_AUDIO_HPP
+#include <Bit/DataTypes.hpp>
+#include <Bit/System/Vector3.hpp>
+#include <Bit/Audio/AudioBuffer.hpp>
 
+namespace Bit
+{
+	
+	class BIT_API Audio
+	{
+
+	public:
+
+		// Destructor
+		virtual ~Audio( ) { }
+
+		// Public general functions
+		virtual BIT_UINT32 Load(	const AudioBuffer & p_pAudioBuffer, const BIT_BOOL p_Loop = BIT_FALSE,
+									const BIT_FLOAT32 p_Pitch = 1.0f, const BIT_FLOAT32 p_Volume = 1.0f,
+									const Vector3_f32 p_Position = Vector3_f32( 0.0f, 0.0f, 0.0f ) ) = 0;
+		virtual void Play( ) = 0;
+		virtual void Pause( ) = 0;
+		virtual void Stop( ) = 0;
+
+		// Set functions
+		virtual void SetPosition( const Vector3_f32 p_Position ) = 0;
+		virtual void SetVolume( const BIT_FLOAT32 p_Volume ) = 0;
+		virtual void SetPitch( const BIT_FLOAT32 p_Pitch ) = 0;
+		virtual void SetLoop( const BIT_BOOL p_Loop ) = 0;
+		virtual void SetRelative( const BIT_BOOL p_Relative ) = 0;
+
+		// Get functions
+		bool IsLoaded( ) const { return m_Loaded; }
+
+	protected:
+
+		BIT_BOOL m_Loaded;
+
+	};
+
+}
 
 #endif

@@ -22,45 +22,41 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_SOUND_HPP
-#define BIT_AUDIO_SOUND_HPP
+#ifndef BIT_AUDIO_DEVICE_OPENAL_HPP
+#define BIT_AUDIO_DEVICE_OPENAL_HPP
 
-#include <Bit/DataTypes.hpp>
-#include <Bit/System/Vector3.hpp>
-#include <Bit/Audio/AudioBuffer.hpp>
+#include <Bit/Audio/AudioDevice.hpp>
+#include <Bit/Audio/OpenAL/OpenAL.hpp>
+
 
 namespace Bit
 {
 	
-	class BIT_API Sound
+	class AudioDeviceOpenAL : public AudioDevice
 	{
 
 	public:
 
-		// Destructor
-		virtual ~Sound( ) { }
+		// Constructors/destructors
+		AudioDeviceOpenAL( );
+		~AudioDeviceOpenAL( );
 
 		// Public general functions
-		virtual BIT_UINT32 Load(	const AudioBuffer & p_pAudioBuffer, const BIT_BOOL p_Loop = BIT_FALSE,
-									const BIT_FLOAT32 p_Pitch = 1.0f, const BIT_FLOAT32 p_Volume = 1.0f,
-									const Vector3_f32 p_Position = Vector3_f32( 0.0f, 0.0f, 0.0f ) ) = 0;
-		virtual void Play( ) = 0;
-		virtual void Pause( ) = 0;
-		virtual void Stop( ) = 0;
+		virtual BIT_UINT32 Open( );
+
+		// Create functions for different audio elements
+		virtual Audio * CreateAudio( );
 
 		// Set functions
-		virtual void SetPosition( const Vector3_f32 p_Position ) = 0;
-		virtual void SetVolume( const BIT_FLOAT32 p_Volume ) = 0;
-		virtual void SetPitch( const BIT_FLOAT32 p_Pitch ) = 0;
-		virtual void SetLoop( const BIT_BOOL p_Loop ) = 0;
-		virtual void SetRelative( const BIT_BOOL p_Relative ) = 0;
+		virtual void SetGlobalVolume( BIT_FLOAT32 p_Volume );
+		virtual void SetListenerPosition( Vector3_f32 p_Position );
+		virtual void SetListenerTarget( Vector3_f32 p_Target );
+		virtual void SetListenerVelocity( Vector3_f32 p_Velocity );
 
-		// Get functions
-		bool IsLoaded( ) const { return m_Loaded; }
+	private:
 
-	protected:
-
-		BIT_BOOL m_Loaded;
+		ALCdevice * m_pDevice;
+		ALCcontext * m_pContext;
 
 	};
 
