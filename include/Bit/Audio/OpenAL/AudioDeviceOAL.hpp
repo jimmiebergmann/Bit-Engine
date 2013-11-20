@@ -22,47 +22,41 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_BUFFER_HPP
-#define BIT_AUDIO_BUFFER_HPP
+#ifndef BIT_AUDIO_DEVICE_OPENGL_HPP
+#define BIT_AUDIO_DEVICE_OPENGL_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Audio/AudioDevice.hpp>
+#include <Bit/Audio/OpenAL/OpenAL.hpp>
+
 
 namespace Bit
 {
 	
-	class BIT_API AudioBuffer
+	class AudioDeviceOAL : public AudioDevice
 	{
 
 	public:
 
-		// Constructor/destructor
-		AudioBuffer( );
-		~AudioBuffer( );
+		// Constructors/destructors
+		AudioDeviceOAL( );
+		~AudioDeviceOAL( );
 
-		// Public functions
-		BIT_UINT32 Read( const char * p_pFileName );
+		// Public general functions
+		virtual BIT_UINT32 Open( );
 
-		// Get functions
-		BIT_BYTE * GetData( ) const;
-		BIT_UINT32 GetDataSize( ) const;
-		BIT_UINT16 GetChannelCount( ) const;
-		BIT_UINT32 GetSampleRate( ) const;
-		BIT_UINT16 GetBitsPerSample( ) const;
-		BIT_BOOL ContainsData( ) const;
+		// Create functions for different audio elements
+		virtual Sound * CreateSound( );
+
+		// Set functions
+		virtual void SetGlobalVolume( BIT_FLOAT32 p_Volume );
+		virtual void SetListenerPosition( Vector3_f32 p_Position );
+		virtual void SetListenerTarget( Vector3_f32 p_Target );
+		virtual void SetListenerVelocity( Vector3_f32 p_Velocity );
 
 	private:
 
-		// Private functions
-		BIT_UINT32 ReadWAVE( const char *p_pFileName );
-
-		// Private variables
-		BIT_BOOL m_Loaded;
-		BIT_UINT16 m_ChannelCount;
-		BIT_UINT32 m_SampleRate;
-		BIT_UINT16 m_BitsPerSample;
-		BIT_UINT32 m_BufferSize;
-		BIT_BYTE * m_pBuffer;
-
+		ALCdevice * m_pDevice;
+		ALCcontext * m_pContext;
 
 	};
 

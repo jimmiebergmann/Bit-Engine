@@ -22,47 +22,45 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_BUFFER_HPP
-#define BIT_AUDIO_BUFFER_HPP
+#ifndef BIT_AUDIO_SOUND_HPP
+#define BIT_AUDIO_SOUND_HPP
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/System/Vector3.hpp>
+#include <Bit/Audio/AudioBuffer.hpp>
 
 namespace Bit
 {
 	
-	class BIT_API AudioBuffer
+	class BIT_API Sound
 	{
 
 	public:
 
-		// Constructor/destructor
-		AudioBuffer( );
-		~AudioBuffer( );
+		// Destructor
+		virtual ~Sound( ) { }
 
-		// Public functions
-		BIT_UINT32 Read( const char * p_pFileName );
+		// Public general functions
+		virtual BIT_UINT32 Load(	const AudioBuffer & p_pAudioBuffer, const BIT_BOOL p_Loop = BIT_FALSE,
+									const BIT_FLOAT32 p_Pitch = 1.0f, const BIT_FLOAT32 p_Volume = 1.0f,
+									const Vector3_f32 p_Position = Vector3_f32( 0.0f, 0.0f, 0.0f ) ) = 0;
+		virtual void Play( ) = 0;
+		virtual void Pause( ) = 0;
+		virtual void Stop( ) = 0;
+
+		// Set functions
+		virtual void SetPosition( const Vector3_f32 p_Position ) = 0;
+		virtual void SetVolume( const BIT_FLOAT32 p_Volume ) = 0;
+		virtual void SetPitch( const BIT_FLOAT32 p_Pitch ) = 0;
+		virtual void SetLoop( const BIT_BOOL p_Loop ) = 0;
+		virtual void SetRelative( const BIT_BOOL p_Relative ) = 0;
 
 		// Get functions
-		BIT_BYTE * GetData( ) const;
-		BIT_UINT32 GetDataSize( ) const;
-		BIT_UINT16 GetChannelCount( ) const;
-		BIT_UINT32 GetSampleRate( ) const;
-		BIT_UINT16 GetBitsPerSample( ) const;
-		BIT_BOOL ContainsData( ) const;
+		bool IsLoaded( ) const { return m_Loaded; }
 
-	private:
+	protected:
 
-		// Private functions
-		BIT_UINT32 ReadWAVE( const char *p_pFileName );
-
-		// Private variables
 		BIT_BOOL m_Loaded;
-		BIT_UINT16 m_ChannelCount;
-		BIT_UINT32 m_SampleRate;
-		BIT_UINT16 m_BitsPerSample;
-		BIT_UINT32 m_BufferSize;
-		BIT_BYTE * m_pBuffer;
-
 
 	};
 

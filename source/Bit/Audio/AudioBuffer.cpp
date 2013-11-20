@@ -53,21 +53,19 @@ namespace Bit
 		}
 	}
 
-	BIT_UINT32 AudioBuffer::Read( char * p_pFileName )
+	BIT_UINT32 AudioBuffer::Read( const char * p_pFileName )
 	{
-		/*char FileExtension[4];
-		GetFileExtension( p_pFileName, FileExtension, 4 );
+		const std::string FileExtension = GetFileExtension( p_pFileName );
 
-		if( strcmp( FileExtension, "WAV" ) == 0 )
+		if( FileExtension == "WAV" )
 		{
 			return ReadWAVE( p_pFileName );
 		}
 
 		bitTrace( BIT_NULL, "[Bit::AudioBuffer:Load] <ERROR> "
-			"Unknow extension: %s.\n", FileExtension );
+			"Unknow extension: %s.\n", FileExtension.c_str( ) );
 
-		return BIT_ERROR;*/
-		return ReadWAVE( p_pFileName );
+		return BIT_ERROR;
 	}
 
 	BIT_BYTE * AudioBuffer::GetData( ) const
@@ -100,7 +98,7 @@ namespace Bit
 		return m_Loaded;
 	}
 
-	BIT_UINT32 AudioBuffer::ReadWAVE( char *p_pFileName )
+	BIT_UINT32 AudioBuffer::ReadWAVE( const char *p_pFileName )
 	{
 		char Type[4];
 		unsigned int Size, ChunkSize;
@@ -151,25 +149,10 @@ namespace Bit
 		fin.read( (char*)&AverageBytesPerSec, sizeof(unsigned int) );
 		fin.read( (char*)&BytesPerSample, sizeof(unsigned short) );
 		fin.read( (char*)&BitsPerSample, sizeof(unsigned short) );
-		/*bitTrace( BIT_NULL, "[Bit::AudioBuffer::ReadWAVE] "
-			"WAVE data: \n"
-			"Chunk Size: %i\n"
-			"Format type: %hi\n"
-			"Channel count: %hi\n"
-			"Sample Rate: %i\n"
-			"Average Bytes Per Sec: %i\n"
-			"Bytes Per Sample: %hi\n"
-			"Bits Per Sample: %hi\n",
-			ChunkSize, FormatType,
-			ChannelCount, SampleRate,
-			AverageBytesPerSec, BytesPerSample,
-			BitsPerSample);*/
-
 
 		m_ChannelCount = static_cast< BIT_UINT16 >( ChannelCount );
 		m_SampleRate = static_cast< BIT_UINT32 >( SampleRate );
 		m_BitsPerSample = static_cast< BIT_UINT16 >( BitsPerSample );
-
 
 		// Making sure we have reached the sound data
 		fin.read( Type, sizeof(char) * 4 );
@@ -182,8 +165,6 @@ namespace Bit
 
 		// Read the data size
 		fin.read( (char*)&m_BufferSize, sizeof(unsigned int) );
-		/*bitTrace( BIT_NULL, "[Bit::AudioBuffer::ReadWAVE] "
-			"Data Size: %i\n" , m_BufferSize );*/
 
 		// Read the buffer data
 		m_pBuffer = new BIT_BYTE[ m_BufferSize ];

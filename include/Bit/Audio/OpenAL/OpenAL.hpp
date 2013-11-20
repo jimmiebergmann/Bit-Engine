@@ -22,50 +22,10 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_BUFFER_HPP
-#define BIT_AUDIO_BUFFER_HPP
+#ifndef BIT_AUDIO_OPENAL_HPP
+#define BIT_AUDIO_OPENAL_HPP
 
-#include <Bit/DataTypes.hpp>
-
-namespace Bit
-{
-	
-	class BIT_API AudioBuffer
-	{
-
-	public:
-
-		// Constructor/destructor
-		AudioBuffer( );
-		~AudioBuffer( );
-
-		// Public functions
-		BIT_UINT32 Read( const char * p_pFileName );
-
-		// Get functions
-		BIT_BYTE * GetData( ) const;
-		BIT_UINT32 GetDataSize( ) const;
-		BIT_UINT16 GetChannelCount( ) const;
-		BIT_UINT32 GetSampleRate( ) const;
-		BIT_UINT16 GetBitsPerSample( ) const;
-		BIT_BOOL ContainsData( ) const;
-
-	private:
-
-		// Private functions
-		BIT_UINT32 ReadWAVE( const char *p_pFileName );
-
-		// Private variables
-		BIT_BOOL m_Loaded;
-		BIT_UINT16 m_ChannelCount;
-		BIT_UINT32 m_SampleRate;
-		BIT_UINT16 m_BitsPerSample;
-		BIT_UINT32 m_BufferSize;
-		BIT_BYTE * m_pBuffer;
-
-
-	};
-
-}
+#include <al/al.h>
+#include <al/alc.h>
 
 #endif

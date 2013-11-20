@@ -22,50 +22,21 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_BUFFER_HPP
-#define BIT_AUDIO_BUFFER_HPP
+#include <Bit/Audio/AudioDevice.hpp>
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Audio/OpenAL/AudioDeviceOAL.hpp>
+typedef Bit::AudioDeviceOAL OpenALDevicePlatformType;
+
+#include <Bit/System/Debugger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-	
-	class BIT_API AudioBuffer
+
+	// Create a cross platform renderer via this function
+	BIT_API AudioDevice * CreateAudioDevice( )
 	{
-
-	public:
-
-		// Constructor/destructor
-		AudioBuffer( );
-		~AudioBuffer( );
-
-		// Public functions
-		BIT_UINT32 Read( const char * p_pFileName );
-
-		// Get functions
-		BIT_BYTE * GetData( ) const;
-		BIT_UINT32 GetDataSize( ) const;
-		BIT_UINT16 GetChannelCount( ) const;
-		BIT_UINT32 GetSampleRate( ) const;
-		BIT_UINT16 GetBitsPerSample( ) const;
-		BIT_BOOL ContainsData( ) const;
-
-	private:
-
-		// Private functions
-		BIT_UINT32 ReadWAVE( const char *p_pFileName );
-
-		// Private variables
-		BIT_BOOL m_Loaded;
-		BIT_UINT16 m_ChannelCount;
-		BIT_UINT32 m_SampleRate;
-		BIT_UINT16 m_BitsPerSample;
-		BIT_UINT32 m_BufferSize;
-		BIT_BYTE * m_pBuffer;
-
-
-	};
+		return new OpenALDevicePlatformType( );
+	}
 
 }
-
-#endif

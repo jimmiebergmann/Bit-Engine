@@ -22,47 +22,45 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_BUFFER_HPP
-#define BIT_AUDIO_BUFFER_HPP
+#ifndef BIT_AUDIO_SOUND_OPENAL_HPP
+#define BIT_AUDIO_SOUND_OPENAL_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Audio/OpenAL/OpenAL.hpp>
+#include <Bit/Audio/Sound.hpp>
 
 namespace Bit
 {
 	
-	class BIT_API AudioBuffer
+	class SoundOAL : public Sound
 	{
 
 	public:
 
-		// Constructor/destructor
-		AudioBuffer( );
-		~AudioBuffer( );
+		// Destructor
+		SoundOAL( );
+		~SoundOAL( );
 
-		// Public functions
-		BIT_UINT32 Read( const char * p_pFileName );
+		// Public general functions
+		virtual BIT_UINT32 Load(	const AudioBuffer & p_pAudioBuffer, const BIT_BOOL p_Loop = BIT_FALSE,
+									const BIT_FLOAT32 p_Pitch = 1.0f, const BIT_FLOAT32 p_Volume = 1.0f,
+									const Vector3_f32 p_Position = Vector3_f32( 0.0f, 0.0f, 0.0f ) );
+		virtual void Play( );
+		virtual void Pause( );
+		virtual void Stop( );
 
-		// Get functions
-		BIT_BYTE * GetData( ) const;
-		BIT_UINT32 GetDataSize( ) const;
-		BIT_UINT16 GetChannelCount( ) const;
-		BIT_UINT32 GetSampleRate( ) const;
-		BIT_UINT16 GetBitsPerSample( ) const;
-		BIT_BOOL ContainsData( ) const;
+		// Set functions
+		virtual void SetPosition( const Vector3_f32 p_Position );
+		virtual void SetVolume( const BIT_FLOAT32 p_Volume );
+		virtual void SetPitch( const BIT_FLOAT32 p_Pitch );
+		virtual void SetLoop( const BIT_BOOL p_Loop );
+		virtual void SetRelative( const BIT_BOOL p_Relative );
 
 	private:
 
-		// Private functions
-		BIT_UINT32 ReadWAVE( const char *p_pFileName );
-
-		// Private variables
-		BIT_BOOL m_Loaded;
-		BIT_UINT16 m_ChannelCount;
-		BIT_UINT32 m_SampleRate;
-		BIT_UINT16 m_BitsPerSample;
-		BIT_UINT32 m_BufferSize;
-		BIT_BYTE * m_pBuffer;
-
+		ALuint m_Source;
+		ALuint m_Buffer;
+		ALuint m_Frequence;
+		ALenum m_Format;
 
 	};
 
