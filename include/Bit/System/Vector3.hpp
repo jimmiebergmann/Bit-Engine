@@ -62,24 +62,41 @@ namespace Bit
 		}
 
 		// Cast between vectors
+		Vector3( const Vector3< BIT_SCHAR8 > & p_Vector )
+		{
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
+			z = static_cast< T >( p_Vector.z );
+		}
+
+		Vector3( const Vector3< BIT_UCHAR8 > & p_Vector )
+		{
+			x = static_cast< T >( p_Vector.x );
+			y = static_cast< T >( p_Vector.y );
+			z = static_cast< T >( p_Vector.z );
+		}
+
 		Vector3( const Vector3< BIT_SINT32 > & p_Vector )
 		{
 			x = static_cast< T >( p_Vector.x );
 			y = static_cast< T >( p_Vector.y );
 			z = static_cast< T >( p_Vector.z );
 		}
+
 		Vector3( const Vector3< BIT_UINT32 > & p_Vector )
 		{
 			x = static_cast< T >( p_Vector.x );
 			y = static_cast< T >( p_Vector.y );
 			z = static_cast< T >( p_Vector.z );
 		}
+
 		Vector3( const Vector3< BIT_FLOAT32 > & p_Vector )
 		{
 			x = static_cast< T >( p_Vector.x );
 			y = static_cast< T >( p_Vector.y );
 			z = static_cast< T >( p_Vector.z );
 		}
+
 		Vector3( const Vector3< BIT_FLOAT64 > & p_Vector )
 		{
 			x = static_cast< T >( p_Vector.x );
@@ -88,7 +105,7 @@ namespace Bit
 		}
 
 		// Operators
-		const Vector3< T > & operator = ( const Vector3< T > p_Vector )
+		Vector3< T > & operator = ( const Vector3< T > p_Vector )
 		{
 			x = p_Vector.x;
 			y = p_Vector.y;
@@ -96,17 +113,17 @@ namespace Bit
 			return *this;
 		}
 
-		BIT_BOOL operator == ( const Vector2< T > p_Vector )
+		BIT_BOOL operator == ( const Vector2< T > p_Vector ) const
 		{
 			return ( x == p_Vector.x ) && ( y == p_Vector.y ) && ( z == p_Vector.z );
 		}
 
-		BIT_BOOL operator != ( const Vector2< T > p_Vector )
+		BIT_BOOL operator != ( const Vector2< T > p_Vector ) const
 		{
 			return ( x != p_Vector.x ) || ( y != p_Vector.y ) || ( z!= p_Vector.z );
 		}
 
-		const Vector3< T > & operator += ( const Vector3< T > p_Vector )
+		Vector3< T > & operator += ( const Vector3< T > p_Vector )
 		{
 			x += p_Vector.x;
 			y += p_Vector.y;
@@ -114,7 +131,7 @@ namespace Bit
 			return *this;
 		}
 
-		const Vector3< T > & operator -= ( const Vector3< T > p_Vector )
+		Vector3< T > & operator -= ( const Vector3< T > p_Vector )
 		{
 			x -= p_Vector.x;
 			y -= p_Vector.y;
@@ -122,7 +139,7 @@ namespace Bit
 			return *this;
 		}
 
-		const Vector3< T > & operator *= ( const Vector3< T > p_Vector )
+		Vector3< T > & operator *= ( const Vector3< T > p_Vector )
 		{
 			x *= p_Vector.x;
 			y *= p_Vector.y;
@@ -130,7 +147,7 @@ namespace Bit
 			return *this;
 		}
 
-		const Vector3< T > & operator /= ( const Vector3< T > p_Vector )
+		Vector3< T > & operator /= ( const Vector3< T > p_Vector )
 		{
 			x /= p_Vector.x;
 			y /= p_Vector.y;
@@ -138,32 +155,32 @@ namespace Bit
 			return *this;
 		}
 
-		const Vector3< T > operator + ( const Vector3< T > p_Vector ) const
+		Vector3< T > operator + ( const Vector3< T > p_Vector ) const
 		{
 			return Vector3< T >( x + p_Vector.x, y + p_Vector.y, z + p_Vector.z );
 		}
 
-		const Vector3< T > operator - ( ) const
+		Vector3< T > operator - ( ) const
 		{
 			return Vector3< T >( -x, -y, -z );
 		}
 
-		const Vector3< T > operator - ( const Vector3< T > p_Vector ) const
+		Vector3< T > operator - ( const Vector3< T > p_Vector ) const
 		{
 			return Vector3< T >( x - p_Vector.x, y - p_Vector.y, z - p_Vector.z );
 		}
 
-		const Vector3< T > operator * ( const Vector3< T > p_Vector ) const
+		Vector3< T > operator * ( const Vector3< T > p_Vector ) const
 		{
 			return Vector3< T >( x * p_Vector.x, y * p_Vector.y, z * p_Vector.z );
 		}
 
-		const Vector3< T > operator * ( const T p_Value ) const
+		Vector3< T > operator * ( const T p_Value ) const
 		{
 			return Vector3< T >( x * p_Value, y * p_Value, z * p_Value );
 		}
 
-		const Vector3< T > operator / ( const Vector3< T > p_Vector ) const
+		Vector3< T > operator / ( const Vector3< T > p_Vector ) const
 		{
 			return Vector3< T >( x / p_Vector.x, y / p_Vector.y, z / p_Vector.z );
 		}
@@ -173,17 +190,18 @@ namespace Bit
 			return Vector3< T >( x / p_Value, y / p_Value, z / p_Value );
 		}
 
-		T operator [ ] ( const BIT_UINT32 & p_Index )
+		T operator [ ] ( const BIT_UINT32 & p_Index ) const
 		{
 			return *( &x + p_Index );
 		}
 
 		// Useful functions
-		const BIT_FLOAT32 Magnitude( ) const
+		BIT_FLOAT32 Magnitude( ) const
 		{
 			return sqrt( ( x*x ) + ( y*y ) + ( z*z ) );
-		};
-		const Vector3< T > Normal( ) const
+		}
+
+		Vector3< T > Normal( ) const
 		{
 			float Length = Magnitude( );
 
@@ -196,7 +214,7 @@ namespace Bit
 			return Vector3< T >( ( x / Length ),( y / Length ), ( z / Length ) );
 		}
 
-		const Vector3< T > & Normalize( )
+		Vector3< T > & Normalize( )
 		{
 			float Length = Magnitude( );
 
@@ -212,7 +230,7 @@ namespace Bit
 			return *this;
 		}
 
-		const Vector3< T > Absolute( ) const
+		Vector3< T > Absolute( ) const
 		{
 			return Vector3< T >((T)abs((T)x), (T)abs((T)y), (T)abs((T)z));
 		}
@@ -228,28 +246,16 @@ namespace Bit
 			return Dot;
 		}
 
-		Vector3< T > Cross(Vector3< T > p_Vector )
+		Vector3< T > Cross(Vector3< T > p_Vector ) const
 		{
-			Vector3< T > Dest;
-			Dest.x = ( ( y * p_Vector.z ) - ( z * p_Vector.y ) );
-			Dest.y = ( ( z * p_Vector.x ) - ( x * p_Vector.z ) );
-			Dest.z = ( ( x * p_Vector.y ) - ( y * p_Vector.x ) );
-			return Dest;
+			Vector3< T > CrossVector;
+			CrossVector.x = ( ( y * p_Vector.z ) - ( z * p_Vector.y ) );
+			CrossVector.y = ( ( z * p_Vector.x ) - ( x * p_Vector.z ) );
+			CrossVector.z = ( ( x * p_Vector.y ) - ( y * p_Vector.x ) );
+			return CrossVector;
 		}
 
-		void RotateX( BIT_FLOAT64 p_Angle )
-		{
-			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
-			const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
-
-			// Store the new y and z in tempory variables
-			T ty = ( y * AngleCos ) - ( z * AngleSin );
-			T tz = ( y * AngleSin ) + ( z * AngleCos );
-
-			y = ty;
-			z = tz;
-		}
-
+		// Do not use, not tested yet.
 		void Rotate( const BIT_FLOAT32 p_Angle, const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
 		{
 			// Create a rotation quaternion
@@ -268,6 +274,19 @@ namespace Bit
 			x = vy * qz - vz * qy + vw * qx + vx * qw;
 			y = vz * qx - vx * qz + vw * qy + vy * qw;
 			z = vx * qy - vy * qx + vw * qz + vz * qw;
+		}
+
+		void RotateX( BIT_FLOAT64 p_Angle )
+		{
+			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
+			const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
+
+			// Store the new y and z in tempory variables
+			T ty = ( y * AngleCos ) - ( z * AngleSin );
+			T tz = ( y * AngleSin ) + ( z * AngleCos );
+
+			y = ty;
+			z = tz;
 		}
 
 		void RotateY( BIT_FLOAT64 p_Angle )
@@ -298,7 +317,20 @@ namespace Bit
 
 
 		// Static functions
-		static Vector3< T > Cross(Vector3< T > p_Vector1, Vector3< T > p_Vector2)
+		static BIT_FLOAT32 Dot( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2 )
+		{
+			BIT_FLOAT32 Dot =	( p_Vector1.x * p_Vector2.x ) +
+								( p_Vector1.y * p_Vector2.y ) +
+								( p_Vector1.z * p_Vector2.z );
+			if( isnan( Dot ) )
+			{
+				return 0.0f;
+			}
+
+			return Dot;
+		}
+
+		static Vector3< T > Cross( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2)
 		{
 			Vector3< T > Dest;
 			Dest.x = ( ( p_Vector1.y * p_Vector2.z ) - ( p_Vector1.z * p_Vector2.y ) );
@@ -307,9 +339,9 @@ namespace Bit
 			return Dest;
 		}
 
-		static BIT_FLOAT64 AngleBetweenVectors( Vector3< T > p_Vec1, Vector3< T > p_Vec2 )
+		static BIT_FLOAT64 AngleBetweenVectors( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2 )
 		{
-			BIT_FLOAT64 Angle = acos( p_Vec1.Dot( p_Vec2 ) );
+			BIT_FLOAT64 Angle = acos( p_Vector1.Normal( ).Dot( p_Vector2 ) );
 
 			if( isnan( Angle ) )
 			{
