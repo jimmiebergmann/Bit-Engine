@@ -94,8 +94,8 @@ namespace Bit
 		}
 	}
 
-	void Matrix4x4::Orthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
-		const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
+	void Matrix4x4::Orthographic(	const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
+									const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
 	{
 		float TX =- ( p_Right + p_Left )/( p_Right - p_Left );
 		float TY =- ( p_Top + p_Bottom )/( p_Top - p_Bottom );
@@ -110,8 +110,8 @@ namespace Bit
 		m[14] = TZ;
 	}
 
-	void Matrix4x4::Perspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
-		const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
+	void Matrix4x4::Perspective(	const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
+									const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
 	{
 		BIT_FLOAT32 Sine, Cotangent, DeltaZ;
 		BIT_FLOAT32 Radians = p_Fov / 2.0f * BIT_FLOAT32( BIT_PI ) / 180.0f;
@@ -217,7 +217,40 @@ namespace Bit
 		*this = *this * dest;
 	}
 
-	Matrix4x4 Matrix4x4::operator * ( Matrix4x4 p_Mat )
+	Matrix4x4 & Matrix4x4::operator = ( const Matrix4x4  & p_Mat )
+	{
+		for( BIT_UINT32 i = 0; i < BIT_MATRIX4X4_SIZE; i++ )
+		{
+			m[ i ] = p_Mat.m[ i ];
+		}
+		return *this;
+	}
+
+	Matrix4x4 Matrix4x4::operator + ( const Matrix4x4  & p_Mat ) const
+	{
+		Matrix4x4 Dest = *this;
+
+		for( BIT_UINT32 i = 0; i < BIT_MATRIX4X4_SIZE; i++ )
+		{
+			Dest.m[ i ] -= p_Mat.m[ i ];
+		}
+
+		return Dest;
+	}
+
+	Matrix4x4 Matrix4x4::operator - ( const Matrix4x4  & p_Mat ) const
+	{
+		Matrix4x4 Dest = *this;
+
+		for( BIT_UINT32 i = 0; i < BIT_MATRIX4X4_SIZE; i++ )
+		{
+			Dest.m[ i ] += p_Mat.m[ i ];
+		}
+
+		return Dest;
+	}
+
+	Matrix4x4 Matrix4x4::operator * ( const Matrix4x4 & p_Mat ) const
 	{
 		Matrix4x4 Mat1 = *this;
 		Matrix4x4 Dest;
