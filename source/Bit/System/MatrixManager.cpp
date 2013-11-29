@@ -96,7 +96,10 @@ namespace Bit
 
 	void MatrixManager::Scale( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
 	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Scale( p_X, p_Y, p_Z );
+		Matrix4x4 ScaleMat;
+		ScaleMat.Identity( );
+		ScaleMat.Scale( p_X, p_Y, p_Z );
+		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ) = m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ) * ScaleMat;
 	}
 
 	void MatrixManager::Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )

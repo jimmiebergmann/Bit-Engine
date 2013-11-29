@@ -27,13 +27,9 @@
 #define BIT_SYSTEM_VECTOR2_HPP
 
 #include <Bit/DataTypes.hpp>
+#include <Bit/System.hpp>
 #include <Bit/System/Math.hpp>
 #include <cmath>
-#include <float.h>
-
-#ifdef BIT_PLATFORM_WIN32
-	#define isnan _isnan
-#endif
 
 namespace Bit
 {
@@ -193,7 +189,7 @@ namespace Bit
 		{
 			float Length = Magnitude( );
 
-			if( isnan( Length ) )
+			if( bitIsNan( Length ) )
 			{
 				return Vector2< T >(	static_cast< T >( 0 ),
 										static_cast< T >( 0 ) );
@@ -206,7 +202,7 @@ namespace Bit
 		{
 			float Length = Magnitude( );
 
-			if( isnan( Length ) )
+			if( bitIsNan( Length ) )
 			{
 				return Vector2< T >(	static_cast< T >( 0 ),
 										static_cast< T >( 0 ) );
@@ -225,7 +221,7 @@ namespace Bit
 		BIT_FLOAT32 Dot( const Vector2< T > & v ) const
 		{
 			BIT_FLOAT32 Dot = ( x * v.x ) + ( y * v.y );
-			if( isnan( Dot ) )
+			if( bitIsNan( Dot ) )
 			{
 				return 0.0f;
 			}
@@ -251,7 +247,7 @@ namespace Bit
 		{
 			BIT_FLOAT32 Dot =	( p_Vector1.x * p_Vector2.x ) +
 								( p_Vector1.y * p_Vector2.y );
-			if( isnan( Dot ) )
+			if( bitIsNan( Dot ) )
 			{
 				return 0.0f;
 			}
@@ -263,7 +259,7 @@ namespace Bit
 		{
 			BIT_FLOAT64 Angle = acos( p_Vector1.Normal( ).Dot( p_Vector2 ) );
 
-			if( isnan( Angle ) )
+			if( bitIsNan( Angle ) )
 			{
 				return 0.0f;
 			}

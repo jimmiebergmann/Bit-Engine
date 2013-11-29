@@ -26,7 +26,6 @@
 #define BIT_SYSTEM_HPP
 
 #include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Texture.hpp>
 #include <string>
 
 // Very useful macro for check single bits
@@ -41,6 +40,15 @@
 #elif PLATFORM_LINUX
 #include <unistd.h>
 #define bitSleep(x) ( usleep( x * 1000 ) )
+#endif
+
+// Is nan
+#include <float.h>
+
+#ifdef BIT_PLATFORM_WIN32
+	#define bitIsNan _isnan
+#elif PLATFORM_LINUX
+	define bitIsNan isnan
 #endif
 
 namespace Bit
