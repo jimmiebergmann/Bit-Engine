@@ -37,7 +37,7 @@
 #include <windows.h>
 #undef CreateWindow
 #define bitSleep(x) ( Sleep( x ) )
-#elif PLATFORM_LINUX
+#elif BIT_PLATFORM_LINUX
 #include <unistd.h>
 #define bitSleep(x) ( usleep( x * 1000 ) )
 #endif
@@ -47,7 +47,7 @@
 
 #ifdef BIT_PLATFORM_WIN32
 	#define bitIsNan _isnan
-#elif PLATFORM_LINUX
+#elif BIT_PLATFORM_LINUX
 	define bitIsNan isnan
 #endif
 
