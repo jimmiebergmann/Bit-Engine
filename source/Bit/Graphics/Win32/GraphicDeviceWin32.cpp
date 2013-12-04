@@ -256,8 +256,8 @@ namespace Bit
 			return BIT_ERROR;
 		}
 
-
-
+		// Set the default viewport to the window's size
+		SetViewport( 0, 0, p_Window.GetSize( ).x, p_Window.GetSize( ).y );
 
 		m_Open = BIT_TRUE;
 		return BIT_OK;
