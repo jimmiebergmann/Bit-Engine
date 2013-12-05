@@ -151,6 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\System\Pathfinding.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\PathfindingAStar2.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\PathNode.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\KeyboardWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Box.cpp" />
@@ -172,6 +175,9 @@
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\System\Pathfinding.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\PathfindingAStar2.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\PathNode.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\KeyboardWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\MouseWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Box.hpp" />

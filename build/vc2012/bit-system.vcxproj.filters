@@ -24,6 +24,9 @@
     <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp">
       <Filter>Win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Pathfinding.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\PathNode.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\PathfindingAStar2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\System\Box.hpp" />
@@ -54,6 +57,9 @@
     <ClInclude Include="..\..\include\Bit\System\Win32\MouseWin32.hpp">
       <Filter>Win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Pathfinding.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\PathNode.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\PathfindingAStar2.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">
