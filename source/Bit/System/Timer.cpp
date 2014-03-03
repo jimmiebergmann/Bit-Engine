@@ -25,15 +25,14 @@
 #include <Bit/System/Timer.hpp>
 #include <ctime>
 
+////////////////////////////////////////////////////////////////
+// Platform dependent includes
+////////////////////////////////////////////////////////////////
 #ifdef BIT_PLATFORM_WIN32
 	#include <windows.h>
 #elif defined( BIT_PLATFORM_LINUX )
 	#include <sys/time.h>
 #endif
-
-#include <Bit/System/Debugger.hpp>
-#include <Bit/System/MemoryLeak.hpp>
-
 
 namespace Bit
 {
@@ -51,41 +50,41 @@ namespace Bit
 
 	void Timer::Stop( )
 	{
-		BIT_FLOAT64 CurrentTime = GetSystemTime( );
+		Float64 CurrentTime = GetSystemTime( );
 		m_Time = ( CurrentTime - m_StartTime );
 	}
 
-	BIT_FLOAT64 Timer::GetTime( )
+	Float64 Timer::GetTime( )
 	{
 		return m_Time;
 	}
 
-	BIT_FLOAT64 Timer::GetLapsedTime( )
+	Float64 Timer::GetLapsedTime( )
 	{
 		Stop( );
 		return m_Time;
 	}
 
-	BIT_FLOAT64 Timer::GetSystemTime( )
+	Float64 Timer::GetSystemTime( )
 	{
 		#ifdef BIT_PLATFORM_WIN32
 
-			static BIT_SINT64 Counter = 0;
-			static BIT_SINT64 Frequency = 0;
+			static Int64 Counter = 0;
+			static Int64 Frequency = 0;
 
 			QueryPerformanceCounter( (LARGE_INTEGER*)&Counter );
 			QueryPerformanceFrequency( (LARGE_INTEGER*)&Frequency );
 
-			return ( static_cast< BIT_FLOAT64 >( Counter ) /
-				static_cast< BIT_FLOAT64 >( Frequency ) );
+			return ( static_cast< Float64 >( Counter ) /
+				static_cast< Float64 >( Frequency ) );
 
 		#elif defined( BIT_PLATFORM_LINUX )
 
 			timeval Time;
 			gettimeofday( &Time, 0 );
 
-			return  static_cast< BIT_FLOAT64 >( Time.tv_sec ) +
-					static_cast< BIT_FLOAT64 >( Time.tv_usec ) * 0.000001f;
+			return  static_cast< Float64 >( Time.tv_sec ) +
+					static_cast< Float64 >( Time.tv_usec ) * 0.000001f;
 
 		#endif
 	}

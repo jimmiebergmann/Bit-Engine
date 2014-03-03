@@ -155,8 +155,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Build.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
