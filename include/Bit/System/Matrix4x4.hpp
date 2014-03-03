@@ -71,7 +71,10 @@ namespace Bit
 			m[12] = P_x;	m[13] = P_y;	m[14] = P_z;	m[15] = P_a;
 		}
 		
-		// Public functions
+		////////////////////////////////////////////////////////////////
+		/// \brief Turning the matrix into an identity matrix.
+		///
+		////////////////////////////////////////////////////////////////
 		void Identity( )
 		{
 			m[0] = 1;	m[1] = 0;		m[2] = 0;		m[3] = 0;
