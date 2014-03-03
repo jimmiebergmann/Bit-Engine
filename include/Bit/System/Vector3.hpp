@@ -52,9 +52,9 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Vector3( ) :
-			x( static_cast< T >( 0 ),
-			y( static_cast< T >( 0 ),
-			z( static_cast< T >( 0 )
+			x( static_cast< T >( 0 ) ),
+			y( static_cast< T >( 0 ) ),
+			z( static_cast< T >( 0 ) )
 		{
 		}
 
@@ -227,12 +227,12 @@ namespace Bit
 			return *this;
 		}
 
-		BIT_BOOL operator == ( const Vector2< T > & p_Vector ) const
+		Bool operator == ( const Vector3< T > & p_Vector ) const
 		{
 			return ( x == p_Vector.x ) && ( y == p_Vector.y ) && ( z == p_Vector.z );
 		}
 
-		BIT_BOOL operator != ( const Vector2< T > & p_Vector ) const
+		Bool operator != ( const Vector3< T > & p_Vector ) const
 		{
 			return ( x != p_Vector.x ) || ( y != p_Vector.y ) || ( z!= p_Vector.z );
 		}
@@ -304,7 +304,7 @@ namespace Bit
 			return Vector3< T >( x / p_Value, y / p_Value, z / p_Value );
 		}
 
-		T operator [ ] ( const BIT_UINT32 & p_Index ) const
+		T operator [ ] ( const UInt32 & p_Index ) const
 		{
 			return *( &x + p_Index );
 		}
@@ -569,7 +569,7 @@ namespace Bit
 	////////////////////////////////////////////////////////////////
 	// Predefined vector types.
 	////////////////////////////////////////////////////////////////
-	typedef Vector3< Int8 >	Vector3i8;
+	typedef Vector3< Int8 >		Vector3i8;
 	typedef Vector3< UInt8 >	Vector3u8;
 	typedef Vector3< Int16 >	Vector3i16;
 	typedef Vector3< UInt16 >	Vector3u16;

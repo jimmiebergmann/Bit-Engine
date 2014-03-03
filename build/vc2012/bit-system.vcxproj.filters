@@ -8,10 +8,12 @@
     <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Sleep.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Matrix4x4.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
   </ItemGroup>
 </Project>

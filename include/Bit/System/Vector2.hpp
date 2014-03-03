@@ -59,8 +59,8 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Vector2( ) :
-			x( static_cast< T >( 0 ),
-			y( static_cast< T >( 0 )
+			x( static_cast< T >( 0 ) ),
+			y( static_cast< T >( 0 ) )
 		{
 		}
 
@@ -84,11 +84,11 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Vector2( T p_X, T p_Y ) :
-			x( p_A ),
-			y( p_A )
+			x( p_X ),
+			y( p_Y )
 		{
 		}
-
+		
 		////////////////////////////////////////////////////////////////
 		/// \brief Copy constructor.
 		///
@@ -219,12 +219,12 @@ namespace Bit
 			return *this;
 		}
 
-		BIT_BOOL operator == ( const Vector2< T > & p_Vector ) const
+		Bool operator == ( const Vector2< T > & p_Vector ) const
 		{
 			return ( x == p_Vector.x ) && ( y == p_Vector.y );
 		}
 
-		BIT_BOOL operator != ( const Vector2< T > & p_Vector ) const
+		Bool operator != ( const Vector2< T > & p_Vector ) const
 		{
 			return ( x != p_Vector.x ) || ( y != p_Vector.y );
 		}
@@ -441,7 +441,7 @@ namespace Bit
 
 			return Bit::RadiansToDegrees( Angle );
 		}
-
+		
 		////////////////////////////////////////////////////////////////
 		// Public variable members
 		////////////////////////////////////////////////////////////////
