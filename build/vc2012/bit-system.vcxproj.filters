@@ -6,8 +6,10 @@
     <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
     <ClInclude Include="..\..\include\Bit\Build.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
   </ItemGroup>
 </Project>

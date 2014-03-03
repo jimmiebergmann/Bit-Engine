@@ -753,7 +753,8 @@ INPUT                  = ../include/Bit/Build.hpp \
                          ../include/Bit/System/Math.hpp \
                          ../include/Bit/System/Vector2.hpp \
                          ../include/Bit/System/Vector3.hpp \
-                         ../include/Bit/System/Timer.hpp
+                         ../include/Bit/System/Timer.hpp \
+                         ../include/Bit/System/Randomizer.hpp
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses

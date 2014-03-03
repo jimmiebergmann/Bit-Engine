@@ -22,51 +22,113 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
 #ifndef BIT_SYSTEM_RANDOMIZER_HPP
 #define BIT_SYSTEM_RANDOMIZER_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Build.hpp>
 #include <string>
 
 namespace Bit
 {
 
-	// Randomizer class
+	////////////////////////////////////////////////////////////////
+	/// \ingroup System
+	/// \brief Randimizer class
+	///
+	////////////////////////////////////////////////////////////////
 	class BIT_API Randomizer
 	{
 
 	public:
 
-		// Constructors
+		////////////////////////////////////////////////////////////////
+		/// \brief Default constructor.
+		///
+		////////////////////////////////////////////////////////////////
 		Randomizer( );
-		Randomizer( const BIT_UINT32 p_Seed );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Constructor.
+		///
+		/// \param p_Seed Seed value to initialize the randomizer with.
+		///
+		////////////////////////////////////////////////////////////////
+		Randomizer( const UInt32 p_Seed );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Constructor.
+		///
+		/// \param p_Seed Seed string to initialize the randomizer with.
+		///
+		////////////////////////////////////////////////////////////////
 		Randomizer( const std::string & p_Seed );
 
-		// Randomizer function
-		BIT_SINT32 Randomize( const BIT_SINT32 p_To );
-		BIT_SINT32 Randomize( const BIT_SINT32 p_From, const BIT_SINT32 p_To );
+		////////////////////////////////////////////////////////////////
+		/// \brief Eandomizing a number.
+		///
+		/// Randomizing a value between 0 and p_To.
+		///
+		/// \param p_To The max value to be randomized.
+		///
+		/// \return A random number.
+		///
+		////////////////////////////////////////////////////////////////
+		Int32 Randomize( const Int32 p_To );
 
-		// Get functions
-		BIT_UINT32 GetSeed( ) const;
+		////////////////////////////////////////////////////////////////
+		/// \brief Eandomizing a number.
+		///
+		/// Randomizing a value between p_From and p_To.
+		///
+		/// \param p_From The minimum value to be randomized.
+		/// \param p_To The maximum value to be randomized.
+		///
+		/// \return A random number.
+		///
+		////////////////////////////////////////////////////////////////
+		Int32 Randomize( const Int32 p_From, const Int32 p_To );
 
-		// Set functions
-		void SetSeed( const BIT_SINT32 p_Seed );
+		////////////////////////////////////////////////////////////////
+		/// \return The seed value.
+		///
+		////////////////////////////////////////////////////////////////
+		UInt32 GetSeed( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the seed.
+		///
+		/// \param p_Seed The value to set the seed to. 
+		///
+		////////////////////////////////////////////////////////////////
+		void SetSeed( const Int32 p_Seed );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the seed.
+		///
+		/// \param p_Seed The string to calculate the seed with.
+		///
+		////////////////////////////////////////////////////////////////
 		void SetSeed( const std::string & p_Seed );
 
 	private:
 
-		BIT_UINT32 m_Seed;
+		
+		////////////////////////////////////////////////////////////////
+		// Private variable members
+		////////////////////////////////////////////////////////////////
+		UInt32 m_Seed; ///< The current seed.
 
 	};
 
-	// Global randomizer functions
-	BIT_API void SeedRandomizer( const BIT_SINT32 p_Seed );
+	////////////////////////////////////////////////////////////////
+	// Global randomizer functions.
+	////////////////////////////////////////////////////////////////
+	BIT_API void SeedRandomizer( const Int32 p_Seed );
 	BIT_API void SeedRandomizer( const std::string & p_Seed );
-	BIT_API BIT_UINT32 GetRandomizerSeed( );
-	BIT_API BIT_SINT32 RandomizeNumber( const BIT_SINT32 p_To );
-	BIT_API BIT_SINT32 RandomizeNumber( const BIT_SINT32 p_From, const BIT_SINT32 p_To );
-
+	BIT_API UInt32 GetRandomizerSeed( );
+	BIT_API Int32 RandomizeNumber( const Int32 p_To );
+	BIT_API Int32 RandomizeNumber( const Int32 p_From, const Int32 p_To );
+	
 }
 
 #endif
