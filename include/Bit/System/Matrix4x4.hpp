@@ -83,6 +83,14 @@ namespace Bit
 			m[12] =0;	m[13] = 0;		m[14] = 0;		m[15] = 1;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Turning the matrix into an fixed camera matrix.
+		///
+		/// \param p_Eye The position of the camera(The eye).
+		/// \param p_Center The center position of where the camera is pointing.
+		/// \param p_Up The up vector of the camera(Used for orientation).
+		///
+		////////////////////////////////////////////////////////////////
 		void LookAt( Vector3<T> p_Eye, Vector3<T> p_Center, Vector3<T> p_Up )
 		{
 			Vector3<T> Forward = p_Center - p_Eye;
