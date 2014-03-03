@@ -86,6 +86,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 8 bit signed integer vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< Int8 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -93,6 +99,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 8 bit unsigned integer vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< UInt8 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -100,6 +112,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 16 bit signed integer vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< Int16 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -107,6 +125,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 16 bit unsigned integer vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< UInt16 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -114,6 +138,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 32 bit signed integer vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< Int32 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -121,6 +151,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 32 bit unsigned integer vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< UInt32 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -128,6 +164,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 64 bit signed integer vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< Int64 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -135,6 +177,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 64 bit unsigned integer vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< UInt64 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -142,6 +190,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 32 floating point vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< Float32 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -149,6 +203,12 @@ namespace Bit
 		{
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Copy constructor.
+		///
+		/// \param p_Vector 64 floating point vector to copy.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3( const Vector3< Float64 > & p_Vector ) :
 			x( static_cast< T >( p_Vector.x ) ),
 			y( static_cast< T >( p_Vector.y ) ),
@@ -159,7 +219,6 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		// Operators.
 		////////////////////////////////////////////////////////////////
-
 		Vector3< T > & operator = ( const Vector3< T > & p_Vector )
 		{
 			x = p_Vector.x;
@@ -250,12 +309,23 @@ namespace Bit
 			return *( &x + p_Index );
 		}
 
-		// Useful functions
+		////////////////////////////////////////////////////////////////
+		// Handy functions.
+		////////////////////////////////////////////////////////////////
+
+		////////////////////////////////////////////////////////////////
+		/// \return The length of the vector.
+		///
+		////////////////////////////////////////////////////////////////
 		Float64 Magnitude( ) const
 		{
 			return sqrt( ( x*x ) + ( y*y ) + ( z*z ) );
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \return The normal of the vector.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3< T > Normal( ) const
 		{
 			Float64 Length = Magnitude( );
@@ -269,6 +339,12 @@ namespace Bit
 			return Vector3< T >( ( x / Length ),( y / Length ), ( z / Length ) );
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Normalizing the vector.
+		///
+		/// \return A reference to the vector.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3< T > & Normalize( )
 		{
 			Float64 Length = Magnitude( );
@@ -285,14 +361,27 @@ namespace Bit
 			return *this;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \return The absolute vector.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3< T > Absolute( ) const
 		{
 			return Vector3< T >((T)abs((T)x), (T)abs((T)y), (T)abs((T)z));
 		}
 
-		Float64 Dot( const Vector3< T > & v ) const
+		////////////////////////////////////////////////////////////////
+		/// \return The dot value.
+		///
+		/// \param p_Vector The vector to calculate the dot product with.
+		///
+		////////////////////////////////////////////////////////////////
+		Float64 Dot( const Vector3< T > & p_Vector ) const
 		{
-			Float64 Dot = ( x * v.x ) + ( y * v.y ) + ( z * v.z );
+			Float64 Dot =	( x * p_Vector.x ) +
+							( y * p_Vector.y ) +
+							( z * p_Vector.z );
+
 			if( bitIsNan( Dot ) )
 			{
 				return 0.0f;
@@ -301,6 +390,12 @@ namespace Bit
 			return Dot;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \return The cross vector.
+		///
+		/// \param p_Vector The vector to calculate the cross product with.
+		///
+		////////////////////////////////////////////////////////////////
 		Vector3< T > Cross(Vector3< T > p_Vector ) const
 		{
 			Vector3< T > CrossVector;
@@ -311,7 +406,12 @@ namespace Bit
 		}
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Do not use, not tested yet.
+		/// \brief Do not use this yet.
+		///
+		/// \param p_Angle The angle in degrees to rotate.
+		/// \param p_X The amount of x-component to rotate.
+		/// \param p_Y The amount of y-component to rotate.
+		/// \param p_Z The amount of z-component to rotate.
 		///
 		////////////////////////////////////////////////////////////////
 		void Rotate( const Float64 p_Angle, const Float64 p_X, const Float64 p_Y, const Float64 p_Z )
@@ -334,6 +434,12 @@ namespace Bit
 			z = vx * qy - vy * qx + vw * qz + vz * qw;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the vector about the x-axis.
+		///
+		/// \param p_Angle The angle in degrees to rotate.
+		///
+		////////////////////////////////////////////////////////////////
 		void RotateX( const Float64 p_Angle )
 		{
 			const Float64 AngleSin = SinDegrees( p_Angle );
@@ -347,6 +453,12 @@ namespace Bit
 			z = tz;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the vector about the y-axis.
+		///
+		/// \param p_Angle The angle in degrees to rotate.
+		///
+		////////////////////////////////////////////////////////////////
 		void RotateY( const Float64 p_Angle )
 		{
 			const Float64 AngleSin = SinDegrees( p_Angle );
@@ -360,6 +472,12 @@ namespace Bit
 			z = tz;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the vector about the z-axis.
+		///
+		/// \param p_Angle The angle in degrees to rotate.
+		///
+		////////////////////////////////////////////////////////////////
 		void RotateZ( const Float64 p_Angle )
 		{
 			const Float64 AngleSin = SinDegrees( p_Angle );
@@ -374,7 +492,17 @@ namespace Bit
 		}
 
 
-		// Static functions
+		////////////////////////////////////////////////////////////////
+		// Static functions.
+		////////////////////////////////////////////////////////////////
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Calculate the dot product between two vectors.
+		///
+		/// \param p_Vector1 The first vector.
+		/// \param p_Vector2 The second vector.
+		///
+		////////////////////////////////////////////////////////////////
 		static Float64 Dot( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2 )
 		{
 			Float64 Dot =	( p_Vector1.x * p_Vector2.x ) +
@@ -388,6 +516,17 @@ namespace Bit
 			return Dot;
 		}
 
+		////////////////////////////////////////////////////////////////
+		// Static functions.
+		////////////////////////////////////////////////////////////////
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Calculate the cross product between two vectors.
+		///
+		/// \param p_Vector1 The first vector.
+		/// \param p_Vector2 The second vector.
+		///
+		////////////////////////////////////////////////////////////////
 		static Vector3< T > Cross( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2)
 		{
 			Vector3< T > Dest;
@@ -397,6 +536,15 @@ namespace Bit
 			return Dest;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Calculate the angle between two vectors.
+		///
+		/// \param p_Vector1 The first vector.
+		/// \param p_Vector2 The second vector.
+		///
+		/// \return The angle in degrees between two vectors.
+		///
+		////////////////////////////////////////////////////////////////
 		static Float64 AngleBetweenVectors( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2 )
 		{
 			Float64 Angle = acos( p_Vector1.Normal( ).Dot( p_Vector2 ) );
@@ -409,11 +557,12 @@ namespace Bit
 			return RadiansToDegrees( Angle );
 		}
 
-
+		////////////////////////////////////////////////////////////////
 		// Public variable members
-		T x;
-		T y;
-		T z;
+		////////////////////////////////////////////////////////////////
+		T x; ///< x-component of vector.
+		T y; ///< y-component of vector.
+		T z; ///< z-component of vector.
 
 	};
 

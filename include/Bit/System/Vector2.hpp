@@ -349,7 +349,7 @@ namespace Bit
 		}
 
 		////////////////////////////////////////////////////////////////
-		/// \return The absolute values of the vector.
+		/// \return The absolute vector.
 		///
 		////////////////////////////////////////////////////////////////
 		Vector2< T > Absolute( ) const
@@ -359,14 +359,16 @@ namespace Bit
 		}
 
 		////////////////////////////////////////////////////////////////
-		/// \return The dot value of the vector.
+		/// \return The dot value.
 		///
 		/// \param p_Vector The vector to calculate the dot product with.
 		///
 		////////////////////////////////////////////////////////////////
 		Float64 Dot( const Vector2< T > & p_Vector ) const
 		{
-			Float64 Dot = ( x * p_Vector.x ) + ( y * p_Vector.y );
+			Float64 Dot =	( x * p_Vector.x ) +
+							( y * p_Vector.y );
+
 			if( bitIsNan( Dot ) )
 			{
 				return 0.0f;
@@ -409,6 +411,7 @@ namespace Bit
 		{
 			Float64 Dot =	( p_Vector1.x * p_Vector2.x ) +
 							( p_Vector1.y * p_Vector2.y );
+
 			if( bitIsNan( Dot ) )
 			{
 				return 0.0f;
@@ -424,7 +427,7 @@ namespace Bit
 		/// \param p_Vector1 The first vector.
 		/// \param p_Vector2 The second vector.
 		///
-		/// \return The angle in degrees between the two vectors.
+		/// \return The angle in degrees between two vectors.
 		///
 		////////////////////////////////////////////////////////////////
 		static Float64 AngleBetweenVectors( const Vector2< T > & p_Vector1, const Vector2< T > & p_Vector2 )
@@ -439,10 +442,11 @@ namespace Bit
 			return Bit::RadiansToDegrees( Angle );
 		}
 
-
+		////////////////////////////////////////////////////////////////
 		// Public variable members
-		T x;
-		T y;
+		////////////////////////////////////////////////////////////////
+		T x; ///< x-component of vector.
+		T y; ///< y-component of vector.
 
 	};
 
