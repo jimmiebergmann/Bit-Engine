@@ -24,7 +24,7 @@
 
 // Note:
 // The original header was written by Stuart ( teh_programerer@interactivelaboratories.com )
-
+/*
 #include <Bit/System/Debugger.hpp>
 #include <Bit/DataTypes.hpp>
 
@@ -73,3 +73,4 @@ namespace Bit
 	}
 
 }
+*/

@@ -24,7 +24,7 @@
 
 // Note:
 // The original header was written by Stuart ( teh_programerer@interactivelaboratories.com )
-
+/*
 #ifndef BIT_SYSTEM_DEBUGGER_HPP
 #define BIT_SYSTEM_DEBUGGER_HPP
 
@@ -44,4 +44,4 @@ namespace Bit
 
 }
 
-#endif
+#endif*/

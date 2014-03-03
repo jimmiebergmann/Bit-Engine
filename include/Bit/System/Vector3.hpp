@@ -25,83 +25,142 @@
 #ifndef BIT_SYSTEM_VECTOR3_HPP
 #define BIT_SYSTEM_VECTOR3_HPP
 
-#include <Bit/DataTypes.hpp>
-#include <Bit/System.hpp>
+#include <Bit/Build.hpp>
 #include <Bit/System/Math.hpp>
 #include <cmath>
 
 namespace Bit
 {
 
+	////////////////////////////////////////////////////////////////
+	/// \ingroup System
+	/// \brief A 3D vector class.
+	///
+	////////////////////////////////////////////////////////////////
 	template <typename T>
 	class Vector3
 	{
 
 	public:
 
-		Vector3( )
+		////////////////////////////////////////////////////////////////
+		// Constructors.
+		////////////////////////////////////////////////////////////////
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Default constructor.
+		///
+		////////////////////////////////////////////////////////////////
+		Vector3( ) :
+			x( static_cast< T >( 0 ),
+			y( static_cast< T >( 0 ),
+			z( static_cast< T >( 0 )
 		{
 		}
 
-		Vector3( T p_A )
+		////////////////////////////////////////////////////////////////
+		/// \brief Constructor.
+		///
+		/// \param p_A x, y and z value.
+		///
+		////////////////////////////////////////////////////////////////
+		Vector3( T p_A ) :
+			x( p_A ),
+			y( p_A ),
+			z( p_A )
 		{
-			x = p_A;
-			y = p_A;
-			z = p_A;
 		}
 
-		Vector3( T p_X, T p_Y, T p_Z )
+		////////////////////////////////////////////////////////////////
+		/// \brief Constructor.
+		///
+		/// \param p_X x value.
+		/// \param p_Y y value.
+		/// \param p_Z z value.
+		///
+		////////////////////////////////////////////////////////////////
+		Vector3( T p_X, T p_Y, T p_Z ) :
+			x( p_X ),
+			y( p_Y ),
+			z( p_Z )
 		{
-			x = p_X;
-			y = p_Y;
-			z = p_Z;
 		}
 
-		// Cast between vectors
-		Vector3( const Vector3< BIT_SCHAR8 > & p_Vector )
+		Vector3( const Vector3< Int8 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
 		{
-			x = static_cast< T >( p_Vector.x );
-			y = static_cast< T >( p_Vector.y );
-			z = static_cast< T >( p_Vector.z );
 		}
 
-		Vector3( const Vector3< BIT_UCHAR8 > & p_Vector )
+		Vector3( const Vector3< UInt8 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
 		{
-			x = static_cast< T >( p_Vector.x );
-			y = static_cast< T >( p_Vector.y );
-			z = static_cast< T >( p_Vector.z );
 		}
 
-		Vector3( const Vector3< BIT_SINT32 > & p_Vector )
+		Vector3( const Vector3< Int16 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
 		{
-			x = static_cast< T >( p_Vector.x );
-			y = static_cast< T >( p_Vector.y );
-			z = static_cast< T >( p_Vector.z );
 		}
 
-		Vector3( const Vector3< BIT_UINT32 > & p_Vector )
+		Vector3( const Vector3< UInt16 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
 		{
-			x = static_cast< T >( p_Vector.x );
-			y = static_cast< T >( p_Vector.y );
-			z = static_cast< T >( p_Vector.z );
 		}
 
-		Vector3( const Vector3< BIT_FLOAT32 > & p_Vector )
+		Vector3( const Vector3< Int32 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
 		{
-			x = static_cast< T >( p_Vector.x );
-			y = static_cast< T >( p_Vector.y );
-			z = static_cast< T >( p_Vector.z );
 		}
 
-		Vector3( const Vector3< BIT_FLOAT64 > & p_Vector )
+		Vector3( const Vector3< UInt32 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
 		{
-			x = static_cast< T >( p_Vector.x );
-			y = static_cast< T >( p_Vector.y );
-			z = static_cast< T >( p_Vector.z );
 		}
 
-		// Operators
-		Vector3< T > & operator = ( const Vector3< T > p_Vector )
+		Vector3( const Vector3< Int64 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
+		{
+		}
+
+		Vector3( const Vector3< UInt64 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
+		{
+		}
+
+		Vector3( const Vector3< Float32 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
+		{
+		}
+
+		Vector3( const Vector3< Float64 > & p_Vector ) :
+			x( static_cast< T >( p_Vector.x ) ),
+			y( static_cast< T >( p_Vector.y ) ),
+			z( static_cast< T >( p_Vector.z ) )
+		{
+		}
+
+		////////////////////////////////////////////////////////////////
+		// Operators.
+		////////////////////////////////////////////////////////////////
+
+		Vector3< T > & operator = ( const Vector3< T > & p_Vector )
 		{
 			x = p_Vector.x;
 			y = p_Vector.y;
@@ -109,17 +168,17 @@ namespace Bit
 			return *this;
 		}
 
-		BIT_BOOL operator == ( const Vector2< T > p_Vector ) const
+		BIT_BOOL operator == ( const Vector2< T > & p_Vector ) const
 		{
 			return ( x == p_Vector.x ) && ( y == p_Vector.y ) && ( z == p_Vector.z );
 		}
 
-		BIT_BOOL operator != ( const Vector2< T > p_Vector ) const
+		BIT_BOOL operator != ( const Vector2< T > & p_Vector ) const
 		{
 			return ( x != p_Vector.x ) || ( y != p_Vector.y ) || ( z!= p_Vector.z );
 		}
 
-		Vector3< T > & operator += ( const Vector3< T > p_Vector )
+		Vector3< T > & operator += ( const Vector3< T > & p_Vector )
 		{
 			x += p_Vector.x;
 			y += p_Vector.y;
@@ -127,7 +186,7 @@ namespace Bit
 			return *this;
 		}
 
-		Vector3< T > & operator -= ( const Vector3< T > p_Vector )
+		Vector3< T > & operator -= ( const Vector3< T > & p_Vector )
 		{
 			x -= p_Vector.x;
 			y -= p_Vector.y;
@@ -135,7 +194,7 @@ namespace Bit
 			return *this;
 		}
 
-		Vector3< T > & operator *= ( const Vector3< T > p_Vector )
+		Vector3< T > & operator *= ( const Vector3< T > & p_Vector )
 		{
 			x *= p_Vector.x;
 			y *= p_Vector.y;
@@ -143,7 +202,7 @@ namespace Bit
 			return *this;
 		}
 
-		Vector3< T > & operator /= ( const Vector3< T > p_Vector )
+		Vector3< T > & operator /= ( const Vector3< T > & p_Vector )
 		{
 			x /= p_Vector.x;
 			y /= p_Vector.y;
@@ -151,7 +210,7 @@ namespace Bit
 			return *this;
 		}
 
-		Vector3< T > operator + ( const Vector3< T > p_Vector ) const
+		Vector3< T > operator + ( const Vector3< T > & p_Vector ) const
 		{
 			return Vector3< T >( x + p_Vector.x, y + p_Vector.y, z + p_Vector.z );
 		}
@@ -161,27 +220,27 @@ namespace Bit
 			return Vector3< T >( -x, -y, -z );
 		}
 
-		Vector3< T > operator - ( const Vector3< T > p_Vector ) const
+		Vector3< T > operator - ( const Vector3< T > & p_Vector ) const
 		{
 			return Vector3< T >( x - p_Vector.x, y - p_Vector.y, z - p_Vector.z );
 		}
 
-		Vector3< T > operator * ( const Vector3< T > p_Vector ) const
+		Vector3< T > operator * ( const Vector3< T > & p_Vector ) const
 		{
 			return Vector3< T >( x * p_Vector.x, y * p_Vector.y, z * p_Vector.z );
 		}
 
-		Vector3< T > operator * ( const T p_Value ) const
+		Vector3< T > operator * ( const T & p_Value ) const
 		{
 			return Vector3< T >( x * p_Value, y * p_Value, z * p_Value );
 		}
 
-		Vector3< T > operator / ( const Vector3< T > p_Vector ) const
+		Vector3< T > operator / ( const Vector3< T > & p_Vector ) const
 		{
 			return Vector3< T >( x / p_Vector.x, y / p_Vector.y, z / p_Vector.z );
 		}
 
-		const Vector3< T > operator / ( const T p_Value ) const
+		const Vector3< T > operator / ( const T & p_Value ) const
 		{
 			return Vector3< T >( x / p_Value, y / p_Value, z / p_Value );
 		}
@@ -192,14 +251,14 @@ namespace Bit
 		}
 
 		// Useful functions
-		BIT_FLOAT32 Magnitude( ) const
+		Float64 Magnitude( ) const
 		{
 			return sqrt( ( x*x ) + ( y*y ) + ( z*z ) );
 		}
 
 		Vector3< T > Normal( ) const
 		{
-			float Length = Magnitude( );
+			Float64 Length = Magnitude( );
 
 			if( bitIsNan( Length ) )
 			{
@@ -212,7 +271,7 @@ namespace Bit
 
 		Vector3< T > & Normalize( )
 		{
-			float Length = Magnitude( );
+			Float64 Length = Magnitude( );
 
 			if( bitIsNan( Length ) )
 			{
@@ -231,9 +290,9 @@ namespace Bit
 			return Vector3< T >((T)abs((T)x), (T)abs((T)y), (T)abs((T)z));
 		}
 
-		BIT_FLOAT32 Dot( const Vector3< T > & v ) const
+		Float64 Dot( const Vector3< T > & v ) const
 		{
-			BIT_FLOAT32 Dot = ( x * v.x ) + ( y * v.y ) + ( z * v.z );
+			Float64 Dot = ( x * v.x ) + ( y * v.y ) + ( z * v.z );
 			if( bitIsNan( Dot ) )
 			{
 				return 0.0f;
@@ -251,20 +310,23 @@ namespace Bit
 			return CrossVector;
 		}
 
-		// Do not use, not tested yet.
-		void Rotate( const BIT_FLOAT32 p_Angle, const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+		////////////////////////////////////////////////////////////////
+		/// \brief Do not use, not tested yet.
+		///
+		////////////////////////////////////////////////////////////////
+		void Rotate( const Float64 p_Angle, const Float64 p_X, const Float64 p_Y, const Float64 p_Z )
 		{
 			// Create a rotation quaternion
-			BIT_FLOAT32 qx = p_X * Bit::SinDegrees( p_Angle / 2.0f );
-			BIT_FLOAT32 qy = p_Y * Bit::SinDegrees( p_Angle / 2.0f );
-			BIT_FLOAT32 qz = p_Z * Bit::SinDegrees(  p_Angle / 2.0f );
-			BIT_FLOAT32 qw = Bit::CosDegrees( p_Angle / 2.0f );
+			Float64 qx = p_X * Math::SinDegrees( p_Angle / 2.0f );
+			Float64 qy = p_Y * SinDegrees( p_Angle / 2.0f );
+			Float64 qz = p_Z * SinDegrees(  p_Angle / 2.0f );
+			Float64 qw = CosDegrees( p_Angle / 2.0f );
 
 			// Convert our vector into a quaternion
-			BIT_FLOAT32 vx = x;
-			BIT_FLOAT32 vy = y;
-			BIT_FLOAT32 vz = z;
-			BIT_FLOAT32 vw = 0.0f;
+			Float64 vx = x;
+			Float64 vy = y;
+			Float64 vz = z;
+			Float64 vw = 0.0f;
 
 			// Quaternion multiplication(ignore the w component)
 			x = vy * qz - vz * qy + vw * qx + vx * qw;
@@ -272,10 +334,10 @@ namespace Bit
 			z = vx * qy - vy * qx + vw * qz + vz * qw;
 		}
 
-		void RotateX( BIT_FLOAT64 p_Angle )
+		void RotateX( const Float64 p_Angle )
 		{
-			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
-			const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
+			const Float64 AngleSin = SinDegrees( p_Angle );
+			const Float64 AngleCos = CosDegrees( p_Angle );
 
 			// Store the new y and z in tempory variables
 			T ty = ( y * AngleCos ) - ( z * AngleSin );
@@ -285,10 +347,10 @@ namespace Bit
 			z = tz;
 		}
 
-		void RotateY( BIT_FLOAT64 p_Angle )
+		void RotateY( const Float64 p_Angle )
 		{
-			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
-			const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
+			const Float64 AngleSin = SinDegrees( p_Angle );
+			const Float64 AngleCos = CosDegrees( p_Angle );
 
 			// Store the new x and z in tempory variables
 			T tx = ( x * AngleCos ) - ( z * AngleSin );
@@ -298,10 +360,10 @@ namespace Bit
 			z = tz;
 		}
 
-		void RotateZ( BIT_FLOAT64 p_Angle )
+		void RotateZ( const Float64 p_Angle )
 		{
-			const BIT_FLOAT32 AngleSin = SinDegrees( p_Angle );
-			const BIT_FLOAT32 AngleCos = CosDegrees( p_Angle );
+			const Float64 AngleSin = SinDegrees( p_Angle );
+			const Float64 AngleCos = CosDegrees( p_Angle );
 
 			// Store the new x and y in tempory variables
 			T tx = ( x * AngleCos ) - ( y * AngleSin );
@@ -313,11 +375,11 @@ namespace Bit
 
 
 		// Static functions
-		static BIT_FLOAT32 Dot( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2 )
+		static Float64 Dot( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2 )
 		{
-			BIT_FLOAT32 Dot =	( p_Vector1.x * p_Vector2.x ) +
-								( p_Vector1.y * p_Vector2.y ) +
-								( p_Vector1.z * p_Vector2.z );
+			Float64 Dot =	( p_Vector1.x * p_Vector2.x ) +
+							( p_Vector1.y * p_Vector2.y ) +
+							( p_Vector1.z * p_Vector2.z );
 			if( bitIsNan( Dot ) )
 			{
 				return 0.0f;
@@ -335,16 +397,16 @@ namespace Bit
 			return Dest;
 		}
 
-		static BIT_FLOAT64 AngleBetweenVectors( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2 )
+		static Float64 AngleBetweenVectors( const Vector3< T > & p_Vector1, const Vector3< T > & p_Vector2 )
 		{
-			BIT_FLOAT64 Angle = acos( p_Vector1.Normal( ).Dot( p_Vector2 ) );
+			Float64 Angle = acos( p_Vector1.Normal( ).Dot( p_Vector2 ) );
 
 			if( bitIsNan( Angle ) )
 			{
 				return 0.0f;
 			}
 
-			return Bit::RadiansToDegrees( Angle );
+			return RadiansToDegrees( Angle );
 		}
 
 
@@ -355,14 +417,19 @@ namespace Bit
 
 	};
 
-	// Predefined vector types
-	typedef Vector3< BIT_BYTE >		Vector3_byte;
-	typedef Vector3< BIT_SCHAR8 >	Vector3_sc8;
-	typedef Vector3< BIT_UCHAR8 >	Vector3_uc8;
-	typedef Vector3< BIT_SINT32 >	Vector3_si32;
-	typedef Vector3< BIT_UINT32 >	Vector3_ui32;
-	typedef Vector3< BIT_FLOAT32 >	Vector3_f32;
-	typedef Vector3< BIT_FLOAT64 >	Vector3_f64;
+	////////////////////////////////////////////////////////////////
+	// Predefined vector types.
+	////////////////////////////////////////////////////////////////
+	typedef Vector3< Bit::Int8 >	Vector3i8;
+	typedef Vector3< Bit::UInt8 >	Vector3u8;
+	typedef Vector3< Bit::Int16 >	Vector3i16;
+	typedef Vector3< Bit::UInt16 >	Vector3u16;
+	typedef Vector3< Bit::Int32 >	Vector3i32;
+	typedef Vector3< Bit::UInt32 >	Vector3u32;
+	typedef Vector3< Bit::Int64 >	Vector3i64;
+	typedef Vector3< Bit::UInt64 >	Vector3u64;
+	typedef Vector3< Bit::Float32 >	Vector3f32;
+	typedef Vector3< Bit::Float64 >	Vector3f64;
 
 }
 

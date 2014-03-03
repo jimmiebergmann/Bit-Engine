@@ -22,7 +22,7 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
+/*
 #include <Bit/System/Math.hpp>
 #include <stdlib.h>
 #include <Bit/System/Vector2.hpp>
@@ -745,3 +745,4 @@ namespace Bit
 	}
 
 }
+*/

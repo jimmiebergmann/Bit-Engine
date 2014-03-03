@@ -5,6 +5,8 @@ Lib
 lib
 Bin
 bin
+/doc/*
+!/doc/Doxyfile
 
 # Compiled #
 *.obj
@@ -21,6 +23,8 @@ bin
 *.layout
 *.depend
 *.filters
+*.log
+*.tlog
 
 # Extra #
 *.tga
