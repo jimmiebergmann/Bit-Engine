@@ -84,7 +84,7 @@ namespace Bit
 		}
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Turning the matrix into an fixed camera matrix.
+		/// \brief Turning the matrix into a fixed camera matrix.
 		///
 		/// \param p_Eye The position of the camera(The eye).
 		/// \param p_Center The center position of where the camera is pointing.
@@ -125,6 +125,17 @@ namespace Bit
 			}
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Turning the matrix into an orthographic matrix.
+		///
+		/// \param p_Left The left value.
+		/// \param p_Right The right value.
+		/// \param p_Bottom The bottom value.
+		/// \param p_Top The top value.
+		/// \param p_ZNear The nearest depth value.
+		/// \param p_ZFar The farthest depth value.
+		///
+		////////////////////////////////////////////////////////////////
 		void Orthographic(	const T p_Left, const T p_Right, const T p_Bottom,
 							const T p_Top, const T p_ZNear, const T p_ZFar )
 		{
@@ -141,6 +152,16 @@ namespace Bit
 			m[14] = TZ;
 		}
 
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Turning the matrix into a perspective matrix.
+		///
+		/// \param p_Fov Field of view value.
+		/// \param p_Aspect Aspect ratio value.
+		/// \param p_ZNear The nearest depth value.
+		/// \param p_ZFar The farthest depth value.
+		///
+		////////////////////////////////////////////////////////////////
 		void Perspective(	const T p_Fov, const T p_Aspect,
 							const T p_ZNear, const T p_ZFar )
 		{
@@ -165,6 +186,10 @@ namespace Bit
 			m[15] = 0;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Turning the matrix into a position matrix.
+		///
+		////////////////////////////////////////////////////////////////
 		void Position( const Vector3<T> & p_Postion )
 		{
 			m[0] = 1;	m[1] = 0;		m[2] = 0;		m[3] = 0;
@@ -173,6 +198,12 @@ namespace Bit
 			m[12] = p_Postion.x;	m[13] = p_Postion.y;	m[14] = p_Postion.z;	m[15] = 1;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix about the x-axis.
+		///
+		/// \param p_Angle The angle in degrees to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
 		void RotateX( const T p_Angle )
 		{
 			Matrix4x4<T> Dest;
@@ -189,6 +220,12 @@ namespace Bit
 			*this = *this * Dest;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix about the y-axis.
+		///
+		/// \param p_Angle The angle in degrees to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
 		void RotateY( const T p_Angle )
 		{
 			Matrix4x4<T> Dest;
@@ -205,6 +242,12 @@ namespace Bit
 			*this = *this * Dest;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix about the z-axis.
+		///
+		/// \param p_Angle The angle in degrees to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
 		void RotateZ( const T p_Angle )
 		{
 			Matrix4x4<T> Dest;
@@ -234,6 +277,14 @@ namespace Bit
 			*this = *this * Dest;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Scale the matrix.
+		///
+		/// \param p_X Amount of scale by the x-axis.
+		/// \param p_Y Amount of scale by the y-axis.
+		/// \param p_Z Amount of scale by the z-axis.
+		///
+		////////////////////////////////////////////////////////////////
 		void Scale( const T p_X, const T p_Y, const T p_Z )
 		{
 			m[0]	*= p_X;
@@ -241,6 +292,14 @@ namespace Bit
 			m[10]	*= p_Z;
 		}
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Translate the matrix.
+		///
+		/// \param p_X Amount of translation by the x-axis.
+		/// \param p_Y Amount of translation by the y-axis.
+		/// \param p_Z Amount of translation by the z-axis.
+		///
+		////////////////////////////////////////////////////////////////
 		void Translate( const T p_X, const T p_Y, const T p_Z )
 		{
 			Matrix4x4<T> dest(1, 0, 0, p_X,		0, 1, 0, p_Y,		0, 0, 1, p_Z,		0, 0, 0, 1);
