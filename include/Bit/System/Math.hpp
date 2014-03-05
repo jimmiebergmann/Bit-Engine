@@ -139,14 +139,37 @@ namespace Bit
 		template < typename T >
 		inline static Bool EqualEpsilon( const T & p_Value1, const T & p_Value2 )
 		{
-			if( static_cast<Float64>( p_Value1 ) > ( static_cast<Float64>( p_Value2 ) + EpsilonFloat64 ) ||
-				static_cast<Float64>( p_Value1 ) < ( static_cast<Float64>( p_Value2 ) - EpsilonFloat64 ) )
+			if( static_cast<Float64>( p_Value1 ) > ( static_cast<Float64>( p_Value2 ) + Epsilon ) ||
+				static_cast<Float64>( p_Value1 ) < ( static_cast<Float64>( p_Value2 ) - Epsilon ) )
 			{
 				return false;
 			}
 
 			return true;
 		}
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Checking if two values are equal each other
+		///
+		/// Used for camparing two values with precision issues.
+		///
+		/// \param p_Value1 The first value
+		/// \param p_Value2 The second value
+		///
+		////////////////////////////////////////////////////////////////
+		template < typename T >
+		inline static Bool EqualEpsilonHalf( const T & p_Value1, const T & p_Value2 )
+		{
+			if( static_cast<Float64>( p_Value1 ) > ( static_cast<Float64>( p_Value2 ) + EpsilonHalf ) ||
+				static_cast<Float64>( p_Value1 ) < ( static_cast<Float64>( p_Value2 ) - EpsilonHalf ) )
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+
 
 		/*
 		// Intersection tests

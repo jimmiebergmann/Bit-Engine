@@ -26,6 +26,7 @@
 #define BIT_SYSTEM_VECTOR2_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Math.hpp>
 #include <cmath>
 
 // Include isnan and make make it cross-platform.
@@ -305,7 +306,7 @@ namespace Bit
 		/// \return The length of the vector.
 		///
 		////////////////////////////////////////////////////////////////
-		Float64 Magnitude( ) const
+		Float64 Length( ) const
 		{
 			return sqrt( static_cast< Float64 >( ( x*x ) + ( y*y ) ) );
 		}
@@ -316,15 +317,15 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		Vector2< T > Normal( ) const
 		{
-			Float64 Length = Magnitude( );
+			Float64 length = Length( );
 
-			if( bitIsNan( Length ) )
+			if( bitIsNan( length ) )
 			{
 				return Vector2< T >(	static_cast< T >( 0 ),
 										static_cast< T >( 0 ) );
 			}
 
-			return Vector2< T >( ( x / Length ),( y / Length ) );
+			return Vector2< T >( ( x / length ),( y / length ) );
 		}
 
 		////////////////////////////////////////////////////////////////
@@ -335,16 +336,16 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		const Vector2< T > & Normalize( )
 		{
-			Float64 Length = Magnitude( );
+			Float64 length = Length( );
 
-			if( bitIsNan( Length ) )
+			if( bitIsNan( length ) )
 			{
 				return Vector2< T >(	static_cast< T >( 0 ),
 										static_cast< T >( 0 ) );
 			}
 
-			x /= Length;
-			y /= Length;
+			x /= length;
+			y /= length;
 			return *this;
 		}
 
@@ -385,8 +386,8 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		void Rotate( Float64 p_Angle )
 		{
-			const Float64 AngleSin = SinDegrees( p_Angle );
-			const Float64 AngleCos = CosDegrees( p_Angle );
+			const Float64 AngleSin = Math::SinDegrees( p_Angle );
+			const Float64 AngleCos = Math::CosDegrees( p_Angle );
 
 			// Store the new x and y in tempory variables
 			T tx = ( x * AngleCos ) - ( y * AngleSin );
@@ -439,7 +440,7 @@ namespace Bit
 				return 0.0f;
 			}
 
-			return Bit::RadiansToDegrees( Angle );
+			return Math::RadiansToDegrees( Angle );
 		}
 		
 		////////////////////////////////////////////////////////////////

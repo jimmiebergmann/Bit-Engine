@@ -29,6 +29,14 @@
 #include <Bit/System/Math.hpp>
 #include <cmath>
 
+// Include isnan and make make it cross-platform.
+#include <float.h>
+#ifdef BIT_PLATFORM_WIN32
+	#define bitIsNan _isnan
+#elif BIT_PLATFORM_LINUX
+	define bitIsNan isnan
+#endif
+
 namespace Bit
 {
 
@@ -317,7 +325,7 @@ namespace Bit
 		/// \return The length of the vector.
 		///
 		////////////////////////////////////////////////////////////////
-		Float64 Magnitude( ) const
+		Float64 Length( ) const
 		{
 			return sqrt( ( x*x ) + ( y*y ) + ( z*z ) );
 		}
@@ -328,15 +336,15 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		Vector3< T > Normal( ) const
 		{
-			Float64 Length = Magnitude( );
+			Float64 length = Length( );
 
-			if( bitIsNan( Length ) )
+			if( bitIsNan( length ) )
 			{
 				return Vector3< T >(	static_cast< T >( 0 ),
 										static_cast< T >( 0 ), static_cast< T >( 0 ) );
 			}
 
-			return Vector3< T >( ( x / Length ),( y / Length ), ( z / Length ) );
+			return Vector3< T >( ( x / length ),( y / length ), ( z / length ) );
 		}
 
 		////////////////////////////////////////////////////////////////
@@ -347,17 +355,17 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		Vector3< T > & Normalize( )
 		{
-			Float64 Length = Magnitude( );
+			Float64 length = Length( );
 
-			if( bitIsNan( Length ) )
+			if( bitIsNan( length ) )
 			{
 				return Vector3< T >(	static_cast< T >( 0 ),
 										static_cast< T >( 0 ), static_cast< T >( 0 ) );
 			}
 
-			x /= Length;
-			y /= Length;
-			z /= Length;
+			x /= length;
+			y /= length;
+			z /= length;
 			return *this;
 		}
 
@@ -418,8 +426,8 @@ namespace Bit
 		{
 			// Create a rotation quaternion
 			Float64 qx = p_X * Math::SinDegrees( p_Angle / 2.0f );
-			Float64 qy = p_Y * SinDegrees( p_Angle / 2.0f );
-			Float64 qz = p_Z * SinDegrees(  p_Angle / 2.0f );
+			Float64 qy = p_Y * Math::SinDegrees( p_Angle / 2.0f );
+			Float64 qz = p_Z * Math::SinDegrees(  p_Angle / 2.0f );
 			Float64 qw = CosDegrees( p_Angle / 2.0f );
 
 			// Convert our vector into a quaternion
@@ -442,8 +450,8 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		void RotateX( const Float64 p_Angle )
 		{
-			const Float64 AngleSin = SinDegrees( p_Angle );
-			const Float64 AngleCos = CosDegrees( p_Angle );
+			const Float64 AngleSin = Math::SinDegrees( p_Angle );
+			const Float64 AngleCos = Math::CosDegrees( p_Angle );
 
 			// Store the new y and z in tempory variables
 			T ty = ( y * AngleCos ) - ( z * AngleSin );
@@ -461,8 +469,8 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		void RotateY( const Float64 p_Angle )
 		{
-			const Float64 AngleSin = SinDegrees( p_Angle );
-			const Float64 AngleCos = CosDegrees( p_Angle );
+			const Float64 AngleSin = Math::SinDegrees( p_Angle );
+			const Float64 AngleCos = Math::CosDegrees( p_Angle );
 
 			// Store the new x and z in tempory variables
 			T tx = ( x * AngleCos ) - ( z * AngleSin );
@@ -480,8 +488,8 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		void RotateZ( const Float64 p_Angle )
 		{
-			const Float64 AngleSin = SinDegrees( p_Angle );
-			const Float64 AngleCos = CosDegrees( p_Angle );
+			const Float64 AngleSin = Math::SinDegrees( p_Angle );
+			const Float64 AngleCos = Math::CosDegrees( p_Angle );
 
 			// Store the new x and y in tempory variables
 			T tx = ( x * AngleCos ) - ( y * AngleSin );
@@ -554,7 +562,7 @@ namespace Bit
 				return 0.0f;
 			}
 
-			return RadiansToDegrees( Angle );
+			return Math::RadiansToDegrees( Angle );
 		}
 
 		////////////////////////////////////////////////////////////////
