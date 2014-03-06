@@ -22,25 +22,10 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/System/Sleep.hpp>
-
-#include <float.h>
-#ifdef BIT_PLATFORM_WIN32
-	#include <Windows.h>
-#elif BIT_PLATFORM_LINUX
-	#include <unistd.h>
-#endif
+#include <Bit/System/Angle.hpp>
 
 namespace Bit
 {
 
-	BIT_API void Sleep( const UInt32 m_Time )
-	{
-#ifdef BIT_PLATFORM_WIN32
-		::Sleep( m_Time );
-#elif BIT_PLATFORM_LINUX
-		usleep( m_Time * 1000 ) 
-#endif
-	}
 
 }

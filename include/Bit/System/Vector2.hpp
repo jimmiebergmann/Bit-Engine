@@ -52,18 +52,10 @@ namespace Bit
 	public:
 
 		////////////////////////////////////////////////////////////////
-		// Constructors.
-		////////////////////////////////////////////////////////////////
-
-		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		Vector2( ) :
-			x( static_cast< T >( 0 ) ),
-			y( static_cast< T >( 0 ) )
-		{
-		}
+		Vector2( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Constructor.
@@ -71,11 +63,7 @@ namespace Bit
 		/// \param p_A x and y value.
 		///
 		////////////////////////////////////////////////////////////////
-		Vector2( T p_A ) :
-			x( p_A ),
-			y( p_A )
-		{
-		}
+		Vector2( T p_A );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Constructor.
@@ -84,249 +72,63 @@ namespace Bit
 		/// \param p_Y y value.
 		///
 		////////////////////////////////////////////////////////////////
-		Vector2( T p_X, T p_Y ) :
-			x( p_X ),
-			y( p_Y )
-		{
-		}
+		Vector2( T p_X, T p_Y );
 		
 		////////////////////////////////////////////////////////////////
 		/// \brief Copy constructor.
 		///
-		/// \param p_Vector 8 bit signed integer vector to copy.
+		/// This constructor makes it possible to cast between
+		/// different vector types.
+		///
+		/// \param p_Vector vector to copy.
 		///
 		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< Int8 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		template <typename U>
+		explicit Vector2( const Vector2< U > & p_Vector );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Copy constructor.
-		///
-		/// \param p_Vector 8 bit unsigned integer vector to copy.
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< UInt8 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		Vector2<T> & operator = ( const Vector2<T> & p_Vector );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Copy constructor.
-		///
-		/// \param p_Vector 16 bit signed integer vector to copy.
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< Int16 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		Bool operator == ( const Vector2<T> & p_Vector ) const;
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Copy constructor.
-		///
-		/// \param p_Vector 16 bit unsigned integer vector to copy.
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< UInt16 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		Bool operator != ( const Vector2<T> & p_Vector ) const;
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Copy constructor.
-		///
-		/// \param p_Vector 32 bit signed integer vector to copy.
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< Int32 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		Vector2<T> & operator += ( const Vector2<T> & p_Vector );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Copy constructor.
-		///
-		/// \param p_Vector 32 bit unsgined integer vector to copy.
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< UInt32 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		Vector2<T> & operator -= ( const Vector2<T> & p_Vector );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Copy constructor.
-		///
-		/// \param p_Vector 64 bit signed integer vector to copy.
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< Int64 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		Vector2<T> & operator *= ( const Vector2<T> & p_Vector );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Copy constructor.
-		///
-		/// \param p_Vector 64 bit unsgined integer vector to copy.
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< UInt64 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		Vector2<T> & operator /= ( const Vector2<T> & p_Vector );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Copy constructor.
-		///
-		/// \param p_Vector 32 bit floating point vector to copy.
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< Float32 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		Vector2<T> operator + ( const Vector2<T> & p_Vector ) const;
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Copy constructor.
-		///
-		/// \param p_Vector 64 bit floating point vector to copy.
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2( const Vector2< Float64 > & p_Vector ) :
-			x( static_cast< T >( p_Vector.x ) ),
-			y( static_cast< T >( p_Vector.y ) )
-		{
-		}
+		Vector2<T> operator - ( ) const;
 
-		////////////////////////////////////////////////////////////////
-		// Operators.
-		////////////////////////////////////////////////////////////////
-		Vector2< T > & operator = ( const Vector2< T > & p_Vector )
-		{
-			x = p_Vector.x;
-			y = p_Vector.y;
-			return *this;
-		}
+		Vector2 <T > operator - ( const Vector2<T> & p_Vector ) const;
 
-		Bool operator == ( const Vector2< T > & p_Vector ) const
-		{
-			return ( x == p_Vector.x ) && ( y == p_Vector.y );
-		}
+		Vector2<T> operator * ( const Vector2<T> & p_Vector ) const;
 
-		Bool operator != ( const Vector2< T > & p_Vector ) const
-		{
-			return ( x != p_Vector.x ) || ( y != p_Vector.y );
-		}
+		template <typename U>
+		Vector2<T> operator * ( const U & p_Value ) const;
 
-		Vector2< T > & operator += ( const Vector2< T > & p_Vector )
-		{
-			x += p_Vector.x;
-			y += p_Vector.y;
-			return *this;
-		}
+		Vector2<T> operator / ( const Vector2<T> & p_Vector ) const;
 
-		Vector2< T > & operator -= ( const Vector2< T > & p_Vector )
-		{
-			x -= p_Vector.x;
-			y -= p_Vector.y;
-			return *this;
-		}
+		template <typename U>
+		Vector2<T> operator / ( const U & p_Value ) const;
 
-		Vector2< T > & operator *= ( const Vector2< T > & p_Vector )
-		{
-			x *= p_Vector.x;
-			y *= p_Vector.y;
-			return *this;
-		}
-
-		Vector2< T > & operator /= ( const Vector2< T > & p_Vector )
-		{
-			x /= p_Vector.x;
-			y /= p_Vector.y;
-			return *this;
-		}
-
-		Vector2< T > operator + ( const Vector2< T > & p_Vector ) const
-		{
-			return Vector2< T >( x + p_Vector.x, y + p_Vector.y );
-		}
-
-		Vector2< T > operator - ( ) const
-		{
-			return Vector2< T >( -x, -y );
-		}
-
-		Vector2 <T > operator - ( const Vector2< T > & p_Vector ) const
-		{
-			return Vector2< T >( x - p_Vector.x, y - p_Vector.y );
-		}
-
-		Vector2< T > operator * ( const Vector2< T > & p_Vector ) const
-		{
-			return Vector2< T >( x * p_Vector.x, y * p_Vector.y );
-		}
-
-		Vector2< T > operator * ( const T & p_Value ) const
-		{
-			return Vector2< T >( x * p_Value, y * p_Value );
-		}
-
-		Vector2< T > operator / ( const Vector2< T > & p_Vector ) const
-		{
-			return Vector2< T >( x / p_Vector.x, y / p_Vector.y );
-		}
-
-		Vector2< T > operator / ( const T & p_Value ) const
-		{
-			return Vector2< T >( x / p_Value, y / p_Value );
-		}
-
-		T operator [ ] ( const SizeType & p_Index ) const
-		{
-			return *( &x + p_Index );
-		}
-
-		////////////////////////////////////////////////////////////////
-		// Handy functions.
-		////////////////////////////////////////////////////////////////
+		T operator [ ] ( const SizeType & p_Index ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \return The length of the vector.
 		///
 		////////////////////////////////////////////////////////////////
-		Float64 Length( ) const
-		{
-			return sqrt( static_cast< Float64 >( ( x*x ) + ( y*y ) ) );
-		}
+		Float64 Length( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \return The normal of the vector.
 		///
 		////////////////////////////////////////////////////////////////
-		Vector2< T > Normal( ) const
-		{
-			Float64 length = Length( );
-
-			if( bitIsNan( length ) )
-			{
-				return Vector2< T >(	static_cast< T >( 0 ),
-										static_cast< T >( 0 ) );
-			}
-
-			return Vector2< T >( ( x / length ),( y / length ) );
-		}
+		Vector2<T> Normal( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Normalizing the vector.
@@ -334,30 +136,13 @@ namespace Bit
 		/// \return A reference to the vector.
 		///
 		////////////////////////////////////////////////////////////////
-		const Vector2< T > & Normalize( )
-		{
-			Float64 length = Length( );
-
-			if( bitIsNan( length ) )
-			{
-				return Vector2< T >(	static_cast< T >( 0 ),
-										static_cast< T >( 0 ) );
-			}
-
-			x /= length;
-			y /= length;
-			return *this;
-		}
+		const Vector2<T> & Normalize( );
 
 		////////////////////////////////////////////////////////////////
 		/// \return The absolute vector.
 		///
 		////////////////////////////////////////////////////////////////
-		Vector2< T > Absolute( ) const
-		{
-			return Vector2< T >(	(T)abs( (T)x ),
-									(T)abs( (T)y ) );
-		}
+		Vector2<T> Absolute( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \return The dot value.
@@ -365,18 +150,7 @@ namespace Bit
 		/// \param p_Vector The vector to calculate the dot product with.
 		///
 		////////////////////////////////////////////////////////////////
-		Float64 Dot( const Vector2< T > & p_Vector ) const
-		{
-			Float64 Dot =	( x * p_Vector.x ) +
-							( y * p_Vector.y );
-
-			if( bitIsNan( Dot ) )
-			{
-				return 0.0f;
-			}
-
-			return Dot;
-		}
+		Float64 Dot( const Vector2<T> & p_Vector ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Rotating the vector.
@@ -384,22 +158,7 @@ namespace Bit
 		/// \param p_Angle The angle in degrees to rotate.
 		///
 		////////////////////////////////////////////////////////////////
-		void Rotate( Float64 p_Angle )
-		{
-			const Float64 AngleSin = Math::SinDegrees( p_Angle );
-			const Float64 AngleCos = Math::CosDegrees( p_Angle );
-
-			// Store the new x and y in tempory variables
-			T tx = ( x * AngleCos ) - ( y * AngleSin );
-			T ty = ( x * AngleSin ) + ( y * AngleCos );
-
-			x = tx;
-			y = ty;
-		}
-
-		////////////////////////////////////////////////////////////////
-		// Static functions.
-		////////////////////////////////////////////////////////////////
+		void Rotate( Float64 p_Angle );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Calculate the dot product between two vectors.
@@ -408,19 +167,7 @@ namespace Bit
 		/// \param p_Vector2 The second vector.
 		///
 		////////////////////////////////////////////////////////////////
-		static Float64 Dot( const Vector2< T > & p_Vector1, const Vector2< T > & p_Vector2 )
-		{
-			Float64 Dot =	( p_Vector1.x * p_Vector2.x ) +
-							( p_Vector1.y * p_Vector2.y );
-
-			if( bitIsNan( Dot ) )
-			{
-				return 0.0f;
-			}
-
-			return Dot;
-		}
-
+		static Float64 Dot( const Vector2<T> & p_Vector1, const Vector2<T> & p_Vector2 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Calculate the angle between two vectors.
@@ -431,17 +178,7 @@ namespace Bit
 		/// \return The angle in degrees between two vectors.
 		///
 		////////////////////////////////////////////////////////////////
-		static Float64 AngleBetweenVectors( const Vector2< T > & p_Vector1, const Vector2< T > & p_Vector2 )
-		{
-			Float64 Angle = acos( p_Vector1.Normal( ).Dot( p_Vector2 ) );
-
-			if( bitIsNan( Angle ) )
-			{
-				return 0.0f;
-			}
-
-			return Math::RadiansToDegrees( Angle );
-		}
+		static Angle<Float64> AngleBetweenVectors( const Vector2<T> & p_Vector1, const Vector2<T> & p_Vector2 );
 		
 		////////////////////////////////////////////////////////////////
 		// Public variable members
@@ -450,6 +187,11 @@ namespace Bit
 		T y; ///< y-component of vector.
 
 	};
+
+	////////////////////////////////////////////////////////////////
+	// Include the inline file.
+	////////////////////////////////////////////////////////////////
+	#include <Bit/System/Vector2.inl>
 
 	////////////////////////////////////////////////////////////////
 	// Predefined vector types.

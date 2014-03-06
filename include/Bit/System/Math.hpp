@@ -26,85 +26,119 @@
 #define BIT_SYSTEM_MATH_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Angle.hpp>
 #include <cmath>
 
 namespace Bit
 {
-/*
-	// Pre-defined classes.
-	template < typename T >
-	class Vector2;
-	template < typename T >
-	class Vector3;
-
-	typedef Vector3< BIT_FLOAT32 > Vector3_f32;
-	typedef Vector2< BIT_FLOAT32 > Vector2_f32;
-
-	class Line2;
-	class Line3;
-	class Circle;
-	class Quad;
-	class Sphere;
-	class Box;
-	*/
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup System
 	/// \brief Math class
 	/// 
 	////////////////////////////////////////////////////////////////
-	class Math
+	class BIT_API Math
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Convert from degrees to radians
+		///
+		/// \param p_Radians Input value in degrees.
 		/// 
 		/// \see RadiansToDegrees
 		////////////////////////////////////////////////////////////////
-		inline static Float64 BIT_API DegreesToRadians( const Float64 p_Degrees)
-		{
-			return  p_Degrees * Pi / 180.0f;
-		}
+		template <typename T>
+		static T DegreesToRadians( const T p_Degrees);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Convert from radians to degrees
+		/// \brief Convert from radians to degrees.
+		///
+		/// \param p_Radians Input value in radians.
 		/// 
 		/// \see RadiansToDegrees
 		////////////////////////////////////////////////////////////////
-		inline static Float64 BIT_API RadiansToDegrees( const Float64 p_Radians )
-		{
-			return p_Radians * 180.0f / Pi;
-		}
+		template <typename T>
+		static T RadiansToDegrees( const T p_Radians );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the sin value in degrees
+		/// \brief Sine function.
+		///
+		/// \param p_Radians Input value in radians.
 		/// 
 		////////////////////////////////////////////////////////////////
-		inline static Float64 BIT_API SinDegrees( const Float64 p_angle )
-		{
-			return sin( DegreesToRadians( p_angle ) );
-		}
+		template <typename T>
+		static T Sin( const T p_Radians );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the cos value in degrees
+		/// \brief Cosine function.
+		///
+		/// \param p_Radians Input value in radians.
 		/// 
 		////////////////////////////////////////////////////////////////
-		inline static Float64 BIT_API CosDegrees( const Float64 p_angle )
-		{
-			return cos( DegreesToRadians( p_angle ) );
-		}
+		template <typename T>
+		static T Cos( const T p_Radians );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the tan value in degrees
+		/// \brief Tangent function
+		///
+		/// \param p_Radians Input value in radians.
 		/// 
 		////////////////////////////////////////////////////////////////
-		inline static Float64 BIT_API TanDegrees( const Float64 p_angle )
-		{
-			return tan( DegreesToRadians( p_angle ) );
-		}
+		template <typename T>
+		static T Tan( const T p_Radians );
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Sine function.
+		///
+		/// \param p_Radians Input value in degrees.
+		/// 
+		////////////////////////////////////////////////////////////////
+		template <typename T>
+		static T SinDegrees( const T p_Degrees );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Cosine function.
+		///
+		/// \param p_Radians Input value in degrees.
+		/// 
+		////////////////////////////////////////////////////////////////
+		template <typename T>
+		static T CosDegrees( const T p_Degrees );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Tangent function
+		///
+		/// \param p_Radians Input value in degrees.
+		/// 
+		////////////////////////////////////////////////////////////////
+		template <typename T>
+		static T TanDegrees( const T p_Degrees );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Convert between row and column index
+		///
+		/// 0	1	2	3
+		/// 4	5	6	7
+		/// 8	9	10	11
+		/// 12	13	14	15
+		/// 
+		/// turns into
+		///
+		/// 0	4	8	12
+		/// 1	5	9	13
+		/// 2	6	10	14
+		/// 3	7	11	15
+		///
+		/// \param p_Index The row index
+		/// \param p_RowSize Size of the row
+		/// \param p_ColumnSize Size of the column
+		///
+		////////////////////////////////////////////////////////////////
+		template <typename T>
+		static T RowToColumnIndex( const T p_Index, const T p_RowSize, const T p_ColumnSize );
+		
 		////////////////////////////////////////////////////////////////
 		/// \brief Clamp the value between p_Min and p_Max
 		///
@@ -114,18 +148,7 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		template < typename T >
-		inline static T Clamp( const T & p_Value, const T & p_Min, const T & p_Max )
-		{
-			if( p_Value < p_Min )
-			{
-				return p_Min;
-			}
-			if( p_Value > p_Max )
-			{
-				return p_Max;
-			}
-			return p_Value;
-		}
+		static T Clamp( const T & p_Value, const T & p_Min, const T & p_Max );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Checking if two values are equal each other
@@ -137,16 +160,7 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		template < typename T >
-		inline static Bool EqualEpsilon( const T & p_Value1, const T & p_Value2 )
-		{
-			if( static_cast<Float64>( p_Value1 ) > ( static_cast<Float64>( p_Value2 ) + Epsilon ) ||
-				static_cast<Float64>( p_Value1 ) < ( static_cast<Float64>( p_Value2 ) - Epsilon ) )
-			{
-				return false;
-			}
-
-			return true;
-		}
+		static Bool EqualEpsilon( const T & p_Value1, const T & p_Value2 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Checking if two values are equal each other
@@ -158,68 +172,14 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		template < typename T >
-		inline static Bool EqualEpsilonHalf( const T & p_Value1, const T & p_Value2 )
-		{
-			if( static_cast<Float64>( p_Value1 ) > ( static_cast<Float64>( p_Value2 ) + EpsilonHalf ) ||
-				static_cast<Float64>( p_Value1 ) < ( static_cast<Float64>( p_Value2 ) - EpsilonHalf ) )
-			{
-				return false;
-			}
+		static Bool EqualEpsilonHalf( const T & p_Value1, const T & p_Value2 );
 
-			return true;
-		}
-
-
-
-		/*
-		// Intersection tests
-
-		// Point 2
-		BIT_API BIT_BOOL IntersectionPoint2Line2(	Vector2_f32 p_Point, Line2 p_Line );
-		BIT_API BIT_BOOL IntersectionPoint2Circle(	Vector2_f32 p_Point, Circle p_Circle );
-		BIT_API BIT_BOOL IntersectionPoint2Quad(	Vector2_f32 p_Point, Quad p_Quad );
-
-		// Point 3
-		BIT_API BIT_BOOL IntersectionPoint3Line3(	Vector3_f32 p_Point, Line3 p_Line );
-		BIT_API BIT_BOOL IntersectionPoint3Sphere(	Vector3_f32 p_Point, Sphere p_Sphere );
-		BIT_API BIT_BOOL IntersectionPoint3Box(		Vector3_f32 p_Point, Box p_Box );
-
-		// Line 2
-		BIT_API BIT_BOOL IntersectionLine2Line2(	Line2 p_Line1,	Line2 p_Line2,		 Vector2_f32 & p_Intersection  );
-		BIT_API BIT_BOOL IntersectionLine2Circle(	Line2 p_Line,	Circle p_Circle );
-		BIT_API BIT_UINT32 IntersectionLine2Circle(	Line2 p_Line,	Circle p_Circle,
-			Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
-		BIT_API BIT_BOOL IntersectionLine2Quad(		Line2 p_Line,	Quad p_Quad );
-
-		// Line 3
-		BIT_API BIT_BOOL IntersectionLine3Line3(	Line3 p_Line1,	Line3 p_Line2,		 Vector3_f32 & p_Intersection );
-		BIT_API BIT_BOOL IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere );
-		BIT_API BIT_UINT32 IntersectionLine3Sphere(	Line3 p_Line,	Sphere p_Sphere,
-			Vector3_f32 & p_Point1, Vector3_f32 & p_Point2 );
-		BIT_API BIT_BOOL IntersectionLine3Box(		Line3 p_Line,	Box p_Box );
-
-		// Circle
-		BIT_API BIT_SINT32 IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2 );
-		BIT_API BIT_SINT32 IntersectionCircleCircle(	Circle p_Circle1,	Circle p_Circle2,
-			Vector2_f32 & p_Point1, Vector2_f32 & p_Point2 );
-		BIT_API BIT_BOOL IntersectionCircleQuad(	Circle p_Circle,	Quad p_Quad );
-
-		// Quad
-		BIT_API BIT_BOOL IntersectionQuadQuad(		Quad p_Quad1,	Quad p_Quad2 );
-
-		// Sphere
-		BIT_API BIT_SINT32 IntersectionSphereSphere(	Sphere p_Sphere1,	Sphere p_Sphere2 );
-		BIT_API BIT_BOOL IntersectionSphereBox(		Sphere p_Sphere,	Box p_Box );
-
-		// Box
-		BIT_API BIT_BOOL IntersectionBoxBox(		Box p_Box1,	Box p_Box2 );
-
-	
-		// Quadratic equation solver
-		BIT_API BIT_UINT32 QuadraticEquation( const BIT_FLOAT32 p_A, const BIT_FLOAT32 p_B,
-			const BIT_FLOAT32 p_C, BIT_FLOAT32 & p_X1, BIT_FLOAT32 & p_X2 );
-		*/
 	};
+
+	////////////////////////////////////////////////////////////////
+	// Include the inline file.
+	////////////////////////////////////////////////////////////////
+	#include <Bit/System/Math.inl>
 }
 
 #endif

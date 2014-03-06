@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Build.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Angle.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
@@ -167,10 +168,16 @@
     <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\source\Bit\System\Matrix4x4.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Angle.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\Bit\System\Math.inl" />
+    <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
+    <None Include="..\..\include\Bit\System\Vector2.inl" />
+    <None Include="..\..\include\Bit\System\Vector3.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
