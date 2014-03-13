@@ -71,23 +71,27 @@
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Static_Debug\</IntDir>
     <TargetName>$(ProjectName)-s-d</TargetName>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Static_Release\</IntDir>
     <TargetName>$(ProjectName)-s</TargetName>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Dynamic_Debug\</IntDir>
     <TargetName>$(ProjectName)-d</TargetName>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Dynamic_Release\</IntDir>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
     <ClCompile>

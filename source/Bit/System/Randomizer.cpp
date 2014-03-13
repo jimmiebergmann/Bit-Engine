@@ -28,9 +28,9 @@ namespace Bit
 {
 
 	// Help functions
-	static UInt32 GetStringSeed( const std::string & p_Seed )
+	static Uint32 GetStringSeed( const std::string & p_Seed )
 	{
-		UInt32 Seed = 0;
+		Uint32 Seed = 0;
 		for( SizeType i = 0; i < p_Seed.size(); i++ )
 		{
 			Seed += p_Seed[i] * ( i + 1 );
@@ -40,7 +40,7 @@ namespace Bit
 	}
 
 	// Random seed for the static randomize function
-	static UInt32 s_RandomSeed = 0;
+	static Uint32 s_RandomSeed = 0;
 
 	// Randomizer class
 	// Constructors
@@ -49,7 +49,7 @@ namespace Bit
 	{
 	}
 
-	Randomizer::Randomizer( const UInt32 p_Seed ) :
+	Randomizer::Randomizer( const Uint32 p_Seed ) :
 		m_Seed( p_Seed )
 	{
 	}
@@ -73,7 +73,7 @@ namespace Bit
 	}
 
 	// Get functions
-	UInt32 Randomizer::GetSeed( ) const
+	Uint32 Randomizer::GetSeed( ) const
 	{
 		return m_Seed;
 	}
@@ -101,7 +101,7 @@ namespace Bit
 		s_RandomSeed = GetStringSeed( p_Seed );
 	}
 
-	BIT_API UInt32 GetRandomizerSeed( )
+	BIT_API Uint32 GetRandomizerSeed( )
 	{
 		return s_RandomSeed;
 	}

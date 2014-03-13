@@ -152,7 +152,7 @@ inline Vector3<T> Vector3<T>::operator / ( const T & p_Value ) const
 }
 
 template <typename T>
-inline T Vector3<T>::operator [ ] ( const UInt32 & p_Index ) const
+inline T Vector3<T>::operator [ ] ( const SizeType & p_Index ) const
 {
 	return *( &x + p_Index );
 }

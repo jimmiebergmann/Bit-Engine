@@ -22,25 +22,41 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/System/Sleep.hpp>
 
-#include <float.h>
-#ifdef BIT_PLATFORM_WINDOWS
-	#include <Windows.h>
-#elif BIT_PLATFORM_LINUX
-	#include <unistd.h>
-#endif
+#include <Bit/Window/VideoMode.hpp>
 
 namespace Bit
 {
-
-	BIT_API void Sleep( const Uint32 m_Time )
+	VideoMode::VideoMode( ) :
+		m_Size( 0, 0 ),
+		m_BitsPerPixel( 0 )
 	{
-#ifdef BIT_PLATFORM_WINDOWS
-		::Sleep( static_cast<DWORD>( m_Time ) );
-#elif BIT_PLATFORM_LINUX
-		usleep( m_Time * 1000 ) 
-#endif
+	}
+
+	VideoMode::VideoMode( const Vector2u32 & p_Size, const Uint32 p_BitsPerPixel ) :
+		m_Size( p_Size ),
+		m_BitsPerPixel( p_BitsPerPixel )
+	{
+	}
+
+	void VideoMode::SetSize( const Vector2u32 & p_Size )
+	{
+		m_Size = p_Size;
+	}
+
+	void VideoMode::SetBitsPerPixel( const Uint32 p_BitsPerPixel )
+	{
+		m_BitsPerPixel = p_BitsPerPixel;
+	}
+
+	Vector2u32 VideoMode::GetSize( ) const
+	{
+		return m_Size;
+	}
+
+	Uint32 VideoMode::GetBitsPerPixel( ) const
+	{
+		return m_BitsPerPixel;
 	}
 
 }

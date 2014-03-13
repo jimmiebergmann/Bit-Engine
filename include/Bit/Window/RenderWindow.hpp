@@ -22,25 +22,31 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/System/Sleep.hpp>
+#ifndef BIT_WINDOW_RENDER_WINDOW_HPP
+#define BIT_WINDOW_RENDER_WINDOW_HPP
 
-#include <float.h>
+#include <Bit/Build.hpp>
+
 #ifdef BIT_PLATFORM_WINDOWS
-	#include <Windows.h>
+	#include <Bit/Window/Win32/RenderWindowWin32.hpp>
 #elif BIT_PLATFORM_LINUX
-	#include <unistd.h>
+	#include <Bit/Window/Linux/RenderWindowLinux.hpp>
 #endif
 
 namespace Bit
 {
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Widnow
+	/// \brief typedef the platform independent render window class.
+	///
+	////////////////////////////////////////////////////////////////
+	#ifdef BIT_PLATFORM_WINDOWS
+		typedef RenderWindowWin32 RenderWindow;
+	#elif BIT_PLATFORM_LINUX
+		#error No render window is available for this platform.
+	#endif
 
-	BIT_API void Sleep( const Uint32 m_Time )
-	{
-#ifdef BIT_PLATFORM_WINDOWS
-		::Sleep( static_cast<DWORD>( m_Time ) );
-#elif BIT_PLATFORM_LINUX
-		usleep( m_Time * 1000 ) 
+};
+
+
 #endif
-	}
-
-}

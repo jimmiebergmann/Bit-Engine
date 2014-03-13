@@ -25,6 +25,128 @@
 #ifndef BIT_WINDOW_HPP
 #define BIT_WINDOW_HPP
 
+#include <Bit/Build.hpp>
+#include <Bit/Window/VideoMode.hpp>
+#include <Bit/Window/Style.hpp>
+#include <Bit/Window/Event.hpp>
+#include <string>
+
+namespace Bit
+{
+
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Window
+	/// \brief Window base class.
+	///
+	////////////////////////////////////////////////////////////////
+	class BIT_API Window
+	{
+
+	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Virtual destructor.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ~Window( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Open(create) the window.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual bool Open( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Close the window.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Close( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Update the window events
+		///
+		/// This function must be called in your application's loop.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Update( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Checks if the window is open( created ).
+		///
+		////////////////////////////////////////////////////////////////
+		virtual bool IsOpen( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the window's current video mode.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual VideoMode GetVideoMode( ) const = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the window's caption(title)
+		///
+		////////////////////////////////////////////////////////////////
+		virtual std::string GetTitle( ) const = 0;
+
+		/*
+		// Public virtual functions
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits ) = 0;
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title ) = 0;
+		virtual BIT_UINT32 Open( const Vector2_ui32 p_Size, const BIT_UINT32 p_Bits, const std::string p_Title,
+                    const BIT_UINT32 p_Style ) = 0;
+		virtual BIT_UINT32 Close( ) = 0;
+		virtual BIT_UINT32 Update( ) = 0;
+		virtual BIT_UINT32 Show( const BIT_BOOL p_State ) = 0;
+		virtual BIT_UINT32 ShowCursor( const BIT_BOOL p_State ) = 0;
+		virtual BIT_UINT32 SetCursorPosition( Vector2_si32 p_Position ) = 0;
+		virtual Vector2_si32 GetCursorScreenPosition( ) = 0;
+
+		// Public functions
+		BIT_INLINE BIT_BOOL IsOpen( ) const { return m_Open; }
+		BIT_INLINE BIT_BOOL IsFocused( ) const { return m_Focused; }
+		BIT_BOOL PollEvent( Event & p_Event );
+
+		// Set functions
+		virtual BIT_UINT32 SetTitle( std::string p_Title ) = 0;
+
+		// Get functions
+		BIT_INLINE BIT_UINT32 GetEventCount( ) const { return m_EventQueue.size( ); }
+		BIT_INLINE Vector2_ui32 GetSize( ) const { return m_Size; }
+		BIT_INLINE Vector2_si32 GetPosition( ) const { return m_Position; }
+		BIT_INLINE BIT_UINT32 GetBits( ) const { return m_Bits; }
+		BIT_INLINE std::string GetTitle( ) const { return m_Title; }
+		BIT_INLINE BIT_UINT32 GetStyle( ) const { return m_Style; }
+		*/
+	protected:
+
+		/*// Protected variables
+		BIT_BOOL m_Open;
+		BIT_BOOL m_Focused;
+		Vector2_ui32 m_Size;
+		Vector2_si32 m_Position;
+		BIT_UINT32 m_Bits;
+		std::string m_Title;
+		BIT_UINT32 m_Style;
+		std::list< Event > m_EventQueue;*/
+	};
+
+}
+
+#endif
+
+
+
+
+
+
+
+
+
+
+/*
+#ifndef BIT_WINDOW_HPP
+#define BIT_WINDOW_HPP
+
 #include <Bit/DataTypes.hpp>
 #include <Bit/Window/Event.hpp>
 #include <Bit/System/Vector2.hpp>
@@ -40,14 +162,17 @@ namespace Bit
 	public:
 
 		// Public enums
-        enum eStyle
-        {
-            Style_All = 0,
-            Style_Close = 1,
-            Style_Minimize = 2,
-            Style_Resize = 4,
-            Style_TitleBar = 8
-        };
+		namespace Style
+		{
+			enum eStyle
+			{
+				Style_All = 15,
+				Style_Close = 1,
+				Style_Minimize = 2,
+				Style_Resize = 4,
+				Style_TitleBar = 8
+			};
+		}
 
 		// Constructors/destructors
 		virtual ~Window( ) {}
@@ -103,5 +228,5 @@ namespace Bit
 
 }
 
-
 #endif
+*/

@@ -21,7 +21,7 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-
+/*
 #ifndef BIT_WINDOW_WIN32_HPP
 #define BIT_WINDOW_WIN32_HPP
 
@@ -91,3 +91,4 @@ namespace Bit
 #endif
 
 #endif
+*/

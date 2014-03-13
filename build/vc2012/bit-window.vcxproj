@@ -67,27 +67,37 @@
     <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
-    <OutDir>$(SolutionDir)..\..\lib\Windows\32\Static\</OutDir>
+    <OutDir>$(SolutionDir)..\..\lib\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-window\Static_Debug\</IntDir>
-    <TargetName>$(ProjectName)-d</TargetName>
+    <TargetName>$(ProjectName)-s-d</TargetName>
+    <IncludePath>../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
-    <OutDir>$(SolutionDir)..\..\lib\Windows\32\Static\</OutDir>
+    <OutDir>$(SolutionDir)..\..\lib\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-window\Static_Release\</IntDir>
+    <TargetName>$(ProjectName)-s</TargetName>
+    <IncludePath>../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
-    <OutDir>$(SolutionDir)/../../lib/Windows/32/Dynamic\</OutDir>
-    <IntDir>$(SolutionDir)/../../obj/Windows/32/vc2008/bit-window/Dynamic_Debug/\</IntDir>
+    <OutDir>$(SolutionDir)..\..\lib\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-window\Dynamic_Debug\</IntDir>
+    <TargetName>$(ProjectName)-d</TargetName>
+    <IncludePath>../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
-    <OutDir>$(SolutionDir)/../../lib/Windows/32/Dynamic\</OutDir>
-    <IntDir>$(SolutionDir)/../../obj/Windows/32/vc2008/bit-window/Dynamic_Release/\</IntDir>
+    <OutDir>$(SolutionDir)..\..\lib\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-window\Dynamic_Release\</IntDir>
+    <IncludePath>../../include;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../include;../../extlibs/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;BIT_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;BIT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -96,7 +106,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Lib>
-      <OutputFile>$(OutDir)$(ProjectName)-d.lib</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
@@ -104,7 +114,7 @@
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>../../include;../../extlibs/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;BIT_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;BIT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader />
@@ -112,7 +122,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Lib>
-      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
@@ -128,8 +138,8 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>../../lib/Windows/32/Dynamic/bit-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(ProjectName)-d.dll</OutputFile>
+      <AdditionalDependencies>bit-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
@@ -145,7 +155,8 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>../../lib/Windows/32/Dynamic/bit-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>bit-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -155,13 +166,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\Bit\Window\Event.hpp" />
-    <ClInclude Include="..\..\include\Bit\Window\Win32\WindowWin32.hpp" />
-    <ClInclude Include="..\..\include\Bit\Window\Window.hpp" />
+    <ClInclude Include="..\..\include\Bit\Window\VideoMode.hpp" />
+    <ClInclude Include="G:\Github\Bit-Engine\include\Bit\Window\Event.hpp" />
+    <ClInclude Include="G:\Github\Bit-Engine\include\Bit\Window\RenderWindow.hpp" />
+    <ClInclude Include="G:\Github\Bit-Engine\include\Bit\Window\Win32\RenderWindowWin32.hpp" />
+    <ClInclude Include="G:\Github\Bit-Engine\include\Bit\Window\Style.hpp" />
+    <ClInclude Include="G:\Github\Bit-Engine\include\Bit\Window\Win32\WindowWin32.hpp" />
+    <ClInclude Include="G:\Github\Bit-Engine\include\Bit\Window\Window.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\source\Bit\Window\Win32\WindowWin32.cpp" />
-    <ClCompile Include="..\..\source\Bit\Window\Window.cpp" />
+    <ClCompile Include="..\..\source\Bit\Window\VideoMode.cpp" />
+    <ClCompile Include="G:\Github\Bit-Engine\source\Bit\Window\Win32\RenderWindowWin32.cpp" />
+    <ClCompile Include="G:\Github\Bit-Engine\source\Bit\Window\Win32\WindowWin32.cpp" />
+    <ClCompile Include="G:\Github\Bit-Engine\source\Bit\Window\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

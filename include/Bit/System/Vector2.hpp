@@ -31,7 +31,7 @@
 
 // Include isnan and make make it cross-platform.
 #include <float.h>
-#ifdef BIT_PLATFORM_WIN32
+#ifdef BIT_PLATFORM_WINDOWS
 	#define bitIsNan _isnan
 #elif BIT_PLATFORM_LINUX
 	define bitIsNan isnan
@@ -197,13 +197,13 @@ namespace Bit
 	// Predefined vector types.
 	////////////////////////////////////////////////////////////////
 	typedef Vector2< Int8 >	Vector2i8;
-	typedef Vector2< UInt8 >	Vector2u8;
+	typedef Vector2< Uint8 >	Vector2u8;
 	typedef Vector2< Int16 >	Vector2i16;
-	typedef Vector2< UInt16 >	Vector2u16;
+	typedef Vector2< Uint16 >	Vector2u16;
 	typedef Vector2< Int32 >	Vector2i32;
-	typedef Vector2< UInt32 >	Vector2u32;
+	typedef Vector2< Uint32 >	Vector2u32;
 	typedef Vector2< Int64 >	Vector2i64;
-	typedef Vector2< UInt64 >	Vector2u64;
+	typedef Vector2< Uint64 >	Vector2u64;
 	typedef Vector2< Float32 >	Vector2f32;
 	typedef Vector2< Float64 >	Vector2f64;
 

@@ -31,7 +31,7 @@
 
 // Include isnan and make make it cross-platform.
 #include <float.h>
-#ifdef BIT_PLATFORM_WIN32
+#ifdef BIT_PLATFORM_WINDOWS
 	#define bitIsNan _isnan
 #elif BIT_PLATFORM_LINUX
 	define bitIsNan isnan
@@ -115,7 +115,7 @@ namespace Bit
 
 		Vector3<T> operator / ( const T & p_Value ) const;
 
-		T operator [ ] ( const UInt32 & p_Index ) const;
+		T operator [ ] ( const SizeType & p_Index ) const;
 
 		////////////////////////////////////////////////////////////////
 		// Handy functions.
@@ -245,13 +245,13 @@ namespace Bit
 	// Predefined vector types.
 	////////////////////////////////////////////////////////////////
 	typedef Vector3< Int8 >		Vector3i8;
-	typedef Vector3< UInt8 >	Vector3u8;
+	typedef Vector3< Uint8 >	Vector3u8;
 	typedef Vector3< Int16 >	Vector3i16;
-	typedef Vector3< UInt16 >	Vector3u16;
+	typedef Vector3< Uint16 >	Vector3u16;
 	typedef Vector3< Int32 >	Vector3i32;
-	typedef Vector3< UInt32 >	Vector3u32;
+	typedef Vector3< Uint32 >	Vector3u32;
 	typedef Vector3< Int64 >	Vector3i64;
-	typedef Vector3< UInt64 >	Vector3u64;
+	typedef Vector3< Uint64 >	Vector3u64;
 	typedef Vector3< Float32 >	Vector3f32;
 	typedef Vector3< Float64 >	Vector3f64;
 

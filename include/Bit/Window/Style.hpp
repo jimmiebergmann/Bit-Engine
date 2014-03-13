@@ -22,25 +22,33 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/System/Sleep.hpp>
-
-#include <float.h>
-#ifdef BIT_PLATFORM_WINDOWS
-	#include <Windows.h>
-#elif BIT_PLATFORM_LINUX
-	#include <unistd.h>
-#endif
+#ifndef BIT_WINDOW_STYLE_HPP
+#define BIT_WINDOW_STYLE_HPP
 
 namespace Bit
 {
 
-	BIT_API void Sleep( const Uint32 m_Time )
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Window
+	/// \brief Window style.
+	///
+	////////////////////////////////////////////////////////////////
+	namespace Style
 	{
-#ifdef BIT_PLATFORM_WINDOWS
-		::Sleep( static_cast<DWORD>( m_Time ) );
-#elif BIT_PLATFORM_LINUX
-		usleep( m_Time * 1000 ) 
-#endif
+
+		enum eStyle
+		{
+			None		= 0, 
+			Close		= 1,
+			Minimize	= 2,
+			Resize		= 4,
+			TitleBar	= 8,
+			Default		= 15,
+			Fullscreen	= 16
+		};
+
 	}
 
 }
+
+#endif

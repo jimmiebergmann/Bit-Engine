@@ -28,7 +28,7 @@
 ////////////////////////////////////////////////////////////////
 // Platform dependent includes
 ////////////////////////////////////////////////////////////////
-#ifdef BIT_PLATFORM_WIN32
+#ifdef BIT_PLATFORM_WINDOWS
 	#include <windows.h>
 #elif defined( BIT_PLATFORM_LINUX )
 	#include <sys/time.h>
@@ -67,7 +67,7 @@ namespace Bit
 
 	Float64 Timer::GetSystemTime( )
 	{
-		#ifdef BIT_PLATFORM_WIN32
+		#ifdef BIT_PLATFORM_WINDOWS
 
 			static Int64 Counter = 0;
 			static Int64 Frequency = 0;

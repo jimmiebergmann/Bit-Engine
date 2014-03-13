@@ -34,8 +34,8 @@
 ////////////////////////////////////////////////////////////////
 // Define the platform
 ////////////////////////////////////////////////////////////////
-#if defined( _WIN32 ) || defined( __WIN32__ )
-	#define BIT_PLATFORM_WIN32
+#if defined( _WIN32 ) || defined( __WIN32__ ) || defined( _WIN64 ) || defined( __WIN64__ )
+	#define BIT_PLATFORM_WINDOWS
 #elif defined( linux ) || defined( __linux )
 	#define BIT_PLATFORM_LINUX
 #else
@@ -61,7 +61,7 @@
         #pragma warning(disable : 4251)
     #endif
 	// Define as export or import depending on if BIT_EXPORTS is defined
-	#ifdef BIT_PLATFORM_WIN32
+	#ifdef BIT_PLATFORM_WINDOWS
 		#ifdef BIT_EXPORTS
 			#define BIT_API __declspec(dllexport)
 		#else
@@ -94,13 +94,13 @@ namespace Bit
 	// System data types
 	////////////////////////////////////////////////////////////////
 	typedef signed char			Int8;		///< Signed 8 bit integer type
-	typedef unsigned char		UInt8;		///< Unsigned 8 bit integer type
+	typedef unsigned char		Uint8;		///< Unsigned 8 bit integer type
 	typedef signed short		Int16;		///< Signed 16 bit integer type
-	typedef unsigned short		UInt16;		///< Unsigned 16 bit integer type
+	typedef unsigned short		Uint16;		///< Unsigned 16 bit integer type
 	typedef signed int			Int32;		///< Signed 32 bit integer type
-	typedef unsigned int		UInt32;		///< Unsigned 32 bit integer type
+	typedef unsigned int		Uint32;		///< Unsigned 32 bit integer type
 	typedef signed long long	Int64;		///< Signed 64 bit integer type
-	typedef unsigned long long	UInt64;		///< Unsigned 64 bit integer type
+	typedef unsigned long long	Uint64;		///< Unsigned 64 bit integer type
 	typedef float				Float32;	///< 32 bit floating point type
 	typedef double				Float64;	///< 64 bit floating point type
 	typedef bool				Bool;		///< Boolean type
@@ -125,6 +125,10 @@ namespace Bit
 #endif
 
 ////////////////////////////////////////////////////////////////
+// Define multiple modules for the documentation software.
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
 /// \defgroup Bit
 /// \brief Base module.
 ///
@@ -133,5 +137,11 @@ namespace Bit
 ////////////////////////////////////////////////////////////////
 /// \defgroup System
 /// \brief System module.
+///
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+/// \defgroup Window
+/// \brief Window module.
 ///
 ////////////////////////////////////////////////////////////////

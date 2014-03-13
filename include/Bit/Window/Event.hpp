@@ -25,14 +25,16 @@
 #ifndef BIT_WINDOW_EVENT_HPP
 #define BIT_WINDOW_EVENT_HPP
 
-#include <Bit/DataTypes.hpp>
-#include <Bit/System/Keyboard.hpp>
-#include <Bit/System/Mouse.hpp>
+#include <Bit/Build.hpp>
 #include <Bit/System/Vector2.hpp>
 
 namespace Bit
 {
-
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Window
+	/// \brief Window event
+	///
+	////////////////////////////////////////////////////////////////
 	struct Event
 	{
 
@@ -55,11 +57,11 @@ namespace Bit
 
 		eEventType Type;
 
-		Bit::Vector2_si32 Size;
-		Bit::Vector2_si32 Position;
-		Bit::Vector2_si32 MousePosition;
-		Keyboard::eKey Key;
-		Mouse::eButton Button;
+		Bit::Vector2i32 Size;
+		Bit::Vector2i32 Position;
+		Bit::Vector2i32 MousePosition;
+		//Keyboard::eKey Key;
+		//Mouse::eButton Button;
 
 	};
 

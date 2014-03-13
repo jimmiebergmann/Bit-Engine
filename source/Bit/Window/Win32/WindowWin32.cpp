@@ -21,7 +21,7 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-
+/*
 #include <Bit/Window/Win32/WindowWin32.hpp>
 
 #ifdef BIT_PLATFORM_WIN32
@@ -729,3 +729,4 @@ namespace Bit
 }
 
 #endif
+*/

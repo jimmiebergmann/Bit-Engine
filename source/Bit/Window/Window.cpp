@@ -24,6 +24,16 @@
 
 #include <Bit/Window/Window.hpp>
 
+namespace Bit
+{
+	// Constructors/destructors
+	Window::~Window( )
+	{
+	}
+
+}
+
+/*
 // Platform independent
 #ifdef BIT_PLATFORM_WIN32
 	#include <Bit/Window/Win32/WindowWin32.hpp>
@@ -62,3 +72,4 @@ namespace Bit
 	}
 
 }
+*/
