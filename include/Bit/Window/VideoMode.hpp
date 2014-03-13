@@ -36,7 +36,7 @@ namespace Bit
 	/// \brief Video mode class for the window class
 	///
 	////////////////////////////////////////////////////////////////
-	class VideoMode
+	class BIT_API VideoMode
 	{
 
 	public:
