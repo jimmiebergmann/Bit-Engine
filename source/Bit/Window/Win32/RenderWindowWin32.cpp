@@ -28,6 +28,18 @@
 
 #ifdef BIT_PLATFORM_WINDOWS
 
+static std::wstring StringToWideString( const std::string & p_String )
+{
+	int len;
+	int slength = static_cast<int>( p_String.length() + 1 );
+	len = MultiByteToWideChar(CP_ACP, 0, p_String.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, p_String.c_str(), slength, buf, len);
+	std::wstring r(buf);
+	delete [] buf;
+	return r;
+}
+
 namespace Bit
 {
 
@@ -38,7 +50,11 @@ namespace Bit
 		m_Style( static_cast<Uint32>( Style::None ) ),
 		m_DeviceContextHandle( NULL ),
 		m_WindowHandle( NULL ),
-		m_RegisteredWindowClass( false )
+		m_RegisteredWindowClass( false ),
+		m_Events( ),
+		m_Resizing( false ),
+		m_Moving( false ),
+		m_LastResize( 0, 0 )
 	{
 	}
 
@@ -49,7 +65,11 @@ namespace Bit
 		m_Style( static_cast<Uint32>( Style::None ) ),
 		m_DeviceContextHandle( NULL ),
 		m_WindowHandle( NULL ),
-		m_RegisteredWindowClass( false )
+		m_RegisteredWindowClass( false ),
+		m_Events( ),
+		m_Resizing( false ),
+		m_Moving( false ),
+		m_LastResize( 0, 0 )
 	{
 		Open( p_VideoMode, p_Title, p_Style );
 	}
@@ -61,6 +81,9 @@ namespace Bit
 
 	bool RenderWindowWin32::Open( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style )
 	{
+		// Set the last resize
+		m_LastResize = Vector2i32( p_VideoMode.GetSize( ) );
+
 		// Convert the title itnro a wide string
 		LPCWSTR convertedTitle = StringToWideString( p_Title ).c_str( );
 
@@ -215,19 +238,48 @@ namespace Bit
 		m_DeviceContextHandle = NULL;
 		m_WindowHandle = NULL;
 		m_RegisteredWindowClass =  false;
+
+		// Clear all the events
+		ClearEvents( );
 	}
 
 	void RenderWindowWin32::Update( )
 	{
+		// Clear all the events
+		ClearEvents( );
+
+		// Reset the resizing / moving flags
+		m_Resizing = false;
+		m_Moving = false;
+
 		// Go through all the window event messages
 		MSG message;
-		while( PeekMessage( &message, m_WindowHandle, NULL, NULL, PM_REMOVE ))
+		while( PeekMessage( &message, NULL, 0, 0, PM_REMOVE ))
 		{
+			 if( message.message == WM_SYSCOMMAND &&
+				 message.wParam == SC_KEYMENU )
+			 {
+				 break;
+			 }
+
 			// Translate the dispatch the message
 			// This will call the WindowProcStatic function
 			TranslateMessage( &message );
 			DispatchMessage( &message );
 		}
+	}
+
+	bool RenderWindowWin32::PollEvent( Event & p_Event )
+	{
+		if( m_Events.size( ) )
+		{
+			// Get the top event
+			p_Event = m_Events.front( );
+			m_Events.pop( );
+			return true;
+		}
+
+		return false;
 	}
 
 	bool RenderWindowWin32::IsOpen( )
@@ -246,8 +298,16 @@ namespace Bit
 	}
 
 	// Private functions
-	LRESULT RenderWindowWin32::WindowProcStatic( HWND p_HWND, UINT p_Message,
-		WPARAM p_WParam, LPARAM p_LParam )
+	void RenderWindowWin32::ClearEvents( )
+	{
+		while( m_Events.empty( ) == false )
+		{
+			m_Events.pop( );
+		}
+	}
+
+	LRESULT RenderWindowWin32::WindowProcStatic(	HWND p_HWND, UINT p_Message,
+													WPARAM p_WParam, LPARAM p_LParam )
 	{
 		if ( p_Message == WM_NCCREATE)
 		{
@@ -266,67 +326,125 @@ namespace Bit
 		return DefWindowProc( p_HWND, p_Message, p_WParam, p_LParam );
 	}
 
-	LRESULT RenderWindowWin32::WindowProc( HWND p_HWND, UINT p_Message,
-		WPARAM p_WParam, LPARAM p_LParam )
+	LRESULT RenderWindowWin32::WindowProc(	HWND p_HWND, UINT p_Message,
+											WPARAM p_WParam, LPARAM p_LParam )
 	{
+		Event e;
+
 		switch(p_Message)
 		{
 			case WM_CLOSE:
 			{
-				// Make sure to close the window as well.
-				Close( );
+				// Push close event
+				e.Type = Event::Closed;
+				m_Events.push( e );
+
+				// Do not forward the event.
+				return 0;
 			}
 			break;
 			case WM_SETFOCUS:
 			{
+				// Push gained focus event
+				e.Type = Event::GainedFocus;
+				m_Events.push( e );
 			}
 			break;
 			case WM_KILLFOCUS:
 			{
+				// Push gained lost event
+				e.Type = Event::LostFocus;
+				m_Events.push( e );
 			}
 			break;
+			case WM_ENTERSIZEMOVE:
+			/*{
+				m_Resizing = true;
+				return 0;
+			}
+			break;
+			case WM_EXITSIZEMOVE:
+			{
+				m_Resizing = false;
+				return 0;
+			}
+			break;*/
 			case WM_SIZE:
 			{
+				if( m_Resizing == false )
+				{
+					Vector2i32 size(	static_cast<Int32>( LOWORD( p_LParam ) ),
+										static_cast<Int32>( HIWORD( p_LParam ) ));
+
+					//if( size != m_LastResize )
+					if( size.x > 0 && size.y > 0 )
+					{
+						// Push resize event
+						e.Type = Event::Resized;
+						e.Size = size;
+						m_Events.push( e );
+						m_Resizing = true;
+						m_LastResize = size;
+					}
+				}
 			}
 			break;
 			case WM_MOVE:
 			{
+				if( m_Moving == false )
+				{
+					// Push move event
+					e.Type = Event::Moved;
+					e.Position = Bit::Vector2i32(	static_cast<Int32>( LOWORD( p_LParam ) ),
+													static_cast<Int32>( HIWORD( p_LParam ) ));
+					m_Events.push( e );
+					m_Moving = true;
+				}
 			}
 			break;
 			case WM_KEYDOWN:
 			{
+				
 			}
 			break;
 			case WM_KEYUP:
 			{
+				
 			}
 			break;
 			case WM_MOUSEMOVE:
 			{
+				
 			}
 			break;
 			case WM_LBUTTONDOWN:
 			{
+				
 			}
 			break;
 			case WM_MBUTTONDOWN:
 			{
+				
 			}
 			break;
 			case WM_RBUTTONDOWN:
 			{
+				
 			}
 			break;
 			case WM_LBUTTONUP:
 			{
+				
 			}
 			break;
 			case WM_MBUTTONUP:
 			{
+				
 			}
 			break;
 			case WM_RBUTTONUP:
 			{
+				
 			}
 			break;
 			default:
@@ -336,18 +454,6 @@ namespace Bit
 		}
 
 		return DefWindowProc( p_HWND, p_Message, p_WParam, p_LParam );
-	}
-
-	std::wstring RenderWindowWin32::StringToWideString( const std::string & p_String )
-	{
-		int len;
-		int slength = static_cast<int>( p_String.length() + 1 );
-		len = MultiByteToWideChar(CP_ACP, 0, p_String.c_str(), slength, 0, 0);
-		wchar_t* buf = new wchar_t[len];
-		MultiByteToWideChar(CP_ACP, 0, p_String.c_str(), slength, buf, len);
-		std::wstring r(buf);
-		delete [] buf;
-		return r;
 	}
 
 }

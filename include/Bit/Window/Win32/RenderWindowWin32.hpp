@@ -29,6 +29,7 @@
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Bit/Window/Window.hpp>
 #include <Windows.h>
+#include <queue>
 
 namespace Bit
 {
@@ -79,6 +80,16 @@ namespace Bit
 		virtual void Update( );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Poll a window event.
+		///
+		/// \param p_Event The current event.
+		///
+		/// \return false if event stack is empty, else true.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual bool PollEvent( Event & p_Event );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Checks if the window is open( created ).
 		///
 		////////////////////////////////////////////////////////////////
@@ -98,14 +109,29 @@ namespace Bit
 
 	private:
 
-		// Private functions
+		////////////////////////////////////////////////////////////////
+		/// \brief Clearing all the events in the queue
+		///
+		////////////////////////////////////////////////////////////////
+		void ClearEvents( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Static win32 event function,
+		/// required for win32 c++ wrapper.
+		///
+		////////////////////////////////////////////////////////////////
 		static LRESULT WindowProcStatic(	HWND p_HWND, UINT p_Message,
 											WPARAM p_WParam, LPARAM p_LParam );
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Win32 event function, required for win32 c++ wrapper.
+		///
+		////////////////////////////////////////////////////////////////
 		LRESULT WindowProc( HWND p_HWND, UINT p_Message,
 							WPARAM p_WParam, LPARAM p_LParam );
 
-		static std::wstring StringToWideString( const std::string & p_String );
+		// Private typedefs
+		typedef std::queue< Event > EventQueue;
 
 		// Private varaibles
 		bool			m_Open;
@@ -116,6 +142,10 @@ namespace Bit
 		HWND			m_WindowHandle;
 		std::wstring	m_WidnowClassName;
 		bool			m_RegisteredWindowClass;
+		EventQueue		m_Events;
+		bool			m_Resizing;
+		bool			m_Moving;
+		Vector2i32		m_LastResize;
 
 	};
 
