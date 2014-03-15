@@ -76,6 +76,17 @@ namespace Bit
 		Vector3( T p_X, T p_Y, T p_Z );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Constructor.
+		///
+		/// \param p_X x value.
+		/// \param p_Y y value.
+		/// \param p_Z z value.
+		///
+		////////////////////////////////////////////////////////////////
+		template <typename U>
+		Vector3( U p_X, U p_Y, U p_Z );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Copy constructor.
 		///
 		/// This constructor makes it possible to cast between

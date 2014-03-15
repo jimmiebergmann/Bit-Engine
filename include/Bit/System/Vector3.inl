@@ -45,6 +45,15 @@ inline Vector3<T>::Vector3( T p_X, T p_Y, T p_Z ) :
 
 template <typename T>
 template <typename U>
+inline Vector3<T>::Vector3( U p_X, U p_Y, U p_Z ) :
+	x( static_cast<T>( p_X ) ),
+	y( static_cast<T>( p_Y ) ),
+	z(static_cast<T>(  p_Z ) )
+{
+}
+
+template <typename T>
+template <typename U>
 inline Vector3<T>::Vector3( const Vector3< U > & p_Vector )  :
 	x( static_cast< T >( p_Vector.x ) ),
 	y( static_cast< T >( p_Vector.y ) ),
@@ -174,18 +183,20 @@ inline Vector3<T> Vector3<T>::Normal( ) const
 								static_cast< T >( 0 ), static_cast< T >( 0 ) );
 	}
 
-	return Vector3<T>( ( x / length ),( y / length ), ( z / length ) );
+	return Vector3<T>(	static_cast<Float64>( x ) / length,
+						static_cast<Float64>( y ) / length,
+						static_cast<Float64>( z ) / length );
 }
 
 template <typename T>
 inline Vector3<T> & Vector3<T>::Normalize( )
 {
-	Float64 length = Length( );
+	T length = static_cast<T>( Length( ) );
 
 	if( bitIsNan( length ) )
 	{
-		return Vector3<T>(	static_cast< T >( 0 ),
-								static_cast< T >( 0 ), static_cast< T >( 0 ) );
+		x = y = z = static_cast< T >( 0 ); 
+		return *this;
 	}
 
 	x /= length;
@@ -253,11 +264,11 @@ inline void Vector3<T>::RotateX( const Float64 p_Angle )
 	const Float64 cos = Math::Cos<Float64>( Math::DegreesToRadians<Float64>( p_Angle ) );
 
 	// Store the new y and z in tempory variables
-	T ty = ( y * cos ) - ( z * sin );
-	T tz = ( y * sin ) + ( z * cos );
+	const Float64 ty = ( static_cast<Float64>( y ) * cos ) - ( static_cast<Float64>( z ) * sin );
+	const Float64 tz = ( static_cast<Float64>( y ) * sin ) + ( static_cast<Float64>( z ) * cos );
 
-	y = ty;
-	z = tz;
+	y = static_cast<T>( ty );
+	z = static_cast<T>( tz );
 }
 
 template <typename T>
@@ -266,11 +277,11 @@ inline void Vector3<T>::RotateY( const Float64 p_Angle )
 	const Float64 sin = Math::Sin<Float64>( Math::DegreesToRadians<Float64>(p_Angle ) );
 	const Float64 cos = Math::Cos<Float64>( Math::DegreesToRadians<Float64>(p_Angle ) );
 	// Store the new x and z in tempory variables
-	T tx = ( x * cos ) - ( z * sin );
-	T tz = ( x * sin ) + ( z * cos );
+	const Float64 tx = ( static_cast<Float64>( x ) * cos ) - ( static_cast<Float64>( z ) * sin );
+	const Float64 tz = ( static_cast<Float64>( x ) * sin ) + ( static_cast<Float64>( z ) * cos );
 
-	x = tx;
-	z = tz;
+	x = static_cast<T>( tx );
+	z = static_cast<T>( tz );
 }
 
 template <typename T>
@@ -280,11 +291,11 @@ inline void Vector3<T>::RotateZ( const Float64 p_Angle )
 	const Float64 cos = Math::Cos<Float64>( Math::DegreesToRadians<Float64>(p_Angle ) );
 
 	// Store the new x and y in tempory variables
-	T tx = ( x * cos ) - ( y * sin );
-	T ty = ( x * sin ) + ( y * cos );
+	const Float64 tx = ( static_cast<Float64>( x ) * cos ) - ( static_cast<Float64>( y ) * sin );
+	const Float64 ty = ( static_cast<Float64>( x ) * sin ) + ( static_cast<Float64>( y ) * cos );
 
-	x = tx;
-	y = ty;
+	x = static_cast<T>( tx );
+	y = static_cast<T>( ty );
 }
 
 template <typename T>

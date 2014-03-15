@@ -22,59 +22,32 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
-#ifndef BIT_SYSTEM_SMART_POINTER_HPP
-#define BIT_SYSTEM_SMART_POINTER_HPP
-
-#include <Bit/DataTypes.hpp>
-
-namespace Bit
+template <typename T>
+inline Angle<T>::Angle( ) :
+	m_Radians( static_cast<T>( 0 ) )
 {
-
-	template <typename T>
-	class SmartPointer
-	{
-
-	public:
-
-		// Construcotrs/destructor
-		SmartPointer( )
-		{
-			m_pPointer = new T;
-		}
-
-		SmartPointer( T * p_pPointer )
-		{
-			m_pPointer = p_pPointer;
-		}
-
-		~SmartPointer( )
-		{
-			if( m_pPointer )
-			{
-				delete m_pPointer;
-			}
-		}
-
-		// Public functions
-		T * Get( ) const
-		{
-			return m_pPointer;
-		}
-
-		// Operators
-		operator T * ( ) const
-		{
-			return m_pPointer;
-		}
-
-	private:
-
-		// Private variables
-		T * m_pPointer;
-
-	};
-
 }
 
-#endif
+template <typename T>
+inline Angle<T>::Angle( const T p_Angle ) :
+	m_Radians( p_Angle )
+{
+}
+
+template <typename T>
+inline T Angle<T>::AsDegrees( ) const
+{
+	return m_Radians * static_cast<T>( 180.0f / Pi );
+}
+
+template <typename T>
+inline T Angle<T>::AsRadians( ) const
+{
+	return m_Radians;
+}
+
+template <typename T>
+inline T Angle<T>::operator( ) ( ) const
+{
+	return m_Radians;
+}

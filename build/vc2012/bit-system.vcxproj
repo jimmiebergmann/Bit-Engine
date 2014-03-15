@@ -18,6 +18,30 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Build.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Angle.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Sleep.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\Bit\System\Angle.inl" />
+    <None Include="..\..\include\Bit\System\Math.inl" />
+    <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
+    <None Include="..\..\include\Bit\System\Vector2.inl" />
+    <None Include="..\..\include\Bit\System\Vector3.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\System\Math.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DBC0DA24-68C8-4DC8-A2EC-CE562D4DEF6B}</ProjectGuid>
     <RootNamespace>bitsystem</RootNamespace>
@@ -104,6 +128,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
@@ -120,6 +145,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
@@ -136,6 +162,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
@@ -154,35 +181,13 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\include\Bit\Build.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Angle.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Sleep.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\source\Bit\System\Angle.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\include\Bit\System\Math.inl" />
-    <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
-    <None Include="..\..\include\Bit\System\Vector2.inl" />
-    <None Include="..\..\include\Bit\System\Vector3.inl" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -37,37 +37,37 @@ inline T Math::RadiansToDegrees( const T p_Radians )
 template <typename T>
 inline T Math::Sin( const T p_Radians )
 {
-	return static_cast<T>( sin( p_Radians ) );
+	return static_cast<T>( sin( static_cast<double>(p_Radians ) ) );
 }
 
 template <typename T>
 inline static T Math::Cos( const T p_Radians )
 {
-	return static_cast<T>( cos( p_Radians ) );
+	return static_cast<T>( cos( static_cast<double>( p_Radians ) ) );
 }
 
 template <typename T>
 inline T Math::Tan( const T p_Radians )
 {
-	return static_cast<T>( tan( p_Radians ) );
+	return static_cast<T>( tan( static_cast<double>( p_Radians ) ) );
 }
 
 template <typename T>
 inline T Math::SinDegrees( const T p_Degrees )
 {
-	return static_cast<T>( sin( DegreesToRadians<T>( p_Degrees ) ) );
+	return static_cast<T>( sin( static_cast<double>( DegreesToRadians<T>( p_Degrees ) ) ) );
 }
 
 template <typename T>
 inline T Math::CosDegrees( const T p_Degrees )
 {
-	return static_cast<T>( cos( DegreesToRadians<T>( p_Degrees ) ) );
+	return static_cast<T>( cos( static_cast<double>( DegreesToRadians<T>( p_Degrees ) ) ) );
 }
 
 template <typename T>
 inline T Math::TanDegrees( const T p_Degrees )
 {
-	return static_cast<T>( tan( DegreesToRadians<T>( p_Degrees ) ) );
+	return static_cast<T>( tan( static_cast<double>( DegreesToRadians<T>( p_Degrees ) ) ) );
 }
 
 template <typename T>

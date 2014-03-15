@@ -73,18 +73,45 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Poll a window event.
 		///
+		/// This function can be used in a while loop
+		/// in order to make sure you poll all the events
+		/// in the event queue.
+		///
+		/// Example:
+		/// 
+		/// Event e;
+		/// while( window.PollEvent( e ) )
+		/// {
+		///		// Handle the event
+		///		// ...
+		///	}
+		///
 		/// \param p_Event The current event.
 		///
-		/// \return false if event stack is empty, else true.
+		/// \return true if function succeeded, else false.
 		///
 		////////////////////////////////////////////////////////////////
 		virtual bool PollEvent( Event & p_Event ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the window caption(title)
+		///
+		/// \param p_Title The new title of the window
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetTitle( const std::string & p_Title ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Checks if the window is open( created ).
 		///
 		////////////////////////////////////////////////////////////////
 		virtual bool IsOpen( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Checks if the window is focused.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual bool IsFocused( ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the window's current video mode.

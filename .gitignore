@@ -22,7 +22,6 @@ bin
 *.opensdf
 *.layout
 *.depend
-*.filters
 *.log
 *.tlog
 

@@ -54,7 +54,7 @@ namespace Bit
 		m_Events( ),
 		m_Resizing( false ),
 		m_Moving( false ),
-		m_LastResize( 0, 0 )
+		m_Focused( false )
 	{
 	}
 
@@ -69,7 +69,7 @@ namespace Bit
 		m_Events( ),
 		m_Resizing( false ),
 		m_Moving( false ),
-		m_LastResize( 0, 0 )
+		m_Focused( false )
 	{
 		Open( p_VideoMode, p_Title, p_Style );
 	}
@@ -81,9 +81,6 @@ namespace Bit
 
 	bool RenderWindowWin32::Open( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style )
 	{
-		// Set the last resize
-		m_LastResize = Vector2i32( p_VideoMode.GetSize( ) );
-
 		// Convert the title itnro a wide string
 		LPCWSTR convertedTitle = StringToWideString( p_Title ).c_str( );
 
@@ -201,6 +198,7 @@ namespace Bit
 		m_Title = p_Title;
 		m_Style = p_Style;
 		m_Open = true;
+		m_Focused = true;
 		return true;
 	}
 
@@ -232,6 +230,7 @@ namespace Bit
 
 		// Reset the attributes
 		m_Open =  false;
+		m_Focused = false;
 		m_VideoMode = VideoMode( );
 		m_Title =  "";
 		m_Style = static_cast<Uint32>( Style::None );
@@ -256,11 +255,13 @@ namespace Bit
 		MSG message;
 		while( PeekMessage( &message, NULL, 0, 0, PM_REMOVE ))
 		{
-			 if( message.message == WM_SYSCOMMAND &&
-				 message.wParam == SC_KEYMENU )
-			 {
-				 break;
-			 }
+			// A modal function is being called when you press the alt key,
+			// fix this by ignoring the alt(menu) key event.
+			if( message.message == WM_SYSCOMMAND &&
+				message.wParam == SC_KEYMENU )
+			{
+				break;
+			}
 
 			// Translate the dispatch the message
 			// This will call the WindowProcStatic function
@@ -282,9 +283,29 @@ namespace Bit
 		return false;
 	}
 
+	void RenderWindowWin32::SetTitle( const std::string & p_Title )
+	{
+		// Convert the title into the right format
+		LPCWSTR convertedTitle = StringToWideString( p_Title ).c_str();
+		//LPCWSTR convertedTitle = StringToWideString( p_Title ).c_str( );
+
+		// Change the title
+		Bool status = ( SetWindowText( m_WindowHandle, convertedTitle ) ? true : false );
+
+		if( status == true )
+		{
+			m_Title = p_Title;
+		}
+	}
+
 	bool RenderWindowWin32::IsOpen( )
 	{
 		return m_Open;
+	}
+
+	bool RenderWindowWin32::IsFocused( )
+	{
+		return m_Focused;
 	}
 
 	VideoMode RenderWindowWin32::GetVideoMode( ) const
@@ -345,59 +366,86 @@ namespace Bit
 			break;
 			case WM_SETFOCUS:
 			{
+				// Set the focus flag
+				m_Focused = true;
+
 				// Push gained focus event
 				e.Type = Event::GainedFocus;
 				m_Events.push( e );
+				
 			}
 			break;
 			case WM_KILLFOCUS:
 			{
+				// Set the focus flag
+				m_Focused = false;
+
 				// Push gained lost event
 				e.Type = Event::LostFocus;
 				m_Events.push( e );
 			}
 			break;
-			case WM_ENTERSIZEMOVE:
-			/*{
-				m_Resizing = true;
-				return 0;
-			}
-			break;
-			case WM_EXITSIZEMOVE:
+			/*case WM_ENTERSIZEMOVE:
 			{
-				m_Resizing = false;
-				return 0;
 			}
 			break;*/
+			case WM_EXITSIZEMOVE:
+			{
+				// Get the widnow rect
+				RECT rect;
+				if( GetWindowRect( m_WindowHandle, &rect ) )
+				{
+					// Are we resizing the window?
+					if( m_Resizing )
+					{
+						// Get the size of the window
+						Vector2i32 size(	static_cast<Int32>( rect.right - rect.left ),
+											static_cast<Int32>( rect.bottom - rect.top ));
+
+						// Push resize event
+						e.Type = Event::Resized;
+						e.Size = size;
+						m_Events.push( e );
+
+					}
+
+					// Are we moving the window?
+					if( m_Moving )
+					{
+						// Get the position of the window
+						Vector2i32 position(	static_cast<Int32>( rect.left ),
+												static_cast<Int32>( rect.top ));
+
+						// Push move event
+						e.Type = Event::Moved;
+						e.Position = position;
+						m_Events.push( e );
+					}
+				}
+			}
+			break;
 			case WM_SIZE:
 			{
+				// Is this the first time we resize the window in a while?
 				if( m_Resizing == false )
 				{
 					Vector2i32 size(	static_cast<Int32>( LOWORD( p_LParam ) ),
 										static_cast<Int32>( HIWORD( p_LParam ) ));
 
-					//if( size != m_LastResize )
-					if( size.x > 0 && size.y > 0 )
+					// Is the window really resizing?
+					// The WM_SIZE event is sent when you move the window as well.
+					if( size.x > 0 || size.y > 0 )
 					{
-						// Push resize event
-						e.Type = Event::Resized;
-						e.Size = size;
-						m_Events.push( e );
 						m_Resizing = true;
-						m_LastResize = size;
 					}
 				}
 			}
 			break;
 			case WM_MOVE:
 			{
+				// Is this the first time we move the window in a while?
 				if( m_Moving == false )
 				{
-					// Push move event
-					e.Type = Event::Moved;
-					e.Position = Bit::Vector2i32(	static_cast<Int32>( LOWORD( p_LParam ) ),
-													static_cast<Int32>( HIWORD( p_LParam ) ));
-					m_Events.push( e );
 					m_Moving = true;
 				}
 			}

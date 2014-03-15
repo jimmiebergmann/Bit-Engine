@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit-system", "bit-system.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit-window", "bit-window.vcxproj", "{E4B131DC-B097-47EF-8B3F-64C43E945C89}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bit-graphics", "bit-graphics.vcxproj", "{3773E6DD-764B-4109-9D38-09D3B50B975B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Dynamic Debug|Win32 = Dynamic Debug|Win32
@@ -29,6 +31,14 @@ Global
 		{E4B131DC-B097-47EF-8B3F-64C43E945C89}.Static Debug|Win32.Build.0 = Static Debug|Win32
 		{E4B131DC-B097-47EF-8B3F-64C43E945C89}.Static Release|Win32.ActiveCfg = Static Release|Win32
 		{E4B131DC-B097-47EF-8B3F-64C43E945C89}.Static Release|Win32.Build.0 = Static Release|Win32
+		{3773E6DD-764B-4109-9D38-09D3B50B975B}.Dynamic Debug|Win32.ActiveCfg = Dynamic Debug|Win32
+		{3773E6DD-764B-4109-9D38-09D3B50B975B}.Dynamic Debug|Win32.Build.0 = Dynamic Debug|Win32
+		{3773E6DD-764B-4109-9D38-09D3B50B975B}.Dynamic Release|Win32.ActiveCfg = Dynamic Release|Win32
+		{3773E6DD-764B-4109-9D38-09D3B50B975B}.Dynamic Release|Win32.Build.0 = Dynamic Release|Win32
+		{3773E6DD-764B-4109-9D38-09D3B50B975B}.Static Debug|Win32.ActiveCfg = Static Debug|Win32
+		{3773E6DD-764B-4109-9D38-09D3B50B975B}.Static Debug|Win32.Build.0 = Static Debug|Win32
+		{3773E6DD-764B-4109-9D38-09D3B50B975B}.Static Release|Win32.ActiveCfg = Static Release|Win32
+		{3773E6DD-764B-4109-9D38-09D3B50B975B}.Static Release|Win32.Build.0 = Static Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

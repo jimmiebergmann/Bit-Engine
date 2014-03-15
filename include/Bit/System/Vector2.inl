@@ -43,6 +43,14 @@ inline Vector2<T>::Vector2( T p_X, T p_Y ) :
 
 template <typename T>
 template <typename U>
+inline Vector2<T>::Vector2( U p_X, U p_Y ) :
+	x( static_cast<T>( p_X ) ),
+	y( static_cast<T>( p_Y ) )
+{
+}
+
+template <typename T>
+template <typename U>
 inline Vector2<T>::Vector2( const Vector2<U> & p_Vector )  :
 	x( static_cast< T >( p_Vector.x ) ),
 	y( static_cast< T >( p_Vector.y ) )
@@ -176,12 +184,12 @@ inline Vector2<T> Vector2<T>::Normal( ) const
 template <typename T>
 inline const Vector2<T> & Vector2<T>::Normalize( )
 {
-	Float64 length = Length( );
+	T length = static_cast<T>( Length( ) );
 
 	if( bitIsNan( length ) )
 	{
-		return Vector2<T>(	static_cast< T >( 0 ),
-								static_cast< T >( 0 ) );
+		x = y = static_cast< T >( 0 );
+		return *this;
 	}
 
 	x /= length;
@@ -193,7 +201,7 @@ template <typename T>
 inline Vector2<T> Vector2<T>::Absolute( ) const
 {
 	return Vector2<T>(	(T)abs( (T)x ),
-							(T)abs( (T)y ) );
+						(T)abs( (T)y ) );
 }
 
 template <typename T>
@@ -217,11 +225,11 @@ inline void Vector2<T>::Rotate( Float64 p_Angle )
 	const Float64 cos = Math::Cos<Float64>( Math::DegreesToRadians<Float64>( p_Angle ) );
 
 	// Store the new x and y in tempory variables
-	T tx = ( x * cos ) - ( y * sin );
-	T ty = ( x * sin ) + ( y * cos );
+	const Float64 tx = ( static_cast<Float64>( x ) * cos ) - ( static_cast<Float64>( y ) * sin );
+	const Float64 ty = ( static_cast<Float64>( x ) * sin ) + ( static_cast<Float64>( y ) * cos );
 
-	x = tx;
-	y = ty;
+	x = static_cast<T>( tx );
+	y = static_cast<T>( ty );
 }
 
 template <typename T>

@@ -25,14 +25,36 @@
 #ifndef BIT_GRAPHICS_GRAPHIC_DEVICE_HPP
 #define BIT_GRAPHICS_GRAPHIC_DEVICE_HPP
 
-#include <Bit/DataTypes.hpp>
-#include <Bit/Window/Window.hpp>
+#include <Bit/Build.hpp>
+/*#include <Bit/Window/Window.hpp>
 #include <Bit/Graphics/Shader.hpp>
 #include <Bit/Graphics/Model.hpp>
-
+*/
 namespace Bit
 {
-	
+
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Graphics
+	/// \brief Graphic device base class.
+	///
+	////////////////////////////////////////////////////////////////
+	class BIT_API GraphicDevice
+	{
+
+	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Virtual destructor.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ~GraphicDevice( );
+
+	private:
+
+
+	};
+
+	/*
 	// Forward declarations
 	class Framebuffer;
 	class VertexObject;
@@ -149,7 +171,7 @@ namespace Bit
 
 	// Create a cross platform renderer via this function
 	BIT_API GraphicDevice * CreateGraphicDevice( );
-
+*/
 }
 
 #endif

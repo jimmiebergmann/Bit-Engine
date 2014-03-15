@@ -35,11 +35,6 @@
 
 namespace Bit
 {
-	////////////////////////////////////////////////////////////////
-	/// \ingroup Widnow
-	/// \brief typedef the platform independent render window class.
-	///
-	////////////////////////////////////////////////////////////////
 	#ifdef BIT_PLATFORM_WINDOWS
 		typedef RenderWindowWin32 RenderWindow;
 	#elif BIT_PLATFORM_LINUX

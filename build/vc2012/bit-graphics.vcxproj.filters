@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="OpenGL">
+      <UniqueIdentifier>{829fdd21-0e8c-494e-8409-4276fa35c773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGL\Win32">
+      <UniqueIdentifier>{cd202676-2ece-4610-9698-0b4cd7c4b5ca}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
+  </ItemGroup>
+</Project>
