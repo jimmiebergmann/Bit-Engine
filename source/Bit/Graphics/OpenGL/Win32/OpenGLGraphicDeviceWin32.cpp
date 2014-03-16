@@ -27,6 +27,8 @@
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLVertexArrayObject.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLVertexBufferObject.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLShaderProgram.hpp>
 #include <iostream>
 
 namespace Bit
@@ -190,6 +192,16 @@ namespace Bit
 	{
 		return new OpenGLVertexBufferObject;
 	}
+
+	Shader * OpenGLGraphicDeviceWin32::CreateShader( ShaderType::eType p_Type ) const
+	{
+		return new OpenGLShader( p_Type );
+	}
+
+	ShaderProgram * OpenGLGraphicDeviceWin32::CreateShaderProgram( ) const
+	{
+		return new OpenGLShaderProgram;
+	}
 	
 	void OpenGLGraphicDeviceWin32::SetViewport( const Vector2u32 & p_Position, const Vector2u32 & p_Size )
 	{
@@ -295,6 +307,8 @@ namespace Bit
 			// Make the new OpenGL context to the current one.
 			wglMakeCurrent( p_RenderOutput.GetDeviceContextHandle( ), m_Context );
 		}
+
+		glDisable( GL_DEPTH_TEST );
 
 		return true;
 	}

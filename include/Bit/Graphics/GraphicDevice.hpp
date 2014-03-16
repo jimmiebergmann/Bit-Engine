@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Window/RenderWindow.hpp>
+#include <Bit/Graphics/ShaderType.hpp>
 
 namespace Bit
 {
@@ -34,6 +35,8 @@ namespace Bit
 	// Forward declarations
 	class VertexArrayObject;
 	class VertexBufferObject;
+	class Shader;
+	class ShaderProgram;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
@@ -147,6 +150,24 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual VertexBufferObject * CreateVertexBufferObject( ) const = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a shader
+		///
+		/// \param p_Type Enumerator of the shader type.
+		///
+		/// \return A pointer to the shader
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Shader * CreateShader( ShaderType::eType p_Type ) const = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a shader program
+		///
+		/// \return A pointer to the shader program
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ShaderProgram * CreateShaderProgram( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.

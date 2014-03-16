@@ -29,6 +29,14 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Graphics\Shader.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShader.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShaderProgram.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\PrimitiveMode.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
@@ -42,6 +50,12 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShader.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShaderProgram.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>

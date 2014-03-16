@@ -127,6 +127,7 @@ namespace Bit
 			Bool,		///< Boolean type
 			SizeType	///< Memory size type
 		};
+
 	}
 
 	////////////////////////////////////////////////////////////////

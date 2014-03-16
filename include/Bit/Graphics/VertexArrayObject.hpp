@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Graphics/VertexBufferObject.hpp>
+#include <Bit/Graphics/PrimitiveMode.hpp>
 
 namespace Bit
 {
@@ -66,7 +67,7 @@ namespace Bit
 		/// \brief Render the vertex array object
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Render( ) = 0;
+		virtual void Render( PrimitiveMode::eMode p_PrimitiveMode ) = 0;
 
 	};
 

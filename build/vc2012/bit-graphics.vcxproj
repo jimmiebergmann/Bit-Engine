@@ -173,17 +173,23 @@
     <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLGraphicDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShader.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShaderProgram.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexArrayObject.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\PrimitiveMode.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Shader.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\VertexArrayObject.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\VertexBufferObject.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShaderProgram.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexArrayObject.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp" />

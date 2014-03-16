@@ -28,13 +28,15 @@ namespace Bit
 {
 
 	OpenGLVertexBufferObject::OpenGLVertexBufferObject(  ) :
-		m_pVertexBufferObject( 0 )
+		m_pVertexBufferObject( 0 ),
+		m_DataSize( 0 )
 	{
 		glGenBuffers( 1, &m_pVertexBufferObject );
 	}
 
 	OpenGLVertexBufferObject::OpenGLVertexBufferObject( const SizeType p_DataSize, void * p_pVertexData ) :
-		m_pVertexBufferObject( 0 )
+		m_pVertexBufferObject( 0 ),
+		m_DataSize( 0 )
 	{
 		glGenBuffers( 1, &m_pVertexBufferObject );
 		Load( p_DataSize, p_pVertexData );
@@ -69,8 +71,16 @@ namespace Bit
 		glBufferData( GL_ARRAY_BUFFER, static_cast<GLsizeiptr>( p_DataSize ), reinterpret_cast<GLvoid*>( p_pVertexData ), GL_STATIC_DRAW );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
+		// Set the data size
+		m_DataSize = p_DataSize;
+
 		// Succeeded
 		return true;
+	}
+
+	SizeType OpenGLVertexBufferObject::GetBufferSize( ) const
+	{
+		return m_DataSize;
 	}
 
 }

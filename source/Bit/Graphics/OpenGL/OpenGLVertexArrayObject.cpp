@@ -30,23 +30,50 @@ namespace Bit
 	static GLenum g_OpenGLDataTypes[ static_cast<SizeType>( DataType::SizeType ) + 1 ] =
 	{
 		/*None		*/ 0,
-		/*Int8,		*/ GL_BYTE,
-		/*Uint8,	*/ GL_UNSIGNED_BYTE,
-		/*Int16,	*/ GL_SHORT,
-		/*Uint16,	*/ GL_UNSIGNED_SHORT,
-		/*Int32,	*/ GL_INT,
-		/*Uint32,	*/ GL_UNSIGNED_INT,
-		/*Int64,	*/ 0, 
-		/*Uint64,	*/ 0,
-		/*Float32,	*/ GL_FLOAT,
-		/*Float64,	*/ GL_DOUBLE,
-		/*Bool,		*/ GL_UNSIGNED_BYTE,
+		/*Int8		*/ GL_BYTE,
+		/*Uint8		*/ GL_UNSIGNED_BYTE,
+		/*Int16		*/ GL_SHORT,
+		/*Uint16	*/ GL_UNSIGNED_SHORT,
+		/*Int32		*/ GL_INT,
+		/*Uint32	*/ GL_UNSIGNED_INT,
+		/*Int64		*/ 0, 
+		/*Uint64	*/ 0,
+		/*Float32	*/ GL_FLOAT,
+		/*Float64	*/ GL_DOUBLE,
+		/*Bool		*/ GL_UNSIGNED_BYTE,
 		/*SizeType	*/ 0
+	};
+
+	static SizeType g_OpenGLDataSize[ static_cast<SizeType>( DataType::SizeType ) + 1 ] =
+	{
+		/*None		*/ 0,
+		/*Int8		*/ sizeof( Int8 ),
+		/*Uint8		*/ sizeof( Int8 ),
+		/*Int16		*/ sizeof( Int16 ),
+		/*Uint16	*/ sizeof( Int16 ),
+		/*Int32		*/ sizeof( Int32 ),
+		/*Uint32	*/ sizeof( Int32 ),
+		/*Int64		*/ 0,
+		/*Uint64	*/ 0,
+		/*Float32	*/ sizeof( Float32 ),
+		/*Float64	*/ sizeof( Float64 ),
+		/*Bool		*/ sizeof( Bool ),
+		/*SizeType	*/ 0
+	};
+
+	static GLenum g_OpenGLPrimitiveModes[ static_cast<SizeType>( PrimitiveMode::TriangleFan ) + 1 ] =
+	{
+		/*Points		*/ GL_POINTS,
+		/*Lines			*/ GL_LINES,
+		/*LineStrip		*/ GL_LINE_STRIP,
+		/*Triangles		*/ GL_TRIANGLES,
+		/*TriangleStrip	*/ GL_TRIANGLE_STRIP,
+		/*TriangleFan	*/ GL_TRIANGLE_FAN
 	};
 
 	OpenGLVertexArrayObject::OpenGLVertexArrayObject( ) :
 		m_VertexArrayObject( 0 ),
-		m_VertexCount( 0 ),
+		m_VertexSize( 0 ),
 		m_BufferCount( 0 )
 	{
 		// Generate a VBO
@@ -85,22 +112,27 @@ namespace Bit
 
 		// Add the VBO(bind it)
 		p_VertexBufferObject.Bind( );
-		glEnableVertexAttribArray( 0 );
 		
 		// Set the vertex attribute pointer at the current buffer index.
 		glVertexAttribPointer( m_BufferCount, p_ComponentCount, type, GL_FALSE, 0, 0 );
+		glEnableVertexAttribArray( m_BufferCount );
 
 		// Unbind the VAO
 		glBindVertexArray( 0 );
 
 		// Increment the buffer count
 		m_BufferCount++;
+
+		// Calculate the vertex count
+		m_VertexSize = p_VertexBufferObject.GetBufferSize( ) / g_OpenGLDataSize[ static_cast<SizeType>( p_DataType ) ];
+
+		return true;
 	}
 
-	void OpenGLVertexArrayObject::Render( )
+	void OpenGLVertexArrayObject::Render( PrimitiveMode::eMode p_PrimitiveMode )
 	{
 		glBindVertexArray( m_VertexArrayObject );
-		glDrawArrays( GL_TRIANGLES, 0, m_VertexCount );
+		glDrawArrays( g_OpenGLPrimitiveModes[ static_cast<SizeType>( p_PrimitiveMode ) ], 0, m_VertexSize );
 		glBindVertexArray( 0 );
 	}
 

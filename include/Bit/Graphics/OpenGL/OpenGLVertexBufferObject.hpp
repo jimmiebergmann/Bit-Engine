@@ -84,9 +84,12 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL );  
 
+		virtual SizeType GetBufferSize( ) const;
+
 	private:
 
 		GLuint m_pVertexBufferObject;
+		SizeType m_DataSize;
 
 	};
 

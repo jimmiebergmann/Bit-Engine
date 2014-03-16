@@ -73,13 +73,13 @@ namespace Bit
 		/// \brief Render the vertex array object
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Render( );
+		virtual void Render( PrimitiveMode::eMode p_PrimitiveMode );
 
 	private:
 
-		GLuint m_VertexArrayObject;
-		GLuint m_BufferCount;
-		Uint32 m_VertexCount;
+		GLuint m_VertexArrayObject;	///< The OpenGL vertex array object.
+		GLuint m_BufferCount;		///< Amount of attached buffers.
+		Uint32 m_VertexSize;		///< The vertex data size( vertexCount * componentCount )
 
 	};
 

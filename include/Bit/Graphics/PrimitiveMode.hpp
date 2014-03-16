@@ -22,49 +22,32 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_VERTEX_BUFFER_OBJECT_HPP
-#define BIT_GRAPHICS_VERTEX_BUFFER_OBJECT_HPP
+#ifndef BIT_GRAPHICS_PRIMITIVE_MODE_HPP
+#define BIT_GRAPHICS_PRIMITIVE_MODE_HPP
 
 #include <Bit/Build.hpp>
 
 namespace Bit
 {
 
-	////////////////////////////////////////////////////////////////
-	/// \ingroup Graphics
-	/// \brief Vertex buffer object base class.
-	///
-	////////////////////////////////////////////////////////////////
-	class BIT_API VertexBufferObject
+	namespace PrimitiveMode
 	{
 
-	public:
-
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor
+		/// \brief Primitive mode enumerator.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~VertexBufferObject( ) { }
+		enum eMode
+		{
+			Points,
+			Lines,
+			LineStrip,
+			Triangles,
+			TriangleStrip,
+			TriangleFan
+		};
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Binding the vertex buffer object
-		///
-		////////////////////////////////////////////////////////////////
-		virtual void Bind( ) const = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Loading the vertex buffer object
-		///
-		/// \param p_DataSize The vertex data size, in bytes.
-		/// \param p_pVertexData The vertex data.
-		/// \param p_DataType The data type of the vertex data.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL ) = 0;
-
-		virtual SizeType GetBufferSize( ) const = 0;
-
-	};
+	}
 
 }
 

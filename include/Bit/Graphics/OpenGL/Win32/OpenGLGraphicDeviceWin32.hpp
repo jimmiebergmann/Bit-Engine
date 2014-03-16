@@ -136,6 +136,24 @@ namespace Bit
 		virtual VertexBufferObject * CreateVertexBufferObject( ) const;
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Create a shader
+		///
+		/// \param p_Type Enumerator of the shader type.
+		///
+		/// \return A pointer to the shader
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Shader * CreateShader( ShaderType::eType p_Type ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a shader program
+		///
+		/// \return A pointer to the shader program
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ShaderProgram * CreateShaderProgram( ) const;
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.
 		///
 		/// \param p_Position The position of the viewport.
