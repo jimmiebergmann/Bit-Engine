@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP
-#define BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP
+#ifndef BIT_GRAPHICS_OPENGL_GRAPHIC_DEVICE_WIN32_HPP
+#define BIT_GRAPHICS_OPENGL_GRAPHIC_DEVICE_WIN32_HPP
 
 #include <Bit/Build.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
@@ -118,6 +118,22 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual void ClearDepth( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a vertex array object.
+		///
+		/// \return A pointer to the VAO
+		///
+		////////////////////////////////////////////////////////////////
+		virtual VertexArrayObject * CreateVertexArrayObject( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a vertex buffer object.
+		///
+		/// \return A pointer to the VBO
+		///
+		////////////////////////////////////////////////////////////////
+		virtual VertexBufferObject * CreateVertexBufferObject( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.

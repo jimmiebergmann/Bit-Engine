@@ -22,87 +22,67 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_SHADER_HPP
-#define BIT_GRAPHICS_SHADER_HPP
+#ifndef BIT_GRAPHICS_OPENGL_VERTEX_ARRAY_OBJECT_HPP
+#define BIT_GRAPHICS_OPENGL_VERTEX_ARRAY_OBJECT_HPP
 
 #include <Bit/Build.hpp>
-#include <string>
+#include <Bit/Graphics/VertexArrayObject.hpp>
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Shader base class.
+	/// \brief OpenGL Vertex buffer object.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Shader
+	class BIT_API OpenGLVertexArrayObject : public VertexArrayObject
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Shader type enumerator.
+		/// \brief Default constructor
 		///
 		////////////////////////////////////////////////////////////////
-		enum eType
-		{
-			Vertex,
-			Fragment
-		};
+		OpenGLVertexArrayObject( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor.
+		/// \brief Destructor
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~Shader() { }
+		~OpenGLVertexArrayObject( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Read shader source from file.
+		/// \brief Adding VBO to the VBA
 		///
-		/// \param p_FilePath File path to the shader source file.
+		/// The VBO must be fully loaded before adding.
+		///
+		/// \param p_VertexBufferObject The vertex buffer object to add.
+		/// \param p_ComponentCount Number of vertex components,
+		///		must be 1, 2, 3 or 4.
+		///	\param p_DataType The type of the vertex data.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool ReadFromFile( const std::string & p_FilePath ) = 0;
+		virtual bool AddVertexBuffer(	VertexBufferObject & p_VertexBufferObject,
+										const SizeType p_ComponentCount = 3, 
+										const DataType::eType p_DataType = DataType::Float32 );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Read shader source from memory.
-		///
-		/// \param p_Memory String of the shader source code.
+		/// \brief Render the vertex array object
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool ReadFromMemory( const std::string & p_Memory ) = 0;
+		virtual void Render( );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Compile the shader.
-		///
-		/// Make sure to read a valid shader source code before compiling.
-		///
-		/// \see ReadFromFile
-		/// \see ReadFromMemory
-		///
-		////////////////////////////////////////////////////////////////
-		virtual bool Compile( ) = 0;
+	private:
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Check if the shader is compiled.
-		///
-		/// \return True if compiled, else false.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool IsCompiled( ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the shader type.
-		///
-		/// \return Enumerator of the shader type.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual eType GetType( ) = 0;
+		GLuint m_VertexArrayObject;
+		GLuint m_BufferCount;
+		Uint32 m_VertexCount;
 
 	};
 
 }
-
 
 #endif

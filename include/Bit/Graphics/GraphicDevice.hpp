@@ -27,12 +27,13 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Window/RenderWindow.hpp>
-/*#include <Bit/Window/Window.hpp>
-#include <Bit/Graphics/Shader.hpp>
-#include <Bit/Graphics/Model.hpp>
-*/
+
 namespace Bit
 {
+
+	// Forward declarations
+	class VertexArrayObject;
+	class VertexBufferObject;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
@@ -130,6 +131,22 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual void ClearDepth( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a vertex array object.
+		///
+		/// \return A pointer to the VAO
+		///
+		////////////////////////////////////////////////////////////////
+		virtual VertexArrayObject * CreateVertexArrayObject( ) const = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a vertex buffer object.
+		///
+		/// \return A pointer to the VBO
+		///
+		////////////////////////////////////////////////////////////////
+		virtual VertexBufferObject * CreateVertexBufferObject( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.

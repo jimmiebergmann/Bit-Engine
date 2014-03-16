@@ -25,10 +25,29 @@
 #include <Bit/Graphics/OpenGL/Win32/OpenGLGraphicDeviceWin32.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLVertexArrayObject.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLVertexBufferObject.hpp>
 #include <iostream>
 
 namespace Bit
 {
+	// Global varaibles
+	// Save all the avaible opengl versions.
+	static const SizeType g_OpenGLVersionCount = 11;
+	static GraphicDevice::Version g_OpenGLVersions[ g_OpenGLVersionCount ] =
+	{
+		GraphicDevice::Version( 2, 0 ),
+		GraphicDevice::Version( 2, 1 ),
+		GraphicDevice::Version( 3, 0 ),
+		GraphicDevice::Version( 3, 1 ),
+		GraphicDevice::Version( 3, 2 ),
+		GraphicDevice::Version( 3, 3 ),
+		GraphicDevice::Version( 4, 0 ),
+		GraphicDevice::Version( 4, 1 ),
+		GraphicDevice::Version( 4, 2 ),
+		GraphicDevice::Version( 4, 3 ),
+		GraphicDevice::Version( 4, 4 )
+	};
 	
 	OpenGLGraphicDeviceWin32::OpenGLGraphicDeviceWin32( ) :
 		m_Open( false ),
@@ -161,6 +180,16 @@ namespace Bit
 	{
 		glClear( GL_DEPTH_BUFFER_BIT );
 	}
+
+	VertexArrayObject * OpenGLGraphicDeviceWin32::CreateVertexArrayObject( ) const
+	{
+		return new OpenGLVertexArrayObject;
+	}
+
+	VertexBufferObject * OpenGLGraphicDeviceWin32::CreateVertexBufferObject( ) const
+	{
+		return new OpenGLVertexBufferObject;
+	}
 	
 	void OpenGLGraphicDeviceWin32::SetViewport( const Vector2u32 & p_Position, const Vector2u32 & p_Size )
 	{
@@ -273,30 +302,13 @@ namespace Bit
 	bool OpenGLGraphicDeviceWin32::OpenBestVersion( const RenderWindow & p_RenderOutput,
 													Version & p_Version  )
 	{
-		// Save all the possible opengl versions.
-		static const SizeType versionCount = 11;
-		static Version versions[ versionCount ] =
-		{
-			Version( 2, 0 ),
-			Version( 2, 1 ),
-			Version( 3, 0 ),
-			Version( 3, 1 ),
-			Version( 3, 2 ),
-			Version( 3, 3 ),
-			Version( 4, 0 ),
-			Version( 4, 1 ),
-			Version( 4, 2 ),
-			Version( 4, 3 ),
-			Version( 4, 4 )
-		};
-
 		// Loop backwards( the highest version first )
-		for( SizeType i = versionCount - 1; i >= 0; i-- )
+		for( SizeType i = g_OpenGLVersionCount - 1; i >= 0; i-- )
 		{
 			//  Try to open the current version, return true if it succeed.
-			if( OpenVersion( p_RenderOutput, versions[ i ] ) == true )
+			if( OpenVersion( p_RenderOutput, g_OpenGLVersions[ i ] ) == true )
 			{
-				p_Version = versions[ i ];
+				p_Version = g_OpenGLVersions[ i ];
 				return true;
 			}
 		}

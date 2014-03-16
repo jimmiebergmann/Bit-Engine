@@ -25,7 +25,7 @@
 #ifndef BIT_GRAPHICS_SHADER_PROGRAM_HPP
 #define BIT_GRAPHICS_SHADER_PROGRAM_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Build.hpp>
 #include <Bit/System/Matrix4x4.hpp>
 #include <string>
 
@@ -35,33 +35,114 @@ namespace Bit
 	// Forward declaraction
 	class Shader;
 
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Graphics
+	/// \brief Shader program base class.
+	///
+	////////////////////////////////////////////////////////////////
 	class BIT_API ShaderProgram
 	{
 
 	public:
 
-		// Destructor
+		////////////////////////////////////////////////////////////////
+		/// \brief Virtual destructor
+		///
+		////////////////////////////////////////////////////////////////
 		virtual ~ShaderProgram( ) { }
 
-		// General public functions
-		virtual BIT_UINT32 AttachShaders( const Shader * p_Shader ) = 0;
-		virtual BIT_UINT32 Link( ) = 0;
+		////////////////////////////////////////////////////////////////
+		/// \brief Atttach a shader to the shader program.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual bool AttachShader( const Shader & p_Shader ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Link the attached shaders into a shader program.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual bool Link( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Bind the shader program and make it to the current one.
+		///
+		////////////////////////////////////////////////////////////////
 		virtual void Bind( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Unbind the shader program
+		///
+		////////////////////////////////////////////////////////////////
 		virtual void Unbind( ) = 0;
 
-		// Public set functions
-		virtual void SetUniform1i( const char * p_Location, const BIT_SINT32 ) = 0;
-		virtual void SetUniform1f( const char *, const BIT_FLOAT32 ) = 0;
-		virtual void SetUniform2f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 ) = 0;
-		virtual void SetUniform3f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 ) = 0;
-		virtual void SetUniform4f( const char *, const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 , const BIT_FLOAT32 ) = 0;
-		virtual void SetUniformMatrix4x4f( const char * p_Location, const Matrix4x4 & p_Matrix ) = 0;
-		virtual void SetAttributeLocation( const char * p_Location, const BIT_UINT32 p_Index ) = 0;
+		////////////////////////////////////////////////////////////////
+		/// \brief Set attribute location of a non uniform varaible.
+		///
+		/// \param p_Name The name of the varaible.
+		/// \param p_Index The index of the varaible
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetAttributeLocation( const char * p_Name, const Int32 p_Index ) = 0;
 
-	protected:
+		////////////////////////////////////////////////////////////////
+		/// \brief Set Int32 shader uniform variable
+		///
+		/// \param p_Name The name of the varaible.
+		/// \param p_A First varaible paramter.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetUniform1i( const char * p_Name, const Int32 p_A ) = 0;
 
-		// Protected variables
-		BIT_BOOL m_Linked;
+		////////////////////////////////////////////////////////////////
+		/// \brief Set Float32 shader uniform variable
+		///
+		/// \param p_Name The name of the varaible.
+		/// \param p_A First varaible paramter.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetUniform1f( const char * p_Name, const Float32 p_A ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set Float32 vector2 shader uniform variable
+		///
+		/// \param p_Name The name of the varaible.
+		/// \param p_A First varaible paramter.
+		/// \param p_B Second varaible paramter.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetUniform2f( const char * p_Name, const Float32 p_A, const Float32 p_B ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set Float32 vector3 shader uniform variable
+		///
+		/// \param p_Name The name of the varaible.
+		/// \param p_A First varaible paramter.
+		/// \param p_B Second varaible paramter.
+		/// \param p_C Second varaible paramter.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetUniform3f( const char * p_Name, const Float32 p_A, const Float32 p_B, const Float32 p_C ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set Float32 vector3 shader uniform variable
+		///
+		/// \param p_Name The name of the varaible.
+		/// \param p_A First varaible paramter.
+		/// \param p_B Second varaible paramter.
+		/// \param p_C Second varaible paramter.
+		/// \param p_D Second varaible paramter.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetUniform4f( const char * p_Name, const Float32 p_A, const Float32 p_B, const Float32 p_C, const Float32 p_D ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set Matrix4x4f32 shader uniform variable
+		///
+		/// \param p_Name The name of the varaible.
+		/// \param p_Matrix The matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetUniformMatrix4x4f( const char * p_Name, const Matrix4x4f32 & p_Matrix ) = 0;
 
 	};
 

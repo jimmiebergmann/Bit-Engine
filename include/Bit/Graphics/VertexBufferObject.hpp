@@ -22,87 +22,48 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_SHADER_HPP
-#define BIT_GRAPHICS_SHADER_HPP
+#ifndef BIT_GRAPHICS_VERTEX_BUFFER_OBJECT_HPP
+#define BIT_GRAPHICS_VERTEX_BUFFER_OBJECT_HPP
 
 #include <Bit/Build.hpp>
-#include <string>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Shader base class.
+	/// \brief Vertex buffer object base class.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Shader
+	class BIT_API VertexBufferObject
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Shader type enumerator.
+		/// \brief Virtual destructor
 		///
 		////////////////////////////////////////////////////////////////
-		enum eType
-		{
-			Vertex,
-			Fragment
-		};
+		virtual ~VertexBufferObject( ) { }
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor.
+		/// \brief Binding the vertex buffer object
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~Shader() { }
+		virtual void Bind( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Read shader source from file.
+		/// \brief Loading the vertex buffer object
 		///
-		/// \param p_FilePath File path to the shader source file.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual bool ReadFromFile( const std::string & p_FilePath ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Read shader source from memory.
-		///
-		/// \param p_Memory String of the shader source code.
+		/// \param p_DataSize The vertex data size, in bytes.
+		/// \param p_pVertexData The vertex data.
+		/// \param p_DataType The data type of the vertex data.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool ReadFromMemory( const std::string & p_Memory ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Compile the shader.
-		///
-		/// Make sure to read a valid shader source code before compiling.
-		///
-		/// \see ReadFromFile
-		/// \see ReadFromMemory
-		///
-		////////////////////////////////////////////////////////////////
-		virtual bool Compile( ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Check if the shader is compiled.
-		///
-		/// \return True if compiled, else false.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool IsCompiled( ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the shader type.
-		///
-		/// \return Enumerator of the shader type.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual eType GetType( ) = 0;
+		virtual bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL ) = 0;  
 
 	};
 
 }
-
 
 #endif

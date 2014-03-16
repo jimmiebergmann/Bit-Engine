@@ -107,6 +107,29 @@ namespace Bit
 	typedef std::size_t			SizeType;	///< Memory size type
 
 	////////////////////////////////////////////////////////////////
+	// System data types
+	////////////////////////////////////////////////////////////////
+	namespace DataType
+	{
+		enum eType
+		{
+			None = 0,	///< No type
+			Int8,		///< Signed 8 bit integer type
+			Uint8,		///< Unsigned 8 bit integer type
+			Int16,		///< Signed 16 bit integer type
+			Uint16,		///< Unsigned 16 bit integer type
+			Int32,		///< Signed 32 bit integer type
+			Uint32,		///< Unsigned 32 bit integer type
+			Int64,		///< Signed 64 bit integer type
+			Uint64,		///< Unsigned 64 bit integer type
+			Float32,	///< 32 bit floating point type
+			Float64,	///< 64 bit floating point type
+			Bool,		///< Boolean type
+			SizeType	///< Memory size type
+		};
+	}
+
+	////////////////////////////////////////////////////////////////
 	// Math constants
 	////////////////////////////////////////////////////////////////
 	const Float64 Pi					= 3.141592653589793f;
