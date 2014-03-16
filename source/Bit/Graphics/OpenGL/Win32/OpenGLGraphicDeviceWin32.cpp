@@ -115,6 +115,21 @@ namespace Bit
 
 	void OpenGLGraphicDeviceWin32::Close( )
 	{
+		if( m_Context )
+		{
+			// Release the context from the current thread
+			if( !wglMakeCurrent( NULL, NULL ) )
+			{
+				std::cout << "[OpenGLGraphicDeviceWin32::Close] Can not release the context.\n";
+			}
+
+			// Delete the context
+			if( !wglDeleteContext( m_Context ))
+			{
+				std::cout << "[OpenGLGraphicDeviceWin32::Close] Can not delete the context.\n";
+			}
+		}
+
 		m_Open = false;
 		m_Version.Major = 0;
 		m_Version.Minor = 0;
