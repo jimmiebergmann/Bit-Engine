@@ -22,28 +22,20 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Build.hpp>
+
+#ifdef BIT_PLATFORM_WINDOWS
+	#include <Bit/Graphics/OpenGL/Win32/OpenGLGraphicDeviceWin32.hpp>
+#elif BIT_PLATFORM_LINUX
+	#include <Bit/Graphics/OpenGL/Linux/OpenGLGraphicDeviceLinux.hpp>
+#endif
 
 namespace Bit
 {
+	#ifdef BIT_PLATFORM_WINDOWS
+		typedef OpenGLGraphicDeviceWin32 OpenGLGraphicDevice;
+	#elif BIT_PLATFORM_LINUX
+		#error No render window is available for this platform.
+	#endif
 
-	// Version definitions
-	GraphicDevice::Version::Version( const Uint32 p_Major, Uint32 p_Minor ) :
-		Major( p_Major ),
-		Minor( p_Minor )
-	{
-	}
-
-	bool GraphicDevice::Version::operator == ( const GraphicDevice::Version & p_Version ) const
-	{
-		return Major == p_Version.Major && Minor == p_Version.Minor;
-	}
-
-	GraphicDevice::Version GraphicDevice::DefaultVersion = Version( 0, 0 );
-
-	// Graphic device definitions
-	GraphicDevice::~GraphicDevice( )
-	{
-	}
-
-}
+};

@@ -22,170 +22,149 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_WINDOW_RENDER_WINDOW_WIN32_HPP
-#define BIT_WINDOW_RENDER_WINDOW_WIN32_HPP
+#ifndef BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP
+#define BIT_GRAPHICS_GRAPHIC_DEVICE_WIN32_HPP
 
 #include <Bit/Build.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
-#include <Bit/Window/Window.hpp>
-#include <Windows.h>
-#include <queue>
+
+#include <Bit/Graphics/GraphicDevice.hpp>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
-	/// \ingroup Window
-	/// \brief Render window for win32
+	/// \brief Opengl win32 Graphic device class.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API RenderWindowWin32 : public Window
+	class OpenGLGraphicDeviceWin32 : public GraphicDevice
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor
+		/// \brief Default constructor.
+		///
+		/// Initialize the graphic device with the Open function.
+		///
+		/// \see Open
 		///
 		////////////////////////////////////////////////////////////////
-		RenderWindowWin32( );
+		OpenGLGraphicDeviceWin32( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Constructor
+		/// \brief Constructor.
+		///
+		/// \param p_RenderOutput The output window.
+		/// \param p_Version The version of the graphic device context
+		///		that you would like to open.
+		///		Using the newest as possible by default.
 		///
 		////////////////////////////////////////////////////////////////
-		RenderWindowWin32( const VideoMode & p_VideoMode, const std::string & p_Title = "", const Uint32 p_Style = Style::Default );
+		OpenGLGraphicDeviceWin32( const RenderWindow & p_RenderOutput, const Version & p_Version = DefaultVersion );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Destructor
+		/// \brief Destructor.
 		///
 		////////////////////////////////////////////////////////////////
-		~RenderWindowWin32( );
+		~OpenGLGraphicDeviceWin32( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Open(create) the window.
+		/// \brief Open(create) the graphic device.
 		///
-		/// This function may be used instead of the custom constructor.
+		/// \param p_RenderOutput The output window.
+		/// \param p_Version The version of the graphic device context
+		///		that you would like to open.
+		///		Using the newest as possible by default.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool Open( const VideoMode & p_VideoMode, const std::string & p_Title = "", const Uint32 p_Style = Style::Default );
+		virtual bool Open( const RenderWindow & p_RenderOutput, const Version & p_Version = DefaultVersion );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Close the window.
+		/// \brief Close the graphic device.
 		///
 		////////////////////////////////////////////////////////////////
 		virtual void Close( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Update the window events
+		/// \brief Making this graphic device to the current one.
 		///
-		/// This function must be called in your application's loop.
+		/// This means that you can have multiple graphic devices
+		/// for a single render output, for example a window.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Update( );
+		virtual void MakeCurrent( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Poll a window event.
+		/// \brief Present the graphics, swap buffers.
 		///
-		/// This function can be used in a while loop
-		/// in order to make sure you poll all the events
-		/// in the event queue.
+		/// Call this function when you want to swap the color buffers.
+		/// This function wont clear the buffers.
 		///
-		/// Example:
-		/// 
-		/// Event e;
-		/// while( window.PollEvent( e ) )
-		/// {
-		///		// Handle the event
-		///		// ...
-		///	}
-		///
-		/// \param p_Event The current event.
-		///
-		/// \return true if function succeeded, else false.
+		/// \see ClearColor
+		/// \see ClearDepth
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool PollEvent( Event & p_Event );
+		virtual void Present( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Set the window caption(title)
-		///
-		/// \param p_Title The new title of the window
+		/// \brief Clearing the render outputs color buffer
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void SetTitle( const std::string & p_Title );
+		virtual void ClearColor( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Checks if the window is open( created ).
+		/// \brief Clearing the render outputs depth buffer
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool IsOpen( ) const;
+		virtual void ClearDepth( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Checks if the window is focused.
+		/// \brief Setting the viewport area.
+		///
+		/// \param p_Position The position of the viewport.
+		/// \param p_Size The size of the viewport.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool IsFocused( ) const;
+		virtual void SetViewport( const Vector2u32 & p_Position, const Vector2u32 & p_Size );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the window's current video mode.
+		/// \brief Setting the clear color.
+		///
+		/// All params are in the range of 0 to 255.
+		///
+		/// \param p_Red Red color component.
+		/// \param p_Green Green color component.
+		/// \param p_Blue Blue color component.
+		/// \param p_Alpha Alpha component.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual const VideoMode & GetVideoMode( ) const;
+		virtual void SetClearColor( const Uint8 p_Red, const Uint8 p_Green,
+									const Uint8 p_Blue, const Uint8 p_Alpha );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the window's caption(title)
+		/// \brief Checks if the graphic device is open.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual const std::string & GetTitle( ) const;
+		virtual Bool IsOpen( ) const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the window's device context handle.
-		///
-		/// This function is for win32 only.
+		/// \brief Get the context version
 		///
 		////////////////////////////////////////////////////////////////
-		HDC GetDeviceContextHandle( ) const;
+		virtual Version GetVersion( ) const;
 
 	private:
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Clearing all the events in the queue
-		///
-		////////////////////////////////////////////////////////////////
-		void ClearEvents( );
+		// Private functions
+		bool OpenVersion( const RenderWindow & p_RenderOutput, const Version & p_Version );
+		bool OpenBestVersion( const RenderWindow & p_RenderOutput, Version & p_Version );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Static win32 event function,
-		/// required for win32 c++ wrapper.
-		///
-		////////////////////////////////////////////////////////////////
-		static LRESULT WindowProcStatic(	HWND p_HWND, UINT p_Message,
-											WPARAM p_WParam, LPARAM p_LParam );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Win32 event function, required for win32 c++ wrapper.
-		///
-		////////////////////////////////////////////////////////////////
-		LRESULT WindowProc( HWND p_HWND, UINT p_Message,
-							WPARAM p_WParam, LPARAM p_LParam );
-
-		// Private typedefs
-		typedef std::queue< Event > EventQueue;
-
-		// Private varaibles
-		bool			m_Open;
-		bool			m_Focused;
-		VideoMode		m_VideoMode;
-		std::string		m_Title;
-		Uint32			m_Style;
-		HDC				m_DeviceContextHandle;
-		HWND			m_WindowHandle;
-		std::wstring	m_WidnowClassName;
-		bool			m_RegisteredWindowClass;
-		EventQueue		m_Events;
-		bool			m_Resizing;
-		bool			m_Moving;
+		// Private variables
+		Bool m_Open;				///< Is the GD open.
+		Version m_Version;			///< The version of the GD.
+		HDC m_DeviceContextHandle;	///< Device context handle from the render output.
+		HGLRC m_Context;			///< The OpenGL context.
 
 	};
 

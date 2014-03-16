@@ -25,12 +25,11 @@
 #ifndef BIT_GRAPHICS_OPENGL_HPP
 #define BIT_GRAPHICS_OPENGL_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Build.hpp>
 
 // Include the required headers to run opengl
-#ifdef BIT_PLATFORM_WIN32
+#ifdef BIT_PLATFORM_WINDOWS
 	#include <Windows.h>
-	#undef CreateWindow
 	#include <GL/gl.h>
 	#include <GL/glext.h>
 	#include <GL/wglext.h>
@@ -43,7 +42,7 @@
 #endif
 
 // Function for grabbing the opengl functions
-#if defined(BIT_PLATFORM_WIN32)
+#if defined(BIT_PLATFORM_WINDOWS)
 	#define glGetProcAddress( p_Ext ) wglGetProcAddress( p_Ext )
 #elif defined( BIT_PLATFORM_LINUX )
 	#define glGetProcAddress( p_Ext ) glXGetProcAddress( ( const GLubyte *) p_Ext )
@@ -212,12 +211,12 @@ namespace Bit
 	namespace OpenGL
 	{
 
-		BIT_API BIT_UINT32 BindOpenGLExtensions( const BIT_UINT32 p_Major, const BIT_UINT32 p_Minor );
-		BIT_API BIT_BOOL GetVertexObjectAvailability( );
-		BIT_API BIT_BOOL GetGeneralTextureAvailability( );
-		BIT_API BIT_BOOL GetGeneralBufferAvailability( );
-		BIT_API BIT_BOOL GetShaderAvailability( ); // Check if shaders are available
-		BIT_API BIT_BOOL GetFramebufferAvailability( ); // Check if framebuffers/renderbuffers are available
+		BIT_API Bool BindOpenGLExtensions( const Uint32 p_Major, const Uint32 p_Minor );
+		BIT_API Bool IsVertexObjectAvailability( );
+		BIT_API Bool IsGeneralTextureAvailability( );
+		BIT_API Bool IsGeneralBufferAvailability( );
+		BIT_API Bool IsShaderAvailability( ); // Check if shaders are available
+		BIT_API Bool IsFramebufferAvailability( ); // Check if framebuffers/renderbuffers are available
 
 	}
 }

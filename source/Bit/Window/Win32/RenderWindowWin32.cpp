@@ -298,24 +298,29 @@ namespace Bit
 		}
 	}
 
-	bool RenderWindowWin32::IsOpen( )
+	bool RenderWindowWin32::IsOpen( ) const
 	{
 		return m_Open;
 	}
 
-	bool RenderWindowWin32::IsFocused( )
+	bool RenderWindowWin32::IsFocused( ) const
 	{
 		return m_Focused;
 	}
 
-	VideoMode RenderWindowWin32::GetVideoMode( ) const
+	const VideoMode & RenderWindowWin32::GetVideoMode( ) const
 	{
 		return m_VideoMode;
 	}
 
-	std::string RenderWindowWin32::GetTitle( ) const
+	const std::string & RenderWindowWin32::GetTitle( ) const
 	{
 		return m_Title;
+	}
+
+	HDC RenderWindowWin32::GetDeviceContextHandle( ) const
+	{
+		return m_DeviceContextHandle;
 	}
 
 	// Private functions

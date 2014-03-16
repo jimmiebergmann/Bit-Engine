@@ -171,9 +171,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLGraphicDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
