@@ -29,10 +29,19 @@ namespace Bit
 	SmartMutex::SmartMutex( Mutex & p_Mutex ) :
 		m_Mutex( p_Mutex )
 	{
-		m_Mutex.Lock( );
 	}
 
 	SmartMutex::~SmartMutex( )
+	{
+		m_Mutex.Unlock( );
+	}
+
+	void SmartMutex::Lock( )
+	{
+		m_Mutex.Lock( );
+	}
+
+	void SmartMutex::Unlock( )
 	{
 		m_Mutex.Unlock( );
 	}
