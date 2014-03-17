@@ -86,9 +86,10 @@ namespace Bit
 		}
 	}
 
-	Bool ThreadWin32::IsRunning( ) const
+	Bool ThreadWin32::IsRunning( )
 	{
-		// (USE MUTEX HERE PLZ)
+		Bit::SmartMutex smartMutex( m_Mutex );
+		smartMutex.Lock( );
 		return m_Running;
 	}
 
@@ -97,14 +98,18 @@ namespace Bit
 		// Get the thread from the param
 		ThreadWin32 * pThread = reinterpret_cast< ThreadWin32 * >( p_pParam );
 		
-		// Mark the thread as running(USE MUTEX HERE PLZ)
+		// Mark the thread as running
+		pThread->m_Mutex.Lock( );
 		pThread->m_Running = true;
+		pThread->m_Mutex.Unlock( );
 
 		// Run the thread function and get the return value.
 		pThread->m_Function( );
 
-		// Mark the thread as not(USE MUTEX HERE PLZ)
+		// Mark the thread as not
+		pThread->m_Mutex.Lock( );
 		pThread->m_Running = false;
+		pThread->m_Mutex.Unlock( );
 
 		// Succeeded
 		return 0;

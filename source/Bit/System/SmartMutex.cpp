@@ -26,6 +26,7 @@
 
 namespace Bit
 {
+
 	SmartMutex::SmartMutex( Mutex & p_Mutex ) :
 		m_Mutex( p_Mutex )
 	{

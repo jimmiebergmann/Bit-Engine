@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
+#include <Bit/System/SmartMutex.hpp>
 #include <Windows.h>
 #include <functional>
 
@@ -95,7 +96,7 @@ namespace Bit
 		/// \return True if running, else false.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool IsRunning( ) const;
+		Bool IsRunning( );
 
 	private:
 
@@ -106,6 +107,7 @@ namespace Bit
 		Bool m_Running;			///< Thread status.
 		HANDLE m_Handle;		///< Win32 thread handle.
 		Function m_Function;	///< The thread function.
+		Mutex m_Mutex;			///< Mutex for m_Running variable,
 
 
 	};
