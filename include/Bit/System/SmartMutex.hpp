@@ -22,25 +22,47 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_WINDOW_RENDER_WINDOW_HPP
-#define BIT_WINDOW_RENDER_WINDOW_HPP
+#ifndef BIT_SYSTEM_SMART_MUTEX_HPP
+#define BIT_SYSTEM_SMART_MUTEX_HPP
 
 #include <Bit/Build.hpp>
-
-#ifdef BIT_PLATFORM_WINDOWS
-	#include <Bit/Window/Win32/RenderWindowWin32.hpp>
-#elif BIT_PLATFORM_LINUX
-	#include <Bit/Window/Linux/RenderWindowLinux.hpp>
-#endif
+#include <Bit/System/Mutex.hpp>
 
 namespace Bit
 {
-	#ifdef BIT_PLATFORM_WINDOWS
-		typedef RenderWindowWin32 RenderWindow;
-	#elif BIT_PLATFORM_LINUX
-		#error No render window is available for this platform.
-	#endif
 
-};
+	////////////////////////////////////////////////////////////////
+	/// \ingroup System
+	/// \brief Win32 mutex.
+	///
+	////////////////////////////////////////////////////////////////
+	class BIT_API SmartMutex
+	{
+
+	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Constructor.
+		///
+		/// Locking the mutex.
+		///
+		////////////////////////////////////////////////////////////////
+		SmartMutex( Mutex & p_Mutex );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor.
+		///
+		/// Unlocking the mutex.
+		///
+		////////////////////////////////////////////////////////////////
+		~SmartMutex( );
+
+	private:
+
+		Mutex & m_Mutex;
+
+	};
+
+}
 
 #endif

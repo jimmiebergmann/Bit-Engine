@@ -22,25 +22,19 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_WINDOW_RENDER_WINDOW_HPP
-#define BIT_WINDOW_RENDER_WINDOW_HPP
-
-#include <Bit/Build.hpp>
-
-#ifdef BIT_PLATFORM_WINDOWS
-	#include <Bit/Window/Win32/RenderWindowWin32.hpp>
-#elif BIT_PLATFORM_LINUX
-	#include <Bit/Window/Linux/RenderWindowLinux.hpp>
-#endif
+#include <Bit/System/SmartMutex.hpp>
 
 namespace Bit
 {
-	#ifdef BIT_PLATFORM_WINDOWS
-		typedef RenderWindowWin32 RenderWindow;
-	#elif BIT_PLATFORM_LINUX
-		#error No render window is available for this platform.
-	#endif
+	SmartMutex::SmartMutex( Mutex & p_Mutex ) :
+		m_Mutex( p_Mutex )
+	{
+		m_Mutex.Lock( );
+	}
 
-};
+	SmartMutex::~SmartMutex( )
+	{
+		m_Mutex.Unlock( );
+	}
 
-#endif
+}

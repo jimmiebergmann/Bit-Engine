@@ -22,21 +22,21 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_WINDOW_RENDER_WINDOW_HPP
-#define BIT_WINDOW_RENDER_WINDOW_HPP
+#ifndef BIT_SYSTEM_THREAD_HPP
+#define BIT_SYSTEM_THREAD_HPP
 
 #include <Bit/Build.hpp>
 
 #ifdef BIT_PLATFORM_WINDOWS
-	#include <Bit/Window/Win32/RenderWindowWin32.hpp>
+	#include <Bit/System/Win32/ThreadWin32.hpp>
 #elif BIT_PLATFORM_LINUX
-	#include <Bit/Window/Linux/RenderWindowLinux.hpp>
+	#include <Bit/System/Linux/ThreadLinux.hpp>
 #endif
 
 namespace Bit
 {
 	#ifdef BIT_PLATFORM_WINDOWS
-		typedef RenderWindowWin32 RenderWindow;
+		typedef ThreadWin32 Thread;
 	#elif BIT_PLATFORM_LINUX
 		#error No render window is available for this platform.
 	#endif

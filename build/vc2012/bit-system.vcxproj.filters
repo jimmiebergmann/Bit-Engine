@@ -10,6 +10,15 @@
     <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Mutex.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\SmartMutex.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Thread.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Win32\ThreadWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Win32\MutexWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -19,9 +28,20 @@
     <None Include="..\..\include\Bit\System\Angle.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\source\Bit\System\Math.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\SmartMutex.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Win32\MutexWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Win32\ThreadWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Win32">
+      <UniqueIdentifier>{2665ddd2-e73c-45e6-adb2-8745b7d09f55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

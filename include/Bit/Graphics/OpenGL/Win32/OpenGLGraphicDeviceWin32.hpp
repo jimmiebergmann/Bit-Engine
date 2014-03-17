@@ -33,11 +33,8 @@
 namespace Bit
 {
 
-	////////////////////////////////////////////////////////////////
-	/// \brief Opengl win32 Graphic device class.
-	///
-	////////////////////////////////////////////////////////////////
-	class OpenGLGraphicDeviceWin32 : public GraphicDevice
+	/// \ingroup Graphics
+	class BIT_API OpenGLGraphicDeviceWin32 : public GraphicDevice
 	{
 
 	public:
