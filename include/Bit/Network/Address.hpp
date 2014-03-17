@@ -22,11 +22,10 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
 #ifndef BIT_NETWORK_ADDRESS_HPP
 #define BIT_NETWORK_ADDRESS_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Build.hpp>
 #include <string>
 
 namespace Bit
@@ -34,37 +33,138 @@ namespace Bit
 	namespace Net
 	{
 
-		class Address
+		////////////////////////////////////////////////////////////////
+		/// \ingroup Network
+		/// \brief Network address class.
+		///
+		////////////////////////////////////////////////////////////////
+		class BIT_API Address
 		{
 		public:
 
-			typedef BIT_UINT64 AddressIndex;
+			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor
+			///
+			////////////////////////////////////////////////////////////////
+			Address( );
 
-			Address();
-			Address( const BIT_UINT8 p_A, const BIT_UINT8 p_B, const BIT_UINT8 p_C,
-				const BIT_UINT8 p_D, const BIT_UINT16 p_Port );
-			Address( const BIT_UINT32 p_Address, BIT_UINT16 p_Port );
-			Address( BIT_UINT16 p_Port );
-			BIT_BOOL SetAddressByString( std::string p_String );
-			BIT_UINT32 GetAddress() const;
-			BIT_UINT8 GetA() const;
-			BIT_UINT8 GetB() const;
-			BIT_UINT8 GetC() const;
-			BIT_UINT8 GetD() const;
-			BIT_UINT16 GetPort() const;
-			AddressIndex GetAddressIndex() const;
-			void SetPortValue( BIT_UINT16 p_Port );
+			////////////////////////////////////////////////////////////////
+			/// \brief Constructor
+			/// 
+			/// \param p_A First field of the address.
+			/// \param p_B Second field of the address.
+			/// \param p_C Third field of the address.
+			/// \param p_D Thourth field of the address.
+			/// \param p_Port The port.
+			///
+			////////////////////////////////////////////////////////////////
+			Address(	const Uint8 p_A, const Uint8 p_B, const Uint8 p_C,
+						const Uint8 p_D, const Uint16 p_Port );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Constructor
+			/// 
+			/// \param p_Address The address.
+			/// \param p_Port The port.
+			///
+			////////////////////////////////////////////////////////////////
+			Address( const Uint32 p_Address, Uint16 p_Port );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Constructor, initialize from a string.
+			/// 
+			/// \param p_String The input string.
+			///
+			/// \see SetAddressFromString
+			///
+			////////////////////////////////////////////////////////////////
+			Address( const std::string & p_String );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Initialize the address from a string
+			///
+			/// For example: "127.0.0.1:1234"
+			/// 
+			/// \param p_String The input string.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool SetAddressFromString( const std::string & p_String );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the address.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint32 GetAddress( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the first field of the address.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint8 GetA( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the second field of the address.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint8 GetB( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the third field of the address.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint8 GetC( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the thourth field of the address.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint8 GetD( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the port
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetPort( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the address index.
+			///
+			/// \return Unique index of the address and port.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint64 GetAddressIndex( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the first field of the address.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetPort( const Uint16 p_Port );
 			/*void SetA( BIT_UINT8 p_A );
 			void SetB( BIT_UINT8 p_B );
 			void SetC( BIT_UINT8 p_C );
 			void SetD( BIT_UINT8 p_D );*/
-			BIT_BOOL operator == (const Address & p_Address) const;
-			BIT_BOOL operator != (const Address & p_Address) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Equal to operator.
+			///
+			/// Compares two addresses.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool operator == ( const Address & p_Address ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Not equal to operator.
+			///
+			/// Compares two addresses.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool operator != ( const Address & p_Address ) const;
 
 		private:
 
-			BIT_UINT32 m_Address;
-			BIT_UINT16 m_Port;
+			// Private variables
+			Uint32 m_Address;	///< The address.
+			Uint16 m_Port;		///< The port.
 
 		};
 	}

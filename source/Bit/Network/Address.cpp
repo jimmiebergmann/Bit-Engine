@@ -22,11 +22,7 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
 #include <Bit/Network/Address.hpp>
-#include <Bit/Network.hpp>
-#include <Bit/System/Debugger.hpp>
-#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
@@ -40,45 +36,39 @@ namespace Bit
         {
 		}
 
-		Address::Address(	const BIT_UINT8 p_A, const BIT_UINT8 p_B, const BIT_UINT8 p_C,
-							const BIT_UINT8 p_D, const BIT_UINT16 p_Port ) :
+		Address::Address(	const Uint8 p_A, const Uint8 p_B, const Uint8 p_C,
+							const Uint8 p_D, const Uint16 p_Port ) :
 			m_Port( p_Port )
 		{
 			/// Bit swift the adress
 			m_Address = (p_A << 24) | (p_B << 16) | (p_C << 8) | p_D;
 		}
 
-		Address::Address( const BIT_UINT32 p_Address, const BIT_UINT16 p_Port) :
+		Address::Address( const Uint32 p_Address, const Uint16 p_Port) :
 			m_Address( p_Address ),
 			m_Port( p_Port )
 		{
 		}
 
-		Address::Address( BIT_UINT16 p_Port ) :
-			m_Address( 0 ),
-			m_Port( p_Port )
+		Bool Address::SetAddressFromString( const std::string & p_String )
 		{
-		}
-
-		BIT_BOOL Address::SetAddressByString( std::string p_String )
-		{
-			// Remove everything after the : sign if there are any
+			/*// Remove everything after the : sign if there are any
 			// and use it as the port
 			m_Port = 0;
-			BIT_SINT32 PortPos = 0;
+			Int32 PortPos = 0;
 
-			if( ( PortPos = static_cast< BIT_SINT32>( p_String.find( ':' )) ) != -1 )
+			if( ( PortPos = static_cast<Int32>( p_String.find( ':' )) ) != -1 )
 			{
 				// Make sure there's any address at all..
 				if( PortPos == 0 )
 				{
-					return BIT_FALSE;
+					return false;
 				}
 
 				// Move the position forward
 				PortPos++;
 
-				BIT_SINT32 CopyCount = p_String.size() - PortPos;
+				Int32 CopyCount = p_String.size() - PortPos;
 				// make sure there are any characters to copy
 				if( CopyCount > 0 && CopyCount <= 5 )
 				{
@@ -88,7 +78,7 @@ namespace Bit
 					PortBuffer[ CopyCount ] = '\0';
 
 					// convert it to a real short
-					m_Port = static_cast< BIT_UINT16 >( atoi( PortBuffer ) );		
+					m_Port = static_cast< Uint16 >( atoi( PortBuffer ) );		
 				}
 
 				// Let's remove the port part of the string
@@ -130,66 +120,78 @@ namespace Bit
 			}
 
 			// Return true, everything went well.
-			return BIT_TRUE;
+			return BIT_TRUE;*/
+			return false;
 		}
 
-		unsigned int Address::GetAddress() const
+		unsigned int Address::GetAddress( ) const
 		{
 			return m_Address;
 		}
-		BIT_UINT8 Address::GetA() const
+
+		Uint8 Address::GetA( ) const
 		{
-			return (BIT_UINT8) (m_Address >> 24);
+			return static_cast<Uint8>( m_Address >> 24 );
 		}
-		BIT_UINT8 Address::GetB() const
+
+		Uint8 Address::GetB( ) const
 		{
-			return (BIT_UINT8) (m_Address >> 16);
+			return static_cast<Uint8>( m_Address >> 16 );
 		}
-		BIT_UINT8 Address::GetC() const
+
+		Uint8 Address::GetC( ) const
 		{
-			return (BIT_UINT8) (m_Address >> 8);
+			return static_cast<Uint8>( m_Address >> 8 );
 		}
-		BIT_UINT8 Address::GetD() const
+
+		Uint8 Address::GetD( ) const
 		{
-			return (BIT_UINT8) (m_Address);
+			return static_cast<Uint8>( m_Address );
 		}
-		BIT_UINT16 Address::GetPort() const
+
+		Uint16 Address::GetPort( ) const
 		{
 			return m_Port;
 		}
-		Address::AddressIndex  Address::GetAddressIndex() const
+
+		Uint64 Address::GetAddressIndex( ) const
 		{
-			return (m_Address * m_Port) + m_Port;
+			return ( static_cast<Uint64>(m_Address) * static_cast<Uint64>(m_Port) ) + static_cast<Uint64>(m_Port);
 		}
 
-		void Address::SetPortValue(BIT_UINT16 p_Port)
+		void Address::SetPort( const Uint16 p_Port )
 		{
 			m_Port = p_Port;
 		}
+
 		/*void Address::SetA( BIT_UINT8 p_A )
 		{
 
 		}
+
 		void Address::SetB( BIT_UINT8 p_B )
 		{
 
 		}
+
 		void Address::SetC( BIT_UINT8 p_C )
 		{
 
 		}
+
 		void Address::SetD( BIT_UINT8 p_D )
 		{
 
 		}*/
 
-		BIT_BOOL Address::operator == (const Address & p_Address) const
+		Bool Address::operator == ( const Address & p_Address ) const
 		{
-			return m_Address == p_Address.GetAddress();
+			return m_Address == p_Address.GetAddress( );
 		}
-		BIT_BOOL Address::operator != (const Address & p_Address) const
+
+		Bool Address::operator != ( const Address & p_Address ) const
 		{
-			return m_Address != p_Address.GetAddress();
+			return m_Address != p_Address.GetAddress( );
 		}
 	}
 
