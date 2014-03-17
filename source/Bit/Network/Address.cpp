@@ -27,172 +27,164 @@
 namespace Bit
 {
 
-	namespace Net
+	Address::Address( ) :
+        m_Address( 0 )
+    {
+	}
+
+	Address::Address( const Uint8 p_A, const Uint8 p_B, const Uint8 p_C, const Uint8 p_D )
 	{
+		/// Bit swift the adress
+		m_Address = (p_A << 24) | (p_B << 16) | (p_C << 8) | p_D;
+	}
 
-		Address::Address() :
-            m_Address(0),
-            m_Port(0)
-        {
-		}
+	Address::Address( const Uint32 p_Address ) :
+		m_Address( p_Address )
+	{
+	}
 
-		Address::Address(	const Uint8 p_A, const Uint8 p_B, const Uint8 p_C,
-							const Uint8 p_D, const Uint16 p_Port ) :
-			m_Port( p_Port )
+	Address::Address( const std::string & p_String )
+	{
+		if( SetAddressFromString( p_String ) == false )
 		{
-			/// Bit swift the adress
-			m_Address = (p_A << 24) | (p_B << 16) | (p_C << 8) | p_D;
+			m_Address = 0;
 		}
+	}
 
-		Address::Address( const Uint32 p_Address, const Uint16 p_Port) :
-			m_Address( p_Address ),
-			m_Port( p_Port )
+	Bool Address::SetAddressFromString( const std::string & p_String )
+	{
+		// Example input:
+		// 1.1.1.1
+		// 127.0.0.1
+		// 192.168.0.1
+		// 123.456.789.123
+
+		// Make sure the size of the string is larger than the minimum limit
+		if( p_String.size( ) < 7 )
 		{
-		}
-
-		Bool Address::SetAddressFromString( const std::string & p_String )
-		{
-			/*// Remove everything after the : sign if there are any
-			// and use it as the port
-			m_Port = 0;
-			Int32 PortPos = 0;
-
-			if( ( PortPos = static_cast<Int32>( p_String.find( ':' )) ) != -1 )
-			{
-				// Make sure there's any address at all..
-				if( PortPos == 0 )
-				{
-					return false;
-				}
-
-				// Move the position forward
-				PortPos++;
-
-				Int32 CopyCount = p_String.size() - PortPos;
-				// make sure there are any characters to copy
-				if( CopyCount > 0 && CopyCount <= 5 )
-				{
-					// Get the port number in a string of chars
-					char PortBuffer[ 8 ];
-					p_String.copy( PortBuffer, CopyCount, PortPos );
-					PortBuffer[ CopyCount ] = '\0';
-
-					// convert it to a real short
-					m_Port = static_cast< Uint16 >( atoi( PortBuffer ) );		
-				}
-
-				// Let's remove the port part of the string
-				p_String.resize( PortPos - 1 );
-				
-			}
-
-			// Is the string a plain ip-address?
-			if( inet_addr( p_String.c_str() ) != -1 )
-			{
-				m_Address = htonl( inet_addr( p_String.c_str() ) );
-			}
-			// So check if the string is a URL
-			else
-			{
-				struct hostent *he;
-				struct in_addr **addr_list;
-
-				if( ( he = gethostbyname( p_String.c_str() ) ) == NULL )
-				{
-					//gethostbyname failed
-					///herror("gethostbyname");
-					///cout<<"Failed to resolve hostname\n";
-					
-					return BIT_FALSE;
-				}
-
-				// Get the hostname in string form
-				char * Hostname =  inet_ntoa (*( (struct in_addr *) he->h_addr_list[0] ) );
-
-				// Convert it to a string.
-				if( (m_Address = inet_addr( Hostname ) )  == -1 )
-				{
-					return BIT_FALSE;
-				}
-
-				// Convert the address to a network side number
-				m_Address = htonl( m_Address );
-			}
-
-			// Return true, everything went well.
-			return BIT_TRUE;*/
 			return false;
 		}
 
-		unsigned int Address::GetAddress( ) const
+		// Find the positions of the periods
+		SizeType periodPos[ 4 ]; // Store another period for later use.
+		SizeType currentPeriod = 0;
+		for( SizeType i = 0; i < p_String.size( ); i++ )
 		{
-			return m_Address;
+			if( p_String[ i ] == '.' )
+			{
+				// Make sure that we don't have more than 3 periods
+				if( currentPeriod > 2 )
+				{
+					break;
+				}
+
+				// Set the index of the current period
+				periodPos[ currentPeriod ] = i;
+				currentPeriod++;
+			}
 		}
 
-		Uint8 Address::GetA( ) const
+		// Make sure that we found all the periods
+		if( currentPeriod != 3 )
 		{
-			return static_cast<Uint8>( m_Address >> 24 );
+			return false;
 		}
 
-		Uint8 Address::GetB( ) const
+		// Store the address bytes
+		Uint8 adressBytes[ 4 ];
+
+		// Set the last period pos to the size of the string
+		periodPos[ 3 ] = p_String.size( );
+
+		// Let's find the address bytes from the string
+		SizeType start = 0;
+		SizeType end = periodPos[ 0 ];
+		for( SizeType i = 0; i < 4; i++ )
 		{
-			return static_cast<Uint8>( m_Address >> 16 );
+			// Cut out the number string
+			std::string newString = p_String.substr( start, end );
+
+			// Get the string as a number
+			Int32 number = atoi( newString.c_str( ) );
+				
+			// Error check the size
+			if( number < 0 || number > 255 )
+			{
+				return false;
+			}
+
+			// Set the current address byte
+			adressBytes[ i ] = static_cast<Uint32>( number );
+
+			// Set the new start and end
+			start = periodPos[ i ] + 1;
+			end = periodPos[ i + 1 ] - periodPos[ i ] - 1;
 		}
 
-		Uint8 Address::GetC( ) const
-		{
-			return static_cast<Uint8>( m_Address >> 8 );
-		}
+		// Set the new address
+		m_Address = ( adressBytes[ 0 ] << 24 )	|
+					( adressBytes[ 1 ] << 16 )	|
+					( adressBytes[ 2 ] << 8 )	|
+						adressBytes[ 3 ];
 
-		Uint8 Address::GetD( ) const
-		{
-			return static_cast<Uint8>( m_Address );
-		}
+		// Succeeded
+		return true;
+	}
 
-		Uint16 Address::GetPort( ) const
-		{
-			return m_Port;
-		}
+	unsigned int Address::GetAddress( ) const
+	{
+		return m_Address;
+	}
 
-		Uint64 Address::GetAddressIndex( ) const
-		{
-			return ( static_cast<Uint64>(m_Address) * static_cast<Uint64>(m_Port) ) + static_cast<Uint64>(m_Port);
-		}
+	Uint8 Address::GetA( ) const
+	{
+		return static_cast<Uint8>( m_Address >> 24 );
+	}
 
-		void Address::SetPort( const Uint16 p_Port )
-		{
-			m_Port = p_Port;
-		}
+	Uint8 Address::GetB( ) const
+	{
+		return static_cast<Uint8>( m_Address >> 16 );
+	}
 
-		/*void Address::SetA( BIT_UINT8 p_A )
-		{
+	Uint8 Address::GetC( ) const
+	{
+		return static_cast<Uint8>( m_Address >> 8 );
+	}
 
-		}
+	Uint8 Address::GetD( ) const
+	{
+		return static_cast<Uint8>( m_Address );
+	}
 
-		void Address::SetB( BIT_UINT8 p_B )
-		{
 
-		}
+	/*void Address::SetA( BIT_UINT8 p_A )
+	{
 
-		void Address::SetC( BIT_UINT8 p_C )
-		{
+	}
 
-		}
+	void Address::SetB( BIT_UINT8 p_B )
+	{
 
-		void Address::SetD( BIT_UINT8 p_D )
-		{
+	}
 
-		}*/
+	void Address::SetC( BIT_UINT8 p_C )
+	{
 
-		Bool Address::operator == ( const Address & p_Address ) const
-		{
-			return m_Address == p_Address.GetAddress( );
-		}
+	}
 
-		Bool Address::operator != ( const Address & p_Address ) const
-		{
-			return m_Address != p_Address.GetAddress( );
-		}
+	void Address::SetD( BIT_UINT8 p_D )
+	{
+
+	}*/
+
+	Bool Address::operator == ( const Address & p_Address ) const
+	{
+		return m_Address == p_Address.GetAddress( );
+	}
+
+	Bool Address::operator != ( const Address & p_Address ) const
+	{
+		return m_Address != p_Address.GetAddress( );
 	}
 
 }
