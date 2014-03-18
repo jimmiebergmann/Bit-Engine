@@ -7,6 +7,7 @@ Required libraries
 ---
  - X11 (Linux)
  - OpenGL
+ - Winsock2 (Windows)
  - <del>OpenAL</del> ( Not yet )
  - <del>Freetype</del> ( Not yet )
 
@@ -15,7 +16,7 @@ Installation
 ```sh
 git clone https://github.com/jimmiebergmann/Bit-Engine.git
 ```
-**Windows:** Open and build the Visual Studio 2008 solution.
+**Windows:** Open and build the Visual Studio 2012 solution.
 <br>**Linux:** Open and build the Code::Blocks 10 workspace.
 <br>Or:
 ```sh
@@ -25,10 +26,16 @@ make
 
 Usage
 ---
-Do not use the dynamic builds. They are corrupt.
-Add BIT_STATIC_LIB to your preprocessor if you are using the static libraries and<br>do not forget to link all the external libraries by yourself<br>if you are making your own project files for any OS.
+Add BIT_STATIC to your preprocessor if you are using the static libraries.
 
+Documentation
+---
+Coming soon...
 
 Examples
 ---
  - [Bit-Engine-Examples](https://github.com/jimmiebergmann/Bit-Engine-Examples/ "Bit-Engine-Examples")
+ 
+Test
+---
+ - [Bit-Test](https://github.com/jimmiebergmann/Bit-Test "Bit-Test")
