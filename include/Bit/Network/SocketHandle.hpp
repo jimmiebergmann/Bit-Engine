@@ -21,32 +21,25 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_PACKET_HPP
-#define BIT_NETWORK_PACKET_HPP
+#ifndef BIT_NETWORK_SOCKET_HANDLE_HPP
+#define BIT_NETWORK_SOCKET_HANDLE_HPP
 
 #include <Bit/Build.hpp>
 
+#ifdef BIT_PLATFORM_WINDOWS
+	#include <Windows.h>
+#elif BIT_PLATFORM_LINUX
+	#error No socket handle available for this platform.
+#endif
+
 namespace Bit
 {
+	#ifdef BIT_PLATFORM_WINDOWS
+		typedef SOCKET SocketHandle;
+	#elif BIT_PLATFORM_LINUX
+		#error No socket handle is available for this platform.
+	#endif
 
-	////////////////////////////////////////////////////////////////
-	/// \ingroup Network
-	/// \brief Network packet class
-	///
-	////////////////////////////////////////////////////////////////
-	class BIT_API Packet
-	{
-
-	public:
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor.
-		///
-		////////////////////////////////////////////////////////////////
-		Packet( );
-
-	};
-
-}
+};
 
 #endif

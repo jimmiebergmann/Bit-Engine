@@ -138,7 +138,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
     </Link>
   </ItemDefinitionGroup>
@@ -155,15 +155,25 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Network\Address.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Packet.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\TcpListener.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\TcpSocket.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Win32\SocketWin32.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Packet.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Socket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\SocketHandle.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\TcpListener.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\TcpSocket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Win32\SocketWin32.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="bit-system.vcxproj">

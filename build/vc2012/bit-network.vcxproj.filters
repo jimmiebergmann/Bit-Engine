@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Network\Address.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Win32\SocketWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\TcpListener.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\TcpSocket.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Packet.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Socket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\SocketHandle.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\TcpSocket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Win32\SocketWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\TcpListener.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Packet.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Win32">
+      <UniqueIdentifier>{94f863b8-5b8a-4e6d-9b42-68ba19d6414a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

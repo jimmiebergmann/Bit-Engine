@@ -157,25 +157,29 @@ namespace Bit
 	}
 
 
-	/*void Address::SetA( BIT_UINT8 p_A )
+	void Address::SetA( const Uint8 p_A )
 	{
-
+		m_Address &= ~( 0xFF000000 );
+		m_Address |= p_A << 24;
+	}
+	
+	void Address::SetB( const Uint8 p_B )
+	{
+		m_Address &= ~( 0xFF0000 );
+		m_Address |= p_B << 16;
 	}
 
-	void Address::SetB( BIT_UINT8 p_B )
+	void Address::SetC( const Uint8 p_C )
 	{
-
+		m_Address &= ~( 0xFF00 );
+		m_Address |= p_C << 8;
 	}
 
-	void Address::SetC( BIT_UINT8 p_C )
+	void Address::SetD( const Uint8 p_D )
 	{
-
+		m_Address &= ~( 0xFF );
+		m_Address |= p_D;
 	}
-
-	void Address::SetD( BIT_UINT8 p_D )
-	{
-
-	}*/
 
 	Bool Address::operator == ( const Address & p_Address ) const
 	{

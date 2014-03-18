@@ -97,7 +97,7 @@ namespace Bit
 	{
 		// Get the thread from the param
 		ThreadWin32 * pThread = reinterpret_cast< ThreadWin32 * >( p_pParam );
-		
+
 		// Mark the thread as running
 		pThread->m_Mutex.Lock( );
 		pThread->m_Running = true;
