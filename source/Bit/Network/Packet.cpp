@@ -31,4 +31,37 @@ namespace Bit
 	{
 	}
 
+	Packet::Packet( const void * p_pData, const SizeType p_Size )
+	{
+	}
+
+	void Packet::Set( const void * p_pData, const SizeType p_Size )
+	{
+	}
+
+	void Packet::Clear( )
+	{
+		m_Data.clear( );
+	}
+
+	SizeType Packet::GetSize( ) const
+	{
+		return m_Data.size( );
+	}
+
+	SizeType Packet::GetPosition( ) const
+	{
+		return 0;
+	}
+
+	const void * Packet::GetRawData( ) const
+	{
+		return reinterpret_cast<const void *>( m_Data.data( ) );
+	}
+
+	void Packet::SetPosition( const SizeType m_Position ) const
+	{
+		
+	}
+
 }

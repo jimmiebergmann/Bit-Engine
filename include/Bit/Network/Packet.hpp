@@ -25,13 +25,16 @@
 #define BIT_NETWORK_PACKET_HPP
 
 #include <Bit/Build.hpp>
+#include <vector>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Network
-	/// \brief Network packet class
+	/// \brief Packet class
+	///
+	/// Stores the data in network order.
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API Packet
@@ -44,6 +47,89 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Packet( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Constructor.
+		///
+		/// Initialize with data.
+		///
+		/// \param p_pData The data.
+		/// \param p_Size Data size.
+		///
+		////////////////////////////////////////////////////////////////
+		Packet( const void * p_pData, const SizeType p_Size );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the packet data.
+		///
+		/// \param p_pData The data.
+		/// \param p_Size Data size.
+		///
+		////////////////////////////////////////////////////////////////
+		void Set( const void * p_pData, const SizeType p_Size );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Clear the packet data.
+		///
+		////////////////////////////////////////////////////////////////
+		void Clear( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the packet size.
+		///
+		////////////////////////////////////////////////////////////////
+		SizeType GetSize( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the read/write position
+		///
+		////////////////////////////////////////////////////////////////
+		SizeType GetPosition( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the raw packet data
+		///
+		////////////////////////////////////////////////////////////////
+		const void * GetRawData( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the read/write position
+		///
+		/// \param m_Position Position index.
+		///
+		////////////////////////////////////////////////////////////////
+		void SetPosition( const SizeType m_Position ) const;
+
+		// Write functions
+		void WriteInt8( const Int8 p_Input );
+		void WriteUint8( const Uint8 p_Input );
+		void WriteInt16( const Int16 p_Input );
+		void WriteUint16( const Uint16 p_Input );
+		void WriteInt32( const Int32 p_Input );
+		void WriteUint32( const Uint32 p_Input );
+		void WriteInt64( const Int64 p_Input );
+		void WriteUint64( const Uint64 p_Input );
+		void WriteFloat32( const Float32 p_Input );
+		void WriteFloat64( const Float64 p_Input );
+		void WriteBool( const Bool p_Input );
+
+		// Read functions
+		Int8 ReadInt8( );
+		Uint8 ReadUint8( );
+		Int16 ReadInt16( );
+		Uint16 ReadUint16( );
+		Int32 ReadInt32( );
+		Uint32 ReadUint32( );
+		Int64 ReadInt64( );
+		Uint64 ReadUint64( );
+		Float32 ReadFloat32( );
+		Float64 ReadFloat64( );
+		Bool ReadBool( );
+		
+	private:
+
+		std::vector<Uint8> m_Data;
+
 
 	};
 
