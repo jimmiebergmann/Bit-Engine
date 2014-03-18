@@ -33,6 +33,11 @@ namespace Bit
 	{
 	}
 
+	TcpSocket::~TcpSocket( )
+	{
+		Close( );
+	}
+
 	bool TcpSocket::Connect( const Address & p_Address, const Uint16 p_Port )
 	{
 		// Create the socket

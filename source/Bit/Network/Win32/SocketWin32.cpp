@@ -33,6 +33,19 @@ namespace Bit
 	{
 	}
 
+	SocketWin32::SocketWin32( const SocketHandle & m_SocketHandle )
+	{
+		m_Handle = m_SocketHandle;
+	}
+
+	SocketWin32::~SocketWin32( )
+	{
+		if( m_Handle )
+		{
+			closesocket( m_Handle );
+		}
+	}
+
 	void SocketWin32::SetBlocking( bool p_Blocking )
 	{
 		if( m_Handle )
@@ -56,6 +69,11 @@ namespace Bit
 			closesocket( m_Handle );
 			m_Handle = 0;
 		}
+	}
+
+	void SocketWin32::SetHandle( const SocketHandle & m_SocketHandle )
+	{
+		m_Handle = m_SocketHandle;
 	}
 
 	SocketHandle SocketWin32::GetHandle( ) const
