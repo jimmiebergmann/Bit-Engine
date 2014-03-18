@@ -8,6 +8,7 @@
     <ClCompile Include="..\..\source\Bit\Network\TcpListener.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\TcpSocket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Packet.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\UdpSocket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -19,6 +20,7 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\TcpListener.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Packet.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\UdpSocket.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">

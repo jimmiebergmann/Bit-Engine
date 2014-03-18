@@ -51,7 +51,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Constructor.
 		///
-		/// Initialize with data.
+		/// Initialize the packet with data.
 		///
 		/// \param p_pData The data.
 		/// \param p_Size Data size.
@@ -125,11 +125,17 @@ namespace Bit
 		Float32 ReadFloat32( );
 		Float64 ReadFloat64( );
 		Bool ReadBool( );
+
+		// Write operator
+		// ...
+
+		// Read operator
+		// ...
 		
 	private:
 
-		std::vector<Uint8> m_Data;
-
+		// Private variables
+		std::vector<Uint8> m_Data; ///< The raw packet data.
 
 	};
 

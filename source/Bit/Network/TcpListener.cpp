@@ -59,11 +59,11 @@ namespace Bit
 		// Create an object that's holding the host data
 		sockaddr_in service;
 		service.sin_family = AF_INET;
-		service.sin_addr.s_addr = htonl(INADDR_ANY);
-		service.sin_port = htons( p_Port );
+		service.sin_addr.s_addr = htonl( INADDR_ANY );
+		service.sin_port = htons( static_cast<u_short>( p_Port ) );
 
 		// Bind
-		if( bind( m_Handle, (const sockaddr*)&service, sizeof(sockaddr_in)) == SOCKET_ERROR )
+		if( bind( m_Handle, reinterpret_cast<const sockaddr *>( &service ), sizeof( service ) ) == SOCKET_ERROR )
 		{
 			std::cout << "[TcpListener::Start] Can not bind the socket. Error: " <<  GetLastError( ) << std::endl;
 			Close( );
