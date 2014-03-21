@@ -39,6 +39,15 @@ namespace Bit
 		#error No socket is available for this platform.
 	#endif
 
+	BIT_API Uint16 Hton16( const Uint16 p_Value );
+	BIT_API Uint32 Hton32( const Uint32 p_Value );
+	BIT_API Uint64 Hton64( const Uint32 p_Value );
+
+	BIT_API Uint16 Ntoh16( const Uint16 p_Value );
+	BIT_API Uint32 Ntoh32( const Uint32 p_Value );
+	BIT_API Uint64 Ntoh64( const Uint32 p_Value );
+
+
 };
 
 #endif

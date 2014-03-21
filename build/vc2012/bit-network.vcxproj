@@ -161,7 +161,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Network\Address.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Ntp.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Packet.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Socket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\TcpListener.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\TcpSocket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\UdpSocket.cpp" />
@@ -169,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Ntp.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Packet.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Socket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\SocketHandle.hpp" />
