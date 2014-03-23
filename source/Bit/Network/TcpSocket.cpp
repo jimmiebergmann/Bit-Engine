@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/TcpSocket.hpp>
+#include <Bit/System/Sleep.hpp>
 #include <iostream>
 
 namespace Bit
@@ -38,7 +39,7 @@ namespace Bit
 		Close( );
 	}
 
-	bool TcpSocket::Connect( const Address & p_Address, const Uint16 p_Port )
+	bool TcpSocket::Connect( const Address & p_Address, const Uint16 p_Port, const Uint32 p_Timeout )
 	{
 		// Create the socket
 		if( ( m_Handle = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )
@@ -53,16 +54,79 @@ namespace Bit
 		service.sin_addr.s_addr = htonl( static_cast<u_long>( p_Address.GetAddress( ) ) );
 		service.sin_port = htons( static_cast<u_short>( p_Port ) );
 
-		// Connect
-		if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) == SOCKET_ERROR )
+		// We are not using any timeout at all.
+		if( p_Timeout == 0 )
 		{
-			std::cout << "[TcpSocket::Connect] Can not connect to the server. Error: " << GetLastError( ) << std::endl;
-
-			Close( );
-			return false;
+			if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) != SOCKET_ERROR )
+			{
+				return true;
+			}
+			else
+			{
+				std::cout << "[TcpSocket::Connect] Can not connect to the server. Error: " << GetLastError( ) << std::endl;
+				Close( );
+				return false;
+			}
 		}
 
-		return true;
+		// We are using timeout
+		// Get the blocking status.
+		Bool blocking = GetBlocking( );
+
+		// Disable socket blocking
+		if( blocking )
+		{
+			SetBlocking( false );
+		}
+
+		// Create a FD_SET, and add the m_Handle to the set
+		FD_SET fdset;
+		FD_ZERO( &fdset );
+		FD_SET( m_Handle, &fdset );
+
+		// Connect
+		if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) != SOCKET_ERROR )
+		{
+			SetBlocking( blocking );
+			return true;
+		}
+		else // The attempt to connect failed.
+		{
+			// Ignore the WSAEWOULDBLOCK error
+			DWORD lastError = GetLastError( );
+			if( lastError != WSAEWOULDBLOCK )
+			{
+				std::cout << "[TcpSocket::Connect] Can not connect to the server. Error: " << GetLastError( ) << std::endl;
+				Close( );
+				return false;
+			}
+		}
+			
+		// We failed to connect, but we are waiting for the connection to establish
+		
+		struct timeval tv;
+		tv.tv_sec = static_cast<long>( p_Timeout ) / 1000;
+		tv.tv_usec = 0;
+
+		// Select from the set
+		if( select( static_cast<int>( m_Handle ) + 1, NULL, &fdset, NULL, &tv ) > 0 )
+		{
+			// Check if the address is valid.
+			Address address = GetPeerAddress( );
+			if( address.GetAddress( ) != 0 )
+			{
+				SetBlocking( blocking );
+				return true;
+			}
+		}
+		else
+		{
+			std::cout << "[TcpSocket::Connect] Can not connect to the server. Error: " << GetLastError( ) << std::endl;
+		}
+
+		Close( );
+		SetBlocking( blocking );
+		return false;
 	}
 
 	void TcpSocket::Disconnect( )
@@ -71,12 +135,21 @@ namespace Bit
 		Close( );
 	}
 
-	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size)
+	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size )
+	{
+		return recv( m_Handle, reinterpret_cast<char*>( p_pData ), static_cast<int>( p_Size ), 0 );
+	}
+
+	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size, const Uint32 m_Timeout )
 	{
 		return recv( m_Handle, reinterpret_cast<char*>( p_pData ), static_cast<int>( p_Size ), 0 );
 	}
 
 	void TcpSocket::Receive( Packet & p_Packet )
+	{
+	}
+
+	void TcpSocket::Receive( Packet & p_Packet, const Uint32 m_Timeout )
 	{
 	}
 

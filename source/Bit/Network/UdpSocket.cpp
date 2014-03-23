@@ -121,4 +121,9 @@ namespace Bit
 		return size;
 	}
 
+	Int32 UdpSocket::Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Uint32 m_Timeout )
+	{
+		return -1;
+	}
+
 }

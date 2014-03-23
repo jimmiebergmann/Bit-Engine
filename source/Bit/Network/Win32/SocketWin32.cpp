@@ -29,11 +29,13 @@ namespace Bit
 {
 
 	SocketWin32::SocketWin32( ) :
-		m_Handle( 0 )
+		m_Handle( 0 ),
+		m_Blocking( true )
 	{
 	}
 
-	SocketWin32::SocketWin32( const SocketHandle & m_SocketHandle )
+	SocketWin32::SocketWin32( const SocketHandle & m_SocketHandle ) :
+		m_Blocking( true )
 	{
 		m_Handle = m_SocketHandle;
 	}
@@ -46,7 +48,7 @@ namespace Bit
 		}
 	}
 
-	void SocketWin32::SetBlocking( bool p_Blocking )
+	void SocketWin32::SetBlocking( Bool p_Blocking )
 	{
 		if( m_Handle )
 		{
@@ -58,8 +60,16 @@ namespace Bit
 			if ( result != NO_ERROR )
 			{
 				std::cout << "[SocketWin32::SetBlocking] Failed to set blocking. Error: " << result << std::endl;
+				return;
 			}
+
+			m_Blocking = !static_cast<Bool>( blocking );
 		}
+	}
+
+	Bool SocketWin32::GetBlocking( ) const
+	{
+		return m_Blocking;
 	}
 
 	void SocketWin32::Close( )
@@ -81,6 +91,16 @@ namespace Bit
 		return m_Handle;
 	}
 
+	Address SocketWin32::GetPeerAddress( ) const
+	{
+		// Get the address
+		sockaddr_in address;
+		int size = sizeof( address );
+		getpeername( m_Handle, reinterpret_cast<sockaddr *>( &address ), &size );
+
+		// Return the address
+		return Address( static_cast<Uint32>( ntohl( (u_long)address.sin_addr.S_un.S_addr ) ) );
+	}
 
 	// Intiialize winsock( A little hack from sfml )
 	struct WinsockInitializer

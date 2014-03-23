@@ -59,9 +59,11 @@ namespace Bit
 		///
 		/// \param p_Address Server address.
 		/// \param p_Port Server port.
+		/// \param m_Timeout Time in milliseconds until
+		///		the connection attemp timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		bool Connect( const Address & p_Address, const Uint16 p_Port );
+		bool Connect( const Address & p_Address, const Uint16 p_Port, const Uint32 p_Timeout = 0 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Disconnect the socket from the server.
@@ -76,7 +78,18 @@ namespace Bit
 		/// \param p_Size The size of the data.
 		///
 		////////////////////////////////////////////////////////////////
-		Int32 Receive( void * p_pData, const SizeType p_Size);
+		Int32 Receive( void * p_pData, const SizeType p_Size );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Receive data from server.
+		///
+		/// \param p_pData Data from server.
+		/// \param p_Size The size of the data.
+		/// \param m_Timeout Time in milliseconds until
+		///		the attemp in receiving a message timeouts.
+		///
+		////////////////////////////////////////////////////////////////
+		Int32 Receive( void * p_pData, const SizeType p_Size, const Uint32 m_Timeout );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Receive packet from server.
@@ -87,6 +100,18 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		void Receive( Packet & p_Packet );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Receive packet from server.
+		///
+		/// NOT AVAILABLE YET.
+		///
+		/// \param p_Packet Packet from server.
+		/// \param m_Timeout Time in milliseconds until
+		///		the attemp in receiving a message timeouts.
+		///
+		////////////////////////////////////////////////////////////////
+		void Receive( Packet & p_Packet, const Uint32 m_Timeout );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Send data to server.

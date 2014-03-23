@@ -88,10 +88,24 @@ namespace Bit
 		Int32 Send( const void * p_pData, const SizeType p_Size, const Address & p_Address, const Uint16 p_Port );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Receive packet
+		/// \brief Receive data packet.
+		///
+		/// \param p_pData Received data.
+		/// \param p_Size The size of the data.
 		///
 		////////////////////////////////////////////////////////////////
 		Int32 Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Receive data packet.
+		///
+		/// \param p_pData Received data.
+		/// \param p_Size The size of the data.
+		/// \param m_Timeout Time in milliseconds until
+		///		the attemp in receiving a message timeouts.
+		///
+		////////////////////////////////////////////////////////////////
+		Int32 Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Uint32 m_Timeout );
 
 	private:
 

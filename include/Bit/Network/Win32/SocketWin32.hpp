@@ -27,6 +27,7 @@
 #include <Bit/Build.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Bit/Network/SocketHandle.hpp>
+#include <Bit/Network/Address.hpp>
 
 namespace Bit
 {
@@ -72,7 +73,13 @@ namespace Bit
 		/// \param p_Blocking The blocking flag.
 		///
 		////////////////////////////////////////////////////////////////
-		void SetBlocking( bool p_Blocking );
+		void SetBlocking( Bool p_Blocking );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the blocking state
+		///
+		////////////////////////////////////////////////////////////////
+		Bool GetBlocking( ) const;
 
 	protected:
 
@@ -96,8 +103,15 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		SocketHandle GetHandle( ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Return the the address of the peer to which a socket is connected.
+		///
+		////////////////////////////////////////////////////////////////
+		Address GetPeerAddress( ) const;
+
 		// Protected varaibles
-		SocketHandle m_Handle; ///< Socket handle
+		SocketHandle m_Handle;	///< Socket handle
+		Bool m_Blocking;		///< Socket blocking state
 
 	};
 
