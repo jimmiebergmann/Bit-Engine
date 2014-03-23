@@ -23,9 +23,12 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Address.hpp>
+#include <Bit/Network/Socket.hpp>
 
 namespace Bit
 {
+
+	const Address Address::NoAddress = Address( 0 );
 
 	Address::Address( ) :
         m_Address( 0 )
@@ -54,78 +57,21 @@ namespace Bit
 	Bool Address::SetAddressFromString( const std::string & p_String )
 	{
 		// Example input:
-		// 1.1.1.1
 		// 127.0.0.1
 		// 192.168.0.1
-		// 123.456.789.123
+		// www.google.com
+		// http://www.sunet.se
+		// 0.europe.pool.ntp.org
 
-		// Make sure the size of the string is larger than the minimum limit
-		if( p_String.size( ) < 7 )
+		// Get the address
+		Address address = Socket::GetHostByName( p_String );
+		if( address == NoAddress )
 		{
 			return false;
 		}
 
-		// Find the positions of the periods
-		SizeType periodPos[ 4 ]; // Store another period for later use.
-		SizeType currentPeriod = 0;
-		for( SizeType i = 0; i < p_String.size( ); i++ )
-		{
-			if( p_String[ i ] == '.' )
-			{
-				// Make sure that we don't have more than 3 periods
-				if( currentPeriod > 2 )
-				{
-					break;
-				}
-
-				// Set the index of the current period
-				periodPos[ currentPeriod ] = i;
-				currentPeriod++;
-			}
-		}
-
-		// Make sure that we found all the periods
-		if( currentPeriod != 3 )
-		{
-			return false;
-		}
-
-		// Store the address bytes
-		Uint8 adressBytes[ 4 ];
-
-		// Set the last period pos to the size of the string
-		periodPos[ 3 ] = p_String.size( );
-
-		// Let's find the address bytes from the string
-		SizeType start = 0;
-		SizeType end = periodPos[ 0 ];
-		for( SizeType i = 0; i < 4; i++ )
-		{
-			// Cut out the number string
-			std::string newString = p_String.substr( start, end );
-
-			// Get the string as a number
-			Int32 number = atoi( newString.c_str( ) );
-				
-			// Error check the size
-			if( number < 0 || number > 255 )
-			{
-				return false;
-			}
-
-			// Set the current address byte
-			adressBytes[ i ] = static_cast<Uint32>( number );
-
-			// Set the new start and end
-			start = periodPos[ i ] + 1;
-			end = periodPos[ i + 1 ] - periodPos[ i ] - 1;
-		}
-
-		// Set the new address
-		m_Address = ( adressBytes[ 0 ] << 24 )	|
-					( adressBytes[ 1 ] << 16 )	|
-					( adressBytes[ 2 ] << 8 )	|
-						adressBytes[ 3 ];
+		// Set the internal address varaible.
+		m_Address = address.GetAddress( );
 
 		// Succeeded
 		return true;

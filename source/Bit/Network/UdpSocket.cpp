@@ -129,10 +129,8 @@ namespace Bit
 
 		// Set blocking status
 		Bool blocking = GetBlocking( );
-		if( blocking )
-		{
-			SetBlocking( false );
-		}
+		SetBlocking( false );
+
 
 		// Put the socket handle in a fdset
 		FD_SET fdset;
@@ -142,27 +140,22 @@ namespace Bit
 
 		// Set the time
 		tv.tv_sec = static_cast<long>( p_Timeout ) / 1000;
-		tv.tv_usec = 0;
+		tv.tv_usec = (static_cast<long>( p_Timeout ) % 1000 ) * 1000;
 
 		// Select from the fdset
-		if( select( static_cast<int>( m_Handle ) + 1, NULL, &fdset, NULL, &tv ) > 0 )
+		int status = 0;
+		if( ( status = select( static_cast<int>( m_Handle ) + 1, &fdset, NULL, NULL, &tv ) ) > 0 )
 		{
 			// Receive the message
-			int size = recvfrom( m_Handle,
-							reinterpret_cast<char *>( p_pData ),
-							static_cast<int>( p_Size ),
-							0,
-							reinterpret_cast< sockaddr * >( &address ),
-							&addressSize );
+			int size = recvfrom(	m_Handle,
+									reinterpret_cast<char *>( p_pData ),
+									static_cast<int>( p_Size ),
+									0,
+									reinterpret_cast< sockaddr * >( &address ),
+									&addressSize );
 			
 			// Reset the block status
 			SetBlocking( blocking );
-
-			// Return false if the size is invalid
-			if( size < 0 )
-			{
-				return -1;
-			}
 
 			// Set the address and port
 			p_Address = Address( static_cast<Uint32>( ntohl( (u_long)address.sin_addr.S_un.S_addr ) ) );
@@ -170,7 +163,7 @@ namespace Bit
 			return size;
 		}
 		
-		// Reset the block status and return false
+		// Reset the blocking status and return false
 		SetBlocking( blocking );
 		return -1;
 	}

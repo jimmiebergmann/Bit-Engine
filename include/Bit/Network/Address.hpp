@@ -157,6 +157,14 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		Bool operator != ( const Address & p_Address ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Static address for address validation.
+		///
+		/// Compares this address against any to check if it's is valid.
+		///
+		////////////////////////////////////////////////////////////////
+		static const Address NoAddress;
+
 	private:
 
 		// Private variables

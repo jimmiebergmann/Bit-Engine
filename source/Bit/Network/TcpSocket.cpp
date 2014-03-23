@@ -63,21 +63,15 @@ namespace Bit
 			}
 			else
 			{
-				std::cout << "[TcpSocket::Connect] Can not connect to the server. Error: " << GetLastError( ) << std::endl;
 				Close( );
 				return false;
 			}
 		}
 
 		// We are using timeout
-		// Get the blocking status.
+		// Get the blocking status and disable it.
 		Bool blocking = GetBlocking( );
-
-		// Disable socket blocking
-		if( blocking )
-		{
-			SetBlocking( false );
-		}
+		SetBlocking( false );
 
 		// Create a FD_SET, and add the m_Handle to the set
 		FD_SET fdset;
@@ -96,17 +90,15 @@ namespace Bit
 			DWORD lastError = GetLastError( );
 			if( lastError != WSAEWOULDBLOCK )
 			{
-				std::cout << "[TcpSocket::Connect] Can not connect to the server. Error: " << GetLastError( ) << std::endl;
 				Close( );
 				return false;
 			}
 		}
 			
 		// We failed to connect, but we are waiting for the connection to establish
-		
 		struct timeval tv;
 		tv.tv_sec = static_cast<long>( p_Timeout ) / 1000;
-		tv.tv_usec = 0;
+		tv.tv_usec = (static_cast<long>( p_Timeout ) % 1000 ) * 1000;
 
 		// Select from the set
 		if( select( static_cast<int>( m_Handle ) + 1, NULL, &fdset, NULL, &tv ) > 0 )
@@ -115,17 +107,17 @@ namespace Bit
 			Address address = GetPeerAddress( );
 			if( address.GetAddress( ) != 0 )
 			{
+				// The address is not 0, we successfully connected.
 				SetBlocking( blocking );
 				return true;
 			}
 		}
-		else
-		{
-			std::cout << "[TcpSocket::Connect] Can not connect to the server. Error: " << GetLastError( ) << std::endl;
-		}
 
+		// Failed to connect. Close the socket, and restore the blocking status.
 		Close( );
 		SetBlocking( blocking );
+
+		// Failed.
 		return false;
 	}
 
@@ -142,7 +134,44 @@ namespace Bit
 
 	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size, const Uint32 p_Timeout )
 	{
-		return recv( m_Handle, reinterpret_cast<char*>( p_pData ), static_cast<int>( p_Size ), 0 );
+		// Create a socket address storage
+		sockaddr_in address;
+		int addressSize = sizeof( address );
+
+		// Set blocking status
+		Bool blocking = GetBlocking( );
+		if( blocking )
+		{
+			SetBlocking( false );
+		}
+
+		// Put the socket handle in a fdset
+		FD_SET fdset;
+		FD_ZERO( &fdset );
+		FD_SET( m_Handle, &fdset );
+		struct timeval tv;
+
+		// Set the time
+		tv.tv_sec = static_cast<long>( p_Timeout ) / 1000;
+		tv.tv_usec = (static_cast<long>( p_Timeout ) % 1000 ) * 1000;
+
+		// Select from the fdset
+		int status = 0;
+		if( ( status = select( static_cast<int>( m_Handle ) + 1, &fdset, NULL, NULL, &tv ) ) > 0 )
+		{
+			// Receive the message
+			int size = recv( m_Handle, reinterpret_cast<char*>( p_pData ), static_cast<int>( p_Size ), 0 );
+
+			// Restore the block status
+			SetBlocking( blocking );
+
+			// return the received message's size
+			return size;
+		}
+		
+		// Reset the blocking status and return false
+		SetBlocking( blocking );
+		return status;
 	}
 
 	void TcpSocket::Receive( Packet & p_Packet )

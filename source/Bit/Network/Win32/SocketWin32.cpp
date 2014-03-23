@@ -50,6 +50,12 @@ namespace Bit
 
 	void SocketWin32::SetBlocking( Bool p_Blocking )
 	{
+		// The blocking status is already set.
+		if( m_Blocking == p_Blocking )
+		{
+			return;
+		}
+
 		if( m_Handle )
 		{
 			// If blocking = 0, blocking is enabled.
@@ -70,6 +76,29 @@ namespace Bit
 	Bool SocketWin32::GetBlocking( ) const
 	{
 		return m_Blocking;
+	}
+
+	Address SocketWin32::GetHostByName( const std::string & p_Hostname )
+	{
+		struct hostent *he;
+		struct in_addr **addr_list;
+		if( ( he = gethostbyname( p_Hostname.c_str() ) ) == NULL )
+		{
+			return Address::NoAddress;
+		}
+
+		// Get the hostname in string form
+		char * hostname =  inet_ntoa (*( (struct in_addr *) he->h_addr_list[0] ) );
+
+		// Convert it to a string.
+		Uint32 address = inet_addr( hostname );
+		if( address == INADDR_NONE )
+		{
+			return Address::NoAddress;
+		}
+
+		// Convert the address to a network side number
+		return Address( htonl( address ) );
 	}
 
 	void SocketWin32::Close( )
