@@ -25,6 +25,7 @@
 #define BIT_NETWORK_NTP_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Network/NtpTimestamp.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <vector>
 
@@ -114,16 +115,16 @@ namespace Bit
 					const Uint32 p_RootDelay = 0,
 					const Uint32 p_RootDispersion = 0,
 					const Uint32 p_ReferenceClock = 0,
-					const Uint64 p_ReferenceTimestamp = 0,
-					const Uint64 p_OriginateTimestamp = 0,
-					const Uint64 p_ReceiveTimestamp = 0,
-					const Uint64 p_TransmitTimestamp = 0 );
+					const NtpTimestamp p_ReferenceTimestamp = 0,
+					const NtpTimestamp p_OriginateTimestamp = 0,
+					const NtpTimestamp p_ReceiveTimestamp = 0,
+					const NtpTimestamp p_TransmitTimestamp = 0 );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Sets the leap indicator flag.
 			///
 			////////////////////////////////////////////////////////////////
-			void SetLeapIndicator( const eLeap p_Leap );
+			void SetLeapIndicator( const eLeap p_LeapIndicator );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Sets the protocol version.
@@ -177,25 +178,25 @@ namespace Bit
 			/// \brief Sets reference timestamp.
 			///
 			////////////////////////////////////////////////////////////////
-			void SetReferenceTimestamp( const Uint64 p_ReferenceTimestamp );
+			void SetReferenceTimestamp( const NtpTimestamp p_ReferenceTimestamp );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Sets originate timestamp.
 			///
 			////////////////////////////////////////////////////////////////
-			void SetOriginateTimestamp( const Uint64 p_OriginateTimestamp );
+			void SetOriginateTimestamp( const NtpTimestamp p_OriginateTimestamp );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Sets receive timestamp.
 			///
 			////////////////////////////////////////////////////////////////
-			void SetReceiveTimestamp( const Uint64 p_ReceiveTimestamp );
+			void SetReceiveTimestamp( const NtpTimestamp p_ReceiveTimestamp );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Sets transmit timestamp.
 			///
 			////////////////////////////////////////////////////////////////
-			void SetTransmitTimestamp( const Uint64 p_TransmitTimestamp );
+			void SetTransmitTimestamp( const NtpTimestamp p_TransmitTimestamp );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Gets the leap indicator flag.
@@ -255,39 +256,39 @@ namespace Bit
 			/// \brief Gets reference timestamp.
 			///
 			////////////////////////////////////////////////////////////////
-			Uint64 GetReferenceTimestamp( ) const;
+			NtpTimestamp GetReferenceTimestamp( ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Gets originate timestamp.
 			///
 			////////////////////////////////////////////////////////////////
-			Uint64 GetOriginateTimestamp( ) const;
+			NtpTimestamp GetOriginateTimestamp( ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Gets receive timestamp.
 			///
 			////////////////////////////////////////////////////////////////
-			Uint64 GetReceiveTimestamp( ) const;
+			NtpTimestamp GetReceiveTimestamp( ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Gets transmit timestamp.
 			///
 			////////////////////////////////////////////////////////////////
-			Uint64 GetTransmitTimestamp( ) const;
+			NtpTimestamp GetTransmitTimestamp( ) const;
 
 		private:
 
-			Uint8 m_Flags;					///< LI(Leap Indicator), VN(Version Number), Mode.
-			Uint8 m_Stratum;				///< Stratum level 0, 1 or 2-255.
-			Uint8 m_PollInterval;			///< Poll interval.
-			Uint8 m_Precision;				///< Time precision.
-			Uint32 m_RootDelay;				///< Total roundtrip delay.
-			Uint32 m_RootDispersion;		///< Maximum error.
-			Uint32 m_ReferenceClock;		///< Reference of the clock, ip / string.
-			Uint64 m_ReferenceTimestamp;	///< Client last time set.
-			Uint64 m_OriginateTimestamp;	///< Client Response send time.
-			Uint64 m_ReceiveTimestamp;		///< Host request receive time.
-			Uint64 m_TransmitTimestamp;		///< Host Response send time.
+			Uint8 m_Flags;						///< LI(Leap Indicator), VN(Version Number), Mode.
+			Uint8 m_Stratum;					///< Stratum level 0, 1 or 2-255.
+			Uint8 m_PollInterval;				///< Poll interval.
+			Uint8 m_Precision;					///< Time precision.
+			Uint32 m_RootDelay;					///< Total roundtrip delay.
+			Uint32 m_RootDispersion;			///< Maximum error.
+			Uint32 m_ReferenceClock;			///< Reference of the clock, ip / string.
+			Uint64 m_ReferenceTimestamp;		///< Client last time set.
+			Uint64 m_OriginateTimestamp;		///< Client Response send time.
+			Uint64 m_ReceiveTimestamp;			///< Host request receive time.
+			Uint64 m_TransmitTimestamp;			///< Host Response send time.
 
 		};
 

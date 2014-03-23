@@ -51,24 +51,24 @@ namespace Bit
 							const Uint32 p_RootDelay,
 							const Uint32 p_RootDispersion,
 							const Uint32 p_ReferenceClock,
-							const Uint64 p_ReferenceTimestamp,
-							const Uint64 p_OriginateTimestamp,
-							const Uint64 p_ReceiveTimestamp,
-							const Uint64 p_TransmitTimestamp ) :
+							const NtpTimestamp p_ReferenceTimestamp,
+							const NtpTimestamp p_OriginateTimestamp,
+							const NtpTimestamp p_ReceiveTimestamp,
+							const NtpTimestamp p_TransmitTimestamp ) :
 		m_Flags( 0 ),
 		m_Stratum( p_Stratum ),
 		m_PollInterval( p_PollInterval ),
 		m_Precision( p_Precision ),
-		m_RootDelay( p_RootDelay ),
-		m_RootDispersion( p_RootDispersion ),
-		m_ReferenceClock( p_ReferenceClock ),
-		m_ReferenceTimestamp( p_ReferenceTimestamp ),
-		m_OriginateTimestamp( p_OriginateTimestamp ),
-		m_ReceiveTimestamp( p_ReceiveTimestamp ),
-		m_TransmitTimestamp( p_TransmitTimestamp )
+		m_RootDelay( Hton32( p_RootDelay ) ),
+		m_RootDispersion( Hton32( p_RootDispersion ) ),
+		m_ReferenceClock( Hton32( p_ReferenceClock ) ),
+		m_ReferenceTimestamp( Hton64( p_ReferenceTimestamp.GetTimestamp( ) ) ),
+		m_OriginateTimestamp( Hton64( p_OriginateTimestamp.GetTimestamp( ) ) ),
+		m_ReceiveTimestamp( Hton64( p_ReceiveTimestamp.GetTimestamp( ) ) ),
+		m_TransmitTimestamp( Hton64( p_TransmitTimestamp.GetTimestamp( ) ) )
 	{
 		// Set the leap flag
-		Uint8 leap = ( static_cast<Uint8>( p_LeapIndicator ) << 6 );
+		Uint8 leap = ( static_cast<Uint8>( p_LeapIndicator ) << 6 ) & 0xC0;
 		m_Flags |= leap;
 
 		// Set the version flag
@@ -80,20 +80,25 @@ namespace Bit
 		m_Flags |= mode;
 	}
 
-
-	void Ntp::Header::SetLeapIndicator( const eLeap p_Leap )
+	void Ntp::Header::SetLeapIndicator( const eLeap p_LeapIndicator )
 	{
-
+		Uint8 leap = ( static_cast<Uint8>( p_LeapIndicator ) << 6 ) & 0xC0;
+		m_Flags &= 0x3F;
+		m_Flags |= leap;
 	}
 
 	void Ntp::Header::SetVersion( const Uint8 p_Version )
 	{
-
+		Uint8 version = ( p_Version << 3 ) & 0x38;
+		m_Flags &= 0xC7;
+		m_Flags |= version;
 	}
 
 	void Ntp::Header::SetMode( const eMode p_Mode )
 	{
-
+		Uint8 mode = ( static_cast<Uint8>( p_Mode ) ) & 0x07;
+		m_Flags &= 0xF8;
+		m_Flags |= mode;
 	}
 
 	void Ntp::Header::SetStratum( const Uint8 p_Stratum )
@@ -126,39 +131,42 @@ namespace Bit
 		m_ReferenceClock = Hton32( p_ReferenceClock );
 	}
 
-	void Ntp::Header::SetReferenceTimestamp( const Uint64 p_ReferenceTimestamp )
+	void Ntp::Header::SetReferenceTimestamp( const NtpTimestamp p_ReferenceTimestamp )
 	{
-		m_ReferenceTimestamp = Hton64( p_ReferenceTimestamp );
+		m_ReferenceTimestamp = Hton64( p_ReferenceTimestamp.GetTimestamp( ) );
 	}
 
-	void Ntp::Header::SetOriginateTimestamp( const Uint64 p_OriginateTimestamp )
+	void Ntp::Header::SetOriginateTimestamp( const NtpTimestamp p_OriginateTimestamp )
 	{
-		m_OriginateTimestamp = Hton64( p_OriginateTimestamp );
+		m_OriginateTimestamp = Hton64( p_OriginateTimestamp.GetTimestamp( ) );
 	}
 
-	void Ntp::Header::SetReceiveTimestamp( const Uint64 p_ReceiveTimestamp )
+	void Ntp::Header::SetReceiveTimestamp( const NtpTimestamp p_ReceiveTimestamp )
 	{
-		m_ReceiveTimestamp = Hton64( p_ReceiveTimestamp );
+		m_ReceiveTimestamp = Hton64( p_ReceiveTimestamp.GetTimestamp( ) );
 	}
 
-	void Ntp::Header::SetTransmitTimestamp( const Uint64 p_TransmitTimestamp )
+	void Ntp::Header::SetTransmitTimestamp( const NtpTimestamp p_TransmitTimestamp )
 	{
-		m_TransmitTimestamp = Hton64( p_TransmitTimestamp );
+		m_TransmitTimestamp = Hton64( p_TransmitTimestamp.GetTimestamp( ) );
 	}
 
 	Ntp::Header::eLeap Ntp::Header::GetLeapIndicator( ) const
 	{
-		return NoWarning;
+		Uint8 leap = ( m_Flags >> 6 ) & 0x03;
+		return static_cast<eLeap>( leap );
 	}
 
 	Uint8 Ntp::Header::GetVersion( ) const
 	{
-		return 0;
+		Uint8 version = ( m_Flags >> 3 ) & 0x07;
+		return version;
 	}
 
 	Ntp::Header::eMode Ntp::Header::GetMode( ) const
 	{
-		return Client;
+		Uint8 mode = m_Flags & 0x07;
+		return static_cast<eMode>( mode );
 	}
 
 	Uint8 Ntp::Header::GetStratum( ) const
@@ -191,24 +199,24 @@ namespace Bit
 		return Ntoh32( m_ReferenceClock );
 	}
 
-	Uint64 Ntp::Header::GetReferenceTimestamp( ) const
+	NtpTimestamp Ntp::Header::GetReferenceTimestamp( ) const
 	{
-		return Ntoh64( m_ReferenceTimestamp );
+		return NtpTimestamp( Ntoh64( m_ReferenceTimestamp ) );
 	}
 
-	Uint64 Ntp::Header::GetOriginateTimestamp( ) const
+	NtpTimestamp Ntp::Header::GetOriginateTimestamp( ) const
 	{
-		return Ntoh64( m_OriginateTimestamp );
+		return NtpTimestamp( Ntoh64( m_OriginateTimestamp ) );
 	}
 
-	Uint64 Ntp::Header::GetReceiveTimestamp( ) const
+	NtpTimestamp Ntp::Header::GetReceiveTimestamp( ) const
 	{
-		return Ntoh64( m_ReceiveTimestamp );
+		return NtpTimestamp( Ntoh64( m_ReceiveTimestamp ) );
 	}
 
-	Uint64 Ntp::Header::GetTransmitTimestamp( ) const
+	NtpTimestamp Ntp::Header::GetTransmitTimestamp( ) const
 	{
-		return Ntoh64( m_TransmitTimestamp );
+		return NtpTimestamp( Ntoh64( m_TransmitTimestamp ) );
 	}
 
 

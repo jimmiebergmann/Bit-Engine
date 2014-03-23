@@ -58,19 +58,19 @@ namespace Bit
 		return p_Value;
 	}
 
-	BIT_API Uint64 Hton64( const Uint32 p_Value )
+	BIT_API Uint64 Hton64( const Uint64 p_Value )
 	{
 		// Is this little endian system? Then swap byte order.
 		if( g_Endian16 == g_Endian8 )
 		{
-			return	( ( p_Value << 56 )	& 0xFF00000000000000 )	|
-					( ( p_Value << 48 )	& 0x00FF000000000000 )	|
-					( ( p_Value << 40 )	& 0x0000FF0000000000 )	|
-					( ( p_Value << 32 )	& 0x000000FF00000000 )	|
-					( ( p_Value >> 32 )	& 0x00000000FF000000 )	|
-					( ( p_Value >> 40 )	& 0x0000000000FF0000 )	|
-					( ( p_Value >> 48 )	& 0x000000000000FF00 )	|
-					( ( p_Value >> 56 )	& 0x00000000000000FF );
+			return	( ( p_Value << 56ULL )	& 0xFF00000000000000ULL )	|
+					( ( p_Value << 40ULL )	& 0x00FF000000000000ULL )	|
+					( ( p_Value << 24ULL )	& 0x0000FF0000000000ULL )	|
+					( ( p_Value << 8ULL )	& 0x000000FF00000000ULL )	|
+					( ( p_Value >> 8ULL )	& 0x00000000FF000000ULL )	|
+					( ( p_Value >> 24ULL )	& 0x0000000000FF0000ULL )	|
+					( ( p_Value >> 40ULL )	& 0x000000000000FF00ULL )	|
+					( ( p_Value >> 56ULL )	& 0x00000000000000FFULL );
 		}
 
 		// Are the bytes already in network order?
@@ -106,19 +106,19 @@ namespace Bit
 		return p_Value;
 	}
 
-	BIT_API Uint64 Ntoh64( const Uint32 p_Value )
+	BIT_API Uint64 Ntoh64( const Uint64 p_Value )
 	{
 		// Is this little endian system? Then swap byte order.
 		if( g_Endian16 == g_Endian8 )
 		{
-			return	( ( p_Value << 56 )	& 0xFF00000000000000 )	|
-					( ( p_Value << 48 )	& 0x00FF000000000000 )	|
-					( ( p_Value << 40 )	& 0x0000FF0000000000 )	|
-					( ( p_Value << 32 )	& 0x000000FF00000000 )	|
-					( ( p_Value >> 32 )	& 0x00000000FF000000 )	|
-					( ( p_Value >> 40 )	& 0x0000000000FF0000 )	|
-					( ( p_Value >> 48 )	& 0x000000000000FF00 )	|
-					( ( p_Value >> 56 )	& 0x00000000000000FF );
+			return	( ( p_Value << 56ULL )	& 0xFF00000000000000ULL )	|
+					( ( p_Value << 40ULL )	& 0x00FF000000000000ULL )	|
+					( ( p_Value << 24ULL )	& 0x0000FF0000000000ULL )	|
+					( ( p_Value << 8ULL )	& 0x000000FF00000000ULL )	|
+					( ( p_Value >> 8ULL )	& 0x00000000FF000000ULL )	|
+					( ( p_Value >> 24ULL )	& 0x0000000000FF0000ULL )	|
+					( ( p_Value >> 40ULL )	& 0x000000000000FF00ULL )	|
+					( ( p_Value >> 56ULL )	& 0x00000000000000FFULL );
 		}
 
 		// Are the bytes already in network order?
