@@ -89,7 +89,7 @@ namespace Bit
 		///		the attemp in receiving a message timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		Int32 Receive( void * p_pData, const SizeType p_Size, const Uint32 m_Timeout );
+		Int32 Receive( void * p_pData, const SizeType p_Size, const Uint32 p_Timeout );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Receive packet from server.
@@ -111,7 +111,7 @@ namespace Bit
 		///		the attemp in receiving a message timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		void Receive( Packet & p_Packet, const Uint32 m_Timeout );
+		void Receive( Packet & p_Packet, const Uint32 p_Timeout );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Send data to server.

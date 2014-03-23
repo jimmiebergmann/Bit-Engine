@@ -105,7 +105,7 @@ namespace Bit
 		///		the attemp in receiving a message timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		Int32 Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Uint32 m_Timeout );
+		Int32 Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Uint32 p_Timeout );
 
 	private:
 

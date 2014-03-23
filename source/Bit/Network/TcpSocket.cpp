@@ -140,7 +140,7 @@ namespace Bit
 		return recv( m_Handle, reinterpret_cast<char*>( p_pData ), static_cast<int>( p_Size ), 0 );
 	}
 
-	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size, const Uint32 m_Timeout )
+	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size, const Uint32 p_Timeout )
 	{
 		return recv( m_Handle, reinterpret_cast<char*>( p_pData ), static_cast<int>( p_Size ), 0 );
 	}
@@ -149,7 +149,7 @@ namespace Bit
 	{
 	}
 
-	void TcpSocket::Receive( Packet & p_Packet, const Uint32 m_Timeout )
+	void TcpSocket::Receive( Packet & p_Packet, const Uint32 p_Timeout )
 	{
 	}
 

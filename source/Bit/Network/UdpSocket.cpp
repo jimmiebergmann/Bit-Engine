@@ -121,8 +121,57 @@ namespace Bit
 		return size;
 	}
 
-	Int32 UdpSocket::Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Uint32 m_Timeout )
+	Int32 UdpSocket::Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Uint32 p_Timeout )
 	{
+		// Create a socket address storage
+		sockaddr_in address;
+		int addressSize = sizeof( address );
+
+		// Set blocking status
+		Bool blocking = GetBlocking( );
+		if( blocking )
+		{
+			SetBlocking( false );
+		}
+
+		// Put the socket handle in a fdset
+		FD_SET fdset;
+		FD_ZERO( &fdset );
+		FD_SET( m_Handle, &fdset );
+		struct timeval tv;
+
+		// Set the time
+		tv.tv_sec = static_cast<long>( p_Timeout ) / 1000;
+		tv.tv_usec = 0;
+
+		// Select from the fdset
+		if( select( static_cast<int>( m_Handle ) + 1, NULL, &fdset, NULL, &tv ) > 0 )
+		{
+			// Receive the message
+			int size = recvfrom( m_Handle,
+							reinterpret_cast<char *>( p_pData ),
+							static_cast<int>( p_Size ),
+							0,
+							reinterpret_cast< sockaddr * >( &address ),
+							&addressSize );
+			
+			// Reset the block status
+			SetBlocking( blocking );
+
+			// Return false if the size is invalid
+			if( size < 0 )
+			{
+				return -1;
+			}
+
+			// Set the address and port
+			p_Address = Address( static_cast<Uint32>( ntohl( (u_long)address.sin_addr.S_un.S_addr ) ) );
+			p_Port = static_cast<Uint16>( ntohs( address.sin_port ) );
+			return size;
+		}
+		
+		// Reset the block status and return false
+		SetBlocking( blocking );
 		return -1;
 	}
 
