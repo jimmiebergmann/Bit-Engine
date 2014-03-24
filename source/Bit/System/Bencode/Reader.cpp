@@ -208,6 +208,20 @@ namespace Bit
 					// Integer
 					case 'i':
 					{
+						// Increment the position( get rid of the 'i' character )
+						p_Position++;
+
+						// Create a string value
+						Value * value = new Value( );
+						
+						// Read the string
+						if( ReadInteger( *value, p_Input, p_Position ) == false )
+						{
+							return false;
+						}
+
+						// Add the string to the dictionary
+						(*p_Value.m_Value.Dictionary)[ key ] = value;
 					}
 					break;
 					// List
@@ -262,6 +276,46 @@ namespace Bit
 			// Set the value data
 			p_Value.m_Type = Value::String;
 			p_Value.m_Value.String = new std::string( string );
+			return true;
+		}
+
+		bool Reader::ReadInteger( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
+		{
+			// Search for an 'e'( end of integer )
+			// Look for the end sign for key length( ':' )
+			bool foundEnd = false;
+			SizeType i;
+			for( i = p_Position; i < p_Input.size( ) - 1; i++ )
+			{
+				if( p_Input[ i ] == 'e' )
+				{
+					foundEnd = true;
+					break;
+				}
+			}
+
+			// We did not found the end.
+			if( foundEnd == false )
+			{
+				return false;
+			}
+
+			// Get the integer string
+			std::string integerString = p_Input.substr( p_Position, i - p_Position );
+
+			// Convert the string to a int
+			int length = atoi( integerString.c_str( ) );
+			if( length < 0 )
+			{
+				return false;
+			}
+
+			// Set the position
+			p_Position += integerString.size( ) + 1;
+
+			// Set the value data
+			p_Value.m_Type = Value::Integer;
+			p_Value.m_Value.Integer = static_cast<Int32>( length );
 			return true;
 		}
 

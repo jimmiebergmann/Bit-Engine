@@ -22,6 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Bencode/Value.hpp>
+#include <sstream>
 
 namespace Bit
 {
@@ -125,7 +126,9 @@ namespace Bit
 				break;
 				case Integer:
 				{
-					return "[Integer]";
+					std::stringstream ss;
+					ss << m_Value.Integer;
+					return ss.str( );
 				}
 				break;
 				case List:
