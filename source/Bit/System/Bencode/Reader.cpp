@@ -214,7 +214,7 @@ namespace Bit
 						// Create a string value
 						Value * value = new Value( );
 						
-						// Read the string
+						// Read the integer
 						if( ReadInteger( *value, p_Input, p_Position ) == false )
 						{
 							return false;
@@ -232,6 +232,20 @@ namespace Bit
 					// Dictionary
 					case 'd':
 					{
+						// Increment the position( get rid of the 'd' character )
+						p_Position++;
+
+						// Create a string value
+						Value * value = new Value( );
+						
+						// Read the dictionary
+						if( ReadDictionary( *value, p_Input, p_Position ) == false )
+						{
+							return false;
+						}
+
+						// Add the string to the dictionary
+						(*p_Value.m_Value.Dictionary)[ key ] = value;
 					}
 					break;
 					// String
