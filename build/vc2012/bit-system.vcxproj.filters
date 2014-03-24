@@ -19,6 +19,18 @@
     <ClInclude Include="..\..\include\Bit\System\Win32\MutexWin32.hpp">
       <Filter>Win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Bencode\Bencode.hpp">
+      <Filter>Bencode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Bencode\Reader.hpp">
+      <Filter>Bencode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Bencode\Value.hpp">
+      <Filter>Bencode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Bencode\Writer.hpp">
+      <Filter>Bencode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -38,10 +50,22 @@
     <ClCompile Include="..\..\source\Bit\System\Win32\ThreadWin32.cpp">
       <Filter>Win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Bencode\Reader.cpp">
+      <Filter>Bencode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Bencode\Value.cpp">
+      <Filter>Bencode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Bencode\Writer.cpp">
+      <Filter>Bencode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">
       <UniqueIdentifier>{2665ddd2-e73c-45e6-adb2-8745b7d09f55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bencode">
+      <UniqueIdentifier>{d582f370-ce4b-4ae4-a245-8c332c60a29f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

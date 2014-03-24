@@ -54,10 +54,10 @@ namespace Bit
 		m_Compiled = false;
 	}
 
-	bool OpenGLShader::CompileFromFile( const std::string & p_FilePath )
+	bool OpenGLShader::CompileFromFile( const std::string & p_Filename )
 	{
 		// Use fstream for reading files.
-		std::ifstream fin( p_FilePath.c_str( ) );
+		std::ifstream fin( p_Filename.c_str( ) );
 		if( fin.is_open( ) == false )
 		{
 			return false;

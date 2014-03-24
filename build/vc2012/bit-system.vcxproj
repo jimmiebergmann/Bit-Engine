@@ -21,6 +21,10 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Build.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Angle.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Bencode\Bencode.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Bencode\Reader.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Bencode\Value.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Bencode\Writer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Mutex.hpp" />
@@ -42,6 +46,9 @@
     <None Include="..\..\include\Bit\System\Vector3.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\System\Bencode\Reader.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Bencode\Value.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Bencode\Writer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
     <ClCompile Include="..\..\source\Bit\System\SmartMutex.cpp" />

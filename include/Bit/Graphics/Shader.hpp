@@ -51,10 +51,10 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Compile the shader from a file.
 		///
-		/// \param p_FilePath File path to the shader source file.
+		/// \param p_Filename File path to the shader source file.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool CompileFromFile( const std::string & p_FilePath ) = 0;
+		virtual bool CompileFromFile( const std::string & p_Filename ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Compile the shader from memory.
