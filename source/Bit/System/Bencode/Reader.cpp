@@ -44,24 +44,70 @@ namespace Bit
 				return false;
 			}
 
-			// The first byte should be 'd'
-			if( p_Input[ 0 ] != 'd' )
+			// Store the index of the current position in the input string
+			SizeType position = 0;
+
+			// Remove spacings from the input string
+			for( position = 0; position < p_Input.size( ) - 1; position++ )
 			{
-				p_Value.m_Type = Value::Nil;
-				return false;
+				if( p_Input[ position ] != ' ' &&
+					p_Input[ position ] != '\t' &&
+					p_Input[ position ] != '\r' )
+				{
+					break;
+				}
 			}
 
 			// Create a root value, set p_Value to this value if the parsing succeeds.
 			Value root;
 
-			// Store the index of the current position in the input string
-			SizeType position = 1;
-
-			// Read the dictionary
-			if( ReadDictionary( root, p_Input, position ) == false )
+			// Read the right kind of data
+			switch( p_Input[ position ] )
 			{
-				p_Value.m_Type = Value::Nil;
-				return false;
+				// Read integer
+				case 'i':
+				{
+					position++;
+					if( ReadInteger( root, p_Input, position ) == false )
+					{
+						p_Value.m_Type = Value::Nil;
+						return false;
+					}
+				}
+				break;
+				// Read integer
+				case 'l':
+				{
+					position++;
+					if( ReadList( root, p_Input, position ) == false )
+					{
+						p_Value.m_Type = Value::Nil;
+						return false;
+					}
+				}
+				break;
+				// Read dictionary
+				case 'd':
+				{
+					position++;
+					if( ReadDictionary( root, p_Input, position ) == false )
+					{
+						p_Value.m_Type = Value::Nil;
+						return false;
+					}
+				}
+				break;
+				// String
+				default:
+				{
+					// Check if it's a string
+					if( ReadString( root, p_Input, position ) == false )
+					{
+						p_Value.m_Type = Value::Nil;
+						return false;
+					}
+				}
+				break;
 			}
 
 			// Set the paramter value to the root value
@@ -115,7 +161,7 @@ namespace Bit
 			// Look for the end sign for key length( ':' )
 			bool foundEnd = false;
 			SizeType i;
-			for( i = p_Position; i < p_Input.size( ) - 1; i++ )
+			for( i = p_Position; i < p_Input.size( ); i++ )
 			{
 				if( p_Input[ i ] == ':' )
 				{
@@ -188,7 +234,7 @@ namespace Bit
 			// Keep on looking for more values in the dictionary,
 			// until the index is running out of bound,
 			// or if we found an 'e'(end of dictionary).
-			while( p_Position < p_Input.size( ) - 1 && p_Input[ p_Position ] != 'e' )
+			while( p_Position < p_Input.size( ) && p_Input[ p_Position ] != 'e' )
 			{
 				// Get the size of the key
 				std::string key = ReadKey( p_Input, p_Position );
@@ -316,7 +362,7 @@ namespace Bit
 			// Look for the end sign for key length( ':' )
 			bool foundEnd = false;
 			SizeType i;
-			for( i = p_Position; i < p_Input.size( ) - 1; i++ )
+			for( i = p_Position; i < p_Input.size( ); i++ )
 			{
 				if( p_Input[ i ] == 'e' )
 				{
@@ -359,7 +405,7 @@ namespace Bit
 			// Keep on looking for more values in the list,
 			// until the index is running out of bound,
 			// or if we found an 'e'(end of list).
-			while( p_Position < p_Input.size( ) - 1 && p_Input[ p_Position ] != 'e' )
+			while( p_Position < p_Input.size( ) && p_Input[ p_Position ] != 'e' )
 			{
 				// Check the data type for this data field.
 				switch( p_Input[ p_Position ] )
