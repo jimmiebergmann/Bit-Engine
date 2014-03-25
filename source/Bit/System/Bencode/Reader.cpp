@@ -113,10 +113,6 @@ namespace Bit
 			// Set the paramter value to the root value
 			p_Value = root;
 
-			// Change the root value type to Nil.
-			// Otherwise, the destructor will delete the dictionary...
-			root.m_Type = Value::Nil;
-
 			// Succeeded
 			return true;
 		}

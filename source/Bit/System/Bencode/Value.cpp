@@ -180,6 +180,10 @@ namespace Bit
 				return;
 			}
 
+			// Delete the value
+			Value * pValue = *(m_Value.List->begin( ) + p_Index);
+			delete pValue;
+
 			// Erase the item
 			m_Value.List->erase( m_Value.List->begin( ) + p_Index );
 		}
