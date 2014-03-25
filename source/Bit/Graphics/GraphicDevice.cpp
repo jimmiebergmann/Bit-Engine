@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

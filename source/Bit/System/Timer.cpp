@@ -24,6 +24,7 @@
 
 #include <Bit/System/Timer.hpp>
 #include <ctime>
+#include <Bit/System/MemoryLeak.hpp>
 
 ////////////////////////////////////////////////////////////////
 // Platform dependent includes

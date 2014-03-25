@@ -25,6 +25,7 @@
 #include <Bit/Network/TcpSocket.hpp>
 #include <Bit/System/Sleep.hpp>
 #include <iostream>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

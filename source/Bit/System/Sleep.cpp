@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Sleep.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 #include <float.h>
 #ifdef BIT_PLATFORM_WINDOWS

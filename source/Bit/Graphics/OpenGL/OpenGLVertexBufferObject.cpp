@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/OpenGL/OpenGLVertexBufferObject.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

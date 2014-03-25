@@ -27,6 +27,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

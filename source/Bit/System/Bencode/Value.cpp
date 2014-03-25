@@ -23,6 +23,7 @@
 
 #include <Bit/System/Bencode/Value.hpp>
 #include <sstream>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

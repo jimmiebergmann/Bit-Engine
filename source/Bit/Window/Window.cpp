@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Window/Window.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

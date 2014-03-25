@@ -24,6 +24,7 @@
 
 
 #include <Bit/Window/VideoMode.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

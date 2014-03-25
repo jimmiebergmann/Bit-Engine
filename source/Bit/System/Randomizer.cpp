@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Randomizer.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

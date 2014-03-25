@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/SmartMutex.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

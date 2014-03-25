@@ -24,6 +24,7 @@
 
 #include <Bit/Network/UdpSocket.hpp>
 #include <iostream>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

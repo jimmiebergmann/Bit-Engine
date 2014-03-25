@@ -24,6 +24,7 @@
 
 #include <Bit/System/Win32/MutexWin32.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

@@ -22,6 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Bencode/Writer.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

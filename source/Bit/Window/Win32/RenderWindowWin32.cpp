@@ -25,6 +25,7 @@
 #include <Bit/Window/Win32/RenderWindowWin32.hpp>
 #include <sstream>
 #include <iostream>
+#include <Bit/System/MemoryLeak.hpp>
 
 #ifdef BIT_PLATFORM_WINDOWS
 

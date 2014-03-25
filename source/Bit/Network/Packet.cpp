@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Packet.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

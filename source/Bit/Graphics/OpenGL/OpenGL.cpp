@@ -25,6 +25,7 @@
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
 #include <list>
 #include <string>
+#include <Bit/System/MemoryLeak.hpp>
 
 // Opengl "private" extensions
 PFNGLGETSTRINGIPROC __glGetStringi = NULL;

@@ -24,6 +24,7 @@
 #include <Bit/Network/Win32/SocketWin32.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <iostream>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {

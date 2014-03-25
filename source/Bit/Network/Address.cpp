@@ -24,6 +24,7 @@
 
 #include <Bit/Network/Address.hpp>
 #include <Bit/Network/Socket.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
