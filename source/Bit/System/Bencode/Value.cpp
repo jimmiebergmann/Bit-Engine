@@ -166,6 +166,30 @@ namespace Bit
 			m_Value.List->push_back( pValue );
 		}
 
+		void Value::Erase( const std::string & p_Key )
+		{
+			// Make sure that this is a dictionary.
+			if( m_Type != Dictionary || !m_Value.Dictionary )
+			{
+				return;
+			}
+
+			// Find the value
+			ValueMap::iterator it = m_Value.Dictionary->find( p_Key );
+
+			// Could we find the value?
+			if( it == m_Value.Dictionary->end( ) )
+			{
+				return;
+			}
+
+			// Delete the value
+			delete it->second;
+
+			// Erase the value from the dictionary
+			m_Value.Dictionary->erase( it );
+		}
+
 		Value::eType Value::GetType( ) const
 		{
 			return m_Type;

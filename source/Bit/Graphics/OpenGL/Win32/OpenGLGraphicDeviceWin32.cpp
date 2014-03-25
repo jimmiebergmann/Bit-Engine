@@ -30,6 +30,7 @@
 #include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShaderProgram.hpp>
 #include <iostream>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
