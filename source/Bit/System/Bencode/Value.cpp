@@ -166,6 +166,24 @@ namespace Bit
 			m_Value.List->push_back( pValue );
 		}
 
+		void Value::Erase( const SizeType & p_Index )
+		{
+			// Make sure that this is a list.
+			if( m_Type != List || !m_Value.List )
+			{
+				return;
+			}
+
+			// Error check the size
+			if( p_Index >= m_Value.List->size( ) )
+			{
+				return;
+			}
+
+			// Erase the item
+			m_Value.List->erase( m_Value.List->begin( ) + p_Index );
+		}
+
 		void Value::Erase( const std::string & p_Key )
 		{
 			// Make sure that this is a dictionary.

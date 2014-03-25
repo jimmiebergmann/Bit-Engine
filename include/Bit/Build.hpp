@@ -45,7 +45,7 @@
 ////////////////////////////////////////////////////////////////
 // Define the build type ( release / debug )
 ////////////////////////////////////////////////////////////////
-#if defined( NDEBUG )
+#if defined( NDEBUG ) || !defined( _DEBUG )
 	#define BIT_BUILD_RELEASE
 #else
 	#define BIT_BUILD_DEBUG

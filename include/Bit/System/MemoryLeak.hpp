@@ -27,7 +27,7 @@
 #ifndef BIT_MEMORY_LEAK_HPP
 #define BIT_MEMORY_LEAK_HPP
 
-#include <Bit/BUild.hpp>
+#include <Bit/Build.hpp>
 
 #ifdef BIT_BUILD_DEBUG
     #ifdef BIT_PLATFORM_WINDOWS
