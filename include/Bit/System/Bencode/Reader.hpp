@@ -27,7 +27,6 @@
 #include <Bit/Build.hpp>
 #include <Bit/System/Bencode/Value.hpp>
 
-
 namespace Bit
 {
 

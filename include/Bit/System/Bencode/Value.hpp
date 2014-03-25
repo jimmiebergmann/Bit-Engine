@@ -53,6 +53,7 @@ namespace Bit
 			// Friend classes
 			friend class Reader;
 			friend class Writer;
+			friend class StyledWriter;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Bencode data type enumerator
@@ -153,15 +154,16 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			SizeType GetSize( ) const; 
-
+/*
 			////////////////////////////////////////////////////////////////
 			/// \brief Get a styled structure as a string.
 			///
-			/// This can be useful for debugging. It's like a trace function.
+			/// Makes a human readable string.
+			/// This can be useful for debugging.
 			///
 			////////////////////////////////////////////////////////////////
 			std::string GetStyledStructure( ) const; 
-			
+*/		
 			////////////////////////////////////////////////////////////////
 			/// \brief Get value as string
 			///
@@ -177,7 +179,7 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief Get value from dictionary
 			///
-			/// This fucntion will add a nil value with the dictionary
+			/// This fucntion will add a nil value to the dictionary
 			/// with the p_key paramter as it's key value
 			/// if the value can't be found in the dictionary.
 			///
@@ -185,7 +187,7 @@ namespace Bit
 			Value & operator [ ] ( const std::string & p_Key );
 
 			////////////////////////////////////////////////////////////////
-			/// \briefGet value from list
+			/// \brief Get value from list
 			///
 			////////////////////////////////////////////////////////////////
 			Value & operator [ ] ( const SizeType & p_Index );
@@ -247,18 +249,27 @@ namespace Bit
 				ValueMap * Dictionary;
 			};
 
-			// Private functions
+			////////////////////////////////////////////////////////////////
+			/// \brief Copy a value to another
+			///
+			/// This function will internally copy every single value in
+			/// for example a list or dictionary.
+			///
+			/// \param p_From Source value.
+			/// \param p_To Destination value.
+			///
+			////////////////////////////////////////////////////////////////
 			void CopyValue( const Value & p_From, Value & p_To ) const;
-
+/*
 			////////////////////////////////////////////////////////////////
 			/// \brief Get the structure of the input value.
 			///	
 			/// \param p_Value Input value.
-			/// \p_Layer Number of tabs.
+			/// \param p_Layer Number of tabs.
 			///
 			////////////////////////////////////////////////////////////////
 			void GetValueStructure( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const;
-
+*/
 			// Private varaibles
 			eType m_Type;
 			ValueHolder m_Value;

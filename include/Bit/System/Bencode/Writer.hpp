@@ -25,6 +25,7 @@
 #define BIT_SYSTEM_BENCODE_WRITER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Bencode/Value.hpp>
 
 namespace Bit
 {
@@ -52,6 +53,59 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Writer( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the value as a string.
+			///
+			/// \param p_Output The text output.
+			/// \param p_Value The value to turn into a string.
+			///
+			/// \return True if succeeded, else false.
+			///
+			////////////////////////////////////////////////////////////////
+			bool Write( std::string & p_Output, Value & p_Value );
+
+		private:
+
+			// Private functions
+			bool SetValueString( const Value & p_Value, std::string & p_Output ) const;
+
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \ingroup Bencode
+		/// \brief Bencode styled writer class.
+		///
+		/// This may just be used for debugging,
+		/// since the output string is not following the bencode protocol.
+		///
+		////////////////////////////////////////////////////////////////
+		class BIT_API StyledWriter
+		{
+
+		public:
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor
+			///
+			////////////////////////////////////////////////////////////////
+			StyledWriter( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the value as a string.
+			///
+			/// \param p_Output The text output.
+			/// \param p_Value The value to turn into a string.
+			///
+			/// \return True if succeeded, else false.
+			///
+			////////////////////////////////////////////////////////////////
+			bool Write( std::string & p_Output, Value & p_Value );
+
+		private:
+
+			// Private functions
+			bool SetValueString( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const;
 
 		};
 

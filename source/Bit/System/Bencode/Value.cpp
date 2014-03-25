@@ -248,7 +248,7 @@ namespace Bit
 
 			return static_cast<SizeType>( m_Value.List->size( ) );
 		}
-
+/*
 		std::string Value::GetStyledStructure( ) const
 		{
 			// Get this value
@@ -263,7 +263,7 @@ namespace Bit
 			// Return the structure
 			return structure;
 		}
-			
+*/			
 		std::string Value::AsString( ) const
 		{
 			// Switch the type in order to know which method you
@@ -542,7 +542,7 @@ namespace Bit
 				break;
 			}
 		}
-
+/*
 		void Value::GetValueStructure( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const
 		{
 			switch( p_Value.m_Type )
@@ -636,7 +636,7 @@ namespace Bit
 			}
 			
 		}
-
+*/
 	}
 
 }
