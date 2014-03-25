@@ -248,22 +248,7 @@ namespace Bit
 
 			return static_cast<SizeType>( m_Value.List->size( ) );
 		}
-/*
-		std::string Value::GetStyledStructure( ) const
-		{
-			// Get this value
-			Value * pValue = const_cast<Value *>( this );
-
-			// Store the structure
-			std::string structure = "";
-
-			// Create the value structure
-			GetValueStructure( *pValue, structure, 0 );
-
-			// Return the structure
-			return structure;
-		}
-*/			
+		
 		std::string Value::AsString( ) const
 		{
 			// Switch the type in order to know which method you
@@ -542,101 +527,7 @@ namespace Bit
 				break;
 			}
 		}
-/*
-		void Value::GetValueStructure( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const
-		{
-			switch( p_Value.m_Type )
-			{
-				case Integer:
-				{
-					// Get the string via a stringstream
-					std::stringstream ss;
-					ss << p_Value.m_Value.Integer;
 
-					p_Output += "(i): " + ss.str( ) + "\n";
-				}
-				break;
-				case String:
-				{
-					// Make sure that the string isn't null
-					if( !p_Value.m_Value.String )
-					{
-						p_Output.append( p_Layer, '\t' );
-						p_Output += "[NULL string]\n";
-						break;
-					}
-					p_Output += "(s): " + *p_Value.m_Value.String + "\n";
-				}
-				break;
-				case List:
-				{
-					// Make sure that the list isn't null
-					if( !p_Value.m_Value.List )
-					{
-						p_Output += "[NULL list]\n";
-						break;
-					}
-
-					// Add a 'l' to indicate that this is the start of a list
-					p_Output += "(l):\n";
-
-					// Go through the list
-					SizeType index = 0;
-					for( ValueVector::iterator it = p_Value.m_Value.List->begin( ); it != p_Value.m_Value.List->end( ); it++ )
-					{
-						// Get the index as a string
-						std::stringstream ss;
-						ss << index;
-
-						p_Output.append( p_Layer + 1, '\t' );
-						p_Output += ss.str( ) + ": ";
-
-						GetValueStructure( *(*it), p_Output, p_Layer + 1 );
-
-						index++;
-					}
-				
-					// Add a 'e' to indicate that this is the end of a list
-					p_Output.append( p_Layer, '\t' );
-					p_Output += "e\n";
-				}
-				break;
-				case Dictionary:
-				{
-					// Make sure that the dictionary isn't null
-					if( !p_Value.m_Value.Dictionary )
-					{
-						p_Output += "[NULL dictionary]\n";
-						break;
-					}
-
-					// Add a 'd' to indicate that this is the start of a dictionary
-					p_Output += "(d):\n";
-
-					// Go through all the value elements
-					for( ValueMap::iterator it = p_Value.m_Value.Dictionary->begin( ); it != p_Value.m_Value.Dictionary->end( ); it++ )
-					{
-						p_Output.append( p_Layer + 1, '\t' );
-						p_Output += it->first + " ";
-						GetValueStructure( *(it->second), p_Output, p_Layer + 1 );
-					}
-
-					// Add a 'e' to indicate that this is the end of a dictionary
-					p_Output.append( p_Layer, '\t' );
-					p_Output += "e\n";
-
-				}
-				break;
-				default: // Nil value
-				{
-					p_Output.append( p_Layer, '\t' );
-					p_Output += "[Nil]\n";
-				}
-				break;
-			}
-			
-		}
-*/
 	}
 
 }

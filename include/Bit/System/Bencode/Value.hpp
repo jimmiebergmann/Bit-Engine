@@ -154,16 +154,7 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			SizeType GetSize( ) const; 
-/*
-			////////////////////////////////////////////////////////////////
-			/// \brief Get a styled structure as a string.
-			///
-			/// Makes a human readable string.
-			/// This can be useful for debugging.
-			///
-			////////////////////////////////////////////////////////////////
-			std::string GetStyledStructure( ) const; 
-*/		
+
 			////////////////////////////////////////////////////////////////
 			/// \brief Get value as string
 			///
@@ -260,16 +251,7 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			void CopyValue( const Value & p_From, Value & p_To ) const;
-/*
-			////////////////////////////////////////////////////////////////
-			/// \brief Get the structure of the input value.
-			///	
-			/// \param p_Value Input value.
-			/// \param p_Layer Number of tabs.
-			///
-			////////////////////////////////////////////////////////////////
-			void GetValueStructure( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const;
-*/
+
 			// Private varaibles
 			eType m_Type;
 			ValueHolder m_Value;
