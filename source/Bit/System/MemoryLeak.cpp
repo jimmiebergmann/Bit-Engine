@@ -1,11 +1,11 @@
 #include <Bit/System/MemoryLeak.hpp>
 
 #ifdef BIT_BUILD_DEBUG
-#ifdef BIT_PLATFORM_WIN32
+#ifdef BIT_PLATFORM_WINDOWS
 
 namespace Bit
 {
-	BIT_API void InitMemoryLeak( void * p_pParam)
+	BIT_API void InitMemoryLeak( void * p_pParam )
 	{
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	}

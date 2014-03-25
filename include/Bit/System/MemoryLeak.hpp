@@ -27,10 +27,10 @@
 #ifndef BIT_MEMORY_LEAK_HPP
 #define BIT_MEMORY_LEAK_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/BUild.hpp>
 
 #ifdef BIT_BUILD_DEBUG
-    #ifdef BIT_PLATFORM_WIN32
+    #ifdef BIT_PLATFORM_WINDOWS
 
         #include <stdlib.h>
         #include <crtdbg.h>
@@ -39,16 +39,16 @@
 
         namespace Bit
         {
-            BIT_API void InitMemoryLeak( void * p_pParam);
+            BIT_API void InitMemoryLeak( void * p_pParam );
         }
 
-        #define bitInitMemoryLeak Bit::InitMemoryLeak
+        #define BitInitMemoryLeak Bit::InitMemoryLeak
 
     #else
-        #define bitInitMemoryLeak sizeof
+        #define BitInitMemoryLeak sizeof
     #endif
 #else
-    #define bitInitMemoryLeak sizeof
+    #define BitInitMemoryLeak sizeof
 #endif
 
 

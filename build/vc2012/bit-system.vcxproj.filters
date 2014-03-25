@@ -31,6 +31,7 @@
     <ClInclude Include="..\..\include\Bit\System\Bencode\Writer.hpp">
       <Filter>Bencode</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\MemoryLeak.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -59,6 +60,7 @@
     <ClCompile Include="..\..\source\Bit\System\Bencode\Writer.cpp">
       <Filter>Bencode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\MemoryLeak.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">

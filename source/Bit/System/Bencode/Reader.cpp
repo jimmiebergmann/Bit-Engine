@@ -77,7 +77,7 @@ namespace Bit
 		Bool Reader::ParseFromFile( const std::string & p_Filename, Value & p_Value )
 		{
 			// Open the file
-			std::ifstream fin( p_Filename );
+			std::ifstream fin( p_Filename, std::ifstream::binary );
 			if( fin.is_open( ) == false )
 			{
 				return false;
@@ -92,13 +92,15 @@ namespace Bit
 			std::string fileData;
 			fileData.reserve( fileSize );
 
-			// Read line by line
-			std::string line;
-			while( fin.eof( ) == false )
-			{
-				std::getline( fin, line );
-				fileData += line;
-			}
+			// Read the data into a buffer
+			char * pBuffer = new char[ fileSize ];
+			fin.read( pBuffer, fileSize );
+
+			// Append the buffer to a string
+			fileData.append( pBuffer, fileSize );
+
+			// Delete the buffer
+			delete pBuffer;
 
 			// Close the file
 			fin.close( );
@@ -220,13 +222,27 @@ namespace Bit
 							return false;
 						}
 
-						// Add the string to the dictionary
+						// Add the integer to the dictionary
 						(*p_Value.m_Value.Dictionary)[ key ] = value;
 					}
 					break;
 					// List
 					case 'l':
 					{
+						// Increment the position( get rid of the 'i' character )
+						p_Position++;
+
+						// Create a string value
+						Value * value = new Value( );
+						
+						// Read the integer
+						if( ReadList( *value, p_Input, p_Position ) == false )
+						{
+							return false;
+						}
+
+						// Add the list to the dictionary
+						(*p_Value.m_Value.Dictionary)[ key ] = value;
 					}
 					break;
 					// Dictionary
@@ -244,7 +260,7 @@ namespace Bit
 							return false;
 						}
 
-						// Add the string to the dictionary
+						// Add the dictionary to the dictionary
 						(*p_Value.m_Value.Dictionary)[ key ] = value;
 					}
 					break;
@@ -331,6 +347,108 @@ namespace Bit
 			p_Value.m_Type = Value::Integer;
 			p_Value.m_Value.Integer = static_cast<Int32>( length );
 			return true;
+		}
+
+		bool Reader::ReadList( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
+		{
+			// Set the value data
+			p_Value.m_Type = Value::List;
+			p_Value.m_Value.List = new Value::ValueVector;
+
+			// Keep on looking for more values in the list,
+			// until the index is running out of bound,
+			// or if we found an 'e'(end of list).
+			while( p_Position < p_Input.size( ) - 1 && p_Input[ p_Position ] != 'e' )
+			{
+				// Check the data type for this data field.
+				switch( p_Input[ p_Position ] )
+				{
+					// Integer
+					case 'i':
+					{
+						// Increment the position( get rid of the 'i' character )
+						p_Position++;
+
+						// Create a string value
+						Value * value = new Value( );
+						
+						// Read the integer
+						if( ReadInteger( *value, p_Input, p_Position ) == false )
+						{
+							return false;
+						}
+
+						// Add the integer to the list
+						(*p_Value.m_Value.List).push_back( value );
+					}
+					break;
+					// List
+					case 'l':
+					{
+						// Increment the position( get rid of the 'i' character )
+						p_Position++;
+
+						// Create a string value
+						Value * value = new Value( );
+						
+						// Read the integer
+						if( ReadList( *value, p_Input, p_Position ) == false )
+						{
+							return false;
+						}
+
+						// Add the list to the list
+						(*p_Value.m_Value.List).push_back( value );
+					}
+					break;
+					// Dictionary
+					case 'd':
+					{
+						// Increment the position( get rid of the 'd' character )
+						p_Position++;
+
+						// Create a string value
+						Value * value = new Value( );
+						
+						// Read the dictionary
+						if( ReadDictionary( *value, p_Input, p_Position ) == false )
+						{
+							return false;
+						}
+
+						// Add the dictionary to the list
+						(*p_Value.m_Value.List).push_back( value );
+					}
+					break;
+					// String
+					default:
+					{
+						// Create a string value
+						Value * value = new Value( );
+						
+						// Read the string
+						if( ReadString( *value, p_Input, p_Position ) == false )
+						{
+							return false;
+						}
+
+						// Add the string to the list
+						(*p_Value.m_Value.List).push_back( value );
+					}
+					break;
+				}
+			}
+
+			// Check if the current character is an 'e'( end of list )
+			if( p_Input[ p_Position ] != 'e' )
+			{
+				return false;
+			}
+
+			// Increment the position and return true.
+			p_Position++;
+			return true;
+
 		}
 
 	}

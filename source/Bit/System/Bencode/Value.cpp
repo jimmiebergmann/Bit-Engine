@@ -30,7 +30,7 @@ namespace Bit
 	namespace Bencode
 	{
 
-		const Value Value::NilValue = Value( Nil );
+		Value Value::NilValue = Value( Nil );
 
 		Value::Value( ) :
 			m_Type( Nil )
@@ -44,16 +44,38 @@ namespace Bit
 
 		Value::~Value( )
 		{
+			Clear( );
+		}
+
+		void Value::Clear( )
+		{
 			switch( m_Type )
 			{
+				case Integer:
+				{
+					m_Value.Integer = 0;
+				}
+				break;
 				case String:
 				{
-					delete m_Value.String;
+					if( m_Value.String )
+					{
+						delete m_Value.String;
+					}
 				}
 				break;
 				case List:
 				{
-					delete m_Value.List;
+					if( m_Value.List )
+					{
+						// Delete all the values in the list
+						for( ValueVector::iterator it = m_Value.List->begin( ); it != m_Value.List->begin( ); it++ )
+						{
+							delete *it;
+						}
+
+						delete m_Value.List;
+					}
 				}
 				break;
 				case Dictionary:
@@ -74,6 +96,73 @@ namespace Bit
 				default:
 				break;
 			}
+
+			// Set the type to Nil.
+			m_Type = Nil;
+		}
+
+		void Value::Append( const Value & p_Value )
+		{
+			// The value is not a list, turn it into a list
+			if( m_Type != List || !m_Value.List )
+			{
+				// Clear the old data first
+				Clear( );
+
+				m_Type = List;
+				m_Value.List = new ValueVector;
+			}
+
+			// Create a new value
+			Value * pValue = new Value;
+				
+			// Copy the value
+			CopyValue( p_Value, *pValue );
+	
+			// Push the new value value to the vector.
+			m_Value.List->push_back( pValue );
+		}
+
+		void Value::Append( const Int32 & p_Integer )
+		{
+			// The value is not a list, turn it into a list
+			if( m_Type != List || !m_Value.List )
+			{
+				// Clear the old data first
+				Clear( );
+
+				m_Type = List;
+				m_Value.List = new ValueVector;
+			}
+
+			// Create a value and push it to the vector
+			Value * pValue = new Value( Integer );
+			pValue->m_Value.Integer = p_Integer;
+			m_Value.List->push_back( pValue );
+		}
+
+		void Value::Append( const std::string & p_String )
+		{
+			// The value is not a list, turn it into a list
+			if( m_Type != List || !m_Value.List )
+			{
+				// Clear the old data first
+				Clear( );
+
+				m_Type = List;
+				m_Value.List = new ValueVector;
+			}
+
+			// Create a new value
+			Value * pValue = new Value( String );
+			pValue->m_Value.String = new std::string( );
+		
+			// Set the string data for the new value.
+			pValue->m_Value.String->reserve( p_String.size( ) );
+			pValue->m_Value.String->append( p_String  );
+	
+			// Push the new value value to the vector.
+			m_Value.List->push_back( pValue );
 		}
 
 		Value::eType Value::GetType( ) const
@@ -86,7 +175,7 @@ namespace Bit
 			return m_Type == Nil;
 		}
 	
-		const Value & Value::Get( const std::string & p_Key ) const
+		Value & Value::Get( const std::string & p_Key ) const
 		{
 			// This function only works for dictionaries
 			if( m_Type != Dictionary )
@@ -105,6 +194,31 @@ namespace Bit
 
 			// Return the found value.
 			return *(it->second);
+		}
+
+		SizeType Value::GetSize( ) const
+		{
+			if( m_Type != List )
+			{
+				return 0;
+			}
+
+			return static_cast<SizeType>( m_Value.List->size( ) );
+		}
+
+		std::string Value::GetStyledStructure( ) const
+		{
+			// Get this value
+			Value * pValue = const_cast<Value *>( this );
+
+			// Store the structure
+			std::string structure = "";
+
+			// Create the value structure
+			GetValueStructure( *pValue, structure, 0 );
+
+			// Return the structure
+			return structure;
 		}
 			
 		std::string Value::AsString( ) const
@@ -159,6 +273,11 @@ namespace Bit
 				break;
 				case String:
 				{
+					if( !m_Value.String )
+					{
+						return 0;
+					}
+
 					// Get the string as an int
 					return atoi( m_Value.String->c_str( ) );
 				}
@@ -181,6 +300,298 @@ namespace Bit
 			}
 
 			return 0;
+		}
+
+		Value & Value::operator [ ] ( const std::string & p_Key )
+		{
+			// This function only works for dictionaries.
+			// Turn this value into a dictionary.
+			if( m_Type != Dictionary )
+			{
+				// Clear all the old data
+				Clear( );
+				m_Type = Dictionary;
+				m_Value.Dictionary = new ValueMap;
+			}
+
+			// Find the key
+			ValueMap::iterator it = m_Value.Dictionary->find( p_Key );
+			
+			// Could not find the key, add a Nil value to the dictionary.
+			if( it == m_Value.Dictionary->end( ) )
+			{
+				// Create a value
+				Value * pValue = new Value( Nil );
+				(*m_Value.Dictionary)[ p_Key ] = pValue;
+
+				// Return the nil value you just created.
+				return *pValue;
+			}
+
+			// Return the found value.
+			return *(it->second);
+		}
+
+		Value & Value::operator [ ] ( const SizeType & p_Index )
+		{
+			// Make sure that the value is a list.
+			if( m_Type != List )
+			{
+				return NilValue;
+			}
+
+			// Error check the index.
+			if( p_Index > m_Value.List->size( ) )
+			{
+				return NilValue;
+			}
+
+			return *(*m_Value.List)[ p_Index ];
+		}
+
+
+		Value & Value::operator = ( const Value & p_Value )
+		{
+			// Always clear the old data
+			Clear( );
+
+			// Get this value's pointer
+			Value * pValue = const_cast<Value *>( this );
+
+			// Copy the value
+			CopyValue( p_Value, *pValue );
+
+			// Return this value.
+			return *pValue;
+		}
+
+		Value & Value::operator = ( const Int32 & p_Integer )
+		{
+			// The value is not an integer, turn it into an integer value.
+			if( m_Type != Integer )
+			{
+				Clear( );
+				m_Type = Integer;
+			}
+
+			// Set the string data.
+			m_Value.Integer = p_Integer;
+
+			// Return this value.
+			return *const_cast<Value *>( this );
+		}
+		
+		Value & Value::operator = ( const std::string & p_String )
+		{
+			// The value is not a string, turn it into a string value.
+			if( m_Type != String )
+			{
+				Clear( );
+				m_Type = String;
+				m_Value.String = new std::string( );
+			}
+
+			// Set the string data.
+			m_Value.String->reserve( p_String.size( ) );
+			m_Value.String->append( p_String );
+
+			// Return this value.
+			return *const_cast<Value *>( this );
+		}
+
+		bool Value::operator == ( const Value & p_Value ) const
+		{
+			return m_Type == p_Value.m_Type;
+		}
+
+		bool Value::operator != ( const Value & p_Value ) const
+		{
+			return m_Type != p_Value.m_Type;
+		}
+
+		// Private functions
+		void Value::CopyValue( const Value & p_From, Value & p_To ) const
+		{
+			// Set the type
+			p_To.m_Type = p_From.m_Type;
+			
+			// Set the data
+			switch( p_From.m_Type )
+			{
+				case Integer:
+				{
+					p_To.m_Type = Integer;
+					p_To.m_Value.Integer = p_From.m_Value.Integer;
+				}
+				break;
+				case String:
+				{
+					// Make sure that the string is valid.
+					if( !p_From.m_Value.String )
+					{
+						p_To.m_Type = Nil;
+						break;
+					}
+
+					p_To.m_Type = String;
+					p_To.m_Value.String = new std::string;
+					p_To.m_Value.String->reserve( p_From.m_Value.String->size( ) );
+					p_To.m_Value.String->append( *p_From.m_Value.String );
+					
+				}
+				break;
+				case List:
+				{
+					// Make sure that the list is valid.
+					if( !p_From.m_Value.List )
+					{
+						p_To.m_Type = Nil;
+						break;
+					}
+
+					p_To.m_Type = List;
+					p_To.m_Value.List = new ValueVector;
+
+					// Go throguh all the values in the list, and make copies of them.
+					for( ValueVector::iterator it = p_From.m_Value.List->begin( ); it != p_From.m_Value.List->end( ); it++ )
+					{
+						// Create a new value
+						Value * pValue = new Value( );
+
+						// Copy the value
+						CopyValue( *(*(it)), * pValue );
+
+						// Add the new value to the target list
+						p_To.m_Value.List->push_back( pValue );
+					}
+					
+				}
+				break;
+				case Dictionary:
+				{
+					// Make sure that the dictionary is valid.
+					if( !p_From.m_Value.Dictionary )
+					{
+						p_To.m_Type = Nil;
+						break;
+					}
+					p_To.m_Type = Dictionary;
+					p_To.m_Value.Dictionary = new ValueMap;
+
+					// Go throguh all the values in the dictionary, and make copies of them.
+					for( ValueMap::iterator it = p_From.m_Value.Dictionary->begin( ); it != p_From.m_Value.Dictionary->end( ); it++ )
+					{
+						// Create a new value
+						Value * pValue = new Value( );
+
+						// Copy the value
+						CopyValue( *(it->second), * pValue );
+
+						// Add the new value to the target dictionary
+						(*p_To.m_Value.Dictionary)[ it->first ] = pValue;
+					}
+				}
+				break;
+				default: // Nil value
+				{
+					p_To.m_Type = Nil;
+				}
+				break;
+			}
+		}
+
+		void Value::GetValueStructure( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const
+		{
+			switch( p_Value.m_Type )
+			{
+				case Integer:
+				{
+					// Get the string via a stringstream
+					std::stringstream ss;
+					ss << p_Value.m_Value.Integer;
+
+					p_Output += "(i): " + ss.str( ) + "\n";
+				}
+				break;
+				case String:
+				{
+					// Make sure that the string isn't null
+					if( !p_Value.m_Value.String )
+					{
+						p_Output.append( p_Layer, '\t' );
+						p_Output += "[NULL string]\n";
+						break;
+					}
+					p_Output += "(s): " + *p_Value.m_Value.String + "\n";
+				}
+				break;
+				case List:
+				{
+					// Make sure that the list isn't null
+					if( !p_Value.m_Value.List )
+					{
+						p_Output += "[NULL list]\n";
+						break;
+					}
+
+					// Add a 'l' to indicate that this is the start of a list
+					p_Output += "(l):\n";
+
+					// Go through the list
+					SizeType index = 0;
+					for( ValueVector::iterator it = p_Value.m_Value.List->begin( ); it != p_Value.m_Value.List->end( ); it++ )
+					{
+						// Get the index as a string
+						std::stringstream ss;
+						ss << index;
+
+						p_Output.append( p_Layer + 1, '\t' );
+						p_Output += ss.str( ) + ": ";
+
+						GetValueStructure( *(*it), p_Output, p_Layer + 1 );
+
+						index++;
+					}
+				
+					// Add a 'e' to indicate that this is the end of a list
+					p_Output.append( p_Layer, '\t' );
+					p_Output += "e\n";
+				}
+				break;
+				case Dictionary:
+				{
+					// Make sure that the dictionary isn't null
+					if( !p_Value.m_Value.Dictionary )
+					{
+						p_Output += "[NULL dictionary]\n";
+						break;
+					}
+
+					// Add a 'd' to indicate that this is the start of a dictionary
+					p_Output += "(d):\n";
+
+					// Go through all the value elements
+					for( ValueMap::iterator it = p_Value.m_Value.Dictionary->begin( ); it != p_Value.m_Value.Dictionary->end( ); it++ )
+					{
+						p_Output.append( p_Layer + 1, '\t' );
+						p_Output += it->first + " ";
+						GetValueStructure( *(it->second), p_Output, p_Layer + 1 );
+					}
+
+					// Add a 'e' to indicate that this is the end of a dictionary
+					p_Output.append( p_Layer, '\t' );
+					p_Output += "e\n";
+
+				}
+				break;
+				default: // Nil value
+				{
+					p_Output.append( p_Layer, '\t' );
+					p_Output += "[Nil]\n";
+				}
+				break;
+			}
+			
 		}
 
 	}
