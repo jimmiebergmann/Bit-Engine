@@ -70,7 +70,7 @@ namespace Bit
 					if( m_Value.List )
 					{
 						// Delete all the values in the list
-						for( ValueVector::iterator it = m_Value.List->begin( ); it != m_Value.List->begin( ); it++ )
+						for( ValueVector::iterator it = m_Value.List->begin( ); it != m_Value.List->end( ); it++ )
 						{
 							delete *it;
 						}
@@ -84,7 +84,7 @@ namespace Bit
 					if( m_Value.Dictionary )
 					{
 						// Go through the dictionary and delete all the values
-						for( ValueMap::iterator it = m_Value.Dictionary->begin( ); it != m_Value.Dictionary->begin( ); it++ )
+						for( ValueMap::iterator it = m_Value.Dictionary->begin( ); it != m_Value.Dictionary->end( ); it++ )
 						{
 							delete it->second;
 						}
