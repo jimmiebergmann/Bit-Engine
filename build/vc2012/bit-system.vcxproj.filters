@@ -32,6 +32,11 @@
       <Filter>Bencode</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\System\MemoryLeak.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Mouse.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Win32\MouseWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\MouseBase.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -61,6 +66,9 @@
       <Filter>Bencode</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\System\MemoryLeak.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">

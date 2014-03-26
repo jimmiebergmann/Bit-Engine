@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Vector2.hpp>
+#include <Bit/System/Mouse.hpp>
 
 namespace Bit
 {
@@ -60,7 +61,7 @@ namespace Bit
 		Bit::Vector2i32	Position;
 		Bit::Vector2i32	MousePosition;
 		//Keyboard::eKey Key;
-		//Mouse::eButton Button;
+		Mouse::eButton Button;
 
 	};
 

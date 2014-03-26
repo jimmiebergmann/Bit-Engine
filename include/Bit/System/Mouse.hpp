@@ -25,50 +25,23 @@
 #ifndef BIT_SYSTEM_MOUSE_HPP
 #define BIT_SYSTEM_MOUSE_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Build.hpp>
+
+#ifdef BIT_PLATFORM_WINDOWS
+	#include <Bit/System/Win32/MouseWin32.hpp>
+#elif BIT_PLATFORM_LINUX
+	#include <Bit/System/Linux/MouseLinux.hpp>
+#endif
 
 namespace Bit
 {
 
-    class BIT_API Mouse
-    {
+	#ifdef BIT_PLATFORM_WINDOWS
+		typedef MouseWin32 Mouse;
+	#elif BIT_PLATFORM_LINUX
+		#error No render window is available for this platform.
+	#endif
 
-    public:
-
-        // Public enum
-        enum eButton
-        {
-            Button_1,
-            Button_2,
-            Button_3,
-
-            Button_Count,
-            Button_None
-        };
-
-
-        // Destructor
-        virtual ~Mouse( ) { }
-
-        // Public general functions
-        virtual void Update( ) = 0;
-
-        // Button translation function for platform keys
-        virtual eButton TranslateButtonToBitKey( const BIT_UINT16 p_Button ) = 0;
-        virtual BIT_UINT16 TranslateButtonToSystemKey( const eButton p_Button ) = 0;
-
-        // Get state functions
-        virtual BIT_BOOL ButtonIsDown( const eButton p_Button ) = 0;
-        virtual BIT_BOOL ButtonIsUp( const eButton p_Button ) = 0;
-        virtual BIT_BOOL ButtonIsJustPressed( const eButton p_Button ) = 0;
-        virtual BIT_BOOL ButtonIsJustReleased( const eButton p_Button ) = 0;
-
-    };
-
-    // Use this function for mouse creation!
-	// Function for mouse allocation
-	BIT_API Mouse * CreateMouse( );
-
-}
+};
 
 #endif

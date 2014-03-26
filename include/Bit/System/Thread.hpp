@@ -35,6 +35,7 @@
 
 namespace Bit
 {
+
 	#ifdef BIT_PLATFORM_WINDOWS
 		typedef ThreadWin32 Thread;
 	#elif BIT_PLATFORM_LINUX

@@ -28,6 +28,8 @@
     <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
     <ClInclude Include="..\..\include\Bit\System\MemoryLeak.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Mouse.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\MouseBase.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Mutex.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Sleep.hpp" />
@@ -36,6 +38,7 @@
     <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Win32\MouseWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\MutexWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\ThreadWin32.hpp" />
   </ItemGroup>
@@ -55,6 +58,7 @@
     <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
     <ClCompile Include="..\..\source\Bit\System\SmartMutex.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\MutexWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\ThreadWin32.cpp" />
   </ItemGroup>
