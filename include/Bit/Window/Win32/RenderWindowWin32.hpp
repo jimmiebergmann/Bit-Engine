@@ -184,6 +184,7 @@ namespace Bit
 		std::wstring	m_WidnowClassName;
 		bool			m_RegisteredWindowClass;
 		EventQueue		m_Events;
+		Mouse			m_Mouse;
 		bool			m_Resizing;
 		bool			m_Moving;
 

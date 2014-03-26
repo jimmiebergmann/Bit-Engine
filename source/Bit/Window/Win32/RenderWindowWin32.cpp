@@ -247,6 +247,7 @@ namespace Bit
 	{
 		// Clear all the events
 		ClearEvents( );
+		m_Mouse.Update( );
 
 		// Reset the resizing / moving flags
 		m_Resizing = false;
@@ -468,37 +469,84 @@ namespace Bit
 			break;
 			case WM_MOUSEMOVE:
 			{
-				
+				// Push mouse move event
+				e.Type = Event::MouseMoved;
+				m_Events.push( e );
 			}
 			break;
 			case WM_LBUTTONDOWN:
-			{
-				
+			{ 
+				// Add mouse just pressed event
+				Bool status = m_Mouse.GetCurrentButtonState( Mouse::Left );
+				if( status == false )
+				{
+					Event e2;
+					e2.Type = Event::MouseJustPressed;
+					e2.Button = Mouse::Left;
+					m_Events.push( e2 );
+				}
+
+				// Add mouse pressed event
+				e.Type = Event::MousePressed;
+				e.Button = Mouse::Left;
+				m_Events.push( e );
 			}
 			break;
 			case WM_MBUTTONDOWN:
 			{
-				
+				// Add mouse just pressed event
+				Bool status = m_Mouse.GetCurrentButtonState( Mouse::Middle );
+				if( status == false )
+				{
+					Event e2;
+					e2.Type = Event::MouseJustPressed;
+					e2.Button = Mouse::Middle;
+					m_Events.push( e2 );
+				}
+
+				// Add mouse pressed event
+				e.Type = Event::MousePressed;
+				e.Button = Mouse::Middle;
+				m_Events.push( e );
 			}
 			break;
 			case WM_RBUTTONDOWN:
 			{
-				
+				// Add mouse just pressed event
+				Bool status = m_Mouse.GetCurrentButtonState( Mouse::Right );
+				if( status == false )
+				{
+					Event e2;
+					e2.Type = Event::MouseJustPressed;
+					e2.Button = Mouse::Right;
+					m_Events.push( e2 );
+				}
+
+				// Add mouse pressed event
+				e.Type = Event::MousePressed;
+				e.Button = Mouse::Right;
+				m_Events.push( e );
 			}
 			break;
 			case WM_LBUTTONUP:
 			{
-				
+				e.Type = Event::MouseJustReleased;
+				e.Button = Mouse::Left;
+				m_Events.push( e );
 			}
 			break;
 			case WM_MBUTTONUP:
 			{
-				
+				e.Type = Event::MouseJustReleased;
+				e.Button = Mouse::Middle;
+				m_Events.push( e );
 			}
 			break;
 			case WM_RBUTTONUP:
 			{
-				
+				e.Type = Event::MouseJustReleased;
+				e.Button = Mouse::Right;
+				m_Events.push( e );
 			}
 			break;
 			default:
