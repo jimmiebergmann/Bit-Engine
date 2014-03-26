@@ -31,8 +31,11 @@ namespace Bit
 	namespace Bencode
 	{
 
-		Value Value::NilValue = Value( Nil );
+		// Static variable members
+		const Value Value::NilValue( Nil );
+		Value Value::s_DefaultValue( Nil );
 
+		// Value definitions
 		Value::Value( ) :
 			m_Type( Nil )
 		{
@@ -41,6 +44,18 @@ namespace Bit
 		Value::Value( eType p_Type ) :
 			m_Type( p_Type )
 		{
+		}
+
+		Value::Value( const Value & p_Value )
+		{
+			// Always clear the old data
+			Clear( );
+
+			// Get this value's pointer
+			Value * pValue = const_cast<Value *>( this );
+
+			// Copy the value
+			CopyValue( p_Value, *pValue );
 		}
 
 		Value::~Value( )
@@ -222,12 +237,13 @@ namespace Bit
 			return m_Type == Nil;
 		}
 	
-		Value & Value::Get( const std::string & p_Key ) const
+		Value & Value::Get( const std::string & p_Key, const Value & p_DefaultValue ) const
 		{
 			// This function only works for dictionaries
 			if( m_Type != Dictionary )
 			{
-				return NilValue;
+				s_DefaultValue = p_DefaultValue;
+				return s_DefaultValue;
 			}
 
 			// Find the key
@@ -236,7 +252,54 @@ namespace Bit
 			// Could not find the key
 			if( it == m_Value.Dictionary->end( ) )
 			{
-				return NilValue;
+				s_DefaultValue = p_DefaultValue;
+				return s_DefaultValue;
+			}
+
+			// Return the found value.
+			return *(it->second);
+		}
+
+		Value & Value::Get( const std::string & p_Key, const Int32 & p_DefaultValue ) const
+		{
+			// This function only works for dictionaries
+			if( m_Type != Dictionary )
+			{
+				s_DefaultValue = p_DefaultValue;
+				return s_DefaultValue;
+			}
+
+			// Find the key
+			ValueMap::iterator it = m_Value.Dictionary->find( p_Key );
+			
+			// Could not find the key
+			if( it == m_Value.Dictionary->end( ) )
+			{
+				s_DefaultValue = p_DefaultValue;
+				return s_DefaultValue;
+			}
+
+			// Return the found value.
+			return *(it->second);
+		}
+
+		Value & Value::Get( const std::string & p_Key, const std::string & p_DefaultValue ) const
+		{
+			// This function only works for dictionaries
+			if( m_Type != Dictionary )
+			{
+				s_DefaultValue = p_DefaultValue;
+				return s_DefaultValue;
+			}
+
+			// Find the key
+			ValueMap::iterator it = m_Value.Dictionary->find( p_Key );
+			
+			// Could not find the key
+			if( it == m_Value.Dictionary->end( ) )
+			{
+				s_DefaultValue = p_DefaultValue;
+				return s_DefaultValue;
 			}
 
 			// Return the found value.
@@ -369,13 +432,15 @@ namespace Bit
 			// Make sure that the value is a list.
 			if( m_Type != List )
 			{
-				return NilValue;
+				s_DefaultValue.Clear( );
+				return s_DefaultValue;
 			}
 
 			// Error check the index.
 			if( p_Index > m_Value.List->size( ) )
 			{
-				return NilValue;
+				s_DefaultValue.Clear( );
+				return s_DefaultValue;
 			}
 
 			return *(*m_Value.List)[ p_Index ];

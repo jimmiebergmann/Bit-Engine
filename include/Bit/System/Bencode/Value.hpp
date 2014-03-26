@@ -81,6 +81,12 @@ namespace Bit
 			Value( eType p_Type );
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Copy constructor
+			///
+			////////////////////////////////////////////////////////////////
+			Value( const Value & p_Value );
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Destructor
 			///
 			////////////////////////////////////////////////////////////////
@@ -146,8 +152,47 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief Get value from dictionary
 			///
+			/// This function will return the requested value.
+			/// A new value will be created with the default value,
+			///	but not stored in the current value,
+			/// if the value with the given key can't be found.
+			///
+			/// \param p_Key Key for requested value..
+			/// \param p_DefaultValue Default value returned if
+			///		the value can't be found.
+			///
 			////////////////////////////////////////////////////////////////
-			Value & Get( const std::string & p_Key ) const; 
+			Value & Get( const std::string & p_Key, const Value & p_DefaultValue ) const; 
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value from dictionary
+			///
+			/// This function will return the requested value.
+			/// A new value will be created with the default value,
+			///	but not stored in the current value,
+			/// if the value with the given key can't be found.
+			///
+			/// \param p_Key Key for requested value..
+			/// \param p_DefaultValue Default value returned if
+			///		the value can't be found.
+			///
+			////////////////////////////////////////////////////////////////
+			Value & Get( const std::string & p_Key, const Int32 & p_DefaultValue ) const; 
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value from dictionary
+			///
+			/// This function will return the requested value.
+			/// A new value will be created with the default value,
+			///	but not stored in the current value,
+			/// if the value with the given key can't be found.
+			///
+			/// \param p_Key Key for requested value..
+			/// \param p_DefaultValue Default value returned if
+			///		the value can't be found.
+			///
+			////////////////////////////////////////////////////////////////
+			Value & Get( const std::string & p_Key, const std::string & p_DefaultValue ) const; 
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get size of list
@@ -223,7 +268,7 @@ namespace Bit
 			/// This value should be used as an error value.
 			///
 			////////////////////////////////////////////////////////////////
-			static Value NilValue;
+			static const Value NilValue;
 
 		private:
 
@@ -239,6 +284,19 @@ namespace Bit
 				ValueVector * List;
 				ValueMap * Dictionary;
 			};
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Static default value
+			///	
+			/// This value is being return by the Get function if
+			/// the requested value can't be found.
+			/// This value should just be temporary used and instantly copied
+			/// after receiving it from the Get function.
+			///
+			/// \see Get
+			///
+			////////////////////////////////////////////////////////////////
+			static Value s_DefaultValue;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Copy a value to another
