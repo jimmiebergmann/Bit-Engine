@@ -161,6 +161,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Network\Address.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Http.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Ntp.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\NtpTimestamp.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Packet.cpp" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Http.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Ntp.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\NtpTimestamp.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Packet.hpp" />

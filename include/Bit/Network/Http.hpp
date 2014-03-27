@@ -33,13 +33,30 @@ namespace Bit
 	/// \ingroup Network
 	/// \brief HTTP protocol class
 	///
-	/// Documentation: http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+	/// Documentation:	http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+	///					http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API Http
 	{
 
 	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Method enumeraton
+		///
+		////////////////////////////////////////////////////////////////
+		enum eMethod
+		{
+			Options,	///< Get information about the communication options available.
+			Get,		///< Retrieve whatefter information is identified by the "Request-URI"
+			Head,		///< Same as get, but does not required message-body.
+			Post,		///< Let's the client provide a block of data, for example.
+			Put,		///< Create a resource.
+			Delete,		///< Delete a resource.
+			Trace,		///< ?
+			Connect		///< Reserved for use with a proxy.
+		};
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Status code enumeraton
@@ -84,11 +101,11 @@ namespace Bit
 			Gone					= 410,	///< Requested resource is no longer available.
 			LengthRequired			= 411,	///< Server requires the "Content-Length" field, it's missing in the request.
 			PreconditionFailed		= 412,	///< Server did not receive a response from it's upstream fast enough.
-			RequestEntityTooLarge	= 413,
-			RequestUriTooLong		= 414,
-			UnsupportedMediaType	= 415,
-			RangeNotSatisfiable		= 416,
-			ExpectationFailed		= 417,
+			RequestEntityTooLarge	= 413,	///< 
+			RequestUriTooLong		= 414,	///< 
+			UnsupportedMediaType	= 415,	///< 
+			RangeNotSatisfiable		= 416,	///< 
+			ExpectationFailed		= 417,	///< 
 			
 			// Server error codes
 			InternalServerError		= 500,	///< The server could not fulfill the request.
@@ -97,7 +114,6 @@ namespace Bit
 			ServiceUnavailable		= 503,	///< The server is current unable to handle the request due to overloading or maintenance.
 			GatewayTimeout			= 504,	///< The server timeout from it's upstream.
 			VersionNotSupported		= 505	///< The server does not support the specified http protocol version.
-
 		};
 
 	private:
