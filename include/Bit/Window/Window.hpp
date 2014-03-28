@@ -54,7 +54,7 @@ namespace Bit
 		/// \brief Open(create) the window.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool Open( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style ) = 0;
+		virtual Bool Open( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the window.
@@ -91,7 +91,7 @@ namespace Bit
 		/// \return true if function succeeded, else false.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool PollEvent( Event & p_Event ) = 0;
+		virtual Bool PollEvent( Event & p_Event ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the window caption(title)
@@ -105,13 +105,13 @@ namespace Bit
 		/// \brief Checks if the window is open( created ).
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool IsOpen( ) const = 0;
+		virtual Bool IsOpen( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Checks if the window is focused.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool IsFocused( ) const = 0;
+		virtual Bool IsFocused( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the window's current video mode.

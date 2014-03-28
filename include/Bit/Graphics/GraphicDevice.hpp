@@ -67,7 +67,7 @@ namespace Bit
 			/// \brief Equal to operator
 			///
 			////////////////////////////////////////////////////////////////
-			bool operator == ( const Version & p_Version ) const;
+			Bool operator == ( const Version & p_Version ) const;
 
 			// Public variables
 			Uint32 Major;	///< Major version
@@ -94,7 +94,7 @@ namespace Bit
 		///		that you would like to open.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool Open( const RenderWindow & p_RenderOutput, const Version & p_Version ) = 0;
+		virtual Bool Open( const RenderWindow & p_RenderOutput, const Version & p_Version ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the graphic device.

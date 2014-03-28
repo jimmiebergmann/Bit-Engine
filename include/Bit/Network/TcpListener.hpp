@@ -70,7 +70,7 @@ namespace Bit
 		/// \param p_Port The server port.
 		///
 		////////////////////////////////////////////////////////////////
-		bool Start( const Uint16 p_Port );
+		Bool Start( const Uint16 p_Port );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Stop the listener
@@ -86,7 +86,7 @@ namespace Bit
 		/// \param p_TcpSocket The returned connected socket.
 		///
 		////////////////////////////////////////////////////////////////
-		bool Listen( TcpSocket & p_TcpSocket );
+		Bool Listen( TcpSocket & p_TcpSocket );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Checks if the listener is hosted.
@@ -94,7 +94,7 @@ namespace Bit
 		/// \return True if hosted, else false.
 		///
 		////////////////////////////////////////////////////////////////
-		bool IsRunning( ) const;
+		Bool IsRunning( ) const;
 
 	private:
 

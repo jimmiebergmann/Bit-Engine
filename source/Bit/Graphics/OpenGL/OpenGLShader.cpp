@@ -55,7 +55,7 @@ namespace Bit
 		m_Compiled = false;
 	}
 
-	bool OpenGLShader::CompileFromFile( const std::string & p_Filename )
+	Bool OpenGLShader::CompileFromFile( const std::string & p_Filename )
 	{
 		// Use fstream for reading files.
 		std::ifstream fin( p_Filename.c_str( ) );
@@ -89,7 +89,7 @@ namespace Bit
 		return CompileFromMemory( source );
 	}
 
-	bool OpenGLShader::CompileFromMemory( const std::string & p_Memory )
+	Bool OpenGLShader::CompileFromMemory( const std::string & p_Memory )
 	{
 		// Already compiled?
 		if( m_Compiled == true )

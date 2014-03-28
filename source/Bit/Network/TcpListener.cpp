@@ -48,7 +48,7 @@ namespace Bit
 		Close( );
 	}
 
-	bool TcpListener::Start( const Uint16 p_Port )
+	Bool TcpListener::Start( const Uint16 p_Port )
 	{
 		// Create the socket
 		if( ( m_Handle = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )
@@ -82,7 +82,7 @@ namespace Bit
 		m_Running = false;
 	}
 
-	bool TcpListener::Listen( TcpSocket & p_TcpSocket )
+	Bool TcpListener::Listen( TcpSocket & p_TcpSocket )
 	{
 		// Listen for incomming clients
 		if( listen( m_Handle, SOMAXCONN ) == SOCKET_ERROR )
@@ -106,7 +106,7 @@ namespace Bit
 		return true;
 	}
 
-	bool TcpListener::IsRunning( ) const
+	Bool TcpListener::IsRunning( ) const
 	{
 		return m_Running;
 	}

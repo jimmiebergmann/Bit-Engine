@@ -23,10 +23,186 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Http.hpp>
+#include <Bit/Network/TcpSocket.hpp>
+#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
+
+// Undefine the SetPort definition for win32 platform
+#ifdef BIT_PLATFORM_WINDOWS
+#undef SetPort
+#endif
 
 namespace Bit
 {
 
+	
+	// Global variables
+	static const std::string g_EmptyString = "";
+	static const std::string g_MethodStrings[ Http::Connect + 1 ] =
+	{
+		"", "OPTIONS", "GET", "POST", "PUT", "DELETE", "TRACE", "CONNECT"
+	};
+
+	// Http packet base class
+	void Http::HttpPacket::SetField( const std::string & p_Key, const std::string & p_Content )
+	{
+		// Check if the field already exists
+		StringMap::iterator it = m_Fields.find( p_Key );
+
+		// Add the field if it wasn't found
+		if( it == m_Fields.end( ) )
+		{
+			m_Fields[ p_Key ] = p_Content;
+
+			/// Terminate the function, we are done here.
+			return;
+		}
+
+		// Set the already existing field
+		it->second = p_Content;
+	}
+
+	const std::string & Http::HttpPacket::GetField( const std::string & p_Key ) const
+	{
+		// Find the field in the hash map.
+		StringMap::const_iterator it = m_Fields.find( p_Key );
+
+		// Return the field if it was found.
+		if( it != m_Fields.end( ) )
+		{
+			return it->second;
+		}
+
+		// Return nothing if it wasn't found.
+		return g_EmptyString;
+	}
+
+	// Request class
+	Http::Request::Request(	const Http::eMethod p_Method,
+							const std::string & p_Path,
+							const std::string & p_Protocol ) :
+		m_Method( p_Method ),
+		m_Path( p_Path ),
+		m_Protocol( p_Protocol )
+	{
+	}
+
+	void Http::Request::SetMethod( const eMethod p_Method )
+	{
+		m_Method = p_Method;
+	}
+
+	void Http::Request::SetPath( const std::string & p_Path )
+	{
+		m_Path = p_Path;
+	}
+
+	void Http::Request::SetProtocol( const std::string & p_Protocol )
+	{
+		m_Protocol = p_Protocol;
+	}
+
+	Http::eMethod Http::Request::GetMethod( ) const
+	{
+		return m_Method;
+	}
+
+	const std::string & Http::Request::GetPath( ) const
+	{
+		return m_Path;
+	}
+
+	const std::string & Http::Request::GetProtocol( ) const
+	{
+		return m_Protocol;
+	}
+
+	// Http class
+	Http::Http( ) :
+		m_Port( 80 ),
+		m_Timeout( 0 )
+	{
+	}
+
+	void Http::SetPort( const Uint16 p_Port )
+	{
+		m_Port = p_Port;
+	}
+
+	void Http::SetTimeout( const Uint32 p_Timeout )
+	{
+		m_Timeout = p_Timeout;
+	}
+
+	Bool Http::SendRequest( const Request & p_Request, HttpPacket & p_Response, const Address & p_Address )
+	{
+		// Get the request string
+		std::stringstream requestSs;
+		CreateRequestString( p_Request, requestSs );
+		const Uint32 requestSize = requestSs.str( ).size( );
+
+		// Connect to the server
+		Bit::TcpSocket tcp;
+		tcp.SetBlocking( false );
+		if( tcp.Connect( p_Address, m_Port, m_Timeout ) == false )
+		{
+			std::cout << "[Http::SendRequest] Could not connect to the server." << std::endl;
+			return false;
+		}
+
+		// Send the request
+		if( tcp.Send( reinterpret_cast<const void *>( requestSs.str( ).c_str( ) ), requestSize ) != requestSize )
+		{
+			std::cout << "[Http::SendRequest] Could not send the request." << std::endl;
+			return false;
+		}
+
+		// Receive the response
+		const SizeType bufferSize = 32;
+		Uint8 pBuffer[ bufferSize ];
+
+		if( tcp.Receive( pBuffer, bufferSize, m_Timeout ) != requestSize )
+		{
+			std::cout << "[Http::SendRequest] Could not receive the response." << std::endl;
+			return false;
+		}
+
+		// Succeeded
+		return true;
+	}
+
+	Bool Http::ParseResponsePacket( const std::string & p_Data, HttpPacket & p_Packet )
+	{
+
+		return false;
+	}
+
+	void Http::CreateRequestString( const Http::Request & p_Request, std::stringstream & p_StringStream )
+	{
+		// Clear the string stream
+		if( p_StringStream.str( ).size( ) )
+		{
+			p_StringStream.clear( );
+		}
+
+		// Add the request line
+		p_StringStream << g_MethodStrings[ static_cast<SizeType>( p_Request.GetMethod( ) ) ];
+		p_StringStream << " ";
+		p_StringStream << p_Request.GetPath( );
+		p_StringStream << " ";
+		p_StringStream << p_Request.GetProtocol( );
+		p_StringStream << "\r\n";
+
+		// Add the fields
+		for(	HttpPacket::StringMap::const_iterator it = p_Request.m_Fields.begin( );
+				it != p_Request.m_Fields.end( );
+				it++ )
+		{
+			p_StringStream << it->first;
+			p_StringStream << ": ";
+			p_StringStream << it->second;
+			p_StringStream << "\r\n";
+		}
+	}
 
 }

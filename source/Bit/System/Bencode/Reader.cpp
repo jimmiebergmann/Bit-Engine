@@ -221,7 +221,7 @@ namespace Bit
 			return key;
 		}
 
-		bool Reader::ReadDictionary( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
+		Bool Reader::ReadDictionary( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
 		{
 			// Set the value data
 			p_Value.m_Type = Value::Dictionary;
@@ -337,7 +337,7 @@ namespace Bit
 			return true;
 		}
 
-		bool Reader::ReadString( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
+		Bool Reader::ReadString( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
 		{
 			// Using the Readkey function to obtain the string( same functionality )
 			std::string string = ReadKey( p_Input, p_Position );
@@ -352,7 +352,7 @@ namespace Bit
 			return true;
 		}
 
-		bool Reader::ReadInteger( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
+		Bool Reader::ReadInteger( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
 		{
 			// Search for an 'e'( end of integer )
 			// Look for the end sign for key length( ':' )
@@ -392,7 +392,7 @@ namespace Bit
 			return true;
 		}
 
-		bool Reader::ReadList( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
+		Bool Reader::ReadList( Value & p_Value, const std::string & p_Input, SizeType & p_Position )
 		{
 			// Set the value data
 			p_Value.m_Type = Value::List;

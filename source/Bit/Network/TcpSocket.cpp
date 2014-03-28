@@ -40,7 +40,7 @@ namespace Bit
 		Close( );
 	}
 
-	bool TcpSocket::Connect( const Address & p_Address, const Uint16 p_Port, const Uint32 p_Timeout )
+	Bool TcpSocket::Connect( const Address & p_Address, const Uint16 p_Port, const Uint32 p_Timeout )
 	{
 		// Create the socket
 		if( ( m_Handle = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )

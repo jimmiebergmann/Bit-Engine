@@ -44,7 +44,7 @@ namespace Bit
 	{
 	}
 
-	bool UdpSocket::Start( const Uint16 p_Port )
+	Bool UdpSocket::Start( const Uint16 p_Port )
 	{
 		// Create the socket
 		if( ( m_Handle = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP ) ) <= 0 )

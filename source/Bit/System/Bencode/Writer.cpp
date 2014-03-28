@@ -36,12 +36,12 @@ namespace Bit
 		{
 		}
 
-		bool Writer::Write( std::string & p_Output, Value & p_Value )
+		Bool Writer::Write( std::string & p_Output, Value & p_Value )
 		{
 			return SetValueString( p_Value, p_Output );
 		}
 
-		bool Writer::SetValueString( const Value & p_Value, std::string & p_Output ) const
+		Bool Writer::SetValueString( const Value & p_Value, std::string & p_Output ) const
 		{
 			switch( p_Value.m_Type )
 			{
@@ -147,12 +147,12 @@ namespace Bit
 		{
 		}
 
-		bool StyledWriter::Write( std::string & p_Output, Value & p_Value )
+		Bool StyledWriter::Write( std::string & p_Output, Value & p_Value )
 		{
 			return SetValueString( p_Value, p_Output, 0 );
 		}
 
-		bool StyledWriter::SetValueString( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const
+		Bool StyledWriter::SetValueString( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const
 		{
 			switch( p_Value.m_Type )
 			{

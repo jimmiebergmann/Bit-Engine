@@ -75,7 +75,7 @@ namespace Bit
 		///		Using the newest as possible by default.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool Open( const RenderWindow & p_RenderOutput, const Version & p_Version = DefaultVersion );
+		virtual Bool Open( const RenderWindow & p_RenderOutput, const Version & p_Version = DefaultVersion );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the graphic device.

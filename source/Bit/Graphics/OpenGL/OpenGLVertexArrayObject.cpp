@@ -91,7 +91,7 @@ namespace Bit
 		}
 	}
 
-	bool OpenGLVertexArrayObject::AddVertexBuffer(	VertexBufferObject & p_VertexBufferObject,
+	Bool OpenGLVertexArrayObject::AddVertexBuffer(	VertexBufferObject & p_VertexBufferObject,
 													const SizeType p_ComponentCount, 
 													const DataType::eType p_DataType )
 	{

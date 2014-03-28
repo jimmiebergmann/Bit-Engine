@@ -25,6 +25,9 @@
 #define BIT_NETWORK_HTTP_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Network/Address.hpp>
+#include <unordered_map>
+#include <sstream>
 
 namespace Bit
 {
@@ -33,8 +36,9 @@ namespace Bit
 	/// \ingroup Network
 	/// \brief HTTP protocol class
 	///
-	/// Documentation:	http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-	///					http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+	/// Resources:	http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+	///				http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+	///				http://code.tutsplus.com/tutorials/http-headers-for-dummies--net-8039
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API Http
@@ -48,6 +52,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		enum eMethod
 		{
+			NoMethod, 
 			Options,	///< Get information about the communication options available.
 			Get,		///< Retrieve whatefter information is identified by the "Request-URI"
 			Head,		///< Same as get, but does not required message-body.
@@ -64,6 +69,8 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		enum eCode
 		{
+			NoCode					= 0,
+
 			// Informational codes
 			Continue				= 100, ///< The client should send the remainder of the request
 			SwitchingProtocols		= 101, ///< Server will change protocols
@@ -116,7 +123,161 @@ namespace Bit
 			VersionNotSupported		= 505	///< The server does not support the specified http protocol version.
 		};
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Http packet base class
+		///
+		/// Used for requests and responses.
+		///
+		////////////////////////////////////////////////////////////////
+		class HttpPacket
+		{
+
+		public:
+
+			// Friend classes
+			friend class Http;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Function for setting a field in the http packet.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetField( const std::string & p_Key, const std::string & p_Content );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Function for getting a field from the http packet.
+			///
+			////////////////////////////////////////////////////////////////
+			const std::string & GetField( const std::string & p_Key ) const;
+
+		protected:
+
+			// Protected typedefs
+			typedef std::unordered_map< std::string, std::string> StringMap;
+
+			// Protected variables
+			StringMap m_Fields;		///< Http data fields.
+
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Http request class
+		///
+		////////////////////////////////////////////////////////////////
+		class Request : public HttpPacket
+		{
+
+		public:
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Constructor
+			///
+			////////////////////////////////////////////////////////////////
+			Request(	const eMethod p_Method,
+						const std::string & p_Path = "",
+						const std::string & p_Protocol = "" );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Sets the method
+			///
+			////////////////////////////////////////////////////////////////
+			void SetMethod( const eMethod p_Method );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Sets the path
+			///
+			////////////////////////////////////////////////////////////////
+			void SetPath( const std::string & p_Path );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Sets the protocol
+			///
+			////////////////////////////////////////////////////////////////
+			void SetProtocol( const std::string & p_Protocol );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Gets the method
+			///
+			////////////////////////////////////////////////////////////////
+			eMethod GetMethod( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Gets the path
+			///
+			////////////////////////////////////////////////////////////////
+			const std::string & GetPath( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Gets the protocol
+			///
+			////////////////////////////////////////////////////////////////
+			const std::string & GetProtocol( ) const;
+
+		private:
+
+			// Private variables
+			eMethod m_Method;		///< Method used.
+			std::string m_Path;		///< The request path.
+			std::string m_Protocol;	///< Http version, for example: HTTP/1.1
+
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Default constructor.
+		///
+		////////////////////////////////////////////////////////////////
+		Http( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Sets the port(80 by default)
+		///
+		////////////////////////////////////////////////////////////////
+		void SetPort( const Uint16 p_Port );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Sets the receive timeout
+		///
+		/// A input value of 0 will disable the timeout functionality.
+		///
+		/// \param p_Timeout Time in milliseconds.
+		///
+		////////////////////////////////////////////////////////////////
+		void SetTimeout( const Uint32 p_Timeout ); 
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Send request packet
+		///
+		/// Send a HTTP request and receive a response from the server.
+		///
+		/// \param p_Request The request packet to send to the server.
+		/// \param p_Response The received response from the server.
+		/// \param p_Address The address of the server.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SendRequest( const Request & p_Request, HttpPacket & p_Response, const Address & p_Address );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Parses a HTTP response packet.
+		///
+		/// \param p_Data The text data to parse into a Packet.
+		/// \param p_Response The parsed data packet.
+		///
+		////////////////////////////////////////////////////////////////
+		static Bool ParseResponsePacket( const std::string & p_Data, HttpPacket & p_Packet ); 
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a request string out of a request packet.
+		///
+		/// \param p_Request The request packet.
+		/// \param p_StringStream The output stringstream(holding the string).
+		///
+		////////////////////////////////////////////////////////////////
+		static void CreateRequestString( const Request & p_Request, std::stringstream & p_StringStream ); 
+
 	private:
+
+		// Private variables
+		Uint16 m_Port;
+		Uint32 m_Timeout;
 
 	};
 

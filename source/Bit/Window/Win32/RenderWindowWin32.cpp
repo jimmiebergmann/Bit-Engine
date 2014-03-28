@@ -80,7 +80,7 @@ namespace Bit
 		Close( );
 	}
 
-	bool RenderWindowWin32::Open( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style )
+	Bool RenderWindowWin32::Open( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style )
 	{
 		// Convert the title itnro a wide string
 		LPCWSTR convertedTitle = StringToWideString( p_Title ).c_str( );
@@ -272,7 +272,7 @@ namespace Bit
 		}
 	}
 
-	bool RenderWindowWin32::PollEvent( Event & p_Event )
+	Bool RenderWindowWin32::PollEvent( Event & p_Event )
 	{
 		if( m_Events.size( ) )
 		{
@@ -300,12 +300,12 @@ namespace Bit
 		}
 	}
 
-	bool RenderWindowWin32::IsOpen( ) const
+	Bool RenderWindowWin32::IsOpen( ) const
 	{
 		return m_Open;
 	}
 
-	bool RenderWindowWin32::IsFocused( ) const
+	Bool RenderWindowWin32::IsFocused( ) const
 	{
 		return m_Focused;
 	}

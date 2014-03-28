@@ -227,7 +227,7 @@ namespace Bit
 		Open( p_SourcePort, p_DestinationPort );
 	}
 
-	bool Ntp::Open( Uint16 p_SourcePort, const Uint16 p_DestinationPort )
+	Bool Ntp::Open( Uint16 p_SourcePort, const Uint16 p_DestinationPort )
 	{
 		m_DestinationPort = p_DestinationPort;
 		return m_Socket.Start( p_SourcePort );
@@ -248,13 +248,13 @@ namespace Bit
 		m_DestinationPort = p_Port;
 	}
 
-	bool Ntp::SendRequest( const Header & p_Request, const Address & p_Address )
+	Bool Ntp::SendRequest( const Header & p_Request, const Address & p_Address )
 	{
 		SizeType headerSize = sizeof( p_Request );
 		return m_Socket.Send( static_cast<const void *>( &p_Request ), headerSize, p_Address, m_DestinationPort ) == headerSize;
 	}
 	
-	bool Ntp::ReceiveResponse( Header & p_Response, Address & p_Address )
+	Bool Ntp::ReceiveResponse( Header & p_Response, Address & p_Address )
 	{
 		SizeType headerSize = sizeof( p_Response );
 		Uint16 port = 0;

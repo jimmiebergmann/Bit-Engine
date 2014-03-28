@@ -63,7 +63,7 @@ namespace Bit
 		///		the connection attemp timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		bool Connect( const Address & p_Address, const Uint16 p_Port, const Uint32 p_Timeout = 0 );
+		Bool Connect( const Address & p_Address, const Uint16 p_Port, const Uint32 p_Timeout = 0 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Disconnect the socket from the server.

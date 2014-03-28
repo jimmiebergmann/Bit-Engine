@@ -35,7 +35,7 @@ namespace Bit
 	{
 	}
 
-	bool GraphicDevice::Version::operator == ( const GraphicDevice::Version & p_Version ) const
+	Bool GraphicDevice::Version::operator == ( const GraphicDevice::Version & p_Version ) const
 	{
 		return Major == p_Version.Major && Minor == p_Version.Minor;
 	}

@@ -58,7 +58,7 @@ namespace Bit
 		glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObject );
 	}
 
-	bool OpenGLVertexBufferObject::Load( const SizeType p_DataSize, void * p_pVertexData )
+	Bool OpenGLVertexBufferObject::Load( const SizeType p_DataSize, void * p_pVertexData )
 	{
 		// Check the buffer size
 		if( p_DataSize == 0 )

@@ -59,7 +59,7 @@ namespace Bit
 		///	\param p_DataType The type of the vertex data.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool AddVertexBuffer(	VertexBufferObject & p_VertexBufferObject,
+		virtual Bool AddVertexBuffer(	VertexBufferObject & p_VertexBufferObject,
 										const SizeType p_ComponentCount = 3, 
 										const DataType::eType p_DataType = DataType::Float32 ) = 0;
 

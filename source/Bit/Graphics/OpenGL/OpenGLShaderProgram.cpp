@@ -50,7 +50,7 @@ namespace Bit
 		m_AttachedShaderCount = 0;
 	}
 
-	bool OpenGLShaderProgram::AttachShader( const Shader & p_pShader )
+	Bool OpenGLShaderProgram::AttachShader( const Shader & p_pShader )
 	{
 		// Make sure the shader program is loaded before we attach any shaders.
 		if( m_ProgramID == 0 )
@@ -80,7 +80,7 @@ namespace Bit
 		return true;
 	}
 
-	bool OpenGLShaderProgram::Link( )
+	Bool OpenGLShaderProgram::Link( )
 	{
 		// Make sure we have attached any shaders at all to the shader program
 		if( m_AttachedShaderCount < 2 )

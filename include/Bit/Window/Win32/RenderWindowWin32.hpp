@@ -68,7 +68,7 @@ namespace Bit
 		/// This function may be used instead of the custom constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool Open( const VideoMode & p_VideoMode, const std::string & p_Title = "", const Uint32 p_Style = Style::Default );
+		virtual Bool Open( const VideoMode & p_VideoMode, const std::string & p_Title = "", const Uint32 p_Style = Style::Default );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the window.
@@ -105,7 +105,7 @@ namespace Bit
 		/// \return true if function succeeded, else false.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool PollEvent( Event & p_Event );
+		virtual Bool PollEvent( Event & p_Event );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the window caption(title)
@@ -119,13 +119,13 @@ namespace Bit
 		/// \brief Checks if the window is open( created ).
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool IsOpen( ) const;
+		virtual Bool IsOpen( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Checks if the window is focused.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool IsFocused( ) const;
+		virtual Bool IsFocused( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the window's current video mode.
@@ -174,19 +174,19 @@ namespace Bit
 		typedef std::queue< Event > EventQueue;
 
 		// Private varaibles
-		bool			m_Open;
-		bool			m_Focused;
+		Bool			m_Open;
+		Bool			m_Focused;
 		VideoMode		m_VideoMode;
 		std::string		m_Title;
 		Uint32			m_Style;
 		HDC				m_DeviceContextHandle;
 		HWND			m_WindowHandle;
 		std::wstring	m_WidnowClassName;
-		bool			m_RegisteredWindowClass;
+		Bool			m_RegisteredWindowClass;
 		EventQueue		m_Events;
 		Mouse			m_Mouse;
-		bool			m_Resizing;
-		bool			m_Moving;
+		Bool			m_Resizing;
+		Bool			m_Moving;
 
 	};
 

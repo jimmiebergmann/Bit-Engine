@@ -310,7 +310,7 @@ namespace Bit
 		/// \param p_DestinationPort The destination port. 123 by default.
 		///
 		////////////////////////////////////////////////////////////////
-		bool Open( Uint16 p_SourcePort = 0, const Uint16 p_DestinationPort = 123 );
+		Bool Open( Uint16 p_SourcePort = 0, const Uint16 p_DestinationPort = 123 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the UDP socket.
@@ -337,7 +337,7 @@ namespace Bit
 		/// \param p_Address The address of the receiver.
 		///
 		////////////////////////////////////////////////////////////////
-		bool SendRequest( const Header & p_Request, const Address & p_Address );
+		Bool SendRequest( const Header & p_Request, const Address & p_Address );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Receive NTP time responze.
@@ -346,7 +346,7 @@ namespace Bit
 		/// \param p_Address The address of the sender.
 		///
 		////////////////////////////////////////////////////////////////
-		bool ReceiveResponse( Header & p_Response, Address & p_Address  );
+		Bool ReceiveResponse( Header & p_Response, Address & p_Address  );
 
 	private:
 

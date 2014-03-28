@@ -82,7 +82,7 @@ namespace Bit
 		/// \param p_DataType The data type of the vertex data.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL );  
+		virtual Bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL );  
 
 		virtual SizeType GetBufferSize( ) const;
 

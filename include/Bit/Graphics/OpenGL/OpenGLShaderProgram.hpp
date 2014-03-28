@@ -53,13 +53,13 @@ namespace Bit
 		/// \brief Atttach a shader to the shader program.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool AttachShader( const Shader & p_Shader );
+		virtual Bool AttachShader( const Shader & p_Shader );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Link the attached shaders into a shader program.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool Link( );
+		virtual Bool Link( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Bind the shader program and make it to the current one.

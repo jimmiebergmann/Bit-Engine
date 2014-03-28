@@ -65,7 +65,7 @@ namespace Bit
 		/// \param p_Filename File path to the shader source file.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool CompileFromFile( const std::string & p_Filename );
+		virtual Bool CompileFromFile( const std::string & p_Filename );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Compile the shader from memory.
@@ -73,7 +73,7 @@ namespace Bit
 		/// \param p_Memory String of the shader source code.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual bool CompileFromMemory( const std::string & p_Memory );
+		virtual Bool CompileFromMemory( const std::string & p_Memory );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Check if the shader is compiled.

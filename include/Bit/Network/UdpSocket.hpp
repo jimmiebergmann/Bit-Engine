@@ -68,7 +68,7 @@ namespace Bit
 		/// this will cause the socket to pick a random port for you.
 		///
 		////////////////////////////////////////////////////////////////
-		bool Start( const Uint16 p_Port = 0 );
+		Bool Start( const Uint16 p_Port = 0 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the socket

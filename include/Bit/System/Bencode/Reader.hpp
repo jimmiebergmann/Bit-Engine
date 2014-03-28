@@ -102,25 +102,25 @@ namespace Bit
 			/// \brief Read dictionary
 			///
 			////////////////////////////////////////////////////////////////
-			bool ReadDictionary( Value & p_Value, const std::string & p_Input, SizeType & p_Position );
+			Bool ReadDictionary( Value & p_Value, const std::string & p_Input, SizeType & p_Position );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Read string
 			///
 			////////////////////////////////////////////////////////////////
-			bool ReadString( Value & p_Value, const std::string & p_Input, SizeType & p_Position );
+			Bool ReadString( Value & p_Value, const std::string & p_Input, SizeType & p_Position );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Read integer
 			///
 			////////////////////////////////////////////////////////////////
-			bool ReadInteger( Value & p_Value, const std::string & p_Input, SizeType & p_Position );
+			Bool ReadInteger( Value & p_Value, const std::string & p_Input, SizeType & p_Position );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Read list
 			///
 			////////////////////////////////////////////////////////////////
-			bool ReadList( Value & p_Value, const std::string & p_Input, SizeType & p_Position );
+			Bool ReadList( Value & p_Value, const std::string & p_Input, SizeType & p_Position );
 
 
 

@@ -63,12 +63,12 @@ namespace Bit
 			/// \return True if succeeded, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			bool Write( std::string & p_Output, Value & p_Value );
+			Bool Write( std::string & p_Output, Value & p_Value );
 
 		private:
 
 			// Private functions
-			bool SetValueString( const Value & p_Value, std::string & p_Output ) const;
+			Bool SetValueString( const Value & p_Value, std::string & p_Output ) const;
 
 		};
 
@@ -100,12 +100,12 @@ namespace Bit
 			/// \return True if succeeded, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			bool Write( std::string & p_Output, Value & p_Value );
+			Bool Write( std::string & p_Output, Value & p_Value );
 
 		private:
 
 			// Private functions
-			bool SetValueString( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const;
+			Bool SetValueString( const Value & p_Value, std::string & p_Output, const Uint32 & p_Layer ) const;
 
 		};
 
