@@ -78,7 +78,7 @@ namespace Bit
 	}
 
 	// Request class
-	Http::Request::Request(	const Http::eMethod p_Method,
+	Http::Request::Request(	const eMethod p_Method,
 							const std::string & p_Path,
 							const std::string & p_Protocol ) :
 		m_Method( p_Method ),
@@ -117,6 +117,46 @@ namespace Bit
 		return m_Protocol;
 	}
 
+	// Response class
+	Http::Response::Response(	const std::string & p_Protocol,
+								const eCode p_StatusCode,
+								const std::string & p_Body ) :
+		m_Protocol( p_Protocol ),
+		m_StatusCode( p_StatusCode ),
+		m_Body( p_Body )
+	{
+	}
+
+	void Http::Response::SetProtocol( const std::string & p_Protocol )
+	{
+		m_Protocol = p_Protocol;
+	}
+
+	void Http::Response::SetStatusCode( const eCode p_StatusCode )
+	{
+		m_StatusCode = p_StatusCode;
+	}
+
+	void Http::Response::SetBody( const std::string & p_Body )
+	{
+		m_Body = p_Body;
+	}
+
+	const std::string & Http::Response::GetProtocol( ) const
+	{
+		return m_Protocol;
+	}
+
+	Http::eCode Http::Response::GetStatusCode( ) const
+	{
+		return m_StatusCode;
+	}
+
+	const std::string & Http::Response::GetBody( ) const
+	{
+		return m_Body;
+	}
+
 	// Http class
 	Http::Http( ) :
 		m_Port( 80 ),
@@ -134,7 +174,7 @@ namespace Bit
 		m_Timeout = p_Timeout;
 	}
 
-	Bool Http::SendRequest( const Request & p_Request, HttpPacket & p_Response, const Address & p_Address )
+	Bool Http::SendRequest( const Request & p_Request, Response & p_Response, const Address & p_Address )
 	{
 		// Get the request string
 		std::stringstream requestSs;
@@ -158,13 +198,24 @@ namespace Bit
 		}
 
 		// Receive the response
-		const SizeType bufferSize = 32;
+		const SizeType bufferSize = 512;
 		Uint8 pBuffer[ bufferSize ];
 
-		if( tcp.Receive( pBuffer, bufferSize, m_Timeout ) != requestSize )
+		if( m_Timeout > 0 )
 		{
-			std::cout << "[Http::SendRequest] Could not receive the response." << std::endl;
-			return false;
+			if( tcp.Receive( pBuffer, bufferSize, m_Timeout ) != bufferSize )
+			{
+				std::cout << "[Http::SendRequest(Timeout enabled)] Could not receive the response." << std::endl;
+				return false;
+			}
+		}
+		else
+		{
+			if( tcp.Receive( pBuffer, bufferSize ) != bufferSize )
+			{
+				std::cout << "[Http::SendRequest(Timeout disabled)] Could not receive the response." << std::endl;
+				return false;
+			}
 		}
 
 		// Succeeded
@@ -203,6 +254,9 @@ namespace Bit
 			p_StringStream << it->second;
 			p_StringStream << "\r\n";
 		}
+
+		// Add another newline
+		p_StringStream << "\r\n";
 	}
 
 }
