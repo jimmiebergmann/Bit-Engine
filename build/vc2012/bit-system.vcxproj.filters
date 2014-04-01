@@ -37,6 +37,8 @@
       <Filter>Win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\System\MouseBase.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Hash.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Sha1.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -69,6 +71,8 @@
     <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp">
       <Filter>Win32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Hash.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Sha1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">

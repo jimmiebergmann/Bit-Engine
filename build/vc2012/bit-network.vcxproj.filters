@@ -13,6 +13,7 @@
     <ClCompile Include="..\..\source\Bit\Network\Socket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\NtpTimestamp.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Http.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Torrent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -28,6 +29,7 @@
     <ClInclude Include="..\..\include\Bit\Network\Ntp.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\NtpTimestamp.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Http.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Torrent.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">

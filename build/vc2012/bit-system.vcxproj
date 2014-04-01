@@ -25,6 +25,7 @@
     <ClInclude Include="..\..\include\Bit\System\Bencode\Reader.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Value.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Writer.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Hash.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
     <ClInclude Include="..\..\include\Bit\System\MemoryLeak.hpp" />
@@ -32,6 +33,7 @@
     <ClInclude Include="..\..\include\Bit\System\MouseBase.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Mutex.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Sha1.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Sleep.hpp" />
     <ClInclude Include="..\..\include\Bit\System\SmartMutex.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Thread.hpp" />
@@ -53,8 +55,10 @@
     <ClCompile Include="..\..\source\Bit\System\Bencode\Reader.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Bencode\Value.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Bencode\Writer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Hash.cpp" />
     <ClCompile Include="..\..\source\Bit\System\MemoryLeak.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Sha1.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
     <ClCompile Include="..\..\source\Bit\System\SmartMutex.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />

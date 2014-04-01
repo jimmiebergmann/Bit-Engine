@@ -35,13 +35,47 @@
 namespace Bit
 {
 
-	
 	// Global variables
 	static const std::string g_EmptyString = "";
 	static const std::string g_MethodStrings[ Http::Connect + 1 ] =
 	{
 		"", "OPTIONS", "GET", "POST", "PUT", "DELETE", "TRACE", "CONNECT"
 	};
+	static const SizeType g_ResponseBufferSize = 32768;
+	static Uint8 g_ResponseBuffer[ g_ResponseBufferSize ];
+
+	// Global functions
+	static std::string GetWord( const Uint8 * p_pData, const SizeType p_DataSize )
+	{
+		std::string word;
+
+		for( SizeType i = 0; i < p_DataSize; i++ )
+		{
+			if( p_pData[ i ] == ' ' || p_pData[ i ] == '\r' )
+			{
+				word.append( reinterpret_cast<const char *>( p_pData ), i );
+				break;
+			}
+		}
+
+		return word;
+	}
+
+	static std::string GetLine( const Uint8 * p_pData, const SizeType p_DataSize )
+	{
+		std::string line;
+
+		for( SizeType i = 0; i < p_DataSize - 1; i++ )
+		{
+			if( p_pData[ i ] == '\r' && p_pData[ i + 1 ] == '\n' )
+			{
+				line.append( reinterpret_cast<const char *>( p_pData ), i );
+				break;
+			}
+		}
+
+		return line;
+	}
 
 	// Http packet base class
 	void Http::HttpPacket::SetField( const std::string & p_Key, const std::string & p_Content )
@@ -158,9 +192,10 @@ namespace Bit
 	}
 
 	// Http class
-	Http::Http( ) :
-		m_Port( 80 ),
-		m_Timeout( 0 )
+	Http::Http( const Uint16 p_Port,
+				const Uint32 p_Timeout ) :
+		m_Port( p_Port ),
+		m_Timeout( p_Timeout )
 	{
 	}
 
@@ -198,34 +233,67 @@ namespace Bit
 		}
 
 		// Receive the response
-		const SizeType bufferSize = 512;
-		Uint8 pBuffer[ bufferSize ];
 
-		if( m_Timeout > 0 )
+		// Create data buffers for the incoming data
+		std::string headString;
+		p_Response.m_Body.clear( );
+		Int32 receiveSize = 0;
+		SizeType bodyStartIndex = 0; // Index of where the body data starts.
+
+		// Receive the header data( plus some body data sometimes perhaps).
+		receiveSize = tcp.Receive( g_ResponseBuffer, g_ResponseBufferSize );
+			
+		// Parse the header fields,
+		// returns the index of where the body data start.
+		bodyStartIndex = ParseResponse( g_ResponseBuffer, receiveSize, p_Response );
+	
+		// Append the remaining data from the header buffer to the body string
+		SizeType bodySize = receiveSize - bodyStartIndex;
+		p_Response.m_Body.append( reinterpret_cast<char*>( g_ResponseBuffer ) + bodyStartIndex, bodySize );
+
+		// The download is done in one single packet, clean up and return.
+		if( receiveSize != g_ResponseBufferSize )
 		{
-			if( tcp.Receive( pBuffer, bufferSize, m_Timeout ) != bufferSize )
-			{
-				std::cout << "[Http::SendRequest(Timeout enabled)] Could not receive the response." << std::endl;
-				return false;
-			}
+			// Delete the buffer
+			return true;
 		}
-		else
+
+		// Receive the body data.
+		Int32 totalSize = 0;
+		const std::string sizeString = p_Response.GetField( "Content-Length" );
+		const SizeType contentSize = sizeString.size( ) ? atoi( sizeString.c_str( ) ) : 0;
+
+		while( true )
 		{
-			if( tcp.Receive( pBuffer, bufferSize ) != bufferSize )
+			if( contentSize && p_Response.m_Body.size( ) == contentSize )
 			{
-				std::cout << "[Http::SendRequest(Timeout disabled)] Could not receive the response." << std::endl;
-				return false;
+				return true;
 			}
+
+			// Receive the packet.
+			receiveSize = tcp.Receive( g_ResponseBuffer, g_ResponseBufferSize );
+			
+			// Break if the packet is invalid.
+			if( receiveSize <= 0 )
+			{
+				break;
+			}
+
+			totalSize += receiveSize;
+			std::cout << (float)(totalSize) / 1000000.0f << std::endl;
+
+			// Append the body data.
+			p_Response.m_Body.append( reinterpret_cast<char*>( g_ResponseBuffer ), receiveSize );
+
+			// Break if the download is done.
+			/*if( receiveSize != g_ResponseBufferSize )
+			{
+				break;
+			}*/
 		}
 
 		// Succeeded
 		return true;
-	}
-
-	Bool Http::ParseResponsePacket( const std::string & p_Data, HttpPacket & p_Packet )
-	{
-
-		return false;
 	}
 
 	void Http::CreateRequestString( const Http::Request & p_Request, std::stringstream & p_StringStream )
@@ -258,5 +326,72 @@ namespace Bit
 		// Add another newline
 		p_StringStream << "\r\n";
 	}
+	
+	SizeType Http::ParseResponse( const Uint8 * p_pData, const SizeType p_DataSize, Response & p_Response )
+	{
+		// Error check the paramters
+		if( p_pData == NULL || p_DataSize <= 0 )
+		{
+			return 0;
+		}
+
+		SizeType index = 0;
+
+		// Parse the protocol
+		std::string protocol = GetWord( p_pData, p_DataSize );
+
+		// Error check the protocol
+		if( protocol.size( ) != 8 || protocol[ 0 ] != 'H' || protocol[ 1 ] != 'T'
+			|| protocol[ 2 ] != 'T' || protocol[ 3 ] != 'P' )
+		{
+			return 0;
+		}
+
+		// Get the status code
+		index += protocol.size( ) + 1;
+		std::string version = GetWord( p_pData + index, p_DataSize );
+
+		// Error check the version
+		if( version.size( ) != 3 )
+		{
+			return 0;
+		}
+
+		// Set the version
+		p_Response.m_StatusCode = static_cast<eCode>( atoi( version.c_str( ) ) );
+
+		// Get the rest of the line...
+		index += GetLine( p_pData + index, p_DataSize ).size( ) + 2;
+
+		// Let's parse all the field until we reach an empty word( empty line right before the body data)
+		while( true )
+		{
+			// Get the key
+			std::string key = GetWord( p_pData + index, p_DataSize );
+			if( key.size( ) == 0 || key[ key.size( ) -1 ] != ':' )
+			{
+				index += 2;
+				break;
+			}
+
+			// Get the feield data
+			index += key.size( ) + 1;
+			std::string content = GetLine( p_pData + index, p_DataSize );
+			if( content.size( ) == 0 )
+			{
+				return 0;
+			}
+
+			// set the field
+			key.resize( key.size( ) - 1 );
+			p_Response.SetField( key, content );
+
+			// Move to the next line
+			index += content.size( ) + 2;
+		}
+
+		return index;
+	}
+
 
 }

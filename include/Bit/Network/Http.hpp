@@ -168,6 +168,9 @@ namespace Bit
 
 		public:
 
+			// Friend classes
+			friend class Http;
+
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
 			///
@@ -230,6 +233,9 @@ namespace Bit
 
 		public:
 
+			// Friend classes
+			friend class Http;
+
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
 			///
@@ -283,10 +289,11 @@ namespace Bit
 		};
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor.
+		/// \brief Constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		Http( );
+		Http(	const Uint16 p_Port = 80,
+				const Uint32 p_Timeout = 0 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Sets the port(80 by default)
@@ -323,7 +330,7 @@ namespace Bit
 		/// \param p_Response The parsed data packet.
 		///
 		////////////////////////////////////////////////////////////////
-		static Bool ParseResponsePacket( const std::string & p_Data, HttpPacket & p_Packet ); 
+		static Bool ParseResponsePacket( const std::string * p_pData, HttpPacket & p_Packet ); 
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a request string out of a request packet.
@@ -335,6 +342,9 @@ namespace Bit
 		static void CreateRequestString( const Request & p_Request, std::stringstream & p_StringStream ); 
 
 	private:
+
+		// Private functions
+		static SizeType ParseResponse( const Uint8 * p_pData, const SizeType p_DataSize, Response & p_Response );
 
 		// Private variables
 		Uint16 m_Port;
