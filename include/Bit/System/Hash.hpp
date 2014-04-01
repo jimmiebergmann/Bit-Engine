@@ -1,4 +1,4 @@
- ///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
 //
 // This software is provided 'as-is', without any express or
@@ -146,7 +146,7 @@ namespace Bit
 	private:
 
 		// Private variables
-		ByteVector m_Bytes;		///< Vector of all the hash bytes
+		ByteVector m_Bytes;		///< Vector of all the hash bytes.
 
 	};
 	

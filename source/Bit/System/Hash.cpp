@@ -82,11 +82,14 @@ namespace Bit
 		std::string string;
 		string.push_back( a );
 		string.push_back( b );
-		p_Output = static_cast<Uint8>( std::stoul( string, nullptr, 16 ) );
-		/*
-		std::stringstream ss;
-		ss << std::hex << string;
-		ss >> p_Output;*/
+		try
+		{
+			p_Output = static_cast<Uint8>( std::stoul( string, nullptr, 16 ) );
+		}
+		catch( const std::invalid_argument e )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -157,7 +160,7 @@ namespace Bit
 			if( GetValueFromHex( p_HexString[ i ], p_HexString[ i + 1 ], value ) == false )
 			{
 				Clear( );
-				false;
+				return false;
 			}
 
 			// Push back the value

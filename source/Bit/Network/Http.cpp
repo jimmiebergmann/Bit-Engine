@@ -259,12 +259,12 @@ namespace Bit
 		}
 
 		// Receive the body data.
-		Int32 totalSize = 0;
 		const std::string sizeString = p_Response.GetField( "Content-Length" );
 		const SizeType contentSize = sizeString.size( ) ? atoi( sizeString.c_str( ) ) : 0;
 
 		while( true )
 		{
+			// Finish the download if we've download the entire file.
 			if( contentSize && p_Response.m_Body.size( ) == contentSize )
 			{
 				return true;
@@ -273,23 +273,14 @@ namespace Bit
 			// Receive the packet.
 			receiveSize = tcp.Receive( g_ResponseBuffer, g_ResponseBufferSize );
 			
-			// Break if the packet is invalid.
+			// Break if the packet is invalid.( or lost connection )
 			if( receiveSize <= 0 )
 			{
-				break;
+				return false;
 			}
-
-			totalSize += receiveSize;
-			std::cout << (float)(totalSize) / 1000000.0f << std::endl;
 
 			// Append the body data.
 			p_Response.m_Body.append( reinterpret_cast<char*>( g_ResponseBuffer ), receiveSize );
-
-			// Break if the download is done.
-			/*if( receiveSize != g_ResponseBufferSize )
-			{
-				break;
-			}*/
 		}
 
 		// Succeeded

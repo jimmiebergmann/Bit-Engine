@@ -25,6 +25,7 @@
 #define BIT_NETWORK_TORRENT_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Hash.hpp>
 #include <Bit/Network/Http.hpp>
 
 namespace Bit
@@ -62,10 +63,12 @@ namespace Bit
 
 	private:
 
+		// Private typedefs
 		typedef std::vector<std::string> StringVector;
 
-		StringVector m_Trackers;
-		//Sha1::Hash m_InfoHash;
+		// Private variables
+		StringVector m_Trackers;	///< Vector of all available trackers.
+		Hash m_InfoHash;			///< The info hash.
 
 
 	};

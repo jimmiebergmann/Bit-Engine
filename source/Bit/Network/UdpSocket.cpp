@@ -65,6 +65,8 @@ namespace Bit
 			Close( );
 			return false;
 		}
+
+		return true;
 	}
 
 	void UdpSocket::Stop( )
