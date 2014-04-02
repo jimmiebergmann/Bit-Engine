@@ -31,6 +31,13 @@ namespace Bit
 	namespace Bencode
 	{
 
+		// Global varaibles
+		static std::string g_EmptyString		= "";
+		static std::string g_TemporaryString	= "";
+		static std::string g_NilString			= "[Nil]";
+		static std::string g_DictionaryString	= "[Dictionary]";
+		static std::string g_ListString			= "[List]";
+
 		// Static variable members
 		const Value Value::NilValue( Nil );
 		Value Value::s_DefaultValue( Nil );
@@ -316,7 +323,7 @@ namespace Bit
 			return static_cast<SizeType>( m_Value.List->size( ) );
 		}
 		
-		std::string Value::AsString( ) const
+		const std::string & Value::AsString( ) const
 		{
 			// Switch the type in order to know which method you
 			// are going to use to convert the value into a string.
@@ -324,35 +331,36 @@ namespace Bit
 			{
 				case Nil:
 				{
-					return "[Nil]";
+					return g_DictionaryString;
 				}
 				break;
 				case String:
 				{
 					// Return the string if it's allocated.
-					return m_Value.String ? *m_Value.String : "";
+					return m_Value.String ? *m_Value.String : g_EmptyString;
 				}
 				break;
 				case Integer:
 				{
 					std::stringstream ss;
 					ss << m_Value.Integer;
-					return ss.str( );
+					g_TemporaryString = ss.str( );
+					return g_TemporaryString;
 				}
 				break;
 				case List:
 				{
-					return "[List]";
+					return g_ListString;
 				}
 				break;
 				case Dictionary:
 				{
-					return "[Dictionary]";
+					return g_DictionaryString;
 				}
 				break;
 			}
 
-			return "";
+			return g_EmptyString;
 		}
 
 		Int32 Value::AsInt( ) const

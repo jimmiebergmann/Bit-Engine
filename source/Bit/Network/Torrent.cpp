@@ -143,7 +143,8 @@ namespace Bit
 		}
 		m_PieceSize = pieceSize;
 
-		// Read the piece data. 
+		// Read the piece data.
+
 
 		// Read all the files.
 
