@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Hash.hpp>
+#include <Bit/Network/Url.hpp>
 #include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -92,20 +93,6 @@ namespace Bit
 		}
 
 		return true;
-	}
-
-	static Bool IsValidUrlEncodingByte( const Uint8 p_Value )
-	{
-		if( p_Value >= '0' && p_Value <= '9' ||
-			p_Value >= 'a' && p_Value <= 'z' ||
-			p_Value >= 'A' && p_Value <= 'Z' ||
-			p_Value == '.' || p_Value == '-' ||
-			p_Value == '_' || p_Value == '~' )
-		{
-			return true;
-		}
-
-		return false;
 	}
 
 	// Hash class
@@ -214,27 +201,7 @@ namespace Bit
 
 	std::string Hash::AsUrlEncodedString( ) const
 	{
-		// Create an output string
-		std::string output;
-		output.reserve( m_Bytes.size( ) );
-
-		// Fill the output string
-		for( SizeType i = 0; i < m_Bytes.size( ); i++ )
-		{
-			// Add the byte if it's a valid Url encoding char
-			if( IsValidUrlEncodingByte( m_Bytes[ i ] ) )
-			{
-				output.push_back( m_Bytes[ i ] );
-			}
-			else
-			{
-				output.push_back( '%' );
-				output.append( GetHexValue( m_Bytes[ i ], false ) );
-			}
-		}
-
-		// Return the output string
-		return output;
+		return Url::GetBinaryEncodedString( AsString( ) );
 	}
 
 	const Hash::ByteVector & Hash::AsRaw( ) const

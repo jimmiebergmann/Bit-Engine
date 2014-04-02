@@ -109,7 +109,7 @@ namespace Bit
 			LengthRequired			= 411,	///< Server requires the "Content-Length" field, it's missing in the request.
 			PreconditionFailed		= 412,	///< Server did not receive a response from it's upstream fast enough.
 			RequestEntityTooLarge	= 413,	///< 
-			RequestUriTooLong		= 414,	///< 
+			RequestUriTooLong		= 414,	///< The requested URI was too long.
 			UnsupportedMediaType	= 415,	///< 
 			RangeNotSatisfiable		= 416,	///< 
 			ExpectationFailed		= 417,	///< 
@@ -129,7 +129,7 @@ namespace Bit
 		/// Used for requests and responses.
 		///
 		////////////////////////////////////////////////////////////////
-		class HttpPacket
+		class BIT_API HttpPacket
 		{
 
 		public:
@@ -163,7 +163,7 @@ namespace Bit
 		/// \brief Http request class
 		///
 		////////////////////////////////////////////////////////////////
-		class Request : public HttpPacket
+		class BIT_API Request : public HttpPacket
 		{
 
 		public:
@@ -228,7 +228,7 @@ namespace Bit
 		/// \brief Http response class
 		///
 		////////////////////////////////////////////////////////////////
-		class Response : public HttpPacket
+		class BIT_API Response : public HttpPacket
 		{
 
 		public:

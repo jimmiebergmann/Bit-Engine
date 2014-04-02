@@ -170,6 +170,7 @@
     <ClCompile Include="..\..\source\Bit\Network\TcpSocket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Torrent.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\UdpSocket.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Url.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Win32\SocketWin32.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +185,7 @@
     <ClInclude Include="..\..\include\Bit\Network\TcpSocket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Torrent.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\UdpSocket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Url.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Win32\SocketWin32.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -27,13 +27,14 @@
 #include <Bit/Build.hpp>
 #include <Bit/System/Hash.hpp>
 #include <Bit/Network/Http.hpp>
+#include <vector>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Network
-	/// \brief Network address class.
+	/// \brief Torrent protocol class.
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API Torrent
@@ -41,25 +42,73 @@ namespace Bit
 
 	public:
 
-		class TrackerRequest
-		{
-
-			public:
-		};
-
+		////////////////////////////////////////////////////////////////
+		/// \brief Tracker response class.
+		///
+		////////////////////////////////////////////////////////////////
 		class TrackerResponse
 		{
 
 			public:
+
+				// Private typedefs
+				typedef std::pair<Address, Uint16> PeerPair;
+				typedef std::vector<PeerPair> PeerVector;
+
+				// Private varaibles
+				std::string m_FailureReason;	///< Reason why the request failed.
+				std::string m_WarningMessage;	///< Warning message from the tracker.
+				Uint32 m_Interval;				///< Interval in seconds that the client should wait unit sending next request.
+				std::string m_TrackerId;		///< Tracker id, might be absent.
+				Uint32 m_Complete;				///< Number of clients with the entire file(seeders).
+				Uint32 m_Incomplete;			///< Number of non-seeder peers(leechers).
+				PeerVector m_peers;				///< Vector of all the available peers.
+
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Tracker class.
+		///
+		////////////////////////////////////////////////////////////////
+		class Tracker
+		{
+
+			public:
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Default constructor
+				///
+				////////////////////////////////////////////////////////////////
+				Tracker( );
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Constructor
+				///
+				////////////////////////////////////////////////////////////////
+				Tracker( const std::string & p_TrackerUrl );
+
+			private:
+
+
 		};
 
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Default constructor
+		///
+		////////////////////////////////////////////////////////////////
 		Torrent( );
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Read a torrent file and store it's data.
+		///
+		/// \param p_Filename Name of the torrent file.
+		///
+		////////////////////////////////////////////////////////////////
 		Bool ReadTorrentFile( const std::string & p_Filename );
 
-		Bool SendTrackerRequest(	const TrackerRequest & p_Request, TrackerResponse & p_Response,
-									const Address & p_Address, const Uint16 p_Port );
+
+		//Bool SendTrackerRequest(	TrackerResponse & p_Response, const Address & p_Address, const Uint16 p_Port );
 
 	private:
 

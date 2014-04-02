@@ -1,0 +1,165 @@
+// Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
+// 
+// This software is provided 'as-is', without any express or
+// implied warranty. In no event will the authors be held
+// liable for any damages arising from the use of this software.
+// 
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute
+// it freely, subject to the following restrictions:
+// 
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but
+//    is not required.
+// 
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+// 
+// 3. This notice may not be removed or altered from any
+//    source distribution.
+// ///////////////////////////////////////////////////////////////////////////
+
+#ifndef BIT_NETWORK_URL_HPP
+#define BIT_NETWORK_URL_HPP
+
+#include <Bit/Build.hpp>
+#include <string>
+
+namespace Bit
+{
+
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Network
+	/// \brief Uniform Resource Locator class.
+	///
+	/// Example:  http://sv.wikipedia.org:80/w/index.php?title=Dator&action=edit#Historia
+	///           ^      ^                ^  ^           ^                       ^
+	///          /        \              /    \         /                       /
+	///      protocol    domain       port    path    query                 fragment
+	///
+	/// Example:  ftp://username:password@domain/pathAndFile.png
+	///
+	////////////////////////////////////////////////////////////////
+	class BIT_API Url
+	{
+
+	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get a binary encoded version of the input string.
+		///
+		/// \param p_String Input string.
+		///
+		////////////////////////////////////////////////////////////////
+		static std::string GetBinaryEncodedString( const std::string & p_String );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Default constructor
+		///
+		////////////////////////////////////////////////////////////////
+		Url( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Constructor
+		///
+		////////////////////////////////////////////////////////////////
+		Url( const std::string & p_UrlString );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Clear the entire path
+		///
+		////////////////////////////////////////////////////////////////
+		void Clear( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Sets the URL
+		///
+		////////////////////////////////////////////////////////////////
+		Bool Set( const std::string & p_UrlString );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Returns the validation status.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool IsValid( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get entire URL
+		///
+		////////////////////////////////////////////////////////////////
+		std::string Get( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get protocol portion
+		///
+		////////////////////////////////////////////////////////////////
+		std::string GetProtocol( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get username portion
+		///
+		////////////////////////////////////////////////////////////////
+		std::string GetUsername( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get password portion
+		///
+		////////////////////////////////////////////////////////////////
+		std::string GetPassword( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get domain portion
+		///
+		////////////////////////////////////////////////////////////////
+		std::string GetDomain( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get port as Uint16
+		///
+		////////////////////////////////////////////////////////////////
+		Uint16 GetPort( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get path portion
+		///
+		////////////////////////////////////////////////////////////////
+		std::string GetPath( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get query portion
+		///
+		////////////////////////////////////////////////////////////////
+		std::string GetQuery( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get fragment identifier portion
+		///
+		////////////////////////////////////////////////////////////////
+		std::string GetFragment( ) const;
+
+	private:
+
+		// Private functions
+		Bool Parse( const std::string & p_UrlString );
+		void ParseDomain( );
+		void ParseUsername( );
+		void ParsePath( );
+		//Bool ParseDomain(const std::string & p_DomainString );
+
+		// Private varaibles
+		std::string m_Protocol;		///< Protocol portion.
+		std::string m_Username;			///< Domain name portion.
+		std::string m_Password;		///< Domain name portion.
+		std::string m_Domain;		///< Domain name portion.
+		std::string m_Port;			///< Port number.
+		std::string m_Path;			///< Path portion.
+		std::string m_Query;		///< Query index(?....)
+		std::string m_Fragment;		///< Fragment identifier portion(# anchor tags)
+
+	};
+
+}
+
+#endif

@@ -40,11 +40,10 @@ namespace Bit
 		return false;
 	}
 
-	Bool Torrent::SendTrackerRequest(	const TrackerRequest & p_Request, TrackerResponse & p_Response,
-										const Address & p_Address, const Uint16 p_Port )
+/*	Bool Torrent::SendTrackerRequest(TrackerResponse & p_Response, const Address & p_Address, const Uint16 p_Port )
 	{
 		return false;
-	}
+	}*/
 
 
 }

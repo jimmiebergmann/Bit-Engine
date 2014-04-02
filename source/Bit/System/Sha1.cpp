@@ -202,7 +202,6 @@ namespace Bit
 			{
 				f = b ^ c ^ d;
 				k = 0xCA62C1D6;
-
 			}
 
 			Uint32 temp = LeftBitRotate( a, 5 ) + f + e + k + w[ i ];

@@ -36,7 +36,7 @@ namespace Bit
 	/// \brief NTP time timestamp
 	/// 
 	////////////////////////////////////////////////////////////////
-	class NtpTimestamp
+	class BIT_API NtpTimestamp
 	{
 
 	public:
