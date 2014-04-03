@@ -248,6 +248,7 @@ namespace Bit
 		// Clear all the events
 		ClearEvents( );
 		m_Mouse.Update( );
+		m_Keyboard.Update( );
 
 		// Reset the resizing / moving flags
 		m_Resizing = false;
@@ -459,12 +460,34 @@ namespace Bit
 			break;
 			case WM_KEYDOWN:
 			{
-				
+
+				// Get the key as a bit key
+				Keyboard::eKey key = m_Keyboard.TranslateKeyToBitKey( static_cast<Uint16>( LOWORD( p_WParam ) ) );
+
+				// Add key just pressed event
+				Bool status = m_Keyboard.GetCurrentKeyState( key );
+				if( status == false )
+				{
+					Event e2;
+					e2.Type = Event::KeyJustPressed;
+					e2.Key = key;
+					m_Events.push( e2 );
+				}
+
+				// Add mouse key event
+				e.Type = Event::KeyPressed;
+				e.Key = key;
+				m_Events.push( e );
 			}
 			break;
 			case WM_KEYUP:
 			{
-				
+				// Get the key as a bit key
+				Keyboard::eKey key = m_Keyboard.TranslateKeyToBitKey( static_cast<Uint16>( LOWORD( p_WParam ) ) );
+
+				e.Type = Event::KeyJustReleased;
+				e.Key = key;
+				m_Events.push( e );
 			}
 			break;
 			case WM_MOUSEMOVE:
@@ -477,7 +500,7 @@ namespace Bit
 			case WM_LBUTTONDOWN:
 			{ 
 				// Add mouse just pressed event
-				Bool status = m_Mouse.GetCurrentButtonState( Mouse::Left );
+				Bool status = false;//m_Mouse.GetCurrentButtonState( Mouse::Left );
 				if( status == false )
 				{
 					Event e2;
@@ -495,7 +518,7 @@ namespace Bit
 			case WM_MBUTTONDOWN:
 			{
 				// Add mouse just pressed event
-				Bool status = m_Mouse.GetCurrentButtonState( Mouse::Middle );
+				Bool status = false;//m_Mouse.GetCurrentButtonState( Mouse::Middle );
 				if( status == false )
 				{
 					Event e2;
@@ -513,7 +536,7 @@ namespace Bit
 			case WM_RBUTTONDOWN:
 			{
 				// Add mouse just pressed event
-				Bool status = m_Mouse.GetCurrentButtonState( Mouse::Right );
+				Bool status = false;//m_Mouse.GetCurrentButtonState( Mouse::Right );
 				if( status == false )
 				{
 					Event e2;

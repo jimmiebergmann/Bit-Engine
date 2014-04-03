@@ -185,6 +185,7 @@ namespace Bit
 		Bool			m_RegisteredWindowClass;
 		EventQueue		m_Events;
 		Mouse			m_Mouse;
+		Keyboard		m_Keyboard;
 		Bool			m_Resizing;
 		Bool			m_Moving;
 

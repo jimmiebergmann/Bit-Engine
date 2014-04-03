@@ -40,7 +40,7 @@ namespace Bit
 	public:
 
 		// Friend classes
-		friend class RenderWindow32;
+		friend class RenderWindowWin32;
 
 		// Constructor/destructor
 		KeyboardWin32( );
