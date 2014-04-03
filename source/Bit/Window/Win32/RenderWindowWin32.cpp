@@ -57,6 +57,8 @@ namespace Bit
 		m_Moving( false ),
 		m_Focused( false )
 	{
+		m_PressedButtons.reserve( Mouse::ButtonCount );
+		m_PressedKeys.reserve( 8 );
 	}
 
 	RenderWindowWin32::RenderWindowWin32( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style ) :
@@ -72,6 +74,8 @@ namespace Bit
 		m_Moving( false ),
 		m_Focused( false )
 	{
+		m_PressedButtons.reserve( Mouse::ButtonCount );
+		m_PressedKeys.reserve( 8 );
 		Open( p_VideoMode, p_Title, p_Style );
 	}
 
@@ -112,7 +116,7 @@ namespace Bit
 			return false;
 		}
 		// The class is now registered.
-		m_WidnowClassName = className;
+		m_WindowClassName = className;
 		m_RegisteredWindowClass = true;
 
 		// Let's set the windows style
@@ -224,7 +228,7 @@ namespace Bit
 		}
 
 		// Unregister the window class
-		if ( m_RegisteredWindowClass && !UnregisterClass( m_WidnowClassName.c_str( ), Hinstance ) )
+		if ( m_RegisteredWindowClass && !UnregisterClass( m_WindowClassName.c_str( ), Hinstance ) )
 		{
 			std::cout << "[RenderWindowWin32::Destroy] Unregistering class failed.\n";
 		}
@@ -245,10 +249,8 @@ namespace Bit
 
 	void RenderWindowWin32::Update( )
 	{
-		// Clear all the events
-		ClearEvents( );
-		m_Mouse.Update( );
-		m_Keyboard.Update( );
+		// Pre update the events
+		PreUpdateEvents( );
 
 		// Reset the resizing / moving flags
 		m_Resizing = false;
@@ -332,6 +334,96 @@ namespace Bit
 		while( m_Events.empty( ) == false )
 		{
 			m_Events.pop( );
+		}
+	}
+
+	void RenderWindowWin32::PreUpdateEvents( )
+	{
+		// Clear and update the events
+		ClearEvents( );
+		//m_Mouse.Update( );
+		//m_Keyboard.Update( );
+
+		// Add the pressed mouse events
+		Event e;
+		for( SizeType i = 0; i < m_PressedButtons.size( ); i++ )
+		{
+			e.Type = Event::MousePressed;
+			e.Button = m_PressedButtons[ i ];
+			m_Events.push( e );
+		}
+
+		for( SizeType i = 0; i < m_PressedKeys.size( ); i++ )
+		{
+			e.Type = Event::KeyPressed;
+			e.Key = m_PressedKeys[ i ];
+			m_Events.push( e );
+		}
+
+
+	}
+
+	void RenderWindowWin32::AddMousePressEvent( const Mouse::eButton p_Button)
+	{
+		if( p_Button == Mouse::Unknown )
+		{
+			return;
+		}
+
+		// Add the event if it wasn't found
+		for( SizeType i = 0; i < m_PressedButtons.size( ); i++ )
+		{
+			if( m_PressedButtons[ i ] == p_Button )
+			{
+				return;
+			}
+		}
+
+		m_PressedButtons.push_back( p_Button );
+	}
+
+	void RenderWindowWin32::RemoveMousePressEvent( const Mouse::eButton p_Button )
+	{
+		// Remvoe the event if it can be found.
+		for( SizeType i = 0; i < m_PressedButtons.size( ); i++ )
+		{
+			if( m_PressedButtons[ i ] == p_Button )
+			{
+				m_PressedButtons.erase( m_PressedButtons.begin( ) + i );
+				return;
+			}
+		}
+	}
+
+	void RenderWindowWin32::AddKeyPressEvent( const Keyboard::eKey p_Key )
+	{
+		if( p_Key == Keyboard::Unknown )
+		{
+			return;
+		}
+
+		// Add the event if it wasn't found
+		for( SizeType i = 0; i < m_PressedKeys.size( ); i++ )
+		{
+			if( m_PressedKeys[ i ] == p_Key )
+			{
+				return;
+			}
+		}
+
+		m_PressedKeys.push_back( p_Key );
+	}
+
+	void RenderWindowWin32::RemoveKeyPressEvent( const Keyboard::eKey p_Key )
+	{
+		// Remvoe the event if it can be found.
+		for( SizeType i = 0; i < m_PressedKeys.size( ); i++ )
+		{
+			if( m_PressedKeys[ i ] == p_Key )
+			{
+				m_PressedKeys.erase( m_PressedKeys.begin( ) + i );
+				return;
+			}
 		}
 	}
 
@@ -486,6 +578,7 @@ namespace Bit
 
 				// Set the key state
 				m_Keyboard.SetCurrentKeyState( key, true );
+				AddKeyPressEvent( key );
 			}
 			break;
 			case WM_KEYUP:
@@ -505,6 +598,7 @@ namespace Bit
 
 				// Set the key state
 				m_Keyboard.SetCurrentKeyState( key, false );
+				RemoveKeyPressEvent( key );
 			}
 			break;
 			case WM_CHAR:
@@ -540,6 +634,7 @@ namespace Bit
 
 				// Set the button state
 				m_Mouse.SetCurrentButtonState( Mouse::Left, true );
+				AddMousePressEvent( Mouse::Left );
 			}
 			break;
 			case WM_MBUTTONDOWN:
@@ -561,6 +656,7 @@ namespace Bit
 
 				// Set the button state
 				m_Mouse.SetCurrentButtonState( Mouse::Middle, true );
+				AddMousePressEvent( Mouse::Middle );
 			}
 			break;
 			case WM_RBUTTONDOWN:
@@ -582,6 +678,7 @@ namespace Bit
 
 				// Set the button state
 				m_Mouse.SetCurrentButtonState( Mouse::Right, true );
+				AddMousePressEvent( Mouse::Right );
 			}
 			break;
 			case WM_LBUTTONUP:
@@ -592,6 +689,7 @@ namespace Bit
 
 				// Set the button state
 				m_Mouse.SetCurrentButtonState( Mouse::Left, false );
+				RemoveMousePressEvent( Mouse::Left );
 			}
 			break;
 			case WM_MBUTTONUP:
@@ -602,6 +700,7 @@ namespace Bit
 
 				// Set the button state
 				m_Mouse.SetCurrentButtonState( Mouse::Middle, false );
+				RemoveMousePressEvent( Mouse::Middle );
 			}
 			break;
 			case WM_RBUTTONUP:
@@ -612,6 +711,7 @@ namespace Bit
 
 				// Set the button state
 				m_Mouse.SetCurrentButtonState( Mouse::Right, false );
+				RemoveMousePressEvent( Mouse::Right );
 			}
 			break;
 			default:

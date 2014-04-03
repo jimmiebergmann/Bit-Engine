@@ -156,6 +156,20 @@ namespace Bit
 		void ClearEvents( );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Update the pre events.
+		///
+		////////////////////////////////////////////////////////////////
+		void PreUpdateEvents( );
+
+		void AddMousePressEvent( const Mouse::eButton p_Button);
+
+		void RemoveMousePressEvent( const Mouse::eButton p_Button );
+
+		void AddKeyPressEvent( const Keyboard::eKey p_Key );
+
+		void RemoveKeyPressEvent( const Keyboard::eKey p_Key );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Static win32 event function,
 		/// required for win32 c++ wrapper.
 		///
@@ -174,20 +188,22 @@ namespace Bit
 		typedef std::queue< Event > EventQueue;
 
 		// Private varaibles
-		Bool			m_Open;
-		Bool			m_Focused;
-		VideoMode		m_VideoMode;
-		std::string		m_Title;
-		Uint32			m_Style;
-		HDC				m_DeviceContextHandle;
-		HWND			m_WindowHandle;
-		std::wstring	m_WidnowClassName;
-		Bool			m_RegisteredWindowClass;
-		EventQueue		m_Events;
-		Mouse			m_Mouse;
-		Keyboard		m_Keyboard;
-		Bool			m_Resizing;
-		Bool			m_Moving;
+		Bool m_Open;
+		Bool m_Focused;
+		VideoMode m_VideoMode;
+		std::string m_Title;
+		Uint32 m_Style;
+		HDC m_DeviceContextHandle;
+		HWND m_WindowHandle;
+		std::wstring m_WindowClassName;
+		Bool m_RegisteredWindowClass;
+		EventQueue m_Events;
+		Mouse m_Mouse;
+		Keyboard					m_Keyboard;
+		std::vector<Mouse::eButton>	m_PressedButtons;
+		std::vector<Keyboard::eKey>	m_PressedKeys;
+		Bool m_Resizing;
+		Bool m_Moving;
 
 	};
 
