@@ -460,9 +460,14 @@ namespace Bit
 			break;
 			case WM_KEYDOWN:
 			{
-
 				// Get the key as a bit key
 				Keyboard::eKey key = m_Keyboard.TranslateKeyToBitKey( static_cast<Uint16>( LOWORD( p_WParam ) ) );
+
+				// Ignore unknown keys
+				if( key == Keyboard::Unknown )
+				{
+					break;
+				}
 
 				// Add key just pressed event
 				Bool status = m_Keyboard.GetCurrentKeyState( key );
@@ -475,9 +480,12 @@ namespace Bit
 				}
 
 				// Add mouse key event
-				e.Type = Event::KeyPressed;
+				/*e.Type = Event::KeyPressed;
 				e.Key = key;
-				m_Events.push( e );
+				m_Events.push( e );*/
+
+				// Set the key state
+				m_Keyboard.SetCurrentKeyState( key, true );
 			}
 			break;
 			case WM_KEYUP:
@@ -485,8 +493,24 @@ namespace Bit
 				// Get the key as a bit key
 				Keyboard::eKey key = m_Keyboard.TranslateKeyToBitKey( static_cast<Uint16>( LOWORD( p_WParam ) ) );
 
+				// Ignore unknown keys
+				if( key == Keyboard::Unknown )
+				{
+					break;
+				}
+
 				e.Type = Event::KeyJustReleased;
 				e.Key = key;
+				m_Events.push( e );
+
+				// Set the key state
+				m_Keyboard.SetCurrentKeyState( key, false );
+			}
+			break;
+			case WM_CHAR:
+			{
+				e.Type = Event::TextEntered;
+				e.Character = static_cast<Uint16>( LOWORD( p_WParam ) );
 				m_Events.push( e );
 			}
 			break;
@@ -500,7 +524,7 @@ namespace Bit
 			case WM_LBUTTONDOWN:
 			{ 
 				// Add mouse just pressed event
-				Bool status = false;//m_Mouse.GetCurrentButtonState( Mouse::Left );
+				Bool status = m_Mouse.GetCurrentButtonState( Mouse::Left );
 				if( status == false )
 				{
 					Event e2;
@@ -510,15 +534,18 @@ namespace Bit
 				}
 
 				// Add mouse pressed event
-				e.Type = Event::MousePressed;
+				/*e.Type = Event::MousePressed;
 				e.Button = Mouse::Left;
-				m_Events.push( e );
+				m_Events.push( e );*/
+
+				// Set the button state
+				m_Mouse.SetCurrentButtonState( Mouse::Left, true );
 			}
 			break;
 			case WM_MBUTTONDOWN:
 			{
 				// Add mouse just pressed event
-				Bool status = false;//m_Mouse.GetCurrentButtonState( Mouse::Middle );
+				Bool status = m_Mouse.GetCurrentButtonState( Mouse::Middle );
 				if( status == false )
 				{
 					Event e2;
@@ -528,15 +555,18 @@ namespace Bit
 				}
 
 				// Add mouse pressed event
-				e.Type = Event::MousePressed;
+				/*e.Type = Event::MousePressed;
 				e.Button = Mouse::Middle;
-				m_Events.push( e );
+				m_Events.push( e );*/
+
+				// Set the button state
+				m_Mouse.SetCurrentButtonState( Mouse::Middle, true );
 			}
 			break;
 			case WM_RBUTTONDOWN:
 			{
 				// Add mouse just pressed event
-				Bool status = false;//m_Mouse.GetCurrentButtonState( Mouse::Right );
+				Bool status = m_Mouse.GetCurrentButtonState( Mouse::Right );
 				if( status == false )
 				{
 					Event e2;
@@ -546,9 +576,12 @@ namespace Bit
 				}
 
 				// Add mouse pressed event
-				e.Type = Event::MousePressed;
+				/*e.Type = Event::MousePressed;
 				e.Button = Mouse::Right;
-				m_Events.push( e );
+				m_Events.push( e );*/
+
+				// Set the button state
+				m_Mouse.SetCurrentButtonState( Mouse::Right, true );
 			}
 			break;
 			case WM_LBUTTONUP:
@@ -556,6 +589,9 @@ namespace Bit
 				e.Type = Event::MouseJustReleased;
 				e.Button = Mouse::Left;
 				m_Events.push( e );
+
+				// Set the button state
+				m_Mouse.SetCurrentButtonState( Mouse::Left, false );
 			}
 			break;
 			case WM_MBUTTONUP:
@@ -563,6 +599,9 @@ namespace Bit
 				e.Type = Event::MouseJustReleased;
 				e.Button = Mouse::Middle;
 				m_Events.push( e );
+
+				// Set the button state
+				m_Mouse.SetCurrentButtonState( Mouse::Middle, false );
 			}
 			break;
 			case WM_RBUTTONUP:
@@ -570,6 +609,9 @@ namespace Bit
 				e.Type = Event::MouseJustReleased;
 				e.Button = Mouse::Right;
 				m_Events.push( e );
+
+				// Set the button state
+				m_Mouse.SetCurrentButtonState( Mouse::Right, false );
 			}
 			break;
 			default:

@@ -55,6 +55,7 @@ namespace Bit
 			MousePressed,
 			MouseJustPressed,
 			MouseJustReleased,
+			TextEntered
 		};
 
 		eEventType		Type;
@@ -63,6 +64,7 @@ namespace Bit
 		Bit::Vector2i32	MousePosition;
 		Keyboard::eKey Key;
 		Mouse::eButton Button;
+		Uint16 Character;
 
 	};
 
