@@ -62,7 +62,7 @@ namespace Bit
 	RenderWindowWin32::RenderWindowWin32( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style ) :
 		m_Open( false ),
 		m_VideoMode( ),
-		m_Title( "" ),
+		m_Title( p_Title ),
 		m_Style( static_cast<Uint32>( Style::None ) ),
 		m_DeviceContextHandle( NULL ),
 		m_WindowHandle( NULL ),
@@ -83,14 +83,14 @@ namespace Bit
 	Bool RenderWindowWin32::Open( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style )
 	{
 		// Convert the title itnro a wide string
-		LPCWSTR convertedTitle = StringToWideString( p_Title ).c_str( );
+		std::wstring convertedTitle = StringToWideString( p_Title ).c_str( );
 
 		// Create an unique window class name
 		static Uint32 uniqueNumber = 0;
 		std::stringstream ss;
 		ss << "BitEngineWindow" << uniqueNumber;
 		uniqueNumber++;
-		std::wstring className		= StringToWideString( ss.str( ).c_str( ) ).c_str( );
+		std::wstring className = StringToWideString( ss.str( ).c_str( ) ).c_str( );
 
 		// Create a window class(WNDCLASS - win32)
 		WNDCLASS winClass;
@@ -155,7 +155,7 @@ namespace Bit
 		m_WindowHandle = CreateWindowEx(
 			exStyle,
 			className.c_str( ),
-			convertedTitle,
+			convertedTitle.c_str( ),
 
 			WS_CLIPSIBLINGS |
 			WS_CLIPCHILDREN |
@@ -288,11 +288,11 @@ namespace Bit
 	void RenderWindowWin32::SetTitle( const std::string & p_Title )
 	{
 		// Convert the title into the right format
-		LPCWSTR convertedTitle = StringToWideString( p_Title ).c_str();
+		std::wstring convertedTitle = StringToWideString( p_Title ).c_str();
 		//LPCWSTR convertedTitle = StringToWideString( p_Title ).c_str( );
 
 		// Change the title
-		Bool status = ( SetWindowText( m_WindowHandle, convertedTitle ) ? true : false );
+		Bool status = ( SetWindowText( m_WindowHandle, convertedTitle.c_str( ) ) ? true : false );
 
 		if( status == true )
 		{
