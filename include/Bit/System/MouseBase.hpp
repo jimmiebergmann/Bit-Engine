@@ -47,10 +47,11 @@ namespace Bit
 			// Public enum
 			enum eButton
 			{
+				Unknown = -1,
 				Left,
 				Middle,
 				Right,
-				None
+				ButtonCount
 			};
 
 			// Destructor
@@ -60,8 +61,8 @@ namespace Bit
 			virtual void Update( ) = 0;
 
 			// Button translation function for platform keys
-			virtual eButton TranslateButtonToBitKey( const Uint16 p_Button ) = 0;
-			virtual Uint16 TranslateButtonToSystemKey( const eButton p_Button ) = 0;
+			virtual eButton TranslateButtonToBitButton( const Uint16 p_Button ) = 0;
+			virtual Uint16 TranslateButtonToSystemButton( const eButton p_Button ) = 0;
 
 			// Get state functions
 			virtual Vector2i32 GetPosition( ) const = 0;
@@ -72,12 +73,11 @@ namespace Bit
 
 		protected:
 
-			// Protected varaibles
-			static const SizeType s_ButtonCount = None; ///< Total button count
-
 			// Protected functions
 			virtual Bool GetCurrentButtonState( const eButton p_Button ) = 0;
 			virtual Bool GetPreviousButtonState( const eButton p_Button ) = 0;
+			virtual void SetCurrentButtonState( const eButton p_Button, const Bool p_State ) = 0;
+			virtual void SetPreviousButtonState( const eButton p_Button, const Bool p_State ) = 0;
 
 		};
 

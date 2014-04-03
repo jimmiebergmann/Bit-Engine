@@ -25,6 +25,28 @@
 #ifndef BIT_SYSTEM_KEYBOARD_HPP
 #define BIT_SYSTEM_KEYBOARD_HPP
 
+#include <Bit/Build.hpp>
+
+#ifdef BIT_PLATFORM_WINDOWS
+	#include <Bit/System/Win32/KeyboardWin32.hpp>
+#elif BIT_PLATFORM_LINUX
+	//#include <Bit/System/Linux/KeyboardLinux.hpp>
+#endif
+
+namespace Bit
+{
+
+	#ifdef BIT_PLATFORM_WINDOWS
+		typedef KeyboardWin32 Keyboard;
+	#elif BIT_PLATFORM_LINUX
+		#error No render window is available for this platform.
+	#endif
+
+}
+
+#endif
+
+/*
 #include <Bit/DataTypes.hpp>
 
 namespace Bit
@@ -136,6 +158,13 @@ namespace Bit
             key_Super_R,
             Key_Tab,
             Key_Underscore,
+
+			*/
+
+
+
+
+
             /*Key_A_Diaeresis,
             Key_A_Ring,
             Key_Alt_L,
@@ -203,14 +232,14 @@ namespace Bit
             Key_Stop,
             Key_VolumeHigh,
             Key_VolumeLow,
-*/
+
 
             // Key counter (not a key)
             Key_Count,
             Key_None
         };
-
-        // Constructors/destructors
+*/
+      /*  // Constructors/destructors
 		virtual ~Keyboard( ) {}
 
         // Public general functions
@@ -234,4 +263,4 @@ namespace Bit
 
 }
 
-#endif
+#endif*/

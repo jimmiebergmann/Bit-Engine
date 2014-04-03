@@ -30,7 +30,7 @@
 #ifdef BIT_PLATFORM_WINDOWS
 	#include <Bit/System/Win32/MouseWin32.hpp>
 #elif BIT_PLATFORM_LINUX
-	#include <Bit/System/Linux/MouseLinux.hpp>
+	//#include <Bit/System/Linux/MouseLinux.hpp>
 #endif
 
 namespace Bit
@@ -42,6 +42,6 @@ namespace Bit
 		#error No render window is available for this platform.
 	#endif
 
-};
+}
 
 #endif

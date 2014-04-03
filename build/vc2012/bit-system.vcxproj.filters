@@ -39,6 +39,11 @@
     <ClInclude Include="..\..\include\Bit\System\MouseBase.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Hash.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Sha1.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Win32\KeyboardWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Keyboard.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\KeyboardBase.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -73,6 +78,9 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\System\Hash.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Sha1.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Win32\KeyboardWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">

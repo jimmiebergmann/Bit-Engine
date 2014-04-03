@@ -49,14 +49,14 @@ namespace Bit
 
         // Constructor/destructor
         MouseWin32( );
-        virtual ~MouseWin32( );
+        ~MouseWin32( );
 
         // Public general functions
         virtual void Update( );
 
         // Button translation function for platform keys
-		virtual eButton TranslateButtonToBitKey( const Uint16 p_Button );
-        virtual Uint16 TranslateButtonToSystemKey( const eButton p_Button );
+		virtual eButton TranslateButtonToBitButton( const Uint16 p_Button );
+        virtual Uint16 TranslateButtonToSystemButton( const eButton p_Button );
 
         // Get state functions
 		virtual Vector2i32 GetPosition( ) const;
@@ -77,11 +77,11 @@ namespace Bit
         Bool GetButtonStatus( const eButton p_Button );
 
         // Private variables
-        Bool m_CurrentButtonState[ s_ButtonCount ];						///< Current states of all buttons
-        Bool m_PreviousButtonState[ s_ButtonCount ];					///< Previous states of all buttons
-        std::vector< eButton > m_ChangedButtons;						///< Vector of all buttons that were changed since last Update( ) call.
-        Uint16 m_ButtonTranslationsBitToWin32[ s_ButtonCount + 1 ];			///< Translation table from bit keys to win32 keys
-        eButton m_ButtonTranslationsWin32ToBit[ s_ButtonCount + 2 ];	///< Translation table from system keys to bit keys
+        Bool m_CurrentButtonState[ ButtonCount ];					///< Current states of all buttons
+        Bool m_PreviousButtonState[ ButtonCount ];					///< Previous states of all buttons
+        std::vector< eButton > m_ChangedButtons;					///< Vector of all buttons that were changed since last Update( ) call.
+        Uint16 m_ButtonTranslationsBitToWin32[ ButtonCount + 1 ];	///< Translation table from bit keys to win32 keys
+        eButton m_ButtonTranslationsWin32ToBit[ ButtonCount + 2 ];	///< Translation table from system keys to bit keys
 
     };
 
