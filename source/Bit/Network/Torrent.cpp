@@ -26,7 +26,9 @@
 #include <Bit/System/Bencode/Reader.hpp>
 #include <Bit/System/Bencode/Writer.hpp>
 #include <Bit/System/Sha1.hpp>
+#include <Bit/System/Randomizer.hpp>
 #include <Bit/Network/Http.hpp>
+#include <Bit/Network/Socket.hpp>
 #include <iostream>
 #include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -36,10 +38,75 @@ namespace Bit
 
 	// Global variables
 	static Torrent::Tracker g_NullTracker;
+	static Torrent::Peer g_NullPeer;
 
+	// Torrent peer class
+	Torrent::Peer::Peer( ) :
+		m_Address( 0 ),
+		m_Port( 0 )
+	{
+	}
+
+	Torrent::Peer::Peer( const Address p_Address, const Uint16 p_Port ) :
+		m_Address( p_Address ),
+		m_Port( p_Port )
+	{
+	}
+
+	// Tracker response class
+	const std::string & Torrent::Tracker::Response::GetFailureReason( ) const
+	{
+		return m_FailureReason;
+	}
+
+	const std::string & Torrent::Tracker::Response::GetWarningMessage( ) const
+	{
+		return m_WarningMessage;
+	}
+
+	Uint32 Torrent::Tracker::Response::GetInterval( ) const
+	{
+		return m_Interval;
+	}
+
+	const std::string & Torrent::Tracker::Response::GeTrackerId( ) const
+	{
+		return m_TrackerId;
+	}
+
+	Uint32 Torrent::Tracker::Response::GetCompleteCount( ) const
+	{
+		return m_Complete;
+	}
+
+	Uint32 Torrent::Tracker::Response::GetIncompleteCount( ) const
+	{
+		return m_Incomplete;
+	}
+
+	SizeType Torrent::Tracker::Response::GetPeerCount( ) const
+	{
+		return m_Peers.size( );
+	}
+
+	Torrent::Peer & Torrent::Tracker::Response::GetPeer( const SizeType p_Index )
+	{
+		if( p_Index < 0 || p_Index >= m_Peers.size( ) )
+		{
+			return g_NullPeer;
+		}
+
+		return m_Peers[ p_Index ];
+	}
+
+	const Torrent::Tracker::Response::PeerVector & Torrent::Tracker::Response::GetPeers( ) const
+	{
+		return m_Peers;
+	}
 
 	// Tracker class
-	Torrent::Tracker::Tracker( )
+	Torrent::Tracker::Tracker( const Uint16 p_PeerRequestCount ) :
+		m_PeerRequestCount( p_PeerRequestCount )
 	{
 	}
 
@@ -58,7 +125,7 @@ namespace Bit
 		return m_Url;
 	}
 
-	Bool Torrent::Tracker::SendRequest( TrackerResponse & p_Response, const Torrent & p_Torrent )
+	Bool Torrent::Tracker::SendRequest( Response & p_Response, const Torrent & p_Torrent )
 	{
 		// Set up the http class
 		Http http;
@@ -69,11 +136,12 @@ namespace Bit
 		std::stringstream path;
 		path << "/" + m_Url.GetPath( );
 		path << "?info_hash=" + p_Torrent.GetInfoHash( ).AsUrlEncodedString( );
-		path << "&peer_id=-UT3320-_v%a0%5c%01%5e%be%8d%e6%40%d3%fb";
-		path << "&port=12345";
+		path << "&peer_id=" + p_Torrent.GetPeerId( ).AsUrlEncodedString( );
+		path << "&port=" << p_Torrent.GetPort( );
 		path << "&uploaded=0";
 		path << "&downloaded=0";
 		path << "&left=925892608";
+		path << "&numwant=" << m_PeerRequestCount;
 		path << "&compact=1";
 
 		Http::Request request( Http::Get, path.str( ) );
@@ -90,20 +158,135 @@ namespace Bit
 		// Check the response status
 		if( response.GetStatusCode( ) != Http::Ok )
 		{
-			std::cout << "Error in response." << std::endl;
+			// Set the failure reason
+			if( response.GetBody( ).size( ) )
+			{
+				p_Response.m_FailureReason = response.GetBody( );
+			}
+
 			return false;
 		}
 
 		// Parse the response
+		Bencode::Reader beReader;
+		Bencode::Value beRoot;
+		if( beReader.Parse( response.GetBody( ), beRoot ) == false )
+		{
+			std::cout << "Failed to parse the response." << std::endl;
+			return false;
+		}
+
+		// Parse the warning message
+		p_Response.m_WarningMessage = beRoot.Get( "warning message", "" ).AsString( );
+
+		// Parse the interval
+		Int32 interval = beRoot.Get( "interval", 0 ).AsInt( );
+		if( interval < 0 )
+		{
+			interval = 0;
+		}
+		p_Response.m_Interval = interval;
+
+		// Parse the tracker id
+		p_Response.m_TrackerId = beRoot.Get( "tracker id", "" ).AsString( );
+
+		// Parse the complete count
+		Int32 complete = beRoot.Get( "complete", 0 ).AsInt( );
+		if( complete < 0 )
+		{
+			complete = 0;
+		}
+		p_Response.m_Complete = complete;
+
+		// Parse the incomplete count
+		Int32 incomplete = beRoot.Get( "incomplete", 0 ).AsInt( );
+		if( incomplete < 0 )
+		{
+			incomplete = 0;
+		}
+		p_Response.m_Incomplete = incomplete;
+
+		// Parse the peers
+		Bencode::Value bePeers = beRoot.Get( "peers", Bencode::Value::NilValue );
+		if( bePeers != Bencode::Value::NilValue )
+		{
+			// Make sure that this is a string.
+			if( bePeers.GetType( ) == Bencode::Value::String )
+			{
+
+				// Parse the peer string
+				const std::string & peerString = bePeers.AsString( );
+				ParsePeers( peerString, p_Response.m_Peers );
+			}
+			else
+			{
+				p_Response.m_FailureReason = "[Bit] Currently not supporting list representation of peers.";
+				return false;
+			}
+		}
+
+/*		* std::string m_FailureReason;	///< Reason why the request failed.
+		* std::string m_WarningMessage;	///< Warning message from the tracker.
+		* Uint32 m_Interval;				///< Interval in seconds that the client should wait unit sending next request.
+		* std::string m_TrackerId;		///< Tracker id, might be absent.
+		* Uint32 m_Complete;				///< Number of clients with the entire file(seeders).
+		* Uint32 m_Incomplete;			///< Number of non-seeder peers(leechers).
+		PeerVector m_peers;					*/
 
 
-	
+		return true;
+	}
+
+	Bool Torrent::Tracker::ParsePeers( const std::string & p_PeerString, Response::PeerVector & p_Peers )
+	{
+		// Make sure that the string contains at least one peer.
+		if( p_PeerString.size( ) < 6 )
+		{
+			return false;
+		}
+
+		// Go through(parse) all the peers in the string.
+		for( SizeType i = 0; i < p_PeerString.size( ) / 6; i++ )
+		{
+			// Current position in the peer string.
+			SizeType curPos = i * 6;
+
+			// Get the ip for the current peer.
+			Uint32 ip = 0;
+			ip |= static_cast<Uint32>( p_PeerString[ curPos ] );
+			ip |= static_cast<Uint32>( p_PeerString[ curPos + 1 ] ) << 8;
+			ip |= static_cast<Uint32>( p_PeerString[ curPos + 2 ] ) << 16;
+			ip |= static_cast<Uint32>( p_PeerString[ curPos + 3 ] ) << 24;
+			ip = Ntoh32( ip );
+
+			// Get the port for the current peer.
+			Uint16 port = 0;
+			port |= static_cast<Uint16>( p_PeerString[ curPos + 4 ] );
+			port |= static_cast<Uint16>( p_PeerString[ curPos + 5 ] ) << 8;
+			port = Ntoh16( port );
+
+			// Add the peer to the output vector.
+			p_Peers.push_back( Peer( Address( ip ), port ) );
+		}
+
 		return true;
 	}
 
 	// Torrent class
-	Torrent::Torrent( )
+	Torrent::Torrent( const Uint16 p_Port ) :
+		m_Port( p_Port ),
+		m_Trackers( ),
+		m_PieceSize( 0 ),
+		m_Pieces( ),
+		m_InfoHash( ),
+		m_Files( )
 	{
+		// Create a random peer ID.
+		for( SizeType i = 0; i < 20; i++ )
+		{
+			Int32 randomValue = RandomizeNumber( 0, 255 );
+			m_PeerId.AddByte( static_cast<Uint8>( randomValue ) );
+		}
 	}
 
 	Bool Torrent::ReadTorrentFile( const std::string & p_Filename )
@@ -181,7 +364,7 @@ namespace Bit
 
 		// Get the piece size.
 		Int32 pieceSize = beInfo.Get( "piece length", 0 ).AsInt( );
-		if( m_PieceSize <= 0 )
+		if( pieceSize <= 0 )
 		{
 			std::cerr << "Could get the piece size." << std::endl;
 			return false;
@@ -294,6 +477,21 @@ namespace Bit
 		m_InfoHash = infoHash.GetHash( );
 
 		return true;
+	}
+
+	void Torrent::SetPort( const Uint16 p_Port )
+	{
+		m_Port = p_Port;
+	}
+
+	Uint16 Torrent::GetPort( ) const
+	{
+		return m_Port;
+	}
+
+	const Hash & Torrent::GetPeerId( ) const
+	{
+		return m_PeerId;
 	}
 
 	const Hash & Torrent::GetInfoHash( ) const

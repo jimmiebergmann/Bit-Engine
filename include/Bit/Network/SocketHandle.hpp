@@ -28,7 +28,8 @@
 
 #ifdef BIT_PLATFORM_WINDOWS
 	#include <WinSock2.h>
-	#include <Windows.h>	  
+	#include <Windows.h>
+	#undef SetPort
 #elif BIT_PLATFORM_LINUX
 	#error No socket handle available for this platform.
 #endif

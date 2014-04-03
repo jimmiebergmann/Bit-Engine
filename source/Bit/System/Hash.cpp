@@ -167,6 +167,16 @@ namespace Bit
 		m_Bytes.clear( );
 	}
 
+	Uint8 Hash::GetByte( const SizeType p_Index ) const
+	{
+		if( p_Index >= m_Bytes.size( ) )
+		{
+			return 0;
+		}
+
+		return m_Bytes[ p_Index ];
+	}
+
 	std::string Hash::AsString( ) const
 	{
 		// Create an output string

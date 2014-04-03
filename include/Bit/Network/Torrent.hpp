@@ -37,33 +37,44 @@ namespace Bit
 	/// \ingroup Network
 	/// \brief Torrent protocol class.
 	///
+	/// Resources:	https://wiki.theory.org/BitTorrentSpecification
+	///				http://en.wikipedia.org/wiki/Torrent_file
+	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API Torrent
 	{
 
 	public:
 
+
 		////////////////////////////////////////////////////////////////
-		/// \brief Tracker response class.
+		/// \brief Peer class.
 		///
 		////////////////////////////////////////////////////////////////
-		class TrackerResponse
+		class Peer
 		{
 
-			public:
+		public:
 
-				// Private typedefs
-				typedef std::pair<Address, Uint16> PeerPair;
-				typedef std::vector<PeerPair> PeerVector;
+			// Friend classes
+			friend class Tracker;
 
-				// Private varaibles
-				std::string m_FailureReason;	///< Reason why the request failed.
-				std::string m_WarningMessage;	///< Warning message from the tracker.
-				Uint32 m_Interval;				///< Interval in seconds that the client should wait unit sending next request.
-				std::string m_TrackerId;		///< Tracker id, might be absent.
-				Uint32 m_Complete;				///< Number of clients with the entire file(seeders).
-				Uint32 m_Incomplete;			///< Number of non-seeder peers(leechers).
-				PeerVector m_peers;				///< Vector of all the available peers.
+			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor
+			///
+			////////////////////////////////////////////////////////////////
+			Peer( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Constructor
+			///
+			////////////////////////////////////////////////////////////////
+			Peer( const Address p_Address, const Uint16 p_Port );
+
+		private:
+
+			Address m_Address;	///< The peers address.
+			Uint16 m_Port;		///< The port that the peer is listening on.
 
 		};
 
@@ -77,10 +88,95 @@ namespace Bit
 		public:
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Default constructor
+			/// \brief Tracker response class.
 			///
 			////////////////////////////////////////////////////////////////
-			Tracker( );
+			class Response
+			{
+
+				public:
+
+					// Friend classes
+					friend class Tracker;
+
+					// Public typedefs
+					typedef std::vector<Peer> PeerVector;
+
+					////////////////////////////////////////////////////////////////
+					/// \brief 
+					///
+					////////////////////////////////////////////////////////////////
+					const std::string & GetFailureReason( ) const;
+
+					////////////////////////////////////////////////////////////////
+					/// \brief 
+					///
+					////////////////////////////////////////////////////////////////
+					const std::string & GetWarningMessage( ) const;
+
+					////////////////////////////////////////////////////////////////
+					/// \brief 
+					///
+					////////////////////////////////////////////////////////////////
+					Uint32 GetInterval( ) const;
+
+					////////////////////////////////////////////////////////////////
+					/// \brief 
+					///
+					////////////////////////////////////////////////////////////////
+					const std::string & GeTrackerId( ) const;
+
+					////////////////////////////////////////////////////////////////
+					/// \brief 
+					///
+					////////////////////////////////////////////////////////////////
+					Uint32 GetCompleteCount( ) const;
+
+					////////////////////////////////////////////////////////////////
+					/// \brief 
+					///
+					////////////////////////////////////////////////////////////////
+					Uint32 GetIncompleteCount( ) const;
+
+					////////////////////////////////////////////////////////////////
+					/// \brief 
+					///
+					////////////////////////////////////////////////////////////////
+					SizeType GetPeerCount( ) const;
+
+					////////////////////////////////////////////////////////////////
+					/// \brief 
+					///
+					////////////////////////////////////////////////////////////////
+					Peer & GetPeer( const SizeType p_Index );
+
+					////////////////////////////////////////////////////////////////
+					/// \brief 
+					///
+					////////////////////////////////////////////////////////////////
+					const PeerVector & GetPeers( ) const;
+
+			private:
+
+					// Private varaibles
+					std::string m_FailureReason;	///< Reason why the request failed.
+					std::string m_WarningMessage;	///< Warning message from the tracker.
+					Uint32 m_Interval;				///< Interval in seconds that the client should wait unit sending next request.
+					std::string m_TrackerId;		///< Tracker id, might be absent.
+					Uint32 m_Complete;				///< Number of clients with the entire file(seeders).
+					Uint32 m_Incomplete;			///< Number of non-seeder peers(leechers).
+					PeerVector m_Peers;				///< Vector of all the available peers.
+
+			};
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor
+			///
+			/// \param p_PeerRequestCount The ammount of peers the client
+			///		want from the tracker
+			///
+			////////////////////////////////////////////////////////////////
+			Tracker( const Uint16 p_PeerRequestCount = 200 );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
@@ -107,11 +203,23 @@ namespace Bit
 			/// \param p_Torrent The torrent that you want information about.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool SendRequest( TrackerResponse & p_Response, const Torrent & p_Torrent );
+			Bool SendRequest( Response & p_Response, const Torrent & p_Torrent );
 
 		private:
 
-			Url m_Url;
+			// Private functions
+			////////////////////////////////////////////////////////////////
+			/// \brief Parse the peer string part of the response from the tracker.
+			///
+			/// \param p_PeerString The string of all the peers.
+			/// \param p_Peers The output vector for the parsed peers.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool ParsePeers( const std::string & p_PeerString, Response::PeerVector & p_Peers );
+
+			// Private varaibles
+			Url m_Url;						///< The tracker's url.
+			Uint16 m_PeerRequestCount;		///< The ammount of peers the client want from the tracker.
 
 		};
 
@@ -119,7 +227,7 @@ namespace Bit
 		/// \brief Default constructor
 		///
 		////////////////////////////////////////////////////////////////
-		Torrent( );
+		Torrent( const Uint16 p_Port = 6881 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Read a torrent file and store it's data.
@@ -128,6 +236,24 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Bool ReadTorrentFile( const std::string & p_Filename );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Sets the listening port.
+		///
+		////////////////////////////////////////////////////////////////
+		void SetPort( const Uint16 p_Port );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Gets the listening port.
+		///
+		////////////////////////////////////////////////////////////////
+		Uint16 GetPort( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Gets the info hash
+		///
+		////////////////////////////////////////////////////////////////
+		const Hash & GetPeerId( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Gets the info hash
@@ -147,19 +273,17 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		Tracker & GetTracker( const SizeType p_Index );
 
-
-		//Bool SendTrackerRequest(	TrackerResponse & p_Response, const Address & p_Address, const Uint16 p_Port );
-
 	private:
 
 		// Private typedefs
-		typedef std::vector<Tracker>			TrackerVector;	///< 
-		typedef std::vector<std::string>		StringVector;	///< 
-		typedef std::vector<Hash>				HashVector;		///< 
+		typedef std::vector<Tracker>			TrackerVector;	///< Tracker vector.
+		typedef std::vector<Hash>				HashVector;		///< Hash vector, used for pieces.
 		typedef std::pair<std::string, Uint32>	FilePair;		///< Name and file size
-		typedef std::vector<FilePair>			FileVector;		///< 
+		typedef std::vector<FilePair>			FileVector;		///< Vector of files(name and size)
 
 		// Private variables
+		Uint16 m_Port;				///< Listening port.
+		Hash m_PeerId;				///< The peer ID. It should be unique for the local machine.
 		TrackerVector m_Trackers;	///< Vector of all available trackers.
 		Uint32 m_PieceSize;			///< Size of each piece;
 		HashVector m_Pieces;		///< All the pieces.
