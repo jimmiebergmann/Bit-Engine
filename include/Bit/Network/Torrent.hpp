@@ -103,8 +103,11 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief Send request(announce)
 			///
+			/// \param p_Response The response from the tracker
+			/// \param p_Torrent The torrent that you want information about.
+			///
 			////////////////////////////////////////////////////////////////
-			Bool SendRequest( TrackerResponse & p_Response );
+			Bool SendRequest( TrackerResponse & p_Response, const Torrent & p_Torrent );
 
 		private:
 
@@ -126,6 +129,24 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		Bool ReadTorrentFile( const std::string & p_Filename );
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Gets the info hash
+		///
+		////////////////////////////////////////////////////////////////
+		const Hash & GetInfoHash( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the numbers of trackers
+		///
+		////////////////////////////////////////////////////////////////
+		SizeType GetTrackerCount( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get a tracker
+		///
+		////////////////////////////////////////////////////////////////
+		Tracker & GetTracker( const SizeType p_Index );
+
 
 		//Bool SendTrackerRequest(	TrackerResponse & p_Response, const Address & p_Address, const Uint16 p_Port );
 
@@ -143,6 +164,7 @@ namespace Bit
 		Uint32 m_PieceSize;			///< Size of each piece;
 		HashVector m_Pieces;		///< All the pieces.
 		Hash m_InfoHash;			///< The info hash.
+		FileVector m_Files;			///< The files in this torrent.
 
 	};
 

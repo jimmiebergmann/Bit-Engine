@@ -177,7 +177,7 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Request(	const eMethod p_Method,
 						const std::string & p_Path = "",
-						const std::string & p_Protocol = "" );
+						const std::string & p_Protocol = "HTTP/1.1" );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Sets the method

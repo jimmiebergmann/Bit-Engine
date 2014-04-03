@@ -24,11 +24,19 @@
 
 #include <Bit/Network/Torrent.hpp>
 #include <Bit/System/Bencode/Reader.hpp>
+#include <Bit/System/Bencode/Writer.hpp>
+#include <Bit/System/Sha1.hpp>
+#include <Bit/Network/Http.hpp>
 #include <iostream>
+#include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
+
+	// Global variables
+	static Torrent::Tracker g_NullTracker;
+
 
 	// Tracker class
 	Torrent::Tracker::Tracker( )
@@ -50,8 +58,45 @@ namespace Bit
 		return m_Url;
 	}
 
-	Bool Torrent::Tracker::SendRequest( TrackerResponse & p_Response )
+	Bool Torrent::Tracker::SendRequest( TrackerResponse & p_Response, const Torrent & p_Torrent )
 	{
+		// Set up the http class
+		Http http;
+		http.SetPort( m_Url.GetPort( ) );
+		http.SetTimeout( 10 * 1000 );
+
+		// Create an request and response class
+		std::stringstream path;
+		path << "/" + m_Url.GetPath( );
+		path << "?info_hash=" + p_Torrent.GetInfoHash( ).AsUrlEncodedString( );
+		path << "&peer_id=-UT3320-_v%a0%5c%01%5e%be%8d%e6%40%d3%fb";
+		path << "&port=12345";
+		path << "&uploaded=0";
+		path << "&downloaded=0";
+		path << "&left=925892608";
+		path << "&compact=1";
+
+		Http::Request request( Http::Get, path.str( ) );
+		request.SetField( "Host", m_Url.GetDomain( ) );
+		Http::Response response;
+
+		// Send and receive the request
+		if( http.SendRequest( request, response, Bit::Address( m_Url.GetDomain( ))) == false )
+		{
+			std::cout << "Failed to send request." << std::endl;
+			return false;
+		}
+
+		// Check the response status
+		if( response.GetStatusCode( ) != Http::Ok )
+		{
+			std::cout << "Error in response." << std::endl;
+			return false;
+		}
+
+		// Parse the response
+
+
 	
 		return true;
 	}
@@ -144,15 +189,131 @@ namespace Bit
 		m_PieceSize = pieceSize;
 
 		// Read the piece data.
+		const std::string & pieceData = beInfo.Get( "pieces", "" ).AsString( );
 
+		// Check if there's any data
+		if( pieceData.size( ) == 0  )
+		{
+			std::cerr << "Could get the piece data." << std::endl;
+			return false;
+		}
+
+		// Error check the size
+		if( pieceData.size( ) % 20 != 0  )
+		{
+			std::cerr << "Error in piece data." << std::endl;
+			return false;
+		}
+
+		// Parse the piece data into the pieces(hash) vector
+		for( SizeType i = 0; i < pieceData.size( ); i += 20 )
+		{
+			Hash piece;
+
+			// Add the 20 piece bytes to the piece
+			for( SizeType j = 0; j < 20; j++ )
+			{
+				piece.AddByte( pieceData[ i + j ] );
+			}
+
+			// Push back the piece
+			m_Pieces.push_back( piece );
+
+		}
 
 		// Read all the files.
+		Bencode::Value beFiles = beInfo.Get( "files", Bencode::Value::NilValue );
+		if( beFiles.GetType( ) == Bencode::Value::List )
+		{
+			// This is the dictionary the file should be placed in.
+			std::string dic = beInfo.Get( "name", "" ).AsString( );
+
+			// Go through the list of files
+			for( SizeType i = 0; i < beFiles.GetSize( ); i++ )
+			{
+				// Get the filename and file size
+				std::string path = beFiles[ i ].Get( "path", "" ).AsString( );
+				Int32 length = beFiles[ i ].Get( "length", 0 ).AsInt( );
+
+				// Error check the file variables
+				if( path.size( ) == 0 )
+				{
+					std::cerr << "Error in multifile path." << std::endl;
+					return false;
+				}
+
+				if( length <= 0 )
+				{
+					std::cerr << "Error in multifile length." << std::endl;
+					return false;
+				}
+
+				// Add the file
+				m_Files.push_back( FilePair( path, length ) );
+			}
+
+		}
+		// Could not find the "files" list, this should be a single file torrent
+		else
+		{
+			// Get the filename and file size
+			std::string filename = beInfo.Get( "name", "" ).AsString( );
+			Int32 length = beInfo.Get( "length", 0 ).AsInt( );
+
+			// Error check the file variables
+			if( filename.size( ) == 0 )
+			{
+				std::cerr << "Error in single file name." << std::endl;
+				return false;
+			}
+
+			if( length <= 0 )
+			{
+				std::cerr << "Error in single file length." << std::endl;
+				return false;
+			}
+
+			// Add the file
+			m_Files.push_back( FilePair( filename, length ) );
+		}
 
 
+		// Calculate the info hash, first get the info dictionary as a string
+		Bencode::Writer beWriter;
+		std::string infoString;
 
+		if( beWriter.Write( infoString, beInfo ) == false )
+		{
+			std::cerr << "Could not get the info dictionary string." << std::endl;
+			return false;
+		}
+
+		// Generate the info hash
+		Sha1 infoHash;
+		infoHash.Generate( infoString );
+		m_InfoHash = infoHash.GetHash( );
 
 		return true;
 	}
 
+	const Hash & Torrent::GetInfoHash( ) const
+	{
+		return m_InfoHash;
+	}
+
+	SizeType Torrent::GetTrackerCount( ) const
+	{
+		return static_cast<SizeType>( m_Trackers.size( ) );
+	}
+		
+	Torrent::Tracker & Torrent::GetTracker( const SizeType p_Index )
+	{
+		if( p_Index < 0 || p_Index >= m_Trackers.size( ) )
+		{
+			return g_NullTracker;
+		}
+
+		return m_Trackers[ p_Index ];
+	}
 
 }
