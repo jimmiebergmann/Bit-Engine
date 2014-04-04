@@ -22,74 +22,40 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/System/Timer.hpp>
-#include <ctime>
+#include <Bit/System/Time.hpp>
 #include <Bit/System/MemoryLeak.hpp>
-
-////////////////////////////////////////////////////////////////
-// Platform dependent includes
-////////////////////////////////////////////////////////////////
-#ifdef BIT_PLATFORM_WINDOWS
-	#include <windows.h>
-#elif defined( BIT_PLATFORM_LINUX )
-	#include <sys/time.h>
-#endif
 
 namespace Bit
 {
 
-	Timer::Timer( ) :
-		m_StartTime( 0 ),
-		m_Time( 0 )
+	Time::Time( ) :
+		m_Nanoseconds( 0 )
 	{
 	}
 
-	void Timer::Start( )
+	Time::Time( const Uint64 & p_Nanoseconds ) :
+		m_Nanoseconds( p_Nanoseconds )
 	{
-		m_StartTime = GetSystemTime( );
 	}
 
-	void Timer::Stop( )
+	void Time::Set( const Uint64 & p_Nanoseconds )
 	{
-		Uint64 CurrentTime = GetSystemTime( );
-		m_Time = ( CurrentTime - m_StartTime );
+		m_Nanoseconds = p_Nanoseconds;
 	}
 
-	Time Timer::GetTime( )
+	Float64 Time::AsSeconds( ) const
 	{
-		return Time( m_Time );
+		return static_cast<Float64>( m_Nanoseconds ) / 1000000.0f;
 	}
 
-	Time Timer::GetLapsedTime( )
+	Uint64 Time::AsMilliseconds( ) const
 	{
-		Stop( );
-		return Time( m_Time );
+		return m_Nanoseconds / 1000ULL;
 	}
 
-	Uint64 Timer::GetSystemTime( )
+	Uint64 Time::AsNanoseconds( ) const
 	{
-		// Windows implementation.
-		#ifdef BIT_PLATFORM_WINDOWS
-
-			static Int64 counter = 0;
-			static Int64 frequency = 0;
-
-			QueryPerformanceCounter( (LARGE_INTEGER*)&counter );
-			QueryPerformanceFrequency( (LARGE_INTEGER*)&frequency );
-
-			return ( counter * 1000000 ) / frequency;
-
-		// Linux implementation.
-		#elif defined( BIT_PLATFORM_LINUX )
-
-			timeval Time;
-			gettimeofday( &Time, 0 );
-
-			return	static_cast< Int64 >( Time.tv_sec ) * 1000000 +
-					static_cast< Int64 >( Time.tv_usec );
-
-		#endif
+		return m_Nanoseconds;
 	}
 
 }
-

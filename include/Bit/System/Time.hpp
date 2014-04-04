@@ -22,21 +22,20 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_SYSTEM_TIMER_HPP
-#define BIT_SYSTEM_TIMER_HPP
+#ifndef BIT_SYSTEM_TIME_HPP
+#define BIT_SYSTEM_TIME_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/System/Time.hpp>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup System
-	/// \brief Timer class
+	/// \brief Time class
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Timer
+	class BIT_API Time
 	{
 
 	public:
@@ -45,55 +44,57 @@ namespace Bit
 		/// \brief Default constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		Timer( );
+		Time( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Starting the timer.
+		/// \brief Constructor.
+		///
+		/// Initializing the time class.
+		///
+		/// \param p_NanoSeconds Time in nanoseconds.
 		///
 		////////////////////////////////////////////////////////////////
-		void Start( );
+		Time( const Uint64 & p_Nanoseconds );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Stopping the timer.
+		/// \brief Sets the time.
+		///
+		/// \param p_NanoSeconds Time in nanoseconds.
 		///
 		////////////////////////////////////////////////////////////////
-		void Stop( );
+		void Set( const Uint64 & p_Nanoseconds );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Getting the time.
+		/// \brief Get the time in seconds.
 		///
-		/// \return The current time of the timer.
+		/// \return Time in seconds as a 64 bit floating point value.
 		///
 		////////////////////////////////////////////////////////////////
-		Time GetTime( );
+		Float64 AsSeconds( ) const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Stopping and getting the time.
+		/// \brief Get the time in seconds.
 		///
-		/// \return The current time of the timer.
-		///
-		/// \see Stop
-		/// \see GetTime
+		/// \return Time in seconds as a 64 bit floating point value.
 		///
 		////////////////////////////////////////////////////////////////
-		Time GetLapsedTime( );
+		Uint64 AsMilliseconds( ) const;
 
 		////////////////////////////////////////////////////////////////
-		/// \return Get system time in nanoseconds since last startup.
+		/// \brief Get the time in seconds.
+		///
+		/// \return Time in seconds as a 64 bit floating point value.
 		///
 		////////////////////////////////////////////////////////////////
-		static Uint64 GetSystemTime( );
+		Uint64 AsNanoseconds( ) const;
 
 	private:
 
-		////////////////////////////////////////////////////////////////
-		// Private variable members
-		////////////////////////////////////////////////////////////////
-		Uint64 m_StartTime;	///< The start time
-		Uint64 m_Time;			///< The the current time.
+		// Private variables
+		Uint64 m_Nanoseconds;	///< Time in nanoseconds.
 
 	};
-}
 
+}
 
 #endif
