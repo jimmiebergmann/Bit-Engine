@@ -28,6 +28,10 @@
 namespace Bit
 {
 
+	const Time Time::Infinite = Microseconds( 0xFFFFFFFFFFFFFFFFULL );
+	const Time Time::Zero = Microseconds( 0 );
+
+
 	Time::Time( ) :
 		m_Microseconds( 0 )
 	{
