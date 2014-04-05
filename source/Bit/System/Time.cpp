@@ -29,33 +29,45 @@ namespace Bit
 {
 
 	Time::Time( ) :
-		m_Nanoseconds( 0 )
+		m_Microseconds( 0 )
 	{
-	}
-
-	Time::Time( const Uint64 & p_Nanoseconds ) :
-		m_Nanoseconds( p_Nanoseconds )
-	{
-	}
-
-	void Time::Set( const Uint64 & p_Nanoseconds )
-	{
-		m_Nanoseconds = p_Nanoseconds;
 	}
 
 	Float64 Time::AsSeconds( ) const
 	{
-		return static_cast<Float64>( m_Nanoseconds ) / 1000000.0f;
+		return static_cast<Float64>( m_Microseconds ) / 1000000.0f;
 	}
 
 	Uint64 Time::AsMilliseconds( ) const
 	{
-		return m_Nanoseconds / 1000ULL;
+		return m_Microseconds / 1000ULL;
 	}
 
-	Uint64 Time::AsNanoseconds( ) const
+	Uint64 Time::AsMicroseconds( ) const
 	{
-		return m_Nanoseconds;
+		return m_Microseconds;
+	}
+
+	// Private functions
+	Time::Time( const Uint64 & p_Microseconds ) :
+		m_Microseconds( p_Microseconds )
+	{
+	}
+
+	// Functions for initializing time classes
+	BIT_API Time Seconds( const Float64 & p_Seconds )
+	{
+		return Time( static_cast<Uint64>( p_Seconds * 1000000.0f ) );
+	}
+
+	BIT_API Time Milliseconds( const Uint64 & p_Milliseconds )
+	{
+		return Time( p_Milliseconds * 1000ULL );
+	}
+
+	BIT_API Time Microseconds( const Uint64 & p_Microseconds )
+	{
+		return Time( p_Microseconds );
 	}
 
 }

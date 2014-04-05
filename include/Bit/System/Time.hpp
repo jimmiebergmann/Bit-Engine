@@ -40,29 +40,16 @@ namespace Bit
 
 	public:
 
+		// Friend functions
+		friend Time Seconds( const Float64 & );
+		friend Time Milliseconds( const Uint64 & );
+		friend Time Microseconds( const Uint64 & );
+
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor.
 		///
 		////////////////////////////////////////////////////////////////
 		Time( );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Constructor.
-		///
-		/// Initializing the time class.
-		///
-		/// \param p_NanoSeconds Time in nanoseconds.
-		///
-		////////////////////////////////////////////////////////////////
-		Time( const Uint64 & p_Nanoseconds );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Sets the time.
-		///
-		/// \param p_NanoSeconds Time in nanoseconds.
-		///
-		////////////////////////////////////////////////////////////////
-		void Set( const Uint64 & p_Nanoseconds );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the time in seconds.
@@ -75,7 +62,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the time in seconds.
 		///
-		/// \return Time in seconds as a 64 bit floating point value.
+		/// \return Time in milliseconds as a 64 bit floating point value.
 		///
 		////////////////////////////////////////////////////////////////
 		Uint64 AsMilliseconds( ) const;
@@ -83,17 +70,27 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the time in seconds.
 		///
-		/// \return Time in seconds as a 64 bit floating point value.
+		/// \return Time in microseconds as a 64 bit floating point value.
 		///
 		////////////////////////////////////////////////////////////////
-		Uint64 AsNanoseconds( ) const;
+		Uint64 AsMicroseconds( ) const;
 
 	private:
 
+		// Private functions
+		Time( const Uint64 & p_Microseconds );
+
 		// Private variables
-		Uint64 m_Nanoseconds;	///< Time in nanoseconds.
+		Uint64 m_Microseconds;	///< Time in nanoseconds.
 
 	};
+
+	// Functions for initializing time classes
+	BIT_API Time Seconds( const Float64 & p_Seconds );
+
+	BIT_API Time Milliseconds( const Uint64 & p_Milliseconds );
+
+	BIT_API Time Microseconds( const Uint64 & p_Microseconds );
 
 }
 

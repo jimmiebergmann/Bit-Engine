@@ -57,13 +57,13 @@ namespace Bit
 
 	Time Timer::GetTime( )
 	{
-		return Time( m_Time );
+		return Microseconds( m_Time );
 	}
 
 	Time Timer::GetLapsedTime( )
 	{
 		Stop( );
-		return Time( m_Time );
+		return Microseconds( m_Time );
 	}
 
 	Uint64 Timer::GetSystemTime( )
