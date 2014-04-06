@@ -39,14 +39,14 @@ namespace Bit
 	UdpSocket::UdpSocket( const Uint16 p_Port ) :
 		Socket( )
 	{
-		Start( p_Port );
+		Open( p_Port );
 	}
 
 	UdpSocket::~UdpSocket( )
 	{
 	}
 
-	Bool UdpSocket::Start( const Uint16 p_Port )
+	Bool UdpSocket::Open( const Uint16 p_Port )
 	{
 		// Create the socket
 		if( ( m_Handle = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP ) ) <= 0 )
@@ -71,10 +71,14 @@ namespace Bit
 		return true;
 	}
 
-	void UdpSocket::Stop( )
+	void UdpSocket::Close( )
 	{
-		// Close function from Socket
-		Close( );
+		// Close the socket handle
+		if( m_Handle )
+		{
+			closesocket( m_Handle );
+			m_Handle = 0;
+		}
 	}
 
 	Int32 UdpSocket::Send( const void * p_pData, const SizeType p_Size, const Address & p_Address, const Uint16 p_Port )

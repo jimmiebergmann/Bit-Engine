@@ -230,12 +230,12 @@ namespace Bit
 	Bool Ntp::Open( Uint16 p_SourcePort, const Uint16 p_DestinationPort )
 	{
 		m_DestinationPort = p_DestinationPort;
-		return m_Socket.Start( p_SourcePort );
+		return m_Socket.Open( p_SourcePort );
 	}
 
 	void Ntp::Close( )
 	{
-		m_Socket.Stop( );
+		m_Socket.Close( );
 	}
 
 	void Ntp::SetBlocking( const Bool p_Blocking )

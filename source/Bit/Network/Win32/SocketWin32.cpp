@@ -102,15 +102,6 @@ namespace Bit
 		return Address( htonl( address ) );
 	}
 
-	void SocketWin32::Close( )
-	{
-		if( m_Handle )
-		{
-			closesocket( m_Handle );
-			m_Handle = 0;
-		}
-	}
-
 	void SocketWin32::SetHandle( const SocketHandle & m_SocketHandle )
 	{
 		m_Handle = m_SocketHandle;

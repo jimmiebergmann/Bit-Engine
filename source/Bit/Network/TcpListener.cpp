@@ -43,9 +43,9 @@ namespace Bit
 		Start( p_Port );
 	}
 
-		TcpListener::~TcpListener( )
+	TcpListener::~TcpListener( )
 	{
-		Close( );
+		Stop( );
 	}
 
 	Bool TcpListener::Start( const Uint16 p_Port )
@@ -67,7 +67,7 @@ namespace Bit
 		if( bind( m_Handle, reinterpret_cast<const sockaddr *>( &service ), sizeof( service ) ) == SOCKET_ERROR )
 		{
 			std::cout << "[TcpListener::Start] Can not bind the socket. Error: " <<  GetLastError( ) << std::endl;
-			Close( );
+			Stop( );
 			return false;
 		}
 
@@ -78,7 +78,13 @@ namespace Bit
 
 	void TcpListener::Stop( )
 	{
-		Close( );
+		// Close the socket handle
+		if( m_Handle )
+		{
+			closesocket( m_Handle );
+			m_Handle = 0;
+		}
+
 		m_Running = false;
 	}
 

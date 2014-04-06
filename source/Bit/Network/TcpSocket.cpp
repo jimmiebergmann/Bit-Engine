@@ -39,7 +39,7 @@ namespace Bit
 
 	TcpSocket::~TcpSocket( )
 	{
-		Close( );
+		Disconnect( );
 	}
 
 	Bool TcpSocket::Connect( const Address & p_Address, const Uint16 p_Port, const Time & p_Timeout )
@@ -74,7 +74,7 @@ namespace Bit
 			DWORD lastError = GetLastError( );
 			if( lastError != WSAEWOULDBLOCK )
 			{
-				Close( );
+				Disconnect( );
 				return false;
 			}
 		}
@@ -106,7 +106,7 @@ namespace Bit
 		}
 
 		// Failed to connect. Close the socket, and restore the blocking status.
-		Close( );
+		Disconnect( );
 		SetBlocking( blocking );
 
 		// Failed.
@@ -116,7 +116,11 @@ namespace Bit
 	void TcpSocket::Disconnect( )
 	{
 		// Close the socket.
-		Close( );
+		if( m_Handle )
+		{
+			closesocket( m_Handle );
+			m_Handle = 0;
+		}
 	}
 
 	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size )
