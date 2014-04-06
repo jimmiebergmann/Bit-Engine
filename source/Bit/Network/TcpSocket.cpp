@@ -30,6 +30,8 @@
 namespace Bit
 {
 
+	static const Uint64 g_MaxTimeout = 2147483647;
+
 	TcpSocket::TcpSocket( ) :
 		Socket( )
 	{
@@ -40,7 +42,7 @@ namespace Bit
 		Close( );
 	}
 
-	Bool TcpSocket::Connect( const Address & p_Address, const Uint16 p_Port, const Uint32 p_Timeout )
+	Bool TcpSocket::Connect( const Address & p_Address, const Uint16 p_Port, const Time & p_Timeout )
 	{
 		// Create the socket
 		if( ( m_Handle = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )
@@ -55,20 +57,6 @@ namespace Bit
 		service.sin_addr.s_addr = htonl( static_cast<u_long>( p_Address.GetAddress( ) ) );
 		service.sin_port = htons( static_cast<u_short>( p_Port ) );
 
-		// We are not using any timeout at all.
-		if( p_Timeout == 0 )
-		{
-			if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) != SOCKET_ERROR )
-			{
-				return true;
-			}
-			else
-			{
-				Close( );
-				return false;
-			}
-		}
-
 		// We are using timeout
 		// Get the blocking status and disable it.
 		Bool blocking = GetBlocking( );
@@ -80,12 +68,7 @@ namespace Bit
 		FD_SET( m_Handle, &fdset );
 
 		// Connect
-		if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) != SOCKET_ERROR )
-		{
-			SetBlocking( blocking );
-			return true;
-		}
-		else // The attempt to connect failed.
+		if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) == SOCKET_ERROR )
 		{
 			// Ignore the WSAEWOULDBLOCK error
 			DWORD lastError = GetLastError( );
@@ -98,15 +81,23 @@ namespace Bit
 			
 		// We failed to connect, but we are waiting for the connection to establish
 		struct timeval tv;
-		tv.tv_sec = static_cast<long>( p_Timeout ) / 1000;
-		tv.tv_usec = (static_cast<long>( p_Timeout ) % 1000 ) * 1000;
+		if( p_Timeout.AsMicroseconds( ) / 1000000ULL > g_MaxTimeout )
+		{
+			tv.tv_sec	= static_cast<long>( g_MaxTimeout );
+			tv.tv_usec	= static_cast<long>( 0 );
+		}
+		else
+		{
+			tv.tv_sec	= static_cast<long>( p_Timeout.AsMicroseconds( ) / 1000000ULL );
+			tv.tv_usec	= static_cast<long>( p_Timeout.AsMicroseconds( ) % 1000000ULL );
+		}
 
 		// Select from the set
 		if( select( static_cast<int>( m_Handle ) + 1, NULL, &fdset, NULL, &tv ) > 0 )
 		{
 			// Check if the address is valid.
 			Address address = GetPeerAddress( );
-			if( address.GetAddress( ) != 0 )
+			if( address == p_Address )
 			{
 				// The address is not 0, we successfully connected.
 				SetBlocking( blocking );
@@ -133,7 +124,7 @@ namespace Bit
 		return recv( m_Handle, reinterpret_cast<char*>( p_pData ), static_cast<int>( p_Size ), 0 );
 	}
 
-	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size, const Uint32 p_Timeout )
+	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size, const Time & p_Timeout )
 	{
 		// Create a socket address storage
 		sockaddr_in address;
@@ -150,11 +141,19 @@ namespace Bit
 		FD_SET fdset;
 		FD_ZERO( &fdset );
 		FD_SET( m_Handle, &fdset );
-		struct timeval tv;
-
+		
 		// Set the time
-		tv.tv_sec = static_cast<long>( p_Timeout ) / 1000;
-		tv.tv_usec = (static_cast<long>( p_Timeout ) % 1000 ) * 1000;
+		struct timeval tv;
+		if( p_Timeout.AsMicroseconds( ) / 1000000ULL > g_MaxTimeout )
+		{
+			tv.tv_sec	= static_cast<long>( g_MaxTimeout );
+			tv.tv_usec	= static_cast<long>( 0 );
+		}
+		else
+		{
+			tv.tv_sec	= static_cast<long>( p_Timeout.AsMicroseconds( ) / 1000000ULL );
+			tv.tv_usec	= static_cast<long>( p_Timeout.AsMicroseconds( ) % 1000000ULL );
+		}
 
 		// Select from the fdset
 		int status = 0;
@@ -179,7 +178,7 @@ namespace Bit
 	{
 	}
 
-	void TcpSocket::Receive( Packet & p_Packet, const Uint32 p_Timeout )
+	void TcpSocket::Receive( Packet & p_Packet, const Time & p_Timeout )
 	{
 	}
 

@@ -125,12 +125,12 @@ namespace Bit
 		return m_Url;
 	}
 
-	Bool Torrent::Tracker::SendRequest( Response & p_Response, const Torrent & p_Torrent )
+	Bool Torrent::Tracker::SendRequest( Response & p_Response, const Torrent & p_Torrent, const Time & p_Timeout )
 	{
 		// Set up the http class
 		Http http;
 		http.SetPort( m_Url.GetPort( ) );
-		http.SetTimeout( 10 * 1000 );
+		http.SetTimeout( p_Timeout );
 
 		// Create an request and response class
 		std::stringstream path;

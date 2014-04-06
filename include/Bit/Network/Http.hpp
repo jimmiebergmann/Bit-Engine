@@ -26,6 +26,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Network/Address.hpp>
+#include <Bit/System/Time.hpp>
 #include <unordered_map>
 #include <sstream>
 
@@ -293,7 +294,7 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Http(	const Uint16 p_Port = 80,
-				const Uint32 p_Timeout = 0 );
+				const Time & p_Timeout = Time::Infinite );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Sets the port(80 by default)
@@ -309,7 +310,7 @@ namespace Bit
 		/// \param p_Timeout Time in milliseconds.
 		///
 		////////////////////////////////////////////////////////////////
-		void SetTimeout( const Uint32 p_Timeout ); 
+		void SetTimeout( const Time & p_Timeout ); 
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Send request packet
@@ -348,7 +349,7 @@ namespace Bit
 
 		// Private variables
 		Uint16 m_Port;
-		Uint32 m_Timeout;
+		Time m_Timeout;
 
 	};
 

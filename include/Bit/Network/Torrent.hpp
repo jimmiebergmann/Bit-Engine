@@ -203,7 +203,7 @@ namespace Bit
 			/// \param p_Torrent The torrent that you want information about.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool SendRequest( Response & p_Response, const Torrent & p_Torrent );
+			Bool SendRequest( Response & p_Response, const Torrent & p_Torrent, const Time & p_Timeout = Time::Infinite );
 
 		private:
 

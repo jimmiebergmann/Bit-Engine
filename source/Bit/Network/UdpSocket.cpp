@@ -29,6 +29,8 @@
 namespace Bit
 {
 
+	static const Uint64 g_MaxTimeout = 2147483647;
+
 	UdpSocket::UdpSocket( ) :
 		Socket( )
 	{
@@ -124,7 +126,7 @@ namespace Bit
 		return size;
 	}
 
-	Int32 UdpSocket::Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Uint32 p_Timeout )
+	Int32 UdpSocket::Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const const Time & p_Timeout )
 	{
 		// Create a socket address storage
 		sockaddr_in address;
@@ -139,11 +141,19 @@ namespace Bit
 		FD_SET fdset;
 		FD_ZERO( &fdset );
 		FD_SET( m_Handle, &fdset );
-		struct timeval tv;
 
 		// Set the time
-		tv.tv_sec = static_cast<long>( p_Timeout ) / 1000;
-		tv.tv_usec = (static_cast<long>( p_Timeout ) % 1000 ) * 1000;
+		struct timeval tv;
+		if( p_Timeout.AsMicroseconds( ) / 1000000ULL > g_MaxTimeout )
+		{
+			tv.tv_sec	= static_cast<long>( g_MaxTimeout );
+			tv.tv_usec	= static_cast<long>( 0 );
+		}
+		else
+		{
+			tv.tv_sec	= static_cast<long>( p_Timeout.AsMicroseconds( ) / 1000000ULL );
+			tv.tv_usec	= static_cast<long>( p_Timeout.AsMicroseconds( ) % 1000000ULL );
+		}
 
 		// Select from the fdset
 		int status = 0;

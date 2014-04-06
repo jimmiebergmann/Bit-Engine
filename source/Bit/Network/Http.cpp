@@ -193,7 +193,7 @@ namespace Bit
 
 	// Http class
 	Http::Http( const Uint16 p_Port,
-				const Uint32 p_Timeout ) :
+				const Time & p_Timeout ) :
 		m_Port( p_Port ),
 		m_Timeout( p_Timeout )
 	{
@@ -204,7 +204,7 @@ namespace Bit
 		m_Port = p_Port;
 	}
 
-	void Http::SetTimeout( const Uint32 p_Timeout )
+	void Http::SetTimeout( const Time & p_Timeout )
 	{
 		m_Timeout = p_Timeout;
 	}

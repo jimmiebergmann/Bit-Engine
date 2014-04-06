@@ -28,6 +28,7 @@
 #include <Bit/Network/Socket.hpp>
 #include <Bit/Network/Address.hpp>
 #include <Bit/Network/Packet.hpp>
+#include <Bit/System/Time.hpp>
 
 namespace Bit
 {
@@ -105,7 +106,7 @@ namespace Bit
 		///		the attemp in receiving a message timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		Int32 Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Uint32 p_Timeout );
+		Int32 Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Time & p_Timeout );
 
 	private:
 

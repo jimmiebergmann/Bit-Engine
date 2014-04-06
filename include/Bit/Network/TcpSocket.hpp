@@ -28,6 +28,7 @@
 #include <Bit/Network/Socket.hpp>
 #include <Bit/Network/Address.hpp>
 #include <Bit/Network/Packet.hpp>
+#include <Bit/System/Time.hpp>
 
 namespace Bit
 {
@@ -63,7 +64,7 @@ namespace Bit
 		///		the connection attemp timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool Connect( const Address & p_Address, const Uint16 p_Port, const Uint32 p_Timeout = 0 );
+		Bool Connect( const Address & p_Address, const Uint16 p_Port, const Time & p_Timeout = Time::Infinite );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Disconnect the socket from the server.
@@ -85,11 +86,10 @@ namespace Bit
 		///
 		/// \param p_pData Data from server.
 		/// \param p_Size The size of the data.
-		/// \param m_Timeout Time in milliseconds until
-		///		the attemp in receiving a message timeouts.
+		/// \param m_Timeout Time until the attemp in receiving a message timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		Int32 Receive( void * p_pData, const SizeType p_Size, const Uint32 p_Timeout );
+		Int32 Receive( void * p_pData, const SizeType p_Size, const Time & p_Timeout );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Receive packet from server.
@@ -111,7 +111,7 @@ namespace Bit
 		///		the attemp in receiving a message timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		void Receive( Packet & p_Packet, const Uint32 p_Timeout );
+		void Receive( Packet & p_Packet, const Time & p_Timeout );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Send data to server.
