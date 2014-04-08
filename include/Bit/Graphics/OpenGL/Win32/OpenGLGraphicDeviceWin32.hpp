@@ -151,6 +151,14 @@ namespace Bit
 		virtual ShaderProgram * CreateShaderProgram( ) const;
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Create a texture
+		///
+		/// \return A pointer to the new texture
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Texture * CreateTexture( ) const ;
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.
 		///
 		/// \param p_Position The position of the viewport.

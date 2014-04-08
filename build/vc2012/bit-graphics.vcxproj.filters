@@ -37,6 +37,11 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Graphics\PrimitiveMode.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Image.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Texture.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLTexture.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
@@ -56,6 +61,10 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShaderProgram.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Image.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLTexture.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>

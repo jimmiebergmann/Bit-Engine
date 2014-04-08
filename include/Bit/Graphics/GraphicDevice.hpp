@@ -37,6 +37,7 @@ namespace Bit
 	class VertexBufferObject;
 	class Shader;
 	class ShaderProgram;
+	class Texture;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
@@ -72,6 +73,16 @@ namespace Bit
 			// Public variables
 			Uint32 Major;	///< Major version
 			Uint32 Minor;	///< Minor version
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Enumerator for back or front face culling.
+		///
+		////////////////////////////////////////////////////////////////
+		enum eCulling
+		{
+			FrontFace = 0,
+			BackFace = 1
 		};
 
 		////////////////////////////////////////////////////////////////
@@ -138,7 +149,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a vertex array object.
 		///
-		/// \return A pointer to the VAO
+		/// \return A pointer to the new VAO
 		///
 		////////////////////////////////////////////////////////////////
 		virtual VertexArrayObject * CreateVertexArrayObject( ) const = 0;
@@ -146,7 +157,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a vertex buffer object.
 		///
-		/// \return A pointer to the VBO
+		/// \return A pointer to the new VBO
 		///
 		////////////////////////////////////////////////////////////////
 		virtual VertexBufferObject * CreateVertexBufferObject( ) const = 0;
@@ -156,7 +167,7 @@ namespace Bit
 		///
 		/// \param p_Type Enumerator of the shader type.
 		///
-		/// \return A pointer to the shader
+		/// \return A pointer to the new shader
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Shader * CreateShader( ShaderType::eType p_Type ) const = 0;
@@ -164,10 +175,18 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a shader program
 		///
-		/// \return A pointer to the shader program
+		/// \return A pointer to the new shader program
 		///
 		////////////////////////////////////////////////////////////////
 		virtual ShaderProgram * CreateShaderProgram( ) const = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a texture
+		///
+		/// \return A pointer to the new texture
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Texture * CreateTexture( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.

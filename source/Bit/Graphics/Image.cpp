@@ -22,12 +22,11 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-
 #include <Bit/Graphics/Image.hpp>
-#include <Bit/System.hpp>
+#include <algorithm>
 #include <fstream>
 #include <cstring>
-#include <Bit/System/Debugger.hpp>
+#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -38,34 +37,37 @@ namespace Bit
 	{
 	}
 
-	Pixel::Pixel( BIT_BYTE p_R, BIT_BYTE p_G, BIT_BYTE p_B ) :
-		m_R( p_R ),
-		m_G( p_G ),
-		m_B( p_B ),
-		m_A( 0 )
+	Pixel::Pixel(	const Uint8 p_Red,
+					const Uint8 p_Green,
+					const Uint8 p_Blue,
+					const Uint8 p_Alpha ) :
+		Red( p_Red ),
+		Green( p_Green ),
+		Blue( p_Blue ),
+		Alpha( p_Alpha )
 	{
 	}
 
-	Pixel::Pixel( BIT_BYTE p_R, BIT_BYTE p_G, BIT_BYTE p_B, BIT_BYTE p_A ) :
-		m_R( p_R ),
-		m_G( p_G ),
-		m_B( p_B ),
-		m_A( p_A )
+	Pixel::Pixel( Vector3u8 p_RGB, const Uint8 p_Alpha ) :
+		Red( p_RGB.x ),
+		Green( p_RGB.y ),
+		Blue( p_RGB.z ),
+		Alpha( p_Alpha )
 	{
 	}
 
-	Pixel::Pixel( Vector3_byte p_RGB, BIT_BYTE p_A ) :
-		m_R( p_RGB.x ),
-		m_G( p_RGB.y ),
-		m_B( p_RGB.z ),
-		m_A( p_A )
+	Bool Pixel::operator == ( const Pixel & p_Pixel ) const
 	{
+		return	Red == p_Pixel.Red &&
+				Green == p_Pixel.Green &&
+				Blue == p_Pixel.Blue &&
+				Alpha == p_Pixel.Alpha;
 	}
 
 
 	// Image class
 	Image::Image( ) :
-		m_pData(BIT_NULL),
+		m_pData( NULL ),
 		m_Size( 0, 0 ),
 		m_Depth(0)
 	{
@@ -73,245 +75,278 @@ namespace Bit
 
 	Image::~Image( )
 	{
-		DeallocateData( );
+		Clear( );
 	}
 
-	BIT_UINT32 Image::ReadFile( const char * p_pFilePath )
+	Bool Image::LoadFromMemory( const Uint8 * p_pData, const Uint8 p_Depth, const Vector2u32 & p_Size )
 	{
-		// Get the file's extension
-		std::string FileExtension = GetFileExtension( p_pFilePath );
-
-		if( FileExtension == "TGA" )
+		// Make params are valid.
+		if( p_pData == NULL ||
+			p_Size.x == 0 || p_Size.y == 0 ||
+			p_Depth == 0 || p_Depth > 4 )
 		{
-			return ReadTGA( p_pFilePath );
-		}
-		else if( FileExtension == "PNG" )
-		{
-			bitTrace( "[Bit::Image::ReadFile] Not supporting PNG images yet.\n" );
-			return BIT_ERROR;
+			return false;
 		}
 
-		bitTrace( "[Bit::Image::ReadFile] Unknow extension: %s.\n", FileExtension.c_str( ) );
+		// Clear the image
+		Clear( );
 
-		return BIT_ERROR;
-	}
-
-	BIT_UINT32 Image::ReadTGA( const char * p_pFilePath )
-	{
-		// Open the file
-		std::ifstream File( p_pFilePath, std::ios::binary );
-		if(File.is_open() == false)
-		{
-			return BIT_ERROR_OPEN_FILE;
-		}
-
-		// Start to read the header data
-		unsigned char Type[4];
-		unsigned char Info[6];
-		File.read((char*)Type, sizeof(unsigned char) * 3);
-
-		// Seek to the position of the info data
-		File.seekg(12);
-
-		// Read the info data
-		File.read((char*)Info, sizeof(unsigned char) * 6);
-
-		// Check if the image is either a color or greyscale image
-		// 2 == color, 3 == greyscale
-		if( (Type[1] != 0 || Type[2] != 2) && Type[2] != 3 )
-		{
-			File.close();
-			bitTrace( "[Image::ReadTGA] Wrong TGA type.\n" );
-			return BIT_ERROR;
-		}
-
-		// Use the Info to calculate the size of the image
-		m_Size.x = Info[0] + ( Info[1] * 256 );
-		m_Size.y = Info[2] + ( Info[3] * 256 );
-		m_Depth = Info[4] / 8;
-
-		// Make sure the image is a 24 or 32 bit image
-		if(m_Depth != 3 && m_Depth != 4)
-		{
-			File.close();
-			bitTrace( "[Image::ReadTGA] Not a 24 or 32 bit depth image.\n" );
-			return BIT_ERROR;
-		}
-
-		// Deallocate the old image data
-		DeallocateData();
-
-		// Get the full size of the image data and allocate memory for the data
-		BIT_UINT32 ImageSize = GetDataSize( );
-		m_pData = new BIT_BYTE[ImageSize];
-
-		// Read the image data
-		File.read((char*)m_pData, sizeof(BIT_BYTE) * ImageSize);
-
-		// TGA is stored as BGR or BGRA, we have to swap the bytes
-		if(m_Depth == 3)
-		{
-			BGR_To_RGB();
-		}
-		else if(m_Depth == 4)
-		{
-			BGRA_To_RGBA();
-		}
-
-		// Close the file since we are done.
-		File.close();
-		return BIT_OK;
-	}
-
-
-	// Set functions
-	BIT_UINT32 Image::SetData( BIT_BYTE * p_pData, const Vector2_ui32 p_Size, const BIT_UINT32 p_Depth )
-	{
-		// Make sure the data pointer isn't NULL
-		if(p_pData == BIT_NULL)
-		{
-			bitTrace( "[Image::AddData] Passed NULL pointer.\n" );
-			return BIT_ERROR;
-		}
-
-		// Also, we don't accept the width/height/depth to be equal to zero.
-		if( p_Size.x == 0 || p_Size.y == 0 || p_Depth == 0)
-		{
-			bitTrace( "[Image::AddData] With/Height/Depth is 0.\n" );
-			return BIT_ERROR;
-		}
-
-		// Set the image data
-		m_pData = p_pData;
+		// Set the size and depth
 		m_Size = p_Size;
 		m_Depth = p_Depth;
 
-		return BIT_OK;
+		// Allocate an array for the image data to copy
+		Uint32 imageSize = GetDataSize( );
+		m_pData = new Uint8[ imageSize ];
+
+		// Copy the data
+		memcpy( m_pData, p_pData, imageSize );
+
+		return true;
 	}
 
-	void Image::SetPixel( const BIT_UINT32 p_Index, Pixel p_Pixel )
+	Bool Image::LoadFromFile( const std::string & p_Filename )
 	{
-		if( m_pData == BIT_NULL ||
-			p_Index >= (m_Size.x * m_Size.y) )
+		
+		// Get the file's extension
+		std::string fileExtension = "";
+		for( SizeType i = p_Filename.size( ) - 2; i >= 0; i-- )
+		{
+			// Look for '.'
+			if( p_Filename[ i ] == '.' )
+			{
+				fileExtension = p_Filename.substr( i + 1, p_Filename.size( ) - i - 1 );
+				break;
+			}
+		}
+
+		// Make all the characters in the file extension to upper case letters
+		std::transform( fileExtension.begin( ), fileExtension.end( ), fileExtension.begin( ), ::toupper );
+
+		// Load the right format.
+		if( fileExtension == "TGA" )
+		{
+			return LoadFromTgaFile( p_Filename );
+		}
+		else if( fileExtension == "PNG" )
+		{
+			std::cout << "[Bit::Image::LoadFromFile] Not supporting PNG images yet.\n";
+			return false;
+		}
+
+		std::cout << "[Bit::Image::LoadFromFile] Unknow extension: " <<  fileExtension.c_str( ) << std::endl;
+		
+		return true;
+	}
+
+	Bool Image::LoadFromTgaFile( const std::string & p_Filename )
+	{
+		// Open the file
+		std::ifstream fin( p_Filename.c_str( ), std::ios::binary );
+		if( fin.is_open( ) == false )
+		{
+			std::cout << "[Image::LoadFromTgaFile] Can not open the file.\n";
+			return false;
+		}
+
+		// Start to read the header data
+		unsigned char type[4];
+		unsigned char info[6];
+		fin.read( reinterpret_cast<char *>( type ), sizeof( Uint8 ) * 3 );
+
+		// Seek to the position of the info data
+		fin.seekg(12);
+
+		// Read the info data
+		fin.read( reinterpret_cast<char *>( info ), sizeof( Uint8 ) * 6 );
+
+		// Check if the image is either a color or greyscale image
+		// 2 == color, 3 == greyscale
+		if( (type[1] != 0 || type[2] != 2) && type[2] != 3 )
+		{
+			fin.close();
+			std::cout << "[Image::LoadFromTgaFile] Wrong TGA type.\n";
+			return false;
+		}
+
+		// Use the Info to calculate the size of the image
+		m_Size.x = info[0] + ( info[1] * 256 );
+		m_Size.y = info[2] + ( info[3] * 256 );
+		m_Depth = info[4] / 8;
+
+		// Make sure the image is a 24 or 32 bit image
+		if( m_Depth != 3 && m_Depth != 4 )
+		{
+			fin.close();
+			std::cout << "[Image::LoadFromTgaFile] Not a 24 or 32 bit depth image.\n";
+			return false;
+		}
+
+		// Deallocate the old image data
+		Clear( );
+
+		// Get the full size of the image data and allocate memory for the data
+		Uint32 imageSize = GetDataSize( );
+		m_pData = new Uint8[ imageSize ];
+
+		// Read the image data
+		fin.read( reinterpret_cast<char *>( m_pData ), sizeof( Uint8 ) * imageSize);
+
+		// TGA is stored as BGR or BGRA, we have to swap the bytes
+		if( m_Depth == 3 )
+		{
+			BgrToRgb( );
+		}
+		else if( m_Depth == 4 )
+		{
+			BgraToRgba( );
+		}
+
+		// Close the file since we are done.
+		fin.close();
+		return true;
+	}
+
+	void Image::Clear( )
+	{
+		if( m_pData != NULL )
+		{
+			// Delete the allocated data
+			delete [ ] m_pData;
+			m_pData = NULL;
+
+			// Clear the size and depth
+			m_Size = Vector2u32( 0, 0 );
+			m_Depth = 0;
+		}
+	}
+
+	void Image::SetPixel( const Uint32 p_Index, const Pixel & p_Pixel )
+	{
+		if( m_pData == NULL ||
+			p_Index >= ( m_Size.x * m_Size.y ) )
 		{
 			return;
 		}
 
 		// Set the pixel
-		m_pData[ ( p_Index * m_Depth ) ] = p_Pixel.m_R;
-		m_pData[ ( p_Index * m_Depth ) + 1 ] = p_Pixel.m_G;
-		m_pData[ ( p_Index * m_Depth ) + 2 ] = p_Pixel.m_B;
+		SizeType pos = p_Index * m_Depth;
+		m_pData[ pos ]		= p_Pixel.Red;
+		m_pData[ pos + 1 ]	= p_Pixel.Green;
+		m_pData[ pos + 2 ]	= p_Pixel.Blue;
 
 		// Are we using the alpha channel?
 		if( m_Depth == 4 )
 		{
-			m_pData[ ( p_Index * m_Depth ) + 3 ] = p_Pixel.m_A;
+			m_pData[ pos + 3 ] = p_Pixel.Alpha;
 		}
 	}
 
-	Pixel Image::GetPixel( const BIT_UINT32 p_Index )
+	void Image::SetPixel( const Vector2u32 & p_Position, const Pixel & p_Pixel )
 	{
-		if( m_pData == BIT_NULL ||
-			p_Index >= (m_Size.x * m_Size.y) )
+		Uint32 index = ( p_Position.y * m_Size.x ) + p_Position.x;
+		SetPixel( index, p_Pixel );
+	}
+
+	Pixel Image::GetPixel( const Uint32 p_Index )
+	{
+		if( m_pData == NULL ||
+			p_Index >= ( m_Size.x * m_Size.y ) )
 		{
-			return Pixel( 0, 0, 0, 0 );
+			return Pixel( 0, 0, 0, 255 );
 		}
 
 		// Set the pixel that we want to return
-		Pixel P;
-		P.m_R = m_pData[ ( p_Index * m_Depth ) ] ;
-		P.m_G = m_pData[ ( p_Index * m_Depth ) + 1];
-		P.m_B = m_pData[ ( p_Index * m_Depth ) + 2];
+		SizeType pos = p_Index * m_Depth;
+		Pixel pixel( 0, 0, 0, 255 );
+		pixel.Red	= m_pData[ pos ] ;
+		pixel.Green	= m_pData[ pos + 1];
+		pixel.Blue	= m_pData[ pos + 2];
 
 		// Are we using the alpha channel?
 		if( m_Depth == 4 )
 		{
-			P.m_A = m_pData[ ( p_Index * m_Depth ) + 3 ];
+			pixel.Alpha = m_pData[ pos + 3 ];
 		}
 
-		return P;
+		return pixel;
 	}
 
-	void Image::DeallocateData( )
+	Pixel Image::GetPixel( const Vector2u32 & p_Position )
 	{
-		if(m_pData != BIT_NULL)
-		{
-			delete [ ] m_pData;
-			m_pData = BIT_NULL;
-			m_Size = Vector2_ui32( 0, 0 );
-			m_Depth = 0;
-		}
+		Uint32 index = ( p_Position.y * m_Size.x ) + p_Position.x;
+		return GetPixel( index );
 	}
 
-	BIT_BOOL Image::ContainsData( ) const
+	/*
+	Bool Image::ContainsData( ) const
 	{
-		return (m_pData != BIT_NULL);
-	}
+		return ( m_pData != BIT_NULL);
+	}*/
 
-	// Get functions
-	BIT_BYTE * Image::GetData( ) const
+	const Uint8 * Image::GetData( ) const
 	{
 		return m_pData;
 	}
 
-	Vector2_ui32 Image::GetSize( ) const
+	Vector2u32 Image::GetSize( ) const
 	{
 		return m_Size;
 	}
 
-	BIT_UINT32 Image::GetDataSize( ) const
+	SizeType Image::GetDataSize( ) const
 	{
-		return m_Size.x * m_Size.y * m_Depth;
+		return static_cast<SizeType>( m_Size.x * m_Size.y * static_cast<Uint32>( m_Depth ) );
 	}
 
-	BIT_UINT32 Image::GetDepth( ) const
+	Uint8 Image::GetDepth( ) const
 	{
 		return m_Depth;
 	}
 
 	// Conversion functions
-	void Image::BGR_To_RGB( )
+	void Image::BgrToRgb( )
 	{
 		// Make sure we have any data to swap
-		if( ContainsData( ) == BIT_FALSE )
+		if( m_pData == NULL )
 		{
-			bitTrace( "[Image::BGR_To_RGB] <ERROR> "
-				"Image not containing any data.\n" );
+			std::cout << "[Image::BgrToRgb] <ERROR> "
+				"Image not containing any data.\n";
 			return;
 		}
 
 
-		BIT_UINT32 Size = GetDataSize( );
-		BIT_BYTE TemporaryByte = 0;
+		SizeType size = GetDataSize( );
+		Uint8 temporaryByte = 0;
 
 		// Loop through the data we want to swap
-		for( BIT_UINT32 i = 0; i < Size; i += 3 )
+		for( SizeType i = 0; i < size; i += 3 )
 		{
-			TemporaryByte = m_pData[ i ];
+			temporaryByte = m_pData[ i ];
 			m_pData[ i ] = m_pData[ i + 2 ];
-			m_pData[ i + 2 ] = TemporaryByte;
+			m_pData[ i + 2 ] = temporaryByte;
 		}
 
 	}
 
-	void Image::BGRA_To_RGBA( )
+	void Image::BgraToRgba( )
 	{
 		// Make sure we have any data to swap
-		if( ContainsData( ) == BIT_FALSE )
+		if( m_pData == NULL )
 		{
-			bitTrace( "[Image::BGRA_To_RGBA] Image not containing any data.\n" );
+			std::cout << "[Image::BgraToRgba] Image not containing any data.\n";
 			return;
 		}
 
-		BIT_UINT32 Size = GetDataSize( );
-		BIT_BYTE TemporaryByte = 0;
+		SizeType size = GetDataSize( );
+		Uint8 temporaryByte = 0;
 
 		// Loop through the data we want to swap
-		for ( BIT_UINT32 i = 0; i < Size; i += 4 )
+		for ( SizeType i = 0; i < size; i += 4 )
 		{
-			TemporaryByte = m_pData[ i ];
+			temporaryByte = m_pData[ i ];
 			m_pData[ i ] = m_pData[ i + 2 ];
-			m_pData[ i + 2 ] = TemporaryByte;
+			m_pData[ i + 2 ] = temporaryByte;
 		}
 	}
 

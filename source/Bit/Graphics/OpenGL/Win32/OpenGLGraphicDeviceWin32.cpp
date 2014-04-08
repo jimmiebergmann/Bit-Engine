@@ -29,6 +29,7 @@
 #include <Bit/Graphics/OpenGL/OpenGLVertexBufferObject.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShaderProgram.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLTexture.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -202,6 +203,11 @@ namespace Bit
 	ShaderProgram * OpenGLGraphicDeviceWin32::CreateShaderProgram( ) const
 	{
 		return new OpenGLShaderProgram;
+	}
+
+	Texture * OpenGLGraphicDeviceWin32::CreateTexture( ) const
+	{
+		return new OpenGLTexture;
 	}
 	
 	void OpenGLGraphicDeviceWin32::SetViewport( const Vector2u32 & p_Position, const Vector2u32 & p_Size )

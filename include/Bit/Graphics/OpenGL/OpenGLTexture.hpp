@@ -22,65 +22,36 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_TEXTURE_HPP
-#define BIT_GRAPHICS_TEXTURE_HPP
+#ifndef BIT_GRAPHICS_TEXTURE_OPENGL_HPP
+#define BIT_GRAPHICS_TEXTURE_OPENGL_HPP
 
-#include <Bit/Build.hpp>
-#include <Bit/Graphics/Image.hpp>
+#include <Bit/Graphics/Texture.hpp>
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
 
 namespace Bit
 {
-
+	
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Texture class
+	/// \brief OpenGL texture class
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Texture
+	class BIT_API OpenGLTexture : public Texture
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief PixelFormat enumerator
+		/// \brief Default constructor
 		///
 		////////////////////////////////////////////////////////////////
-		enum ePixelFormat
-		{
-			Depth,			///< Depth component format.
-			DepthStencil,	///< Depth and stencil component format.
-			Rgb,			///< Red, green and blue component format.
-			Rgba			///< Red, green, blue and alpha component format.
-		};
-
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Filter enumerator
-		///
-		////////////////////////////////////////////////////////////////
-		enum eFilter
-		{
-			Nearest,
-			NearestMipmap,
-			Linear = 3,
-			LinearMipmap,
-		};
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Wrapping enumerator
-		///
-		////////////////////////////////////////////////////////////////
-		enum eWarpping
-		{
-			Repeat,
-			Clamp
-		};
+		OpenGLTexture( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Destructor
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~Texture( ) { }
+		~OpenGLTexture( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load texture from memory.
@@ -99,7 +70,7 @@ namespace Bit
 										const SizeType p_ColorComponentsPerPixel = 4,
 										const ePixelFormat p_Format = Rgba,
 										const DataType::eType p_Datatype = DataType::Uint8,
-										const Bool p_Mipmapping = false ) = 0;
+										const Bool p_Mipmapping = false );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load texture from an image.
@@ -108,79 +79,62 @@ namespace Bit
 		/// \param p_Mipmapping Generating mipmaps for the texture if true.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromImage( const Image & p_Image, const Bool p_Mipmapping = false ) = 0;
+		virtual Bool LoadFromImage( const Image & p_Image, const Bool p_Mipmapping = false );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Bind the texture to the given index(0 by default).
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Bind( const Uint32 p_Index = 0 ) = 0;
+		virtual void Bind( const Uint32 p_Index = 0 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Unbind the texture.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Unbind( ) = 0;
+		virtual void Unbind( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set magnification filter
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetMagnificationFilter( const eFilter p_Filter ) = 0;
+		virtual Bool SetMagnificationFilter( const eFilter p_Filter );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set minification filter
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetMinificationFilter( const eFilter p_Filter ) = 0;
+		virtual Bool SetMinificationFilter( const eFilter p_Filter );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set wrapping for 
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrapping( const eWarpping p_WrapX, const eWarpping p_WrapY ) = 0;
+		virtual Bool SetWrapping( const eWarpping p_WrapX, const eWarpping p_WrapY );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set wrapping for X axis.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrappingX( const eWarpping p_WrapX, const eWarpping p_WrapY ) = 0;
+		virtual Bool SetWrappingX( const eWarpping p_WrapX, const eWarpping p_WrapY );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set wrapping for Y axis.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrappingY( const eWarpping p_WrapX, const eWarpping p_WrapY ) = 0;
-
+		virtual Bool SetWrappingY( const eWarpping p_WrapX, const eWarpping p_WrapY );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the texture size(width and height)
+		/// \brief Get the ID of the OpenGL Texture.
 		///
 		////////////////////////////////////////////////////////////////
-		inline Vector2u32 GetSize( ) const { return m_Size; };
+		inline GLuint GetId( ) const { return m_Id; }
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the texture format
-		///
-		////////////////////////////////////////////////////////////////
-		//inline Pixel::eFormat GetFormat( ) const { return m_Format; };
+	private:
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Check if the texture is successfully loaded.
-		///
-		////////////////////////////////////////////////////////////////
-		inline Bool IsLoaded( ) const { return m_Loaded; };
-
-	protected:
-
-		// Protexted variables
-		Bool m_Loaded;				///< Indicates if the texture is loaded.
-		Vector2u32 m_Size;			///< Texture size.
-		//Pixel::eFormat m_Format;	///< The internal component format.
+		// Private variables
+		GLuint m_Id;
 
 	};
 }
-
-
 
 #endif

@@ -75,35 +75,35 @@ void Matrix4x4<T>::Identity( )
 template <typename T>
 void Matrix4x4<T>::LookAt( Vector3<T> p_Eye, Vector3<T> p_Center, Vector3<T> p_Up )
 {
-	Vector3<T> Forward = p_Center - p_Eye;
+	Vector3<T> forward = p_Center - p_Eye;
 
-	Forward.Normalize( );
+	forward.Normalize( );
 
 	/// Side = forward x up
-	Vector3<T> Side = Vector3<T>( Vector3<T>::Cross( Forward, p_Up ) ).Normal( );
+	Vector3<T> side = Vector3<T>( Vector3<T>::Cross( forward, p_Up ) ).Normal( );
 
 	/// Recompute up as: up = side x forward
-	p_Up = Vector3<T>::Cross( Side, Forward );
+	p_Up = Vector3<T>::Cross( side, forward );
 
-	Matrix4x4<T> LookMatrix(
-		Side.x, Side.y, Side.z, 0,
+	Matrix4x4<T> lookMatrix(
+		side.x, side.y, side.z, 0,
 		p_Up.x, p_Up.y, p_Up.z, 0,
-		-Forward.x, -Forward.y, -Forward.z, 0,
+		-forward.x, -forward.y, -forward.z, 0,
 		0, 0, 0, 1
 	);
 
-	Matrix4x4<T> PositionMatrix(	
+	Matrix4x4<T> positionMatrix(	
 		1, 0, 0, -p_Eye.x,
 		0, 1, 0, -p_Eye.y,
 		0, 0, 1, -p_Eye.z,
 		0, 0, 0, 1
 	);
 
-	Matrix4x4<T> ViewMatrix = LookMatrix * PositionMatrix;
+	Matrix4x4<T> viewMatrix = lookMatrix * positionMatrix;
 
 	for( SizeType i = 0; i < 16; i++)
 	{
-		m[i] = ViewMatrix.m[i];
+		m[i] = viewMatrix.m[i];
 	}
 }
 
@@ -126,7 +126,7 @@ void Matrix4x4<T>::Orthographic(	const T p_Left, const T p_Right, const T p_Bott
 
 template <typename T>
 void Matrix4x4<T>::Perspective(	const T p_Fov, const T p_Aspect,
-					const T p_ZNear, const T p_ZFar )
+								const T p_ZNear, const T p_ZFar )
 {
 	T Radians = p_Fov / 2.0f * static_cast<T>( Pi ) / 180.0f;
 
@@ -162,8 +162,8 @@ template <typename T>
 void Matrix4x4<T>::RotateX( const T p_Angle )
 {
 	Matrix4x4<T> rotMat;
-	const T AngleSin = static_cast<T>( SinDegrees( p_Angle ) );
-	const T AngleCos = static_cast<T>( CosDegrees( p_Angle ) );
+	const T AngleSin = static_cast<T>( Math::SinDegrees( p_Angle ) );
+	const T AngleCos = static_cast<T>( Math::CosDegrees( p_Angle ) );
 
 	rotMat.m[0] = 1;
 	rotMat.m[1] = 0;
@@ -189,8 +189,8 @@ template <typename T>
 void Matrix4x4<T>::RotateY( const T p_Angle )
 {
 	Matrix4x4<T> rotMat;
-	const T AngleSin = static_cast<T>( SinDegrees( p_Angle ) );
-	const T AngleCos = static_cast<T>( CosDegrees( p_Angle ) );
+	const T AngleSin = static_cast<T>( Math::SinDegrees( p_Angle ) );
+	const T AngleCos = static_cast<T>( Math::CosDegrees( p_Angle ) );
 
 	rotMat.m[0] = AngleCos;
 	rotMat.m[1] = 0;
@@ -216,8 +216,8 @@ template <typename T>
 void Matrix4x4<T>::RotateZ( const T p_Angle )
 {
 	Matrix4x4<T> rotMat;
-	const T AngleSin = static_cast<T>( SinDegrees( p_Angle ) );
-	const T AngleCos = static_cast<T>( CosDegrees( p_Angle ) );
+	const T AngleSin = static_cast<T>( Math::SinDegrees( p_Angle ) );
+	const T AngleCos = static_cast<T>( Math::CosDegrees( p_Angle ) );
 
 	rotMat.m[0] = AngleCos;
 	rotMat.m[1] = -AngleSin;
@@ -239,7 +239,7 @@ void Matrix4x4<T>::RotateZ( const T p_Angle )
 	rotMat.m[14] = 0;
 	rotMat.m[15] = 1;
 
-	*this = *this * Dest;
+	*this = *this * rotMat;
 }
 
 template <typename T>
