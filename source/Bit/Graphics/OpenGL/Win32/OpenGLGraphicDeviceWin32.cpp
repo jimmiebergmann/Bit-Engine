@@ -38,19 +38,19 @@ namespace Bit
 	// Global varaibles
 	// Save all the avaible opengl versions.
 	static const SizeType g_OpenGLVersionCount = 11;
-	static GraphicDevice::Version g_OpenGLVersions[ g_OpenGLVersionCount ] =
+	static Version g_OpenGLVersions[ g_OpenGLVersionCount ] =
 	{
-		GraphicDevice::Version( 2, 0 ),
-		GraphicDevice::Version( 2, 1 ),
-		GraphicDevice::Version( 3, 0 ),
-		GraphicDevice::Version( 3, 1 ),
-		GraphicDevice::Version( 3, 2 ),
-		GraphicDevice::Version( 3, 3 ),
-		GraphicDevice::Version( 4, 0 ),
-		GraphicDevice::Version( 4, 1 ),
-		GraphicDevice::Version( 4, 2 ),
-		GraphicDevice::Version( 4, 3 ),
-		GraphicDevice::Version( 4, 4 )
+		Version( 2, 0 ),
+		Version( 2, 1 ),
+		Version( 3, 0 ),
+		Version( 3, 1 ),
+		Version( 3, 2 ),
+		Version( 3, 3 ),
+		Version( 4, 0 ),
+		Version( 4, 1 ),
+		Version( 4, 2 ),
+		Version( 4, 3 ),
+		Version( 4, 4 )
 	};
 	
 	OpenGLGraphicDeviceWin32::OpenGLGraphicDeviceWin32( ) :
@@ -62,7 +62,8 @@ namespace Bit
 	}
 
 	
-	OpenGLGraphicDeviceWin32::OpenGLGraphicDeviceWin32( const RenderWindow & p_RenderOutput, const Version & p_Version ) :
+	OpenGLGraphicDeviceWin32::OpenGLGraphicDeviceWin32( const RenderWindow & p_RenderOutput,
+														const Version & p_Version ) :
 		m_Open( false ),
 		m_Version( 0, 0 ),
 		m_DeviceContextHandle( NULL ),
@@ -76,7 +77,8 @@ namespace Bit
 		Close( );
 	}
 
-	bool OpenGLGraphicDeviceWin32::Open( const RenderWindow & p_RenderOutput, const Version & p_Version )
+	bool OpenGLGraphicDeviceWin32::Open(	const RenderWindow & p_RenderOutput,
+											const Version & p_Version )
 	{
 		// Make sure that the GD is not already open.
 		if( m_Open == true )
@@ -97,7 +99,7 @@ namespace Bit
 		Version contextVersion( p_Version );
 
 		// Try to load the best context as possible if the version is set to the default version
-		if( contextVersion == GraphicDevice::DefaultVersion )
+		if( contextVersion == Version::Default )
 		{
 			if( OpenBestVersion( p_RenderOutput, contextVersion ) != true )
 			{
@@ -117,7 +119,7 @@ namespace Bit
 		}
 
 		// Bind the OpenGL extensions
-		if( OpenGL::BindOpenGLExtensions( contextVersion.Major, contextVersion.Minor ) != true )
+		if( OpenGL::BindOpenGLExtensions( contextVersion.GetMajor( ), contextVersion.GetMinor( ) ) != true )
 		{
 			//bitTrace( "[GraphicDeviceWin32::Open] Can not bind the OpenGL extensions.\n" );
 			std::cout << "[OpenGL::BindOpenGLExtensions] Binding opengl extensions failed.\n";
@@ -154,8 +156,7 @@ namespace Bit
 		}
 
 		m_Open = false;
-		m_Version.Major = 0;
-		m_Version.Minor = 0;
+		m_Version = Version( 0, 0, 0 );
 		m_DeviceContextHandle = NULL;
 		m_Context = NULL;
 	}
@@ -229,13 +230,13 @@ namespace Bit
 		return m_Open;
 	}
 
-	GraphicDevice::Version OpenGLGraphicDeviceWin32::GetVersion( ) const
+	Version OpenGLGraphicDeviceWin32::GetVersion( ) const
 	{
 		return m_Version;
 	}
 
 	bool OpenGLGraphicDeviceWin32::OpenVersion( const RenderWindow & p_RenderOutput,
-												const GraphicDevice::Version & p_Version )
+												const Version & p_Version )
 	{
 		// Filling the pixel fromat structure.
 		static PIXELFORMATDESCRIPTOR PFD = {
@@ -290,8 +291,8 @@ namespace Bit
 		// Attributes for the OGL 3.3 context
 		int attribs[ ] =
 		{
-			WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<int>( p_Version.Major ),
-			WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<int>( p_Version.Minor ),
+			WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<int>( p_Version.GetMajor( ) ),
+			WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<int>( p_Version.GetMinor( ) ),
 			0
 		};
 

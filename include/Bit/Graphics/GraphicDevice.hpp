@@ -26,6 +26,7 @@
 #define BIT_GRAPHICS_GRAPHIC_DEVICE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Version.hpp>
 #include <Bit/Window/RenderWindow.hpp>
 #include <Bit/Graphics/ShaderType.hpp>
 
@@ -50,32 +51,6 @@ namespace Bit
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Version struct
-		///
-		////////////////////////////////////////////////////////////////
-		struct Version
-		{
-			////////////////////////////////////////////////////////////////
-			/// \brief Constructor
-			///
-			/// \param p_Major The major version number.
-			/// \param p_Minor The minor version number.
-			///
-			////////////////////////////////////////////////////////////////
-			Version( const Uint32 p_Major, Uint32 p_Minor );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Equal to operator
-			///
-			////////////////////////////////////////////////////////////////
-			Bool operator == ( const Version & p_Version ) const;
-
-			// Public variables
-			Uint32 Major;	///< Major version
-			Uint32 Minor;	///< Minor version
-		};
-
-		////////////////////////////////////////////////////////////////
 		/// \brief Enumerator for back or front face culling.
 		///
 		////////////////////////////////////////////////////////////////
@@ -84,12 +59,6 @@ namespace Bit
 			FrontFace = 0,
 			BackFace = 1
 		};
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Static instance of the default version.
-		///
-		////////////////////////////////////////////////////////////////
-		static Version DefaultVersion;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Virtual destructor.
@@ -105,7 +74,8 @@ namespace Bit
 		///		that you would like to open.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Open( const RenderWindow & p_RenderOutput, const Version & p_Version ) = 0;
+		virtual Bool Open(	const RenderWindow & p_RenderOutput,
+							const Version & p_Version = Version::Default ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the graphic device.

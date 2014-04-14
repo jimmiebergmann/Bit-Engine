@@ -43,6 +43,7 @@
     <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Version.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\KeyboardWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\MouseWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\MutexWin32.hpp" />
@@ -67,6 +68,7 @@
     <ClCompile Include="..\..\source\Bit\System\SmartMutex.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Time.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Version.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\KeyboardWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\MutexWin32.cpp" />

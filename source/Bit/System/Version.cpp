@@ -22,15 +22,66 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Graphics/GraphicDevice.hpp>
-#include <Bit/System/MemoryLeak.hpp>
+#include <Bit/System/Version.hpp>
 
 namespace Bit
 {
 
-	// Graphic device definitions
-	GraphicDevice::~GraphicDevice( )
+	// Static version variables
+	const Version Version::Default = Version( 0, 0, 0 );
+
+	// Version class
+	Version::Version(	const Uint32 p_Major,
+						const Uint32 p_Minor,
+						const Uint32 p_Revision ) :
+		m_Major( p_Major ),
+		m_Minor( p_Minor ),
+		m_Revision( p_Revision )
 	{
+	}
+
+	Uint32 Version::GetMajor( ) const
+	{
+		return m_Major;
+	}
+
+	Uint32 Version::GetMinor( ) const
+	{
+		return m_Minor;
+	}
+
+	Uint32 Version::GetRevision( ) const
+	{
+		return m_Revision;
+	}
+
+	void Version::SetMajor( const Uint32 p_Major )
+	{
+		m_Major = p_Major;
+	}
+
+	void Version::SetMinor( const Uint32 p_Minor )
+	{
+		m_Minor = p_Minor;
+	}
+
+	void Version::SetRevision( const Uint32 p_Revision )
+	{
+		m_Revision = p_Revision;
+	}
+
+	Bool Version::operator == ( const Version & p_Version ) const
+	{
+		return	m_Major == p_Version.m_Major &&
+				m_Minor == p_Version.m_Minor &&
+				m_Revision == p_Version.m_Revision;
+	}
+
+	Bool Version::operator != ( const Version & p_Version ) const
+	{
+		return	m_Major != p_Version.m_Major ||
+				m_Minor != p_Version.m_Minor ||
+				m_Revision != p_Version.m_Revision;
 	}
 
 }

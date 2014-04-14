@@ -58,7 +58,8 @@ namespace Bit
 		///		Using the newest as possible by default.
 		///
 		////////////////////////////////////////////////////////////////
-		OpenGLGraphicDeviceWin32( const RenderWindow & p_RenderOutput, const Version & p_Version = DefaultVersion );
+		OpenGLGraphicDeviceWin32(	const RenderWindow & p_RenderOutput,
+									const Version & p_Version = Version::Default );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Destructor.
@@ -75,7 +76,8 @@ namespace Bit
 		///		Using the newest as possible by default.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Open( const RenderWindow & p_RenderOutput, const Version & p_Version = DefaultVersion );
+		virtual Bool Open(	const RenderWindow & p_RenderOutput,
+							const Version & p_Version = Version::Default );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the graphic device.
