@@ -102,6 +102,22 @@ namespace Bit
 										const Bool p_Mipmapping = false ) = 0;
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Load texture data from a file.
+		///
+		///	This function is a combination of Bit::Image
+		///	and the "LoadFromImage" function.
+		///
+		/// \param p_Filename File path.
+		/// \param p_Mipmapping Generating mipmaps for the texture if true.
+		///
+		/// \return true if succeeded, else false.
+		///
+		/// \see LoadFromImage
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool LoadFromFile( const std::string & p_Filename, const Bool p_Mipmapping = false ) = 0;
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Load texture from an image.
 		///
 		/// \param p_Image The image to load pixel data from.

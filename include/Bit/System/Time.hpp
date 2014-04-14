@@ -41,9 +41,9 @@ namespace Bit
 	public:
 
 		// Friend functions
-		friend Time Seconds( const Float64 & );
-		friend Time Milliseconds( const Uint64 & );
-		friend Time Microseconds( const Uint64 & );
+		friend BIT_API Time Seconds( const Float64 & );
+		friend BIT_API Time Milliseconds( const Uint64 & );
+		friend BIT_API Time Microseconds( const Uint64 & );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor.

@@ -82,7 +82,7 @@ namespace Bit
 		/// \brief Tracker class.
 		///
 		////////////////////////////////////////////////////////////////
-		class Tracker
+		class BIT_API Tracker
 		{
 
 		public:
@@ -91,7 +91,7 @@ namespace Bit
 			/// \brief Tracker response class.
 			///
 			////////////////////////////////////////////////////////////////
-			class Response
+			class BIT_API Response
 			{
 
 				public:

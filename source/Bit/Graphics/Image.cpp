@@ -69,7 +69,7 @@ namespace Bit
 	Image::Image( ) :
 		m_pData( NULL ),
 		m_Size( 0, 0 ),
-		m_Depth(0)
+		m_Depth( 0 )
 	{
 	}
 
@@ -128,9 +128,18 @@ namespace Bit
 		{
 			return LoadFromTgaFile( p_Filename );
 		}
+		else if( fileExtension == "BMP" )
+		{
+			return LoadFromBmpFile( p_Filename );
+		}
 		else if( fileExtension == "PNG" )
 		{
 			std::cout << "[Bit::Image::LoadFromFile] Not supporting PNG images yet.\n";
+			return false;
+		}
+		else if( fileExtension == "JPG" )
+		{
+			std::cout << "[Bit::Image::LoadFromFile] Not supporting JPG images yet.\n";
 			return false;
 		}
 
@@ -149,48 +158,71 @@ namespace Bit
 			return false;
 		}
 
+		// Get the file size
+		fin.seekg( 0, std::fstream::end );
+		SizeType fileSize = static_cast<SizeType>( fin.tellg( ) );
+		fin.seekg( 0, std::fstream::beg );
+
+		// Make sure that the file has enought space for the header data.
+		if( fileSize < 18 )
+		{
+			std::cout << "[Image::LoadFromTgaFile] File size error 1.\n";
+			return false;
+		}
+
 		// Start to read the header data
 		unsigned char type[4];
 		unsigned char info[6];
-		fin.read( reinterpret_cast<char *>( type ), sizeof( Uint8 ) * 3 );
+		fin.read( reinterpret_cast<char *>( type ), 3 );
 
 		// Seek to the position of the info data
 		fin.seekg(12);
 
 		// Read the info data
-		fin.read( reinterpret_cast<char *>( info ), sizeof( Uint8 ) * 6 );
+		fin.read( reinterpret_cast<char *>( info ), 6 );
 
 		// Check if the image is either a color or greyscale image
 		// 2 == color, 3 == greyscale
 		if( (type[1] != 0 || type[2] != 2) && type[2] != 3 )
 		{
-			fin.close();
+			fin.close( );
 			std::cout << "[Image::LoadFromTgaFile] Wrong TGA type.\n";
 			return false;
 		}
+
+		// Clear the old image data
+		Clear( );
 
 		// Use the Info to calculate the size of the image
 		m_Size.x = info[0] + ( info[1] * 256 );
 		m_Size.y = info[2] + ( info[3] * 256 );
 		m_Depth = info[4] / 8;
 
-		// Make sure the image is a 24 or 32 bit image
-		if( m_Depth != 3 && m_Depth != 4 )
+		// Get the full size of the image data
+		Uint32 imageSize = GetDataSize( );
+
+		// Make sure that the file has enought space for the pixel data.
+		if( fileSize < 18 + imageSize  )
 		{
-			fin.close();
-			std::cout << "[Image::LoadFromTgaFile] Not a 24 or 32 bit depth image.\n";
+			std::cout << "[Image::LoadFromTgaFile] File size error 1.\n";
+			Clear( );
 			return false;
 		}
 
-		// Deallocate the old image data
-		Clear( );
+		// Make sure the image is a 24 or 32 bit image
+		if( m_Depth != 3 && m_Depth != 4 )
+		{
+			std::cout << "[Image::LoadFromTgaFile] Not a 24 or 32 bit depth image.\n";
+			fin.close( );
+			Clear( );
+			return false;
+		}
 
-		// Get the full size of the image data and allocate memory for the data
-		Uint32 imageSize = GetDataSize( );
+		// Allocate the pixel data
 		m_pData = new Uint8[ imageSize ];
 
 		// Read the image data
-		fin.read( reinterpret_cast<char *>( m_pData ), sizeof( Uint8 ) * imageSize);
+		fin.read( reinterpret_cast<char *>( m_pData ), imageSize);
 
 		// TGA is stored as BGR or BGRA, we have to swap the bytes
 		if( m_Depth == 3 )
@@ -204,6 +236,115 @@ namespace Bit
 
 		// Close the file since we are done.
 		fin.close();
+		return true;
+	}
+
+	Bool Image::LoadFromBmpFile( const std::string & p_Filename )
+	{
+		// Open the file
+		std::ifstream fin( p_Filename.c_str( ), std::ios::binary );
+		if( fin.is_open( ) == false )
+		{
+			std::cout << "[Image::LoadFromBmpFile] Can not open the file.\n";
+			return false;
+		}
+
+		// Get the file size
+		fin.seekg( 0, std::fstream::end );
+		SizeType fileSize = static_cast<SizeType>( fin.tellg( ) );
+		fin.seekg( 0, std::fstream::beg );
+
+		// Make sure that the file has enought space for both headers
+		if( fileSize < 54 )
+		{
+			std::cout << "[Image::LoadFromTgaFile] File size error 1.\n";
+			return false;
+		}
+
+		// Read the Bitmap file header
+		Uint8 magic[ 2 ];
+		fin.read( reinterpret_cast<char*>( magic ), 2 );
+
+		// Error check the magic field
+		if( magic[ 0 ] != 'B' || magic[ 1 ] != 'M' )
+		{
+			fin.close( );
+			std::cout << "[Image::LoadFromBmpFile] Not a BMP file.\n";
+			return false;
+		}
+		
+		// Read the bitmap information header(DIB)
+		// Read the pixel data offset
+		fin.seekg( 10, std::fstream::beg );
+		Uint32 pixelDataOffset;
+		fin.read( reinterpret_cast<char*>( &pixelDataOffset ), 4 );
+
+		// Clear the old image data
+		Clear( );
+
+		// Read the image size
+		Int32 imageWith;
+		Int32 imageHeight;
+		fin.seekg( 18, std::fstream::beg );
+		fin.read( reinterpret_cast<char*>( &imageWith ), 4 );
+		fin.read( reinterpret_cast<char*>( &imageHeight ), 4 );
+		m_Size.x = static_cast<Uint32>( imageWith );
+		m_Size.y = static_cast<Uint32>( imageHeight );
+
+		// Read the depth
+		fin.seekg( 28, std::fstream::beg );
+		Uint16 depth;
+		fin.read( reinterpret_cast<char*>( &depth ), 2 );
+		m_Depth = static_cast<Uint8>( depth ) / 8;
+
+		// Error check the depth
+		if( depth != 24 && depth != 32 )
+		{
+			std::cout << "[Image::LoadFromBmpFile] Not a 24 or 32 bit depth image.\n";
+			fin.close( );
+			Clear( );
+			return false;
+		}
+
+		// Error check the size
+		Uint32 rowSize = ( ( depth * imageWith + 31 ) / 32 ) * 4;
+		Uint32 dataSize = rowSize * imageHeight;
+		Uint32 imageSize = GetDataSize( );
+		if( dataSize != GetDataSize( ) )
+		{
+			std::cout << "[Image::LoadFromBmpFile] Wring data size.\n";
+			fin.close( );
+			Clear( );
+			return false;
+		}
+		
+		if( fileSize < pixelDataOffset + dataSize )
+		{
+			std::cout << "[Image::LoadFromBmpFile] File size error 2.\n";
+			fin.close( );
+			Clear( );
+			return false;
+		}
+
+		// Read the compression method
+		Uint8 compression;
+		fin.read( reinterpret_cast<char*>( &compression ), 1 );
+		if( compression != 0 )
+		{
+			fin.close( );
+			std::cout << "[Image::LoadFromBmpFile] Not currently supporting compression.\n";
+			return false;
+		}
+
+		// Allocate the pixel data
+		m_pData = new Uint8[ imageSize ];
+
+		// Read the pixel data
+		fin.read( reinterpret_cast<char *>( m_pData ), imageSize );
+
+		// Succeeded
+
+		std::cout << "[Image::LoadFromBmpFile] THE LOADED IS NOT COMPLETE YET.\n";
 		return true;
 	}
 

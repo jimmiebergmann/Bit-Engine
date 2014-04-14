@@ -23,6 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/OpenGL/OpenGLTexture.hpp>
+#include <Bit/Graphics/Image.hpp>
+
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -136,6 +138,20 @@ namespace Bit
 
 		// Succeeded.
 		return m_Loaded = true;
+	}
+
+	Bool OpenGLTexture::LoadFromFile( const std::string & p_Filename, const Bool p_Mipmapping )
+	{
+		// Load the image
+		Image image;
+		if( image.LoadFromFile( p_Filename ) == false )
+		{
+			std::cout << "[TextureOpenGL::LoadFromFile] Can not load the file\n";
+			return false;
+		}
+
+		// Load from the image.
+		return LoadFromImage( image, p_Mipmapping );
 	}
 
 	Bool OpenGLTexture::LoadFromImage( const Image & p_Image, const Bool p_Mipmapping )
