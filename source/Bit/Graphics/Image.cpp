@@ -336,15 +336,25 @@ namespace Bit
 			return false;
 		}
 
+		// Go to the pixel data
+		fin.seekg( pixelDataOffset, std::fstream::beg );
+
 		// Allocate the pixel data
 		m_pData = new Uint8[ imageSize ];
 
 		// Read the pixel data
 		fin.read( reinterpret_cast<char *>( m_pData ), imageSize );
 
-		// Succeeded
+		// Set the alpha value
+		for( SizeType i = 0; i < m_Size.x * m_Size.y; i++ )
+		{
+			m_pData[ 3 + ( i * 4 ) ] = 255;
+		}
 
-		std::cout << "[Image::LoadFromBmpFile] THE LOADED IS NOT COMPLETE YET.\n";
+		// Convert the pixel format
+		BgraToRgba( );
+
+		// Succeeded
 		return true;
 	}
 
