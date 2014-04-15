@@ -175,7 +175,7 @@ namespace Bit
 		}
 
 		// Get the number of components per pixel
-		SizeType componentCount = dataVector.size( ) / width / width;
+		SizeType componentCount = dataVector.size( ) / width / height;
 
 		if( (	state.info_raw.colortype != LCT_RGB &&
 				state.info_raw.colortype != LCT_RGBA ) ||
