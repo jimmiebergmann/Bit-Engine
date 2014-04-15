@@ -79,7 +79,6 @@ namespace Bit
 	{
 	}
 
-
 	Uint16 TgaFile::ImageSpecification::GetOriginX( ) const
 	{
 		return m_OriginX;
@@ -194,9 +193,30 @@ namespace Bit
 	TgaFile::Footer::Footer( ) :
 		m_ExtensionOffset( 0 ),
 		m_DeveloperAreaOffset( 0 ),
-		m_Dot( 0 ),
+		m_Dot( '.' ),
 		m_End( 0 )
 	{
+		memcpy( m_Signature, "TRUEVISION-XFILE", 16 );
+	}
+
+	void TgaFile::Footer::SetExtensionOffset( const Uint32 p_ExtensionOffset )
+	{
+		m_ExtensionOffset = p_ExtensionOffset;
+	}
+
+	void TgaFile::Footer::SetDeveloperAreaOffset( const Uint32 p_DeveloperAreaOffset )
+	{
+		m_DeveloperAreaOffset = p_DeveloperAreaOffset;
+	}
+
+	Uint32 TgaFile::Footer::GetExtensionOffset( ) const
+	{
+		return m_ExtensionOffset;
+	}
+
+	Uint32 TgaFile::Footer::GetDeveloperAreaOffset( ) const
+	{
+		return m_DeveloperAreaOffset;
 	}
 
 	// Tga file class
@@ -221,7 +241,7 @@ namespace Bit
 	Bool TgaFile::LoadFromFile( const std::string & p_Filename )
 	{
 		// Open the file.
-		std::ifstream fin( p_Filename.c_str( ) );
+		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
 			std::cout << "[TgaFile::LoadFromFile] Can not open the file. " << std::endl;
@@ -320,7 +340,7 @@ namespace Bit
 			fin.seekg( 26, std::fstream::end );
 
 			// Read the footer
-			fin.read( reinterpret_cast<char *>( &m_Footer ), 26 );
+			fin.read( reinterpret_cast<char *>( &m_Footer ), 8 );
 		}
 
 		// Succeeded.
