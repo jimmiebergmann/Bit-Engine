@@ -170,6 +170,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Graphics\BmpFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Image.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp" />
@@ -185,10 +186,12 @@
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Texture.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\TgaFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\VertexArrayObject.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\VertexBufferObject.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Graphics\BmpFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Image.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp" />
@@ -198,6 +201,7 @@
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\TgaFile.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

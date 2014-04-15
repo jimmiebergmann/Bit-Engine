@@ -164,7 +164,7 @@ namespace Bit
 		}
 
 		// Check the image BPP, we are currently just supporting 24 and 32 bit images.
-		const Uint8 depth = p_Image.GetDepth( );
+		const Uint8 depth = p_Image.GetPixelDepth( );
 		if( depth != 3 && depth != 4)
 		{
 			std::cout << "[TextureOpenGL::LoadFromImage] Not a 24 or 32 bit image.\n";

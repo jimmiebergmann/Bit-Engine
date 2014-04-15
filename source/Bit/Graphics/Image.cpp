@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/Image.hpp>
+#include <Bit/Graphics/TgaFile.hpp>
 #include <algorithm>
 #include <fstream>
 #include <cstring>
@@ -69,7 +70,7 @@ namespace Bit
 	Image::Image( ) :
 		m_pData( NULL ),
 		m_Size( 0, 0 ),
-		m_Depth( 0 )
+		m_PixelDepth( 0 )
 	{
 	}
 
@@ -93,7 +94,7 @@ namespace Bit
 
 		// Set the size and depth
 		m_Size = p_Size;
-		m_Depth = p_Depth;
+		m_PixelDepth = p_Depth;
 
 		// Allocate an array for the image data to copy
 		Uint32 imageSize = GetDataSize( );
@@ -150,92 +151,49 @@ namespace Bit
 
 	Bool Image::LoadFromTgaFile( const std::string & p_Filename )
 	{
-		// Open the file
-		std::ifstream fin( p_Filename.c_str( ), std::ios::binary );
-		if( fin.is_open( ) == false )
+		// Read the TGA file.
+		TgaFile tga( false );
+		if( tga.LoadFromFile( p_Filename ) == false )
 		{
-			std::cout << "[Image::LoadFromTgaFile] Can not open the file.\n";
 			return false;
 		}
 
-		// Get the file size
-		fin.seekg( 0, std::fstream::end );
-		SizeType fileSize = static_cast<SizeType>( fin.tellg( ) );
-		fin.seekg( 0, std::fstream::beg );
-
-		// Make sure that the file has enought space for the header data.
-		if( fileSize < 18 )
+		// Get the image type
+		if( tga.GetHeader( ).ImageType != TgaFile::UncompressedTrueColorImage )
 		{
-			std::cout << "[Image::LoadFromTgaFile] File size error 1.\n";
+			std::cout << "[Bit::Image::LoadFromTgaFile] Not a uncompressed true color image.\n";
+			delete tga.GetData( ); // Delete the data by hand
 			return false;
 		}
 
-		// Start to read the header data
-		unsigned char type[4];
-		unsigned char info[6];
-		fin.read( reinterpret_cast<char *>( type ), 3 );
+		// Get the pixel depth
+		m_PixelDepth = tga.GetHeader( ).ImageSpec.PixelDepth / 8;
 
-		// Seek to the position of the info data
-		fin.seekg(12);
-
-		// Read the info data
-		fin.read( reinterpret_cast<char *>( info ), 6 );
-
-		// Check if the image is either a color or greyscale image
-		// 2 == color, 3 == greyscale
-		if( (type[1] != 0 || type[2] != 2) && type[2] != 3 )
+		if( m_PixelDepth != 1 && m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			fin.close( );
-			std::cout << "[Image::LoadFromTgaFile] Wrong TGA type.\n";
+			std::cout << "[Bit::Image::LoadFromTgaFile] Wrong pixel depth format: " << m_PixelDepth << " bytes.\n";
+			delete tga.GetData( ); // Delete the data by hand
 			return false;
 		}
 
-		// Clear the old image data
-		Clear( );
+		// Get the image size
+		m_Size.x = static_cast<Uint32>( tga.GetHeader( ).ImageSpec.ImageWidth );
+		m_Size.y = static_cast<Uint32>( tga.GetHeader( ).ImageSpec.ImageHeight );
 
-		// Use the Info to calculate the size of the image
-		m_Size.x = info[0] + ( info[1] * 256 );
-		m_Size.y = info[2] + ( info[3] * 256 );
-		m_Depth = info[4] / 8;
+		// Get the image data
+		m_pData = tga.GetData( );
 
-		// Get the full size of the image data
-		Uint32 imageSize = GetDataSize( );
-
-		// Make sure that the file has enought space for the pixel data.
-		if( fileSize < 18 + imageSize  )
-		{
-			std::cout << "[Image::LoadFromTgaFile] File size error 1.\n";
-			Clear( );
-			return false;
-		}
-
-		// Make sure the image is a 24 or 32 bit image
-		if( m_Depth != 3 && m_Depth != 4 )
-		{
-			std::cout << "[Image::LoadFromTgaFile] Not a 24 or 32 bit depth image.\n";
-			fin.close( );
-			Clear( );
-			return false;
-		}
-
-		// Allocate the pixel data
-		m_pData = new Uint8[ imageSize ];
-
-		// Read the image data
-		fin.read( reinterpret_cast<char *>( m_pData ), imageSize);
-
-		// TGA is stored as BGR or BGRA, we have to swap the bytes
-		if( m_Depth == 3 )
+		// Convert to the right color component order
+		if( m_PixelDepth == 3 )
 		{
 			BgrToRgb( );
 		}
-		else if( m_Depth == 4 )
+		else if( m_PixelDepth == 4 )
 		{
 			BgraToRgba( );
 		}
 
-		// Close the file since we are done.
-		fin.close();
+		// Succeeded.
 		return true;
 	}
 
@@ -295,7 +253,7 @@ namespace Bit
 		fin.seekg( 28, std::fstream::beg );
 		Uint16 depth;
 		fin.read( reinterpret_cast<char*>( &depth ), 2 );
-		m_Depth = static_cast<Uint8>( depth ) / 8;
+		m_PixelDepth = static_cast<Uint8>( depth ) / 8;
 
 		// Error check the depth
 		if( depth != 24 && depth != 32 )
@@ -368,7 +326,7 @@ namespace Bit
 
 			// Clear the size and depth
 			m_Size = Vector2u32( 0, 0 );
-			m_Depth = 0;
+			m_PixelDepth = 0;
 		}
 	}
 
@@ -381,13 +339,13 @@ namespace Bit
 		}
 
 		// Set the pixel
-		SizeType pos = p_Index * m_Depth;
+		SizeType pos = p_Index * m_PixelDepth;
 		m_pData[ pos ]		= p_Pixel.Red;
 		m_pData[ pos + 1 ]	= p_Pixel.Green;
 		m_pData[ pos + 2 ]	= p_Pixel.Blue;
 
 		// Are we using the alpha channel?
-		if( m_Depth == 4 )
+		if( m_PixelDepth == 4 )
 		{
 			m_pData[ pos + 3 ] = p_Pixel.Alpha;
 		}
@@ -408,14 +366,14 @@ namespace Bit
 		}
 
 		// Set the pixel that we want to return
-		SizeType pos = p_Index * m_Depth;
+		SizeType pos = p_Index * m_PixelDepth;
 		Pixel pixel( 0, 0, 0, 255 );
 		pixel.Red	= m_pData[ pos ] ;
 		pixel.Green	= m_pData[ pos + 1];
 		pixel.Blue	= m_pData[ pos + 2];
 
 		// Are we using the alpha channel?
-		if( m_Depth == 4 )
+		if( m_PixelDepth == 4 )
 		{
 			pixel.Alpha = m_pData[ pos + 3 ];
 		}
@@ -429,12 +387,6 @@ namespace Bit
 		return GetPixel( index );
 	}
 
-	/*
-	Bool Image::ContainsData( ) const
-	{
-		return ( m_pData != BIT_NULL);
-	}*/
-
 	const Uint8 * Image::GetData( ) const
 	{
 		return m_pData;
@@ -447,12 +399,12 @@ namespace Bit
 
 	SizeType Image::GetDataSize( ) const
 	{
-		return static_cast<SizeType>( m_Size.x * m_Size.y * static_cast<Uint32>( m_Depth ) );
+		return static_cast<SizeType>( m_Size.x * m_Size.y ) * static_cast<SizeType>( m_PixelDepth );
 	}
 
-	Uint8 Image::GetDepth( ) const
+	Uint8 Image::GetPixelDepth( ) const
 	{
-		return m_Depth;
+		return m_PixelDepth;
 	}
 
 	// Conversion functions

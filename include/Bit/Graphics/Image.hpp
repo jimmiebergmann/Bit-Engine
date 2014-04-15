@@ -90,6 +90,7 @@ namespace Bit
 	/// The data can be manipulated directly via software or it can
 	/// be used for supplying texture classes with data which can be
 	/// stored in the VRAM, for example...
+	/// Stores the pixel depth in bytes(1/3/4)
 	///
 	/// \see Texture
 	///
@@ -118,8 +119,8 @@ namespace Bit
 		///
 		/// The passed image data to this function can be deleted afterwards.
 		///
-		///	\param p_pData Pointer to the image data.
-		/// \param p_Depth Pixel data depth( 1, 2, 3, 4 ).
+		///	\param p_pData Pointer to the [R][GB][A] image data.
+		/// \param p_Depth Pixel data depth in bytes(1/3/4).
 		///	\param p_Size Image size(width and height).
 		///
 		/// \return true if succeeded, else false.
@@ -201,6 +202,12 @@ namespace Bit
 		const Uint8 * GetData( ) const;
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Get the pixel depth in bytes.
+		///
+		////////////////////////////////////////////////////////////////
+		Uint8 GetPixelDepth( ) const;
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Get the size in bytes of the raw data.
 		///
 		////////////////////////////////////////////////////////////////
@@ -211,12 +218,6 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Vector2u32 GetSize( ) const;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the bit depth.
-		///
-		////////////////////////////////////////////////////////////////
-		Uint8 GetDepth( ) const;
 
 	private:
 
@@ -234,8 +235,9 @@ namespace Bit
 
 		// Private variables
 		Uint8 * m_pData;	///< The pixel data.
-		Vector2u32 m_Size;	///< The size of the image(width, height)
-		Uint8 m_Depth;		///< Bit depth, for example: 8, 16, 24, 32
+		Uint8 m_PixelDepth;	///< pixel depth in bytes, 1/3/4
+		Vector2u32 m_Size;	///< The size of the image(width, height).
+		
 
 	};
 
