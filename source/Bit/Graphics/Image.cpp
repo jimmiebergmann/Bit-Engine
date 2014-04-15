@@ -25,6 +25,7 @@
 #include <Bit/Graphics/Image.hpp>
 #include <Bit/Graphics/TgaFile.hpp>
 #include <Bit/Graphics/BmpFile.hpp>
+#include <Bit/Graphics/PngFile.hpp>
 #include <algorithm>
 #include <fstream>
 #include <cstring>
@@ -136,8 +137,7 @@ namespace Bit
 		}
 		else if( fileExtension == "PNG" )
 		{
-			std::cout << "[Bit::Image::LoadFromFile] Not supporting PNG images yet.\n";
-			return false;
+			return LoadFromPngFile( p_Filename );
 		}
 		else if( fileExtension == "JPG" )
 		{
@@ -145,9 +145,9 @@ namespace Bit
 			return false;
 		}
 
+		// Unknown extension
 		std::cout << "[Bit::Image::LoadFromFile] Unknow extension: " <<  fileExtension.c_str( ) << std::endl;
-		
-		return true;
+		return false;
 	}
 
 	Bool Image::LoadFromTgaFile( const std::string & p_Filename )
@@ -254,6 +254,41 @@ namespace Bit
 			BgraToRgba( );
 		}
 
+		return true;
+	}
+
+	Bool Image::LoadFromPngFile( const std::string & p_Filename )
+	{
+		// Read the PNG file.
+		PngFile png( false );
+		if( png.LoadFromFile( p_Filename ) == false )
+		{
+			return false;
+		}
+
+		// Get the pixel depth
+		m_PixelDepth = png.GetPixelDepth( ) / 8;
+
+		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
+		{
+			std::cout << "[Bit::Image::LoadFromTgaFile] Wrong pixel depth format: " << m_PixelDepth << " bytes.\n";
+			delete png.GetData( ); // Delete the data by hand
+			return false;
+		}
+
+		// Get the image size
+		m_Size = png.GetImageSize( );
+
+		// Delete the old data
+		if( m_pData != NULL )
+		{
+			delete [ ] m_pData;
+		}
+
+		// Get the image data
+		m_pData = const_cast<Uint8 *>( png.GetData( ) );
+
+		// Succeeded.
 		return true;
 	}
 

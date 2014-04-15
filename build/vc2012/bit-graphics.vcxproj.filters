@@ -7,6 +7,9 @@
     <Filter Include="OpenGL\Win32">
       <UniqueIdentifier>{cd202676-2ece-4610-9698-0b4cd7c4b5ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LoadePng">
+      <UniqueIdentifier>{c1a761eb-3c97-49f6-869a-9a6f656a9dae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
@@ -44,6 +47,10 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Graphics\BmpFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\TgaFile.hpp" />
+    <ClInclude Include="..\..\source\Bit\Graphics\LodePng\lodepng.h">
+      <Filter>LoadePng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\PngFile.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
@@ -71,5 +78,9 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\BmpFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\TgaFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\LodePng\lodepng.cpp">
+      <Filter>LoadePng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\PngFile.cpp" />
   </ItemGroup>
 </Project>

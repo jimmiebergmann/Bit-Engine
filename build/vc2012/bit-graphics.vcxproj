@@ -70,7 +70,7 @@
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-graphics\Static_Debug\</IntDir>
     <TargetName>$(ProjectName)-s-d</TargetName>
-    <IncludePath>../../include;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
+    <IncludePath>../../include;../../source/Bit/Graphics/LodePng;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;../../extlibs/libs/Freetype;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
@@ -181,6 +181,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLTexture.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\PngFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\PrimitiveMode.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Shader.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
@@ -189,11 +190,13 @@
     <ClInclude Include="..\..\include\Bit\Graphics\TgaFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\VertexArrayObject.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\VertexBufferObject.hpp" />
+    <ClInclude Include="..\..\source\Bit\Graphics\LodePng\lodepng.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\BmpFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Image.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\LodePng\lodepng.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShaderProgram.cpp" />
@@ -201,6 +204,7 @@
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\PngFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\TgaFile.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
