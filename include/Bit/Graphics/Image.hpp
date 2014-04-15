@@ -90,7 +90,7 @@ namespace Bit
 	/// The data can be manipulated directly via software or it can
 	/// be used for supplying texture classes with data which can be
 	/// stored in the VRAM, for example...
-	/// Stores the pixel depth in bytes(1/3/4)
+	/// Stores the pixel data in 3 or 4 byte format.
 	///
 	/// \see Texture
 	///

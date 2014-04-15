@@ -24,6 +24,7 @@
 
 #include <Bit/Graphics/Image.hpp>
 #include <Bit/Graphics/TgaFile.hpp>
+#include <Bit/Graphics/BmpFile.hpp>
 #include <algorithm>
 #include <fstream>
 #include <cstring>
@@ -161,7 +162,7 @@ namespace Bit
 		// Get the image type
 		if( tga.GetHeader( ).GetImageType( ) != TgaFile::UncompressedTrueColorImage )
 		{
-			std::cout << "[Bit::Image::LoadFromTgaFile] Not a uncompressed true color image.\n";
+			std::cout << "[Bit::Image::LoadFromTgaFile] Not an uncompressed true color image.\n";
 			delete tga.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -169,7 +170,7 @@ namespace Bit
 		// Get the pixel depth
 		m_PixelDepth = tga.GetHeader( ).GetImageSpec( ).GetPixelDepth( ) / 8;
 
-		if( m_PixelDepth != 1 && m_PixelDepth != 3 && m_PixelDepth != 4 )
+		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
 			std::cout << "[Bit::Image::LoadFromTgaFile] Wrong pixel depth format: " << m_PixelDepth << " bytes.\n";
 			delete tga.GetData( ); // Delete the data by hand
@@ -199,120 +200,48 @@ namespace Bit
 
 	Bool Image::LoadFromBmpFile( const std::string & p_Filename )
 	{
-		// Open the file
-		std::ifstream fin( p_Filename.c_str( ), std::ios::binary );
-		if( fin.is_open( ) == false )
+		// Read the TGA file.
+		BmpFile bmp( false );
+		if( bmp.LoadFromFile( p_Filename ) == false )
 		{
-			std::cout << "[Image::LoadFromBmpFile] Can not open the file.\n";
 			return false;
 		}
 
-		// Get the file size
-		fin.seekg( 0, std::fstream::end );
-		SizeType fileSize = static_cast<SizeType>( fin.tellg( ) );
-		fin.seekg( 0, std::fstream::beg );
-
-		// Make sure that the file has enought space for both headers
-		if( fileSize < 54 )
+		// Get the image type
+		if( bmp.GetDibHeader( ).GetCompression( ) != BmpFile::NoCompression )
 		{
-			std::cout << "[Image::LoadFromTgaFile] File size error 1.\n";
+			std::cout << "[Bit::Image::LoadFromBmpFile] Not an uncompressed true color image.\n";
+			delete bmp.GetData( ); // Delete the data by hand
 			return false;
 		}
 
-		// Read the Bitmap file header
-		Uint8 magic[ 2 ];
-		fin.read( reinterpret_cast<char*>( magic ), 2 );
+		// Get the pixel depth
+		m_PixelDepth = static_cast<Uint8>( bmp.GetDibHeader( ).GetPixelDepth( ) / 8 );
 
-		// Error check the magic field
-		if( magic[ 0 ] != 'B' || magic[ 1 ] != 'M' )
+		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			fin.close( );
-			std::cout << "[Image::LoadFromBmpFile] Not a BMP file.\n";
-			return false;
-		}
-		
-		// Read the bitmap information header(DIB)
-		// Read the pixel data offset
-		fin.seekg( 10, std::fstream::beg );
-		Uint32 pixelDataOffset;
-		fin.read( reinterpret_cast<char*>( &pixelDataOffset ), 4 );
-
-		// Clear the old image data
-		Clear( );
-
-		// Read the image size
-		Int32 imageWith;
-		Int32 imageHeight;
-		fin.seekg( 18, std::fstream::beg );
-		fin.read( reinterpret_cast<char*>( &imageWith ), 4 );
-		fin.read( reinterpret_cast<char*>( &imageHeight ), 4 );
-		m_Size.x = static_cast<Uint32>( imageWith );
-		m_Size.y = static_cast<Uint32>( imageHeight );
-
-		// Read the depth
-		fin.seekg( 28, std::fstream::beg );
-		Uint16 depth;
-		fin.read( reinterpret_cast<char*>( &depth ), 2 );
-		m_PixelDepth = static_cast<Uint8>( depth ) / 8;
-
-		// Error check the depth
-		if( depth != 24 && depth != 32 )
-		{
-			std::cout << "[Image::LoadFromBmpFile] Not a 24 or 32 bit depth image.\n";
-			fin.close( );
-			Clear( );
+			std::cout << "[Bit::Image::LoadFromTgaFile] Wrong pixel depth format: " << m_PixelDepth << " bytes.\n";
+			delete bmp.GetData( ); // Delete the data by hand
 			return false;
 		}
 
-		// Error check the size
-		Uint32 rowSize = ( ( depth * imageWith + 31 ) / 32 ) * 4;
-		Uint32 dataSize = rowSize * imageHeight;
-		Uint32 imageSize = GetDataSize( );
-		if( dataSize != GetDataSize( ) )
+		// Get the image size
+		m_Size.x = static_cast<Uint32>( bmp.GetDibHeader( ).GetBitmapWidth( ) );
+		m_Size.y = static_cast<Uint32>( bmp.GetDibHeader( ).GetBitmapHeight( ) );
+
+		// Get the image data
+		m_pData = const_cast<Uint8 *>( bmp.GetData( ) );
+
+		// Convert to the right color component order
+		if( m_PixelDepth == 3 )
 		{
-			std::cout << "[Image::LoadFromBmpFile] Wring data size.\n";
-			fin.close( );
-			Clear( );
-			return false;
+			BgrToRgb( );
 		}
-		
-		if( fileSize < pixelDataOffset + dataSize )
+		else if( m_PixelDepth == 4 )
 		{
-			std::cout << "[Image::LoadFromBmpFile] File size error 2.\n";
-			fin.close( );
-			Clear( );
-			return false;
+			BgraToRgba( );
 		}
 
-		// Read the compression method
-		Uint8 compression;
-		fin.read( reinterpret_cast<char*>( &compression ), 1 );
-		if( compression != 0 )
-		{
-			fin.close( );
-			std::cout << "[Image::LoadFromBmpFile] Not currently supporting compression.\n";
-			return false;
-		}
-
-		// Go to the pixel data
-		fin.seekg( pixelDataOffset, std::fstream::beg );
-
-		// Allocate the pixel data
-		m_pData = new Uint8[ imageSize ];
-
-		// Read the pixel data
-		fin.read( reinterpret_cast<char *>( m_pData ), imageSize );
-
-		// Set the alpha value
-		for( SizeType i = 0; i < m_Size.x * m_Size.y; i++ )
-		{
-			m_pData[ 3 + ( i * 4 ) ] = 255;
-		}
-
-		// Convert the pixel format
-		BgraToRgba( );
-
-		// Succeeded
 		return true;
 	}
 
@@ -418,7 +347,6 @@ namespace Bit
 			return;
 		}
 
-
 		SizeType size = GetDataSize( );
 		Uint8 temporaryByte = 0;
 
@@ -429,7 +357,6 @@ namespace Bit
 			m_pData[ i ] = m_pData[ i + 2 ];
 			m_pData[ i + 2 ] = temporaryByte;
 		}
-
 	}
 
 	void Image::BgraToRgba( )

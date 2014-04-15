@@ -254,15 +254,15 @@ namespace Bit
 
 	Bool TgaFile::LoadFromStream( std::istream & p_Stream )
 	{
-		// Read the file size.
+		// Read the stream size.
 		p_Stream.seekg( 0, std::fstream::end );
 		SizeType fileSize = static_cast<SizeType>( p_Stream.tellg( ) );
 		p_Stream.seekg( 0, std::fstream::beg );
 
-		// Error check the file size
+		// Error check the stream size
 		if( fileSize < 18 )
 		{
-			std::cout << "[TgaFile::LoadFromFile] Missing header field." << std::endl;
+			std::cout << "[TgaFile::LoadFromStream] Missing header field." << std::endl;
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -289,7 +289,7 @@ namespace Bit
 			m_Header.m_ImageSpec.m_PixelDepth != 24 &&
 			m_Header.m_ImageSpec.m_PixelDepth != 32 )
 		{
-			std::cout	<< "[TgaFile::LoadFromFile] Not supporting "
+			std::cout	<< "[TgaFile::LoadFromStream] Not supporting "
 						<< (int)m_Header.m_ImageSpec.m_PixelDepth << " bit pixel depth." << std::endl;
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
@@ -299,14 +299,14 @@ namespace Bit
 		if( m_Header.GetImageType( ) != UncompressedTrueColorImage &&
 			m_Header.GetImageType( ) != UncompressedGrayscaleImage )
 		{
-			std::cout	<< "[TgaFile::LoadFromFile] Not supporting color mapped or compressed images." << std::endl;
+			std::cout	<< "[TgaFile::LoadFromStream] Not supporting color mapped or compressed images." << std::endl;
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
 
 		if(	m_Header.GetImageType( ) == UncompressedGrayscaleImage && m_Header.m_ImageSpec.m_PixelDepth != 8 )
 		{
-			std::cout	<< "[TgaFile::LoadFromFile] Not supporting non 8 bit grayscale iamges." << std::endl;
+			std::cout	<< "[TgaFile::LoadFromStream] Not supporting non 8 bit grayscale iamges." << std::endl;
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -328,7 +328,7 @@ namespace Bit
 			// Check if the data fits in the file
 			if( fileSize < m_DataSize + 18 )
 			{
-				std::cout << "[TgaFile::LoadFromFile] The expected data size is too large for the opened file." << std::endl;
+				std::cout << "[TgaFile::LoadFromStream] The expected data size is too large." << std::endl;
 				p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 				return false;
 			}
