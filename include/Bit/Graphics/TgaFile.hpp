@@ -63,51 +63,179 @@ namespace Bit
 
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Color map specification structure.
+		/// \brief Color map specification class.
 		///
 		////////////////////////////////////////////////////////////////
-		struct ColorMapSpecification
+		class ColorMapSpecification
 		{
+
+		public:
+
+			// Friend class.
+			friend class TgaFile;
+
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor
 			///
 			////////////////////////////////////////////////////////////////
 			ColorMapSpecification( );
 
-			Uint16 Offset;		///< Index of the first entry.
-			Uint16 Length;		///< Number of entries.
-			Uint8 EntrySize;	///< Number of bits per pixel.
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the color map offset
+			///
+			////////////////////////////////////////////////////////////////
+			void SetOffset( const Uint16 p_Offset );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the number of color map entries.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetLength( const Uint16 p_Length );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the number of bits per pixel
+			///
+			////////////////////////////////////////////////////////////////
+			void SetEntrySize( const Uint8 p_EntrySize );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the color map offset
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetOffset( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the number of color map entries.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetLength( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the number of bits per pixel
+			///
+			////////////////////////////////////////////////////////////////
+			Uint8 GetEntrySize( ) const;
+
+		private:
+
+			// Private varaibles
+			Uint16 m_Offset;		///< Index of the first entry.
+			Uint16 m_Length;		///< Number of entries.
+			Uint8 m_EntrySize;		///< Number of bits per pixel.
 		};
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Image specification structure.
+		/// \brief Image specification class.
 		///
 		////////////////////////////////////////////////////////////////
-		struct ImageSpecification
+		class ImageSpecification
 		{
 
+		public:
+
+			// Friend class.
+			friend class TgaFile;
+
 			////////////////////////////////////////////////////////////////
-			/// \brief Default constructor
+			/// \brief Default constructor.
 			///
 			////////////////////////////////////////////////////////////////
 			ImageSpecification( );
-			
-			Uint16 OriginX;			///< Coordinate of lower-left corner for displays where origin is at the lower left.
-			Uint16 OriginY;			///< As OriginX.
-			Uint16 ImageWidth;		///< Width in pixels.
-			Uint16 ImageHeight;		///< Height in pixels.
-			Uint8 PixelDepth;		///< Bits per pixel.
-			Uint8 ImageDescriptor;	///< Bits 3-0 give the alpha channel depth, bits 5-4 give direction.
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the origin X coordinate.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetOriginX( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the origin Y coordinate.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetOriginY( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the image width.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetImageWidth( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the image height.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetImageHeight( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the pixel depth in bits.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint8 GetPixelDepth( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the pixel depth in bits.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint8 GetImageDescriptor( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the origin X coordinate.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetOriginX( const Uint16 p_OriginX );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the origin Y coordinate.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetOriginY( const Uint16 p_OriginY );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the image width.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetImageWidth( const Uint16 p_ImageWidth );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the image height.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetImageHeight( const Uint16 p_ImageHeight );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the pixel depth in bits.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetPixelDepth( const Uint8 p_PixelDepth );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the pixel depth in bits.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetImageDescriptor( const Uint8 p_ImageDescriptor );
+
+		private:
+
+			// Private varaibles
+			Uint16 m_OriginX;			///< Coordinate of lower-left corner for displays where origin is at the lower left.
+			Uint16 m_OriginY;			///< As OriginX.
+			Uint16 m_ImageWidth;		///< Width in pixels.
+			Uint16 m_ImageHeight;		///< Height in pixels.
+			Uint8 m_PixelDepth;			///< Bits per pixel.
+			Uint8 m_ImageDescriptor;	///< Bits 3-0 give the alpha channel depth, bits 5-4 give direction.
 		};
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Header structure.
+		/// \brief Header class.
 		///
 		////////////////////////////////////////////////////////////////
 		class Header
 		{
 
 		public:
+
+			// Friend class.
+			friend class TgaFile;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor
@@ -116,23 +244,61 @@ namespace Bit
 			Header( );
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Set the length of the image ID field.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetIdLength( const Uint8 p_IdLength );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the color map type
+			///
+			////////////////////////////////////////////////////////////////
+			void SetColorMapType( const Uint8 p_ColorMapType );
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Set image type from a image type enumerator.
 			///
 			////////////////////////////////////////////////////////////////
-			void SetImageType( const eImageType & p_ImageType );
+			void SetImageType( const Uint8 p_ImageType );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the length of the image ID field.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint8 GetIdLength( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the color map type
+			///
+			////////////////////////////////////////////////////////////////
+			Uint8 GetColorMapType( ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get image type as a image type enumerator.
 			///
 			////////////////////////////////////////////////////////////////
-			eImageType GetImageType(  ) const;
+			Uint8 GetImageType(  ) const;
 
-			// Public variables, in order to make data manipulation easier.
-			Uint8 IdLength;							///< Length of the image ID field.
-			Uint8 ColorMapType;						///< Whether a color map is included.
-			Uint8 ImageType;						///< Compression and color types.
-			ColorMapSpecification ColorMapSpec;		///< Describes the color map.
-			ImageSpecification ImageSpec;			///< Image dimensions and format.
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the color map specification
+			///
+			////////////////////////////////////////////////////////////////
+			ColorMapSpecification & GetColorMapSpec( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the image specification
+			///
+			////////////////////////////////////////////////////////////////
+			ImageSpecification & GetImageSpec( );
+
+		private:
+
+			// Private varaibles
+			Uint8 m_IdLength;						///< Length of the image ID field.
+			Uint8 m_ColorMapType;					///< Whether a color map is included.
+			Uint8 m_ImageType;						///< Compression and color types.
+			ColorMapSpecification m_ColorMapSpec;	///< Describes the color map.
+			ImageSpecification m_ImageSpec;			///< Image dimensions and format.
 		};
 
 
@@ -140,8 +306,13 @@ namespace Bit
 		/// \brief Footer structure.
 		///
 		////////////////////////////////////////////////////////////////
-		struct Footer
+		class Footer
 		{
+
+		public:
+
+			// Friend class.
+			friend class TgaFile;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor
@@ -149,23 +320,25 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Footer( );
 			
-			// Public variables, in order to make data manipulation easier.
-			Uint32 ExtensionOffset;		///< Offset in bytes from beginning of the file.
-			Uint32 DeveloperAreaOffset;	///< Offset in bytes from beginning of the file.
-			Uint8 Signature[ 16 ];		///< Contains "TRUEVISION-XFILE"
-			Uint8 Dot;					///< Contains "."
-			Uint8 End;					///< Contains NULL
+		private:
+
+			// Private varaibles
+			Uint32 m_ExtensionOffset;		///< Offset in bytes from beginning of the file.
+			Uint32 m_DeveloperAreaOffset;	///< Offset in bytes from beginning of the file.
+			Uint8 m_Signature[ 16 ];		///< Contains "TRUEVISION-XFILE"
+			Uint8 m_Dot;					///< Contains "."
+			Uint8 m_End;					///< Contains NULL
 		};
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Constructor
 		///
-		/// \param p_DeallocateData Does not deallocate the bitmap data
+		/// \param p_DeallocateFlag Does not deallocate the bitmap data
 		/// at destruction if false. This is useful if you want to
 		/// take over the bitmap data pointer from the tga file class.
 		///
 		////////////////////////////////////////////////////////////////
-		TgaFile( const Bool p_DeallocateData = true );
+		TgaFile( const Bool p_DeallocateFlag = true );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Destructor.
@@ -205,7 +378,7 @@ namespace Bit
 		/// \brief Get the raw bitmap data.
 		///
 		////////////////////////////////////////////////////////////////
-		Uint8 * GetData( ) const;
+		const Uint8 * GetData( ) const;
 		
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the raw bitmap data size in bytes.
@@ -222,13 +395,19 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		void SetData( const Uint8 * p_pData, const SizeType p_DataSize  );
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the deallocator flag.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool GetDeallocatorFlag( ) const;
+
 	private:
 
 		Header m_Header;		///< Header field.
 		Footer m_Footer;		///< Footer field.
 		Uint8 * m_pData;		///< Raw pixel data.
 		SizeType m_DataSize;	///< The data size in bytes.
-		Bool m_DeallocateData;	///< Data deallocation at destruction flag, true by default.
+		Bool m_DeallocateFlag;	///< Data deallocation at destruction flag, true by default.
 
 	};
 

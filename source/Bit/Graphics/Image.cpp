@@ -159,7 +159,7 @@ namespace Bit
 		}
 
 		// Get the image type
-		if( tga.GetHeader( ).ImageType != TgaFile::UncompressedTrueColorImage )
+		if( tga.GetHeader( ).GetImageType( ) != TgaFile::UncompressedTrueColorImage )
 		{
 			std::cout << "[Bit::Image::LoadFromTgaFile] Not a uncompressed true color image.\n";
 			delete tga.GetData( ); // Delete the data by hand
@@ -167,7 +167,7 @@ namespace Bit
 		}
 
 		// Get the pixel depth
-		m_PixelDepth = tga.GetHeader( ).ImageSpec.PixelDepth / 8;
+		m_PixelDepth = tga.GetHeader( ).GetImageSpec( ).GetPixelDepth( ) / 8;
 
 		if( m_PixelDepth != 1 && m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
@@ -177,11 +177,11 @@ namespace Bit
 		}
 
 		// Get the image size
-		m_Size.x = static_cast<Uint32>( tga.GetHeader( ).ImageSpec.ImageWidth );
-		m_Size.y = static_cast<Uint32>( tga.GetHeader( ).ImageSpec.ImageHeight );
+		m_Size.x = static_cast<Uint32>( tga.GetHeader( ).GetImageSpec( ).GetImageWidth( ) );
+		m_Size.y = static_cast<Uint32>( tga.GetHeader( ).GetImageSpec( ).GetImageHeight( ) );
 
 		// Get the image data
-		m_pData = tga.GetData( );
+		m_pData = const_cast<Uint8 *>( tga.GetData( ) );
 
 		// Convert to the right color component order
 		if( m_PixelDepth == 3 )

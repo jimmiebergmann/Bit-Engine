@@ -30,68 +30,189 @@
 namespace Bit
 {
 
-	// Color map specification struct
+	// Color map specification class
 	TgaFile::ColorMapSpecification::ColorMapSpecification( ) :
-		Offset( 0 ),
-		Length( 0 ),
-		EntrySize( 0 )
+		m_Offset( 0 ),
+		m_Length( 0 ),
+		m_EntrySize( 0 )
 	{
 	}
 
-	// Image specification struct
-	TgaFile::ImageSpecification::ImageSpecification( ) :
-		OriginX( 0 ),
-		OriginY( 0 ),
-		ImageWidth( 0 ),
-		ImageHeight( 0 ),
-		PixelDepth( 0 ),
-		ImageDescriptor( 0 )
+	void TgaFile::ColorMapSpecification::SetOffset( const Uint16 p_Offset )
 	{
+		m_Offset = p_Offset;
+	}
+
+	void TgaFile::ColorMapSpecification::SetLength( const Uint16 p_Length )
+	{
+		m_Length = p_Length;
+	}
+
+	void TgaFile::ColorMapSpecification::SetEntrySize( const Uint8 p_EntrySize )
+	{
+		m_EntrySize = p_EntrySize;
+	}
+
+	Uint16 TgaFile::ColorMapSpecification::GetOffset( ) const
+	{
+		return m_Offset;
+	}
+
+	Uint16 TgaFile::ColorMapSpecification::GetLength( ) const
+	{
+		return m_Length;
+	}
+
+	Uint8 TgaFile::ColorMapSpecification::GetEntrySize( ) const
+	{
+		return m_EntrySize;
+	}
+
+	// Image specification class
+	TgaFile::ImageSpecification::ImageSpecification( ) :
+		m_OriginX( 0 ),
+		m_OriginY( 0 ),
+		m_ImageWidth( 0 ),
+		m_ImageHeight( 0 ),
+		m_PixelDepth( 0 ),
+		m_ImageDescriptor( 0 )
+	{
+	}
+
+
+	Uint16 TgaFile::ImageSpecification::GetOriginX( ) const
+	{
+		return m_OriginX;
+	}
+
+	Uint16 TgaFile::ImageSpecification::GetOriginY( ) const
+	{
+		return m_OriginY;
+	}
+
+	Uint16 TgaFile::ImageSpecification::GetImageWidth( ) const
+	{
+		return m_ImageWidth;
+	}
+
+	Uint16 TgaFile::ImageSpecification::GetImageHeight( ) const
+	{
+		return m_ImageHeight;
+	}
+
+	Uint8 TgaFile::ImageSpecification::GetPixelDepth( ) const
+	{
+		return m_PixelDepth;
+	}
+
+	Uint8 TgaFile::ImageSpecification::GetImageDescriptor( ) const
+	{
+		return m_ImageDescriptor;
+	}
+
+	void TgaFile::ImageSpecification::SetOriginX( const Uint16 p_OriginX )
+	{
+		m_OriginX = p_OriginX;
+	}
+
+	void TgaFile::ImageSpecification::SetOriginY( const Uint16 p_OriginY )
+	{
+		m_OriginY = p_OriginY;
+	}
+
+	void TgaFile::ImageSpecification::SetImageWidth( const Uint16 p_ImageWidth )
+	{
+		m_ImageWidth = p_ImageWidth;
+	}
+
+	void TgaFile::ImageSpecification::SetImageHeight( const Uint16 p_ImageHeight )
+	{
+		m_ImageHeight = p_ImageHeight;
+	}
+
+	void TgaFile::ImageSpecification::SetPixelDepth( const Uint8 p_PixelDepth )
+	{
+		m_PixelDepth = p_PixelDepth;
+	}
+
+	void TgaFile::ImageSpecification::SetImageDescriptor( const Uint8 p_ImageDescriptor )
+	{
+		m_ImageDescriptor = p_ImageDescriptor;
 	}
 
 	// Header class
 	TgaFile::Header::Header( ) :
-		IdLength( 0 ),
-		ColorMapType( 0 ),
-		ImageType( 0 ),
-		ColorMapSpec( ),
-		ImageSpec( )
+		m_IdLength( 0 ),
+		m_ColorMapType( 0 ),
+		m_ImageType( 0 ),
+		m_ColorMapSpec( ),
+		m_ImageSpec( )
 	{
 	}
 
-	void TgaFile::Header::SetImageType( const eImageType & p_ImageType )
+	void TgaFile::Header::SetIdLength( const Uint8 p_IdLength )
 	{
-		ImageType =  static_cast<Uint8>( p_ImageType );
+		m_IdLength = p_IdLength;
 	}
 
-	TgaFile::eImageType TgaFile::Header::GetImageType(  ) const
+	void TgaFile::Header::SetColorMapType( const Uint8 p_ColorMapType )
 	{
-		return static_cast<eImageType>( ImageType );
+		m_ColorMapType = p_ColorMapType;
 	}
 
-	// Footer struct
+	void TgaFile::Header::SetImageType( const Uint8 p_ImageType )
+	{
+		m_ImageType = p_ImageType;
+	}
+
+	Uint8 TgaFile::Header::GetIdLength( ) const
+	{
+		return m_IdLength;
+	}
+
+	Uint8 TgaFile::Header::GetColorMapType( ) const
+	{
+		return m_ColorMapType;
+	}
+
+	Uint8 TgaFile::Header::GetImageType(  ) const
+	{
+		return m_ImageType;
+	}
+
+	TgaFile::ColorMapSpecification & TgaFile::Header::GetColorMapSpec( )
+	{
+		return m_ColorMapSpec;
+	}
+
+	TgaFile::ImageSpecification & TgaFile::Header::GetImageSpec( )
+	{
+		return m_ImageSpec;
+	}
+
+	// Footer class
 	TgaFile::Footer::Footer( ) :
-		ExtensionOffset( 0 ),
-		DeveloperAreaOffset( 0 ),
-		Dot( 0 ),
-		End( 0 )
+		m_ExtensionOffset( 0 ),
+		m_DeveloperAreaOffset( 0 ),
+		m_Dot( 0 ),
+		m_End( 0 )
 	{
 	}
 
 	// Tga file class
-	TgaFile::TgaFile( const Bool p_DeallocateData ) :
+	TgaFile::TgaFile( const Bool p_DeallocateFlag ) :
 		m_Header( ),
 		m_Footer( ),
 		m_pData( NULL ),
 		m_DataSize( 0 ),
-		m_DeallocateData( p_DeallocateData )
+		m_DeallocateFlag( p_DeallocateFlag )
 	{
 	}
 
 	TgaFile::~TgaFile( )
 	{
 		// Delete the allocated data
-		if( m_DeallocateData && m_pData )
+		if( m_DeallocateFlag && m_pData )
 		{
 			delete m_pData;
 		}
@@ -121,29 +242,29 @@ namespace Bit
 		}
 
 		// Read the header.
-		fin.read( reinterpret_cast<char *>( &m_Header.IdLength ), 1 );
-		fin.read( reinterpret_cast<char *>( &m_Header.ColorMapType ), 1 );
-		fin.read( reinterpret_cast<char *>( &m_Header.ImageType ), 1 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_IdLength ), 1 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ColorMapType ), 1 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageType ), 1 );
 		// Read color map specifications
-		fin.read( reinterpret_cast<char *>( &m_Header.ColorMapSpec.Offset ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.ColorMapSpec.Length ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.ColorMapSpec.EntrySize ), 1 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_Offset ), 2 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_Length ), 2 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_EntrySize ), 1 );
 		// Read image specifications
-		fin.read( reinterpret_cast<char *>( &m_Header.ImageSpec.OriginX ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.ImageSpec.OriginY ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.ImageSpec.ImageWidth ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.ImageSpec.ImageHeight ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.ImageSpec.PixelDepth ), 1 );
-		fin.read( reinterpret_cast<char *>( &m_Header.ImageSpec.ImageDescriptor ), 1 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_OriginX ), 2 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_OriginY ), 2 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageWidth ), 2 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageHeight ), 2 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_PixelDepth ), 1 );
+		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageDescriptor ), 1 );
 
 		// Error check the header field.
-		if( m_Header.ImageSpec.PixelDepth != 8 &&
-			m_Header.ImageSpec.PixelDepth != 16 &&
-			m_Header.ImageSpec.PixelDepth != 24 &&
-			m_Header.ImageSpec.PixelDepth != 32 )
+		if( m_Header.m_ImageSpec.m_PixelDepth != 8 &&
+			m_Header.m_ImageSpec.m_PixelDepth != 16 &&
+			m_Header.m_ImageSpec.m_PixelDepth != 24 &&
+			m_Header.m_ImageSpec.m_PixelDepth != 32 )
 		{
 			std::cout	<< "[TgaFile::LoadFromFile] Not supporting "
-						<< (int)m_Header.ImageSpec.PixelDepth << " bit pixel depth." << std::endl;
+						<< (int)m_Header.m_ImageSpec.m_PixelDepth << " bit pixel depth." << std::endl;
 			fin.close( );
 			return false;
 		}
@@ -157,7 +278,7 @@ namespace Bit
 			return false;
 		}
 
-		if(	m_Header.GetImageType( ) == UncompressedGrayscaleImage && m_Header.ImageSpec.PixelDepth != 8 )
+		if(	m_Header.GetImageType( ) == UncompressedGrayscaleImage && m_Header.m_ImageSpec.m_PixelDepth != 8 )
 		{
 			std::cout	<< "[TgaFile::LoadFromFile] Not supporting non 8 bit grayscale iamges." << std::endl;
 			fin.close( );
@@ -171,9 +292,9 @@ namespace Bit
 		}
 
 		// Calcualte the data size.
-		m_DataSize =	static_cast<SizeType>( m_Header.ImageSpec.ImageWidth ) *
-						static_cast<SizeType>( m_Header.ImageSpec.ImageHeight ) *
-						static_cast<SizeType>( m_Header.ImageSpec.PixelDepth / 8 );
+		m_DataSize =	static_cast<SizeType>( m_Header.m_ImageSpec.m_ImageWidth ) *
+						static_cast<SizeType>( m_Header.m_ImageSpec.m_ImageHeight ) *
+						static_cast<SizeType>( m_Header.m_ImageSpec.m_PixelDepth / 8 );
 
 		// Read the data if we are expecting any data.
 		if( m_DataSize != 0 )
@@ -225,7 +346,7 @@ namespace Bit
 		return m_Footer;
 	}
 
-	Uint8 * TgaFile::GetData( ) const
+	const Uint8 * TgaFile::GetData( ) const
 	{
 		return m_pData;
 	}
@@ -257,6 +378,11 @@ namespace Bit
 
 		// Copy the data
 		memcpy( m_pData, p_pData, m_DataSize );
+	}
+
+	Bool TgaFile::GetDeallocatorFlag( ) const
+	{
+		return m_DeallocateFlag;
 	}
 
 }
