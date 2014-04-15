@@ -117,6 +117,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Load image data from memory
 		///
+		/// Loads raw pixel data from memory.
 		/// The passed image data to this function can be deleted afterwards.
 		///
 		///	\param p_pData Pointer to the [R][GB][A] image data.

@@ -24,6 +24,7 @@
 
 #include <Bit/Graphics/TgaFile.hpp>
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -238,44 +239,49 @@ namespace Bit
 		}
 	}
 
-	Bool TgaFile::LoadFromFile( const std::string & p_Filename )
+	Bool TgaFile::LoadFromMemory( const std::string & p_Memory )
 	{
-		// Open the file.
-		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
-		if( fin.is_open( ) == false )
-		{
-			std::cout << "[TgaFile::LoadFromFile] Can not open the file. " << std::endl;
-			return false;
-		}
+		// Load a string stream
+		std::stringstream ss;
+		ss.str( p_Memory );
 
+		// Read the stream
+		Bool status = LoadFromStream( ss );
+
+		// Return the status
+		return status;
+	}
+
+	Bool TgaFile::LoadFromStream( std::istream & p_Stream )
+	{
 		// Read the file size.
-		fin.seekg( 0, std::fstream::end );
-		SizeType fileSize = static_cast<SizeType>( fin.tellg( ) );
-		fin.seekg( 0, std::fstream::beg );
+		p_Stream.seekg( 0, std::fstream::end );
+		SizeType fileSize = static_cast<SizeType>( p_Stream.tellg( ) );
+		p_Stream.seekg( 0, std::fstream::beg );
 
 		// Error check the file size
 		if( fileSize < 18 )
 		{
 			std::cout << "[TgaFile::LoadFromFile] Missing header field." << std::endl;
-			fin.close( );
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
 
 		// Read the header.
-		fin.read( reinterpret_cast<char *>( &m_Header.m_IdLength ), 1 );
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ColorMapType ), 1 );
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageType ), 1 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_IdLength ), 1 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ColorMapType ), 1 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ImageType ), 1 );
 		// Read color map specifications
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_Offset ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_Length ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_EntrySize ), 1 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_Offset ), 2 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_Length ), 2 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_EntrySize ), 1 );
 		// Read image specifications
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_OriginX ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_OriginY ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageWidth ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageHeight ), 2 );
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_PixelDepth ), 1 );
-		fin.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageDescriptor ), 1 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_OriginX ), 2 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_OriginY ), 2 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageWidth ), 2 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageHeight ), 2 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_PixelDepth ), 1 );
+		p_Stream.read( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageDescriptor ), 1 );
 
 		// Error check the header field.
 		if( m_Header.m_ImageSpec.m_PixelDepth != 8 &&
@@ -285,7 +291,7 @@ namespace Bit
 		{
 			std::cout	<< "[TgaFile::LoadFromFile] Not supporting "
 						<< (int)m_Header.m_ImageSpec.m_PixelDepth << " bit pixel depth." << std::endl;
-			fin.close( );
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
 
@@ -294,14 +300,14 @@ namespace Bit
 			m_Header.GetImageType( ) != UncompressedGrayscaleImage )
 		{
 			std::cout	<< "[TgaFile::LoadFromFile] Not supporting color mapped or compressed images." << std::endl;
-			fin.close( );
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
 
 		if(	m_Header.GetImageType( ) == UncompressedGrayscaleImage && m_Header.m_ImageSpec.m_PixelDepth != 8 )
 		{
 			std::cout	<< "[TgaFile::LoadFromFile] Not supporting non 8 bit grayscale iamges." << std::endl;
-			fin.close( );
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
 
@@ -323,6 +329,7 @@ namespace Bit
 			if( fileSize < m_DataSize + 18 )
 			{
 				std::cout << "[TgaFile::LoadFromFile] The expected data size is too large for the opened file." << std::endl;
+				p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 				return false;
 			}
 
@@ -330,21 +337,44 @@ namespace Bit
 			m_pData = new Uint8[ m_DataSize ];
 
 			// Read the bitmap data
-			fin.read( reinterpret_cast<char *>( m_pData ), m_DataSize );
+			p_Stream.read( reinterpret_cast<char *>( m_pData ), m_DataSize );
 		}
 
 		// Read the footer( optional )
 		if( fileSize >= 44 + m_DataSize )
 		{
 			// Seek to the end where the footer is expected to be
-			fin.seekg( 26, std::fstream::end );
+			p_Stream.seekg( 26, std::fstream::end );
 
 			// Read the footer
-			fin.read( reinterpret_cast<char *>( &m_Footer ), 8 );
+			p_Stream.read( reinterpret_cast<char *>( &m_Footer ), 8 );
 		}
+
+		// Go back to the begining of the stream
+		p_Stream.seekg( 0, std::fstream::beg ); 
 
 		// Succeeded.
 		return true;
+	}
+
+	Bool TgaFile::LoadFromFile( const std::string & p_Filename )
+	{
+		// Open the file.
+		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
+		if( fin.is_open( ) == false )
+		{
+			std::cout << "[TgaFile::LoadFromFile] Can not open the file. " << std::endl;
+			return false;
+		}
+
+		// Read the stream
+		Bool status = LoadFromStream( fin );
+
+		// Close the file
+		fin.close( );
+
+		// Return the status
+		return status;
 	}
 
 	void TgaFile::Clear( )

@@ -373,6 +373,25 @@ namespace Bit
 		~TgaFile( );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Load TGA file from memory.
+		///
+		/// \param p_pMemory Pointer to the memory.
+		/// \param p_Size Size of the memory.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromMemory( const std::string & p_Memory );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Load TGA file from stream.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromStream( std::istream & p_Stream );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Load TGA file from file.
 		///
 		/// \return True if succeeded, else false.
