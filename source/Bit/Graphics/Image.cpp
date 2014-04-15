@@ -181,6 +181,12 @@ namespace Bit
 		m_Size.x = static_cast<Uint32>( tga.GetHeader( ).GetImageSpec( ).GetImageWidth( ) );
 		m_Size.y = static_cast<Uint32>( tga.GetHeader( ).GetImageSpec( ).GetImageHeight( ) );
 
+		// Delete the old data
+		if( m_pData != NULL )
+		{
+			delete [ ] m_pData;
+		}
+
 		// Get the image data
 		m_pData = const_cast<Uint8 *>( tga.GetData( ) );
 
@@ -228,6 +234,12 @@ namespace Bit
 		// Get the image size
 		m_Size.x = static_cast<Uint32>( bmp.GetDibHeader( ).GetBitmapWidth( ) );
 		m_Size.y = static_cast<Uint32>( bmp.GetDibHeader( ).GetBitmapHeight( ) );
+
+		// Delete the old data
+		if( m_pData != NULL )
+		{
+			delete [ ] m_pData;
+		}
 
 		// Get the image data
 		m_pData = const_cast<Uint8 *>( bmp.GetData( ) );
