@@ -76,7 +76,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-graphics\Static_Release\</IntDir>
-    <IncludePath>../../include;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
+    <IncludePath>../../include;../../source/Bit/Graphics/LodePng;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)-s</TargetName>
     <LibraryPath>../../lib;../../extlibs/libs/Freetype;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -84,13 +84,13 @@
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-graphics\Dynamic_Debug\</IntDir>
     <TargetName>$(ProjectName)-d</TargetName>
-    <IncludePath>../../include;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
+    <IncludePath>../../include;../../source/Bit/Graphics/LodePng;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;../../extlibs/libs/Freetype;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
     <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-graphics\Dynamic_Release\</IntDir>
-    <IncludePath>../../include;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
+    <IncludePath>../../include;../../source/Bit/Graphics/LodePng;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;../../extlibs/libs/Freetype;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">

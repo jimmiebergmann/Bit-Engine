@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="OpenAL">
+      <UniqueIdentifier>{339727b7-5004-495f-b565-fc9f19f5208c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Audio\AudioDevice.hpp" />
+  </ItemGroup>
+</Project>
