@@ -56,19 +56,17 @@ namespace Bit
 		/// \brief Load sound from buffer.
 		///
 		/// \param p_pAudioBuffer The audio buffer.
-		/// \param p_Volume Sound volume, value between 0.0 and 1.0.
-		/// \param p_Loop Whether or not to loop the sound.
-		/// \param p_Pith Sound pitch.
-		/// \param p_Position The position of the sound.
 		/// 
 		////////////////////////////////////////////////////////////////
 		virtual Bool LoadFromBuffer( const AudioBuffer & p_pAudioBuffer ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load sound from file.
+		///
+		/// \param p_Filename Path to the file.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromFile(	const std::string & p_Filename ) = 0;
+		virtual Bool LoadFromFile( const std::string & p_Filename ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Play the sound.

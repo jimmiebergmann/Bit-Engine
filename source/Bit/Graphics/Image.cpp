@@ -110,7 +110,6 @@ namespace Bit
 
 	Bool Image::LoadFromFile( const std::string & p_Filename )
 	{
-		
 		// Get the file's extension
 		std::string fileExtension = "";
 		for( SizeType i = p_Filename.size( ) - 2; i >= 0; i-- )
@@ -141,12 +140,12 @@ namespace Bit
 		}
 		else if( fileExtension == "JPG" )
 		{
-			std::cout << "[Bit::Image::LoadFromFile] Not supporting JPG images yet.\n";
+			std::cout << "[Image::LoadFromFile] Not supporting JPG images yet.\n";
 			return false;
 		}
 
 		// Unknown extension
-		std::cout << "[Bit::Image::LoadFromFile] Unknow extension: " <<  fileExtension.c_str( ) << std::endl;
+		std::cout << "[Image::LoadFromFile] Unknow extension: " <<  fileExtension.c_str( ) << std::endl;
 		return false;
 	}
 
@@ -162,7 +161,7 @@ namespace Bit
 		// Get the image type
 		if( tga.GetHeader( ).GetImageType( ) != TgaFile::UncompressedTrueColorImage )
 		{
-			std::cout << "[Bit::Image::LoadFromTgaFile] Not an uncompressed true color image.\n";
+			std::cout << "[Image::LoadFromTgaFile] Not an uncompressed true color image.\n";
 			delete tga.GetData( ); // Delete the data by hand
 			return false;
 		}

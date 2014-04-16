@@ -24,80 +24,96 @@
 
 
 #include <Bit/Audio/AudioBuffer.hpp>
-#include <Bit/System.hpp>
+#include <algorithm>
 #include <fstream>
-#include <cstring>
-#include <Bit/System/Debugger.hpp>
+#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
 	AudioBuffer::AudioBuffer( ) :
-		m_Loaded( BIT_FALSE ),
+		m_pData( NULL ),
+		m_DataSize( 0 ),
 		m_ChannelCount( 0 ),
 		m_SampleRate( 0 ),
-		m_BitsPerSample( 0 ),
-		m_BufferSize( 0 ),
-		m_pBuffer( BIT_NULL )
+		m_BitsPerSample( 0 )
 	{
-
 	}
 
 	AudioBuffer::~AudioBuffer( )
 	{
-		if( m_pBuffer )
+		if( m_pData )
 		{
-			delete [] m_pBuffer;
-			m_pBuffer = BIT_NULL;
+			delete [ ] m_pData;
 		}
 	}
 
-	BIT_UINT32 AudioBuffer::Read( const char * p_pFileName )
+	Bool AudioBuffer::LoadFromFile( const std::string & p_Filename )
 	{
-		const std::string FileExtension = GetFileExtension( p_pFileName );
-
-		if( FileExtension == "WAV" )
+		// Get the file's extension
+		std::string fileExtension = "";
+		for( SizeType i = p_Filename.size( ) - 2; i >= 0; i-- )
 		{
-			return ReadWAVE( p_pFileName );
+			// Look for '.'
+			if( p_Filename[ i ] == '.' )
+			{
+				fileExtension = p_Filename.substr( i + 1, p_Filename.size( ) - i - 1 );
+				break;
+			}
 		}
 
-		bitTrace( BIT_NULL, "[Bit::AudioBuffer:Load] <ERROR> "
-			"Unknow extension: %s.\n", FileExtension.c_str( ) );
+		// Make all the characters in the file extension to upper case letters
+		std::transform( fileExtension.begin( ), fileExtension.end( ), fileExtension.begin( ), ::toupper );
 
-		return BIT_ERROR;
+		// Load the right format.
+		if( fileExtension == "WAV" )
+		{
+			return LoadFromWavFile( p_Filename );
+		}
+		else if( fileExtension == "OGG" )
+		{
+			std::cout << "[AudioBuffer::LoadFromFile] Not supporting OGG images yet.\n";
+			return false;
+		}
+
+		// Unknown extension
+		std::cout << "[AudioBuffer::LoadFromFile] Unknow extension: " <<  fileExtension.c_str( ) << std::endl;
+		return false;
 	}
 
-	BIT_BYTE * AudioBuffer::GetData( ) const
+	Bool AudioBuffer::LoadFromWavFile( const std::string & p_Filename )
 	{
-		return m_pBuffer;
+		return false;
 	}
 
-	BIT_UINT32 AudioBuffer::GetDataSize( ) const
+	Uint8 * AudioBuffer::GetData( ) const
 	{
-		return m_BufferSize;
+		return m_pData;
 	}
 
-	BIT_UINT16 AudioBuffer::GetChannelCount( ) const
+	SizeType AudioBuffer::GetDataSize( ) const
+	{
+		return m_DataSize;
+	}
+
+	SizeType AudioBuffer::GetChannelCount( ) const
 	{
 		return m_ChannelCount;
 	}
 
-	BIT_UINT32 AudioBuffer::GetSampleRate( ) const
+	SizeType AudioBuffer::GetSampleRate( ) const
 	{
 		return m_SampleRate;
 	}
 
-	BIT_UINT16 AudioBuffer::GetBitsPerSample( ) const
+	SizeType AudioBuffer::GetBitsPerSample( ) const
 	{
 		return m_BitsPerSample;
 	}
 
-	BIT_BOOL AudioBuffer::ContainsData( ) const
-	{
-		return m_Loaded;
-	}
 
+/*
 	BIT_UINT32 AudioBuffer::ReadWAVE( const char *p_pFileName )
 	{
 		char Type[4];
@@ -173,5 +189,5 @@ namespace Bit
 		m_Loaded = BIT_TRUE;
 		return BIT_OK;
 	}
-
+	*/
 }

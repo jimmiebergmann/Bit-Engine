@@ -22,47 +22,95 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_BUFFER_HPP
-#define BIT_AUDIO_BUFFER_HPP
+#ifndef BIT_AUDIO_AUDIO_BUFFER_HPP
+#define BIT_AUDIO_AUDIO_BUFFER_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Build.hpp>
+#include <string>
 
 namespace Bit
 {
 	
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Audio
+	/// \brief Audio buffer class.
+	///
+	/// This class loads audio files into a buffer.
+	/// 
+	////////////////////////////////////////////////////////////////
 	class BIT_API AudioBuffer
 	{
 
 	public:
 
-		// Constructor/destructor
+		/////////////////////////////////////////////////////////////////
+		/// \brief Default constructor
+		/// 
+		////////////////////////////////////////////////////////////////
 		AudioBuffer( );
+
+		/////////////////////////////////////////////////////////////////
+		/// \brief Destructor
+		/// 
+		////////////////////////////////////////////////////////////////
 		~AudioBuffer( );
 
-		// Public functions
-		BIT_UINT32 Read( const char * p_pFileName );
+		/////////////////////////////////////////////////////////////////
+		/// \brief Load buffer from file.
+		///
+		/// This function will figure out what file format to load,
+		/// depending on the file extension.
+		///
+		/// \param p_Filename Path to the file.
+		/// 
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromFile( const std::string & p_Filename );
 
-		// Get functions
-		BIT_BYTE * GetData( ) const;
-		BIT_UINT32 GetDataSize( ) const;
-		BIT_UINT16 GetChannelCount( ) const;
-		BIT_UINT32 GetSampleRate( ) const;
-		BIT_UINT16 GetBitsPerSample( ) const;
-		BIT_BOOL ContainsData( ) const;
+		/////////////////////////////////////////////////////////////////
+		/// \brief Load buffer from WAV file.
+		///
+		/// \param p_Filename Path to the file.
+		/// 
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromWavFile( const std::string & p_Filename );
+
+		/////////////////////////////////////////////////////////////////
+		/// \brief Get the raw data.
+		/// 
+		////////////////////////////////////////////////////////////////
+		Uint8 * GetData( ) const;
+
+		/////////////////////////////////////////////////////////////////
+		/// \brief Get the size of the raw data.
+		/// 
+		////////////////////////////////////////////////////////////////
+		SizeType GetDataSize( ) const;
+
+		/////////////////////////////////////////////////////////////////
+		/// \brief Get the channel count.
+		/// 
+		////////////////////////////////////////////////////////////////
+		SizeType GetChannelCount( ) const;
+
+		/////////////////////////////////////////////////////////////////
+		/// \brief Get the sample rate.
+		/// 
+		////////////////////////////////////////////////////////////////
+		SizeType GetSampleRate( ) const;
+
+		/////////////////////////////////////////////////////////////////
+		/// \brief Get the bits per sample count.
+		/// 
+		////////////////////////////////////////////////////////////////
+		SizeType GetBitsPerSample( ) const;
 
 	private:
 
-		// Private functions
-		BIT_UINT32 ReadWAVE( const char *p_pFileName );
-
-		// Private variables
-		BIT_BOOL m_Loaded;
-		BIT_UINT16 m_ChannelCount;
-		BIT_UINT32 m_SampleRate;
-		BIT_UINT16 m_BitsPerSample;
-		BIT_UINT32 m_BufferSize;
-		BIT_BYTE * m_pBuffer;
-
+		Uint8 * m_pData;
+		SizeType m_DataSize;
+		SizeType m_ChannelCount;
+		SizeType m_SampleRate;
+		SizeType m_BitsPerSample;
 
 	};
 
