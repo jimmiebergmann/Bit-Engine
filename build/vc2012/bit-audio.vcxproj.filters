@@ -13,6 +13,7 @@
     <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenAL.hpp">
       <Filter>OpenAL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Audio\Sound.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALAudioDevice.cpp">
