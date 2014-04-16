@@ -7,5 +7,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Audio\AudioDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenALAudioDevice.hpp">
+      <Filter>OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenAL.hpp">
+      <Filter>OpenAL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALAudioDevice.cpp">
+      <Filter>OpenAL</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -22,39 +22,38 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_AUDIO_DEVICE_HPP
-#define BIT_AUDIO_AUDIO_DEVICE_HPP
+#ifndef BIT_AUDIO_OPENAL_AUDIO_DEVICE_HPP
+#define BIT_AUDIO_OPENAL_AUDIO_DEVICE_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/System/Vector3.hpp>
+#include <Bit/Audio/AudioDevice.hpp>
+#include <Bit/Audio/OpenAL/OpenAL.hpp>
 
 namespace Bit
 {
-
-	// Forward declarations
-	class Sound;
 	
-	////////////////////////////////////////////////////////////////
-	/// \ingroup Audio
-	/// \brief Audio device base class.
-	/// 
-	////////////////////////////////////////////////////////////////
-	class BIT_API AudioDevice
+	class OpenALAudioDevice : public AudioDevice
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor.
+		/// \brief Default constructor.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual ~AudioDevice( ) { }
+		OpenALAudioDevice( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor.
+		/// 
+		////////////////////////////////////////////////////////////////
+		~OpenALAudioDevice( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Open the audio device.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Bool Open( ) = 0;
+		virtual Bool Open( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a sound object.
@@ -62,13 +61,13 @@ namespace Bit
 		/// \return A pointer to the Sound
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Sound * CreateSound( ) = 0;
+		virtual Sound * CreateSound( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the global volume. Value from 0.0 to 1.0.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void SetGlobalVolume( Float32 p_Volume ) = 0;
+		virtual void SetGlobalVolume( Float32 p_Volume );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the listener position.
@@ -76,7 +75,7 @@ namespace Bit
 		/// \param p_Position 3D position of the listener.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void SetListenerPosition( Vector3f32 p_Position ) = 0;
+		virtual void SetListenerPosition( Vector3f32 p_Position );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the listener position.
@@ -85,7 +84,7 @@ namespace Bit
 		///		Defines what direction the listener is looking.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void SetListenerTarget( Vector3f32 p_Target ) = 0;
+		virtual void SetListenerTarget( Vector3f32 p_Target );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the listener position.
@@ -93,13 +92,19 @@ namespace Bit
 		/// \param p_Position Set the velocity of the listener.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void SetListenerVelocity( Vector3f32 p_Velocity ) = 0;
+		virtual void SetListenerVelocity( Vector3f32 p_Velocity );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Checks if the device is open.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Bool IsOpen( ) const = 0;
+		virtual Bool IsOpen( ) const;
+
+	private:
+
+		Bool m_Open;
+		ALCdevice * m_pDevice;
+		ALCcontext * m_pContext;
 
 	};
 
