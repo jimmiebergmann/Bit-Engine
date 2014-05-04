@@ -46,7 +46,7 @@ namespace Bit
 		///
 		/// \param p_DeallocateFlag Does not deallocate the bitmap data
 		/// at destruction if false. This is useful if you want to
-		/// take over the bitmap data pointer from the tga file class.
+		/// take over the bitmap data pointer from the png file class.
 		///
 		////////////////////////////////////////////////////////////////
 		PngFile( const Bool p_DeallocateFlag = true );
@@ -63,7 +63,6 @@ namespace Bit
 		/// \brief Load BMP file from memory.
 		///
 		/// \param p_pMemory Pointer to the memory.
-		/// \param p_Size Size of the memory.
 		///
 		/// \return True if succeeded, else false.
 		///

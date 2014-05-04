@@ -303,7 +303,7 @@ namespace Bit
 
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Footer structure.
+		/// \brief Footer class.
 		///
 		////////////////////////////////////////////////////////////////
 		class Footer
@@ -376,7 +376,6 @@ namespace Bit
 		/// \brief Load TGA file from memory.
 		///
 		/// \param p_pMemory Pointer to the memory.
-		/// \param p_Size Size of the memory.
 		///
 		/// \return True if succeeded, else false.
 		///

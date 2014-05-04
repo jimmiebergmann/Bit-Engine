@@ -15,11 +15,13 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Audio\Sound.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\AudioBuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\WaveFile.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALAudioDevice.cpp">
       <Filter>OpenAL</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Audio\AudioBuffer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Audio\WaveFile.cpp" />
   </ItemGroup>
 </Project>

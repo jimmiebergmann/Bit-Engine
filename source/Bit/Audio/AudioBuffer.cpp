@@ -24,6 +24,7 @@
 
 
 #include <Bit/Audio/AudioBuffer.hpp>
+#include <Bit/Audio/WaveFile.hpp>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -84,7 +85,31 @@ namespace Bit
 
 	Bool AudioBuffer::LoadFromWavFile( const std::string & p_Filename )
 	{
-		return false;
+		// Load wave file
+		WaveFile wave( false );
+		if( wave.LoadFromFile( p_Filename ) == false )
+		{
+			return false;
+		}
+
+		// Get the audio data
+		const Uint8 * pConstData = wave.GetDataChunk( ).GetData( );
+		if( pConstData == NULL )
+		{
+			return false;
+		}
+
+		// Delete the old data
+		if( m_pData != NULL )
+		{
+			delete [ ] m_pData;
+		}
+
+		// Set the new data
+		m_pData = const_cast<Uint8 *>( pConstData );
+		
+		// Succeeded
+		return true;
 	}
 
 	Uint8 * AudioBuffer::GetData( ) const
