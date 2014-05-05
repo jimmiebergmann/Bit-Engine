@@ -31,7 +31,8 @@
 namespace Bit
 {
 	// RIFF header class
-	WaveFile::RiffHeader::RiffHeader( )
+	WaveFile::RiffHeader::RiffHeader( ) :
+		m_ChunkSize( 0 )
 	{
 	}
 
@@ -75,9 +76,101 @@ namespace Bit
 
 
 	// Fmt class
-	WaveFile::FmtChunk::FmtChunk( )
+	WaveFile::FmtChunk::FmtChunk( ) :
+		m_SubChunkSize( 16 ),
+		m_AudioFormat( 1 ),
+		m_ChannelCount( 0 ),
+		m_SampleRate( 0 ),
+		m_ByteRate( 0 ),
+		m_BlockAlign( 0 ),
+		m_BitsPerSample( 0 )
 	{
 	}
+
+	void WaveFile::FmtChunk::SetSubChunkId( const Uint8 p_A, const Uint8 p_B,
+											const Uint8 p_C, const Uint8 p_D )
+	{
+		m_SubChunkId[ 0 ] = p_A;
+		m_SubChunkId[ 1 ] = p_B;
+		m_SubChunkId[ 2 ] = p_C;
+		m_SubChunkId[ 3 ] = p_D;
+	}
+
+	void WaveFile::FmtChunk::SetSubChunkSize( const Uint32 p_SubChunkSize )
+	{
+		m_SubChunkSize = p_SubChunkSize;
+	}
+
+	void WaveFile::FmtChunk::SetAudioFormat( const Uint16 p_AudioFormat )
+	{
+		m_AudioFormat = p_AudioFormat;
+	}
+
+	void WaveFile::FmtChunk::SetChannelCount( const Uint16 p_ChannelCount )
+	{
+		m_ChannelCount = p_ChannelCount;
+	}
+
+	void WaveFile::FmtChunk::SetSampleRate( const Uint32 p_SampleRate )
+	{
+		m_SampleRate = p_SampleRate;
+	}
+
+	void WaveFile::FmtChunk::SetByteRate( const Uint32 p_ByteRate )
+	{
+		m_ByteRate = p_ByteRate;
+	}
+
+	void WaveFile::FmtChunk::SetBlockAlign( const Uint16 p_BlockAlign )
+	{
+		m_BlockAlign = p_BlockAlign;
+	}
+
+	void WaveFile::FmtChunk::SetBitsPerSample( const Uint16 p_BitsPerSample )
+	{
+		m_BitsPerSample = p_BitsPerSample;
+	}
+
+	const Uint8 * WaveFile::FmtChunk::GetSubChunkId( ) const
+	{
+		return m_SubChunkId;
+	}
+
+	Uint32 WaveFile::FmtChunk::GetSubChunkSize( ) const
+	{
+		return m_SubChunkSize;
+	}
+
+	Uint16 WaveFile::FmtChunk::GetAudioFormat( ) const
+	{
+		return m_AudioFormat;
+	}
+
+	Uint16 WaveFile::FmtChunk::GetChannelCount( ) const
+	{
+		return m_ChannelCount;
+	}
+
+	Uint32 WaveFile::FmtChunk::GetSampleRate( ) const
+	{
+		return m_SampleRate;
+	}
+
+	Uint32 WaveFile::FmtChunk::GetByteRate( ) const
+	{
+		return m_ByteRate;
+	}
+
+	Uint16 WaveFile::FmtChunk::GetBlockAlign( ) const
+	{
+		return m_BlockAlign;
+	}
+
+	Uint16 WaveFile::FmtChunk::GetBitsPerSample( ) const
+	{
+		return m_BitsPerSample;
+	}
+
 
 
 	// Data class
@@ -186,15 +279,106 @@ namespace Bit
 
 	Bool WaveFile::LoadFromStream( std::istream & p_Stream )
 	{
-		// Read the "RIFF" chunk
+		// Read the stream size.
+		p_Stream.seekg( 0, std::fstream::end );
+		SizeType fileSize = static_cast<SizeType>( p_Stream.tellg( ) );
+		p_Stream.seekg( 0, std::fstream::beg );
+
+		// Error check the stream size
+		if( fileSize < 44 )
+		{
+			std::cout << "[WaveFile::LoadFromStream] Wrong file size" << std::endl;
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
+			return false;
+		}
+
+		// Read the RIFF header
+		p_Stream.read( reinterpret_cast<char *>( m_RiffHeader.m_ChunkId ), 4 );
+		p_Stream.read( reinterpret_cast<char *>( &m_RiffHeader.m_ChunkSize ), 4 );
+		p_Stream.read( reinterpret_cast<char *>( m_RiffHeader.m_Format ), 4 );
+
+		// Error check the RIFF header( error check chunk size later ).
+		if(	m_RiffHeader.m_ChunkId[ 0 ] != 'R' || m_RiffHeader.m_ChunkId[ 1 ] != 'I' ||
+			m_RiffHeader.m_ChunkId[ 2 ] != 'F' || m_RiffHeader.m_ChunkId[ 3 ] != 'F' )
+		{
+			std::cout << "[WaveFile::LoadFromStream] No RIFF header were found." << std::endl;
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
+			return false;
+		}
+
+		if(	m_RiffHeader.m_Format[ 0 ] != 'W' || m_RiffHeader.m_Format[ 1 ] != 'A' ||
+			m_RiffHeader.m_Format[ 2 ] != 'W' || m_RiffHeader.m_Format[ 3 ] != 'E' )
+		{
+			std::cout << "[WaveFile::LoadFromStream] No WAVE field were found.." << std::endl;
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
+			return false;
+		}
+
+		// Read the fmt chunk
+		p_Stream.read( reinterpret_cast<char *>( m_FmtChunk.m_SubChunkId ), 4 );
+		p_Stream.read( reinterpret_cast<char *>( &m_FmtChunk.m_SubChunkSize ), 4 );
+		p_Stream.read( reinterpret_cast<char *>( &m_FmtChunk.m_AudioFormat ), 2 );
+		p_Stream.read( reinterpret_cast<char *>( &m_FmtChunk.m_ChannelCount ), 2 );
+		p_Stream.read( reinterpret_cast<char *>( &m_FmtChunk.m_SampleRate ), 4 );
+		p_Stream.read( reinterpret_cast<char *>( &m_FmtChunk.m_ByteRate ), 4 );
+		p_Stream.read( reinterpret_cast<char *>( &m_FmtChunk.m_BlockAlign ), 2 );
+		p_Stream.read( reinterpret_cast<char *>( &m_FmtChunk.m_BitsPerSample ), 2 );
+
+		// Error check the fmt chunk
+		if(	m_FmtChunk.m_SubChunkId[ 0 ] != 'f' || m_FmtChunk.m_SubChunkId[ 1 ] != 'm' ||
+			m_FmtChunk.m_SubChunkId[ 2 ] != 't' || m_FmtChunk.m_SubChunkId[ 3 ] != ' ' )
+		{
+			std::cout << "[WaveFile::LoadFromStream] No FMT chunk were found." << std::endl;
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
+			return false;
+		}
+
+		if( m_FmtChunk.m_SubChunkSize != 16 ||
+			m_FmtChunk.m_AudioFormat != 1 )
+		{
+			std::cout << "[WaveFile::LoadFromStream] No PCM WAVE file." << std::endl;
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
+			return false;
+		}
 
 
-		// Read the "fmt" chunk
+		// Read the data chunk( except the data )
+		p_Stream.read( reinterpret_cast<char *>( m_DataChunk.m_SubChunkId ), 4 );
+		p_Stream.read( reinterpret_cast<char *>( &m_DataChunk.m_SubChunkSize ), 4 );
 
-		// Read the "data" chunk
+		// Error check the fmt chunk( except the data )
+		if(	m_DataChunk.m_SubChunkId[ 0 ] != 'd' || m_DataChunk.m_SubChunkId[ 1 ] != 'a' ||
+			m_DataChunk.m_SubChunkId[ 2 ] != 't' || m_DataChunk.m_SubChunkId[ 3 ] != 'a' )
+		{
+			std::cout << "[WaveFile::LoadFromStream] No data chunk were found." << std::endl;
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
+			return false;
+		}
 
+		if( m_DataChunk.m_SubChunkSize == 0 ||
+			m_DataChunk.m_SubChunkSize + 44 > fileSize )
+		{
+			std::cout << "[WaveFile::LoadFromStream] Error in data size." << std::endl;
+			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
+			return false;
+		}
+
+		// Clear the old audio data.
+		if( m_DataChunk.m_pData )
+		{
+			delete m_DataChunk.m_pData;
+		}
+
+		// Allocate the data
+		m_DataChunk.m_pData = new Uint8[ m_DataChunk.m_SubChunkSize ];
+
+		// Read the bitmap data
+		p_Stream.read( reinterpret_cast<char *>( m_DataChunk.m_pData ), m_DataChunk.m_SubChunkSize );
 		
-		return false;
+		p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
+
+		// Succeeded
+		return true;
 	}
 
 	Bool WaveFile::LoadFromFile( const std::string & p_Filename )
