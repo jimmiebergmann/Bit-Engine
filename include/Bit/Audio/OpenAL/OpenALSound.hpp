@@ -22,35 +22,37 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_SOUND_HPP
-#define BIT_AUDIO_SOUND_HPP
+#ifndef BIT_AUDIO_OPENAL_SOUND_HPP
+#define BIT_AUDIO_OPENAL_SOUND_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/System/Vector3.hpp>
-#include <Bit/Audio/AudioBuffer.hpp>
-#include <string>
+#include <Bit/Audio/OpenAL/OpenAL.hpp>
+#include <Bit/Audio/Sound.hpp>
 
 namespace Bit
 {
-
-	// Forward declarations
-	class AudioBuffer;
 	
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Audio
 	/// \brief Audio device base class.
 	/// 
 	////////////////////////////////////////////////////////////////
-	class BIT_API Sound
+	class BIT_API OpenALSound : public Sound
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor.
+		/// \brief Default constructor.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual ~Sound( ) { }
+		OpenALSound( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor.
+		/// 
+		////////////////////////////////////////////////////////////////
+		~OpenALSound( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load sound from buffer.
@@ -58,7 +60,7 @@ namespace Bit
 		/// \param p_pAudioBuffer The audio buffer.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromBuffer( const AudioBuffer & p_pAudioBuffer ) = 0;
+		virtual Bool LoadFromBuffer( const AudioBuffer & p_pAudioBuffer );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load sound from file.
@@ -66,7 +68,7 @@ namespace Bit
 		/// \param p_Filename Path to the file.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromFile( const std::string & p_Filename ) = 0;
+		virtual Bool LoadFromFile( const std::string & p_Filename );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load sound from WAVE file.
@@ -74,43 +76,43 @@ namespace Bit
 		/// \param p_Filename Path to the file.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromWaveFile( const std::string & p_Filename ) = 0;
+		virtual Bool LoadFromWaveFile( const std::string & p_Filename );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Play the sound.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void Play( ) = 0;
+		virtual void Play( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Pause the sound.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void Pause( ) = 0;
+		virtual void Pause( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Stop the sound.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void Stop( ) = 0;
+		virtual void Stop( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the position of the sound in 3D space.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void SetPosition( const Vector3f32 p_Position ) = 0;
+		virtual void SetPosition( const Vector3f32 p_Position );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the volume. 0.1 to 1.0.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void SetVolume( const Float32 p_Volume ) = 0;
+		virtual void SetVolume( const Float32 p_Volume );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the pith.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void SetPitch( const Float32 p_Pitch ) = 0;
+		virtual void SetPitch( const Float32 p_Pitch );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set loop flag.
@@ -119,7 +121,7 @@ namespace Bit
 		/// if the flag is set to true.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void SetLoop( const Bool p_Loop ) = 0;
+		virtual void SetLoop( const Bool p_Loop );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set relative flag.
@@ -128,7 +130,12 @@ namespace Bit
 		/// sound position and the listener position if flag is set to true.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual void SetRelative( const Bool p_Relative ) = 0;
+		virtual void SetRelative( const Bool p_Relative );
+
+	private:
+
+		ALuint m_Source;
+		ALuint m_Buffer;
 
 	};
 

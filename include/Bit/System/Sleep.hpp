@@ -26,6 +26,7 @@
 #define BIT_SYSTEM_SLEEP_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Time.hpp>
 
 namespace Bit
 {
@@ -41,7 +42,7 @@ namespace Bit
 	/// \param m_Time The time in milliseconds.
 	///
 	////////////////////////////////////////////////////////////////
-	BIT_API void Sleep( const Uint32 m_Time );
+	BIT_API void Sleep( const Time & m_Time );
 
 	////////////////////////////////////////////////////////////////
 	/// @}

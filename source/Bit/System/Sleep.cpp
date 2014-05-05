@@ -35,12 +35,12 @@
 namespace Bit
 {
 
-	BIT_API void Sleep( const Uint32 m_Time )
+	BIT_API void Sleep( const Time & m_Time )
 	{
 #ifdef BIT_PLATFORM_WINDOWS
-		::Sleep( static_cast<DWORD>( m_Time ) );
+		::Sleep( static_cast<DWORD>( m_Time.AsMilliseconds( ) ) );
 #elif BIT_PLATFORM_LINUX
-		usleep( m_Time * 1000 ) 
+		usleep( m_Time.AsMicroseconds( ) ) 
 #endif
 	}
 

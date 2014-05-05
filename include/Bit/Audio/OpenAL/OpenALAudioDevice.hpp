@@ -37,7 +37,7 @@ namespace Bit
 	/// \brief OpenAL audio device class.
 	/// 
 	////////////////////////////////////////////////////////////////
-	class OpenALAudioDevice : public AudioDevice
+	class BIT_API OpenALAudioDevice : public AudioDevice
 	{
 
 	public:

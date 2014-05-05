@@ -82,7 +82,6 @@ namespace Bit
 	Address SocketWin32::GetHostByName( const std::string & p_Hostname )
 	{
 		struct hostent *he;
-		struct in_addr **addr_list;
 		if( ( he = gethostbyname( p_Hostname.c_str() ) ) == NULL )
 		{
 			return Address::NoAddress;

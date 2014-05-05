@@ -307,7 +307,7 @@ namespace Bit
 		}
 
 		if(	m_RiffHeader.m_Format[ 0 ] != 'W' || m_RiffHeader.m_Format[ 1 ] != 'A' ||
-			m_RiffHeader.m_Format[ 2 ] != 'W' || m_RiffHeader.m_Format[ 3 ] != 'E' )
+			m_RiffHeader.m_Format[ 2 ] != 'V' || m_RiffHeader.m_Format[ 3 ] != 'E' )
 		{
 			std::cout << "[WaveFile::LoadFromStream] No WAVE field were found.." << std::endl;
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
@@ -333,14 +333,15 @@ namespace Bit
 			return false;
 		}
 
-		if( m_FmtChunk.m_SubChunkSize != 16 ||
-			m_FmtChunk.m_AudioFormat != 1 )
+		if( m_FmtChunk.m_AudioFormat != 1 )
 		{
 			std::cout << "[WaveFile::LoadFromStream] No PCM WAVE file." << std::endl;
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
 
+		// Move to where the data is expected.
+		p_Stream.seekg( 20 + m_FmtChunk.m_SubChunkSize, std::fstream::beg );
 
 		// Read the data chunk( except the data )
 		p_Stream.read( reinterpret_cast<char *>( m_DataChunk.m_SubChunkId ), 4 );
@@ -356,7 +357,7 @@ namespace Bit
 		}
 
 		if( m_DataChunk.m_SubChunkSize == 0 ||
-			m_DataChunk.m_SubChunkSize + 44 > fileSize )
+			m_DataChunk.m_SubChunkSize + m_FmtChunk.m_SubChunkSize + 28 > fileSize )
 		{
 			std::cout << "[WaveFile::LoadFromStream] Error in data size." << std::endl;
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
@@ -375,7 +376,8 @@ namespace Bit
 		// Read the bitmap data
 		p_Stream.read( reinterpret_cast<char *>( m_DataChunk.m_pData ), m_DataChunk.m_SubChunkSize );
 		
-		p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
+		// Go back to the begining of the stream
+		p_Stream.seekg( 0, std::fstream::beg ); 
 
 		// Succeeded
 		return true;
@@ -406,7 +408,7 @@ namespace Bit
 		m_DataChunk.Clear( );
 	}
 
-	WaveFile::RiffHeader & WaveFile::GeRiffHeader( )
+	WaveFile::RiffHeader & WaveFile::GetRiffHeader( )
 	{
 		return m_RiffHeader;
 	}

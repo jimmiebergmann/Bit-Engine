@@ -168,12 +168,14 @@
     <ClInclude Include="..\..\include\Bit\Audio\AudioDevice.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenAL.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenALAudioDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenALSound.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\Sound.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\WaveFile.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Audio\AudioBuffer.cpp" />
     <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALAudioDevice.cpp" />
+    <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALSound.cpp" />
     <ClCompile Include="..\..\source\Bit\Audio\WaveFile.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

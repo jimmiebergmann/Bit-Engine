@@ -23,7 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Audio/OpenAL/OpenALAudioDevice.hpp>
-//#include <Bit/Audio/OpenAL/AudioOpenAL.hpp>
+#include <Bit/Audio/OpenAL/OpenALSound.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -33,7 +33,7 @@ namespace Bit
 	OpenALAudioDevice::OpenALAudioDevice( ) :
 		m_Open( false ),
 		m_pDevice( NULL ),
-		m_pContext( NULL)
+		m_pContext( NULL )
 	{
 	}
 
@@ -85,7 +85,7 @@ namespace Bit
 
 	Sound * OpenALAudioDevice::CreateSound( )
 	{
-		return NULL;
+		return new OpenALSound;
 	}
 
 	void OpenALAudioDevice::SetGlobalVolume( Float32 p_Volume )
@@ -95,21 +95,21 @@ namespace Bit
 
 	void OpenALAudioDevice::SetListenerPosition( Vector3f32 p_Position )
 	{
-		ALfloat Position[3] = { p_Position.x, p_Position.y, p_Position.z };
-		alListenerfv( AL_POSITION, Position );
+		ALfloat position[3] = { p_Position.x, p_Position.y, p_Position.z };
+		alListenerfv( AL_POSITION, position );
 	}
 
 	void OpenALAudioDevice::SetListenerTarget( Vector3f32 p_Target )
 	{
 		// Fix this hardcoded mess...
-		ALfloat Target[6] = { p_Target.x, p_Target.y, p_Target.z, 0.0f, 1.0f, 0.0f };
-		alListenerfv( AL_ORIENTATION, Target );
+		ALfloat target[6] = { p_Target.x, p_Target.y, p_Target.z, 0.0f, 1.0f, 0.0f };
+		alListenerfv( AL_ORIENTATION, target );
 	}
 
 	void OpenALAudioDevice::SetListenerVelocity( Vector3f32 p_Velocity )
 	{
-		ALfloat Velocity[3] = { p_Velocity.x, p_Velocity.y, p_Velocity.z };
-		alListenerfv( AL_VELOCITY, Velocity );
+		ALfloat velocity[3] = { p_Velocity.x, p_Velocity.y, p_Velocity.z };
+		alListenerfv( AL_VELOCITY, velocity );
 	}
 
 	Bool OpenALAudioDevice::IsOpen( ) const

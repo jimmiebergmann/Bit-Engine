@@ -35,7 +35,7 @@ namespace Bit
 	#ifdef BIT_PLATFORM_WINDOWS
 		typedef OpenGLGraphicDeviceWin32 OpenGLGraphicDevice;
 	#elif BIT_PLATFORM_LINUX
-		#error No render window is available for this platform.
+		#error No opengl graphic device is available for this platform.
 	#endif
 
 };
