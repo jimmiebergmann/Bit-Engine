@@ -34,7 +34,11 @@ namespace Bit
 	
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Audio
-	/// \brief OpenAL audio device class.
+	/// \brief OpenAL audio device class.'
+	///
+	/// Stereo sounds wont work in 3D.
+	/// Use "force mono" if you want to make sure that the sound
+	/// will work in any 3D scene.
 	/// 
 	////////////////////////////////////////////////////////////////
 	class BIT_API OpenALAudioDevice : public AudioDevice

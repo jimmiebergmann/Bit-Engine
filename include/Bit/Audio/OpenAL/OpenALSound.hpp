@@ -58,25 +58,31 @@ namespace Bit
 		/// \brief Load sound from buffer.
 		///
 		/// \param p_pAudioBuffer The audio buffer.
+		/// \param p_ForceMono Makes the sound mono if true.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromBuffer( const AudioBuffer & p_pAudioBuffer );
+		virtual Bool LoadFromBuffer(	const AudioBuffer & p_pAudioBuffer, 
+										const bool p_ForceMono = false );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load sound from file.
 		///
 		/// \param p_Filename Path to the file.
+		/// \param p_ForceMono Makes the sound mono if true.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromFile( const std::string & p_Filename );
+		virtual Bool LoadFromFile(	const std::string & p_Filename, 
+									const bool p_ForceMono = false );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load sound from WAVE file.
 		///
 		/// \param p_Filename Path to the file.
+		/// \param p_ForceMono Makes the sound mono if true.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromWaveFile( const std::string & p_Filename );
+		virtual Bool LoadFromWaveFile(	const std::string & p_Filename, 
+										const bool p_ForceMono = false );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Play the sound.

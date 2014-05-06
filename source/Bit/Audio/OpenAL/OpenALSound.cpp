@@ -50,12 +50,14 @@ namespace Bit
 		}
 	}
 
-	Bool OpenALSound::LoadFromBuffer( const AudioBuffer & p_pAudioBuffer )
+	Bool OpenALSound::LoadFromBuffer(	const AudioBuffer & p_pAudioBuffer, 
+										const bool p_ForceMono )
 	{
 		return false;
 	}
 
-	Bool OpenALSound::LoadFromFile( const std::string & p_Filename )
+	Bool OpenALSound::LoadFromFile(		const std::string & p_Filename, 
+										const bool p_ForceMono )
 	{
 		// Get the file's extension
 		std::string fileExtension = "";
@@ -75,7 +77,7 @@ namespace Bit
 		// Load the right format.
 		if( fileExtension == "WAV" || fileExtension == "WAVE" )
 		{
-			return LoadFromWaveFile( p_Filename );
+			return LoadFromWaveFile( p_Filename, p_ForceMono );
 		}
 		else if( fileExtension == "OGG" )
 		{
@@ -88,7 +90,8 @@ namespace Bit
 		return false;
 	}
 
-	Bool OpenALSound::LoadFromWaveFile( const std::string & p_Filename )
+	Bool OpenALSound::LoadFromWaveFile( const std::string & p_Filename, 
+										const bool p_ForceMono )
 	{
 		// Open wave file
 		WaveFile wave;
@@ -105,6 +108,7 @@ namespace Bit
 		const Uint16 bitsPerSample = wave.GetFmtChunk( ).GetBitsPerSample( );
 		const Uint16 channelCount = wave.GetFmtChunk( ).GetChannelCount( );
 		ALenum openALFormat;
+		bool isMono = true;
 		if( bitsPerSample == 8 )
 		{
 			if( channelCount == 1 )
@@ -114,6 +118,7 @@ namespace Bit
 			else if( channelCount == 2 )
 			{
 				openALFormat = AL_FORMAT_STEREO8;
+				isMono = false;
 			}
 		}
 		else if(bitsPerSample == 16 )
@@ -125,6 +130,7 @@ namespace Bit
 			else if( channelCount == 2 )
 			{
 				openALFormat = AL_FORMAT_STEREO16;
+				isMono = false;
 			}
 		}
 		else
@@ -133,11 +139,72 @@ namespace Bit
 			return false;
 		}
 
+
+
+
 		// Create the buffer
-		const Uint8 * pData = wave.GetDataChunk( ).GetData( );
-		const SizeType dataSize =  wave.GetDataChunk( ).GetSubChunkSize( );
+		Uint8 * pData = const_cast<Uint8 *>( wave.GetDataChunk( ).GetData( ) );
+		SizeType dataSize =  wave.GetDataChunk( ).GetSubChunkSize( );
 		const Uint32 frequence =  wave.GetFmtChunk( ).GetSampleRate( );
 		
+		if( p_ForceMono && isMono == false )
+		{
+			// Divide the size
+			dataSize /= 2;
+
+			// Get the new format
+			if( bitsPerSample == 8 )
+			{
+				openALFormat = AL_FORMAT_MONO8;
+
+				// Make the average value out of the left and right sample value.
+				// Go through all the 8 bit samples.
+				for( SizeType i = 0; i < dataSize; i++ )
+				{
+					pData[ i ] = static_cast<Uint8>(
+									 (	static_cast<Uint16>( pData[ i * 2 ] ) +
+										static_cast<Uint16>( pData[ i * 2 + 1 ] ) ) / 2
+						);
+				}
+			}
+			else if( bitsPerSample == 16 )
+			{
+				openALFormat = AL_FORMAT_MONO16;
+
+				// Make the average value out of the left and right sample value.
+				// Go through all the 16 bit samples.
+				for( SizeType i = 0; i < dataSize / 2; i++ )
+				{
+					Uint16 left =	static_cast<Uint16>( pData[ i * 4 ] ) +
+									( static_cast<Uint16>( pData[ i * 4 + 1 ] ) << 8 );
+
+					Uint16 right =	static_cast<Uint16>( pData[ i * 4 + 2 ] ) +
+									( static_cast<Uint16>( pData[ i * 4 + 3 ] ) << 8 );
+
+					//std::cout << left << "  " << right << std::endl;
+
+					Uint16 monoSample = left;
+					/*Uint16 monoSample = static_cast<Uint16>(
+										 (	static_cast<Uint32>( left ) +
+											static_cast<Uint32>( right ) ) / 2
+						);*/
+
+					// Set the new mono sample.
+					pData[ i * 2 ] =  static_cast<Uint8>( monoSample );
+					pData[ i * 2 + 1 ] =  static_cast<Uint8>( monoSample >> 8 );
+
+
+					//std::cout << (int)pData[ i * 2 ] << "  " << (int)pData[ i * 2 + 1] << std::endl;
+					/*pData[ i ] = static_cast<Uint8>(
+									 (	static_cast<Uint16>( pData[ i * 2 ] ) +
+										static_cast<Uint16>( pData[ i * 2 + 1 ] ) ) / 2
+						);*/
+				}
+			}
+
+		}
+
+
 		alBufferData( m_Buffer, openALFormat, (ALvoid*)pData, dataSize, frequence );
 		
 		// Set the buffer
