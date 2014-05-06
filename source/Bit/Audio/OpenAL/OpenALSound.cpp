@@ -173,10 +173,10 @@ namespace Bit
 
 				// Make the average value out of the left and right sample value.
 				// Go through all the 16 bit samples.
-				for( SizeType i = 0; i < dataSize / 2; i++ )
+				for( SizeType i = 0; i < dataSize / 2; i+= 2 )
 				{
-					Int16 left = *( reinterpret_cast<Int16 *>( &pData[ i * 4 ] ) );
-					Int16 right = *( reinterpret_cast<Int16 *>( &pData[ i * 4 + 2 ] ) );
+					Int16 left = *( reinterpret_cast<Int16 *>( &pData[ i * 2 ] ) );
+					Int16 right = *( reinterpret_cast<Int16 *>( &pData[ i * 2 + 2 ] ) );
 
 					//Uint16 monoSample = left;
 					Int16 monoSample = static_cast<Int16>(
@@ -185,8 +185,8 @@ namespace Bit
 						);
 
 					// Set the new mono sample.
-					pData[ i * 2 ] =  static_cast<Uint8>( monoSample );
-					pData[ i * 2 + 1 ] =  static_cast<Uint8>( monoSample >> 8 );
+					pData[ i ] =  static_cast<Uint8>( monoSample );
+					pData[ i + 1 ] =  static_cast<Uint8>( monoSample >> 8 );
 				}
 			}
 		}
