@@ -270,11 +270,7 @@ namespace Bit
 		std::stringstream ss;
 		ss.str( p_Memory );
 
-		// Read the stream
-		Bool status = LoadFromStream( ss );
-
-		// Return the status
-		return status;
+		return LoadFromStream( ss );
 	}
 
 	Bool WaveFile::LoadFromStream( std::istream & p_Stream )
@@ -389,7 +385,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::LoadFromFile] Can not open the file. " << std::endl;
+			std::cout << "[WaveFile::LoadFromFile] Can not open the file. " << std::endl;
 			return false;
 		}
 
@@ -401,6 +397,117 @@ namespace Bit
 
 		// Return the status
 		return status;
+	}
+
+	Bool WaveFile::SaveToMemory( std::string & p_Memory, const Bool p_Validate )
+	{
+		// Load a string stream
+		std::stringstream ss;
+
+		// Save the stream
+		if( SaveToStream( ss, p_Validate ) == false )
+		{
+			return false;
+		}
+
+		// Get the string
+		p_Memory = ss.str( );
+
+		// Succeeded
+		return true;
+	}
+
+	Bool WaveFile::SaveToStream( std::ostream & p_Stream, const Bool p_Validate )
+	{
+		// Write riff header
+		if( p_Validate )
+		{
+			p_Stream << "RIFF";
+		}
+		else
+		{
+			p_Stream.write( reinterpret_cast<char *>( m_RiffHeader.m_ChunkId ), 4 );
+		}
+
+		p_Stream.write( reinterpret_cast<char *>( &m_RiffHeader.m_ChunkSize ), 4 );
+
+		if( p_Validate )
+		{
+			p_Stream << "WAVE";
+		}
+		else
+		{
+			p_Stream.write( reinterpret_cast<char *>( m_RiffHeader.m_Format ), 4 );
+		}
+
+		// Write fmt chunk
+		if( p_Validate )
+		{
+			p_Stream << "fmt ";
+		}
+		else
+		{
+			p_Stream.write( reinterpret_cast<char *>( m_FmtChunk.m_SubChunkId ), 4 );
+		}
+		p_Stream.write( reinterpret_cast<char *>( &m_FmtChunk.m_SubChunkSize ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_FmtChunk.m_AudioFormat ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_FmtChunk.m_ChannelCount ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_FmtChunk.m_SampleRate ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_FmtChunk.m_ByteRate ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_FmtChunk.m_BlockAlign ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_FmtChunk.m_BitsPerSample ), 2 );
+
+		// Always make sure to add NULL bytes if the chunk size isn't 16
+		if( m_FmtChunk.m_SubChunkSize > 16 )
+		{
+			for( SizeType i = 0; i < m_FmtChunk.m_SubChunkSize - 16; i++ )
+			{
+				p_Stream.put( 0 );
+			}
+		}
+
+		// Write data chunk
+		if( p_Validate )
+		{
+			p_Stream << "data";
+		}
+		else
+		{
+			p_Stream.write( reinterpret_cast<char *>( m_DataChunk.m_SubChunkId ), 4 );
+		}
+		p_Stream.write( reinterpret_cast<char *>( &m_DataChunk.m_SubChunkSize ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( m_DataChunk.m_pData ), m_DataChunk.m_SubChunkSize );
+
+		return true;
+	}
+
+	Bool WaveFile::SaveToFile( const std::string & p_Filename, const Bool p_Validate )
+	{
+		// Load a string stream.
+		std::stringstream ss;
+
+		// Save the stream.
+		if( SaveToStream( ss, p_Validate ) == false )
+		{
+			return false;
+		}
+
+		// Open the file.
+		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
+		if( fout.is_open( ) == false )
+		{
+			std::cout << "[WaveFile::SaveToFile] Can not open the file. " << std::endl;
+			return false;
+		}
+
+		// Write the string stream to the file
+		fout.write( ss.str( ).c_str( ), ss.str( ).length( ) );
+
+		// Close the file.
+		fout.close( );
+
+		// Succeeded.
+		return true;
 	}
 
 	void WaveFile::Clear( )

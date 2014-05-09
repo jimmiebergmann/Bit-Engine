@@ -340,7 +340,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Load WAVE file from memory.
 		///
-		/// \param p_pMemory Pointer to the memory.
+		/// \param p_pMemory Reference to the memory.
 		///
 		/// \return True if succeeded, else false.
 		///
@@ -358,10 +358,48 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Load WAVE file from file.
 		///
+		/// \param p_Filename Output file.
+		///
 		/// \return True if succeeded, else false.
 		///
 		////////////////////////////////////////////////////////////////
 		Bool LoadFromFile( const std::string & p_Filename );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save WAVE - PCM to memory.
+		///
+		/// \param p_pMemory Reference to the memory.
+		/// \param p_Validate, If true, makes sure to save a valid WAVE file.
+		///		Setting default values for invalid data in the WAVE structure.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToMemory( std::string & p_Memory, const Bool p_Validate = true );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save WAVE - PCM to stream.
+		///
+		/// \param p_Stream Output stream.
+		/// \param p_Validate, If true, makes sure to save a valid WAVE file.
+		///		Setting default values for invalid data in the WAVE structure.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToStream( std::ostream & p_Stream, const Bool p_Validate = true );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save WAVE - PCM to file.
+		///
+		/// \param p_Filename Output file.
+		/// \param p_Validate, If true, makes sure to save a valid WAVE file.
+		///		Setting default values for invalid data in the WAVE structure.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToFile( const std::string & p_Filename, const Bool p_Validate = true );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Clear the allocated audio data in the data chunk.

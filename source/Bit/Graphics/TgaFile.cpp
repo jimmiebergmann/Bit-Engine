@@ -347,7 +347,11 @@ namespace Bit
 			p_Stream.seekg( 26, std::fstream::end );
 
 			// Read the footer
-			p_Stream.read( reinterpret_cast<char *>( &m_Footer ), 8 );
+			p_Stream.read( reinterpret_cast<char *>( &m_Footer.m_ExtensionOffset ), 4 );
+			p_Stream.read( reinterpret_cast<char *>( &m_Footer.m_DeveloperAreaOffset ), 4 );
+			p_Stream.read( reinterpret_cast<char *>( m_Footer.m_Signature ), 16 );
+			p_Stream.read( reinterpret_cast<char *>( &m_Footer.m_Dot ), 1 );
+			p_Stream.read( reinterpret_cast<char *>( &m_Footer.m_End ), 1 );
 		}
 
 		// Go back to the begining of the stream
@@ -376,6 +380,136 @@ namespace Bit
 		// Return the status
 		return status;
 	}
+
+	Bool TgaFile::SaveToMemory( std::string & p_Memory, const Bool p_Validate )
+	{
+		// Load a string stream
+		std::stringstream ss;
+
+		// Save the stream
+		if( SaveToStream( ss, p_Validate ) == false )
+		{
+			return false;
+		}
+
+		// Get the string
+		p_Memory = ss.str( );
+
+		// Succeeded
+		return true;
+	}
+
+	Bool TgaFile::SaveToStream( std::ostream & p_Stream, const Bool p_Validate )
+	{
+		// Write header data
+		if( p_Validate )
+		{
+			Uint8 temp8 = 0;
+			p_Stream.write( reinterpret_cast<char *>( &temp8 ), 1 );
+			p_Stream.write( reinterpret_cast<char *>( &temp8 ), 1 );
+			temp8 = 2;
+			p_Stream.write( reinterpret_cast<char *>( &temp8 ), 1 );
+		}
+		else
+		{
+			p_Stream.write( reinterpret_cast<char *>( &m_Header.m_IdLength ), 1 );
+			p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ColorMapType ), 1 );
+			p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ImageType ), 1 );
+		}
+
+		// Write color map specifications
+		if( p_Validate )
+		{
+			Uint16 temp16 = 0;
+			Uint8 temp8 = 0;
+			p_Stream.write( reinterpret_cast<char *>( &temp16 ), 2 );
+			p_Stream.write( reinterpret_cast<char *>( &temp16 ), 2 );
+			p_Stream.write( reinterpret_cast<char *>( &temp8 ), 1 );
+		}
+		else
+		{
+			p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_Offset ), 2 );
+			p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_Length ), 2 );
+			p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ColorMapSpec.m_EntrySize ), 1 );
+		}
+		// Write image specifications
+		p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_OriginX ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_OriginY ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageWidth ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageHeight ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_PixelDepth ), 1 );
+
+		if( p_Validate )
+		{
+			Uint8 descriptor = 0;
+			if( m_Header.m_ImageSpec.m_PixelDepth == 32 )
+			{
+				descriptor = 8;
+			}
+			p_Stream.write( reinterpret_cast<char *>( &descriptor ), 1 );
+		}
+		else
+		{
+			p_Stream.write( reinterpret_cast<char *>( &m_Header.m_ImageSpec.m_ImageDescriptor ), 1 );
+		}
+
+		// Write pixel data
+		p_Stream.write( reinterpret_cast<char *>( m_pData ), m_DataSize );
+
+		// Write footer
+		if( p_Validate )
+		{
+			Uint32 temp32 = 0;
+			Uint32 temp8 = '.';
+			p_Stream.write( reinterpret_cast<char *>( &temp32 ), 4 );
+			p_Stream.write( reinterpret_cast<char *>( &temp32 ), 4 );
+			static const Uint8 signature[ ] = "TRUEVISION-XFILE";
+			p_Stream.write( reinterpret_cast<const char *>( signature ), 16 );
+			p_Stream.write( reinterpret_cast<char *>( &temp8 ), 1 );
+			p_Stream.write( reinterpret_cast<char *>( &temp8 ), 1 );
+		}
+		else
+		{
+			p_Stream.write( reinterpret_cast<char *>( &m_Footer.m_ExtensionOffset ), 4 );
+			p_Stream.write( reinterpret_cast<char *>( &m_Footer.m_DeveloperAreaOffset ), 4 );
+			p_Stream.write( reinterpret_cast<char *>( m_Footer.m_Signature ), 16 );
+			p_Stream.write( reinterpret_cast<char *>( &m_Footer.m_Dot ), 1 );
+			p_Stream.write( reinterpret_cast<char *>( &m_Footer.m_End ), 1 );
+		}
+
+		// Succeeded
+		return true;
+	}
+
+	Bool TgaFile::SaveToFile( const std::string & p_Filename, const Bool p_Validate )
+	{
+		// Load a string stream.
+		std::stringstream ss;
+
+		// Save the stream.
+		if( SaveToStream( ss, p_Validate ) == false )
+		{
+			return false;
+		}
+
+		// Open the file.
+		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
+		if( fout.is_open( ) == false )
+		{
+			std::cout << "[WaveFile::SaveToFile] Can not open the file. " << std::endl;
+			return false;
+		}
+
+		// Write the string stream to the file
+		fout.write( ss.str( ).c_str( ), ss.str( ).length( ) );
+
+		// Close the file.
+		fout.close( );
+
+		// Succeeded.
+		return true;
+	}
+
 
 	void TgaFile::Clear( )
 	{
