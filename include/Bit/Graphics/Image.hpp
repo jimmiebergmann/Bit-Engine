@@ -118,7 +118,7 @@ namespace Bit
 		/// \brief Load image data from memory
 		///
 		/// Loads raw pixel data from memory.
-		/// The passed image data to this function can be deleted afterwards.
+		/// You are allowed to delete the passed data when the function call is done.
 		///
 		///	\param p_pData Pointer to the [R][GB][A] image data.
 		/// \param p_Depth Pixel data depth in bytes(1/3/4).

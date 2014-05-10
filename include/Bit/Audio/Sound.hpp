@@ -27,7 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Vector3.hpp>
-#include <Bit/Audio/AudioBuffer.hpp>
+#include <Bit/Audio/SoundBuffer.hpp>
 #include <string>
 
 namespace Bit
@@ -38,7 +38,7 @@ namespace Bit
 	
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Audio
-	/// \brief Audio device base class.
+	/// \brief Sound base class.
 	/// 
 	////////////////////////////////////////////////////////////////
 	class BIT_API Sound
@@ -55,32 +55,26 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Load sound from buffer.
 		///
-		/// \param p_pAudioBuffer The audio buffer.
-		/// \param p_ForceMono Makes the sound mono if true.
+		/// \param p_SoundBuffer The sound buffer.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromBuffer(	const AudioBuffer & p_pAudioBuffer, 
-										const bool p_ForceMono = false ) = 0;
+		virtual Bool LoadFromBuffer(	const SoundBuffer & p_SoundBuffer ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Load sound from file.
+		/// \brief Attach sound buffer.
 		///
-		/// \param p_Filename Path to the file.
-		/// \param p_ForceMono Makes the sound mono if true.
-		/// 
+		/// \param p_SoundBuffer The sound buffer.
+		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromFile(	const std::string & p_Filename,
-									const bool p_ForceMono = false ) = 0;
+		virtual void AttachBuffer(	const SoundBuffer & p_SoundBuffer ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Load sound from WAVE file.
+		/// \brief Destroy the sound.
 		///
-		/// \param p_Filename Path to the file.
-		/// \param p_ForceMono Makes the sound mono if true.
+		/// Not necessary to call before the destructor.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromWaveFile(	const std::string & p_Filename,
-										const bool p_ForceMono = false ) = 0;
+		virtual void Destroy( ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Play the sound.

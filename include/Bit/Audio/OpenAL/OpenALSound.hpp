@@ -49,6 +49,14 @@ namespace Bit
 		OpenALSound( );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Constructor. Attach sound buffer.
+		///
+		/// \param p_SoundBuffer The sound buffer.
+		/// 
+		////////////////////////////////////////////////////////////////
+		OpenALSound( const SoundBuffer & p_SoundBuffer );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Destructor.
 		/// 
 		////////////////////////////////////////////////////////////////
@@ -57,32 +65,28 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Load sound from buffer.
 		///
-		/// \param p_pAudioBuffer The audio buffer.
+		/// \param p_SoundBuffer The sound buffer.
 		/// \param p_ForceMono Makes the sound mono if true.
 		/// 
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromBuffer(	const AudioBuffer & p_pAudioBuffer, 
-										const bool p_ForceMono = false );
+		virtual Bool LoadFromBuffer( const SoundBuffer & p_SoundBuffer );
+
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Load sound from file.
+		/// \brief Attach sound buffer.
 		///
-		/// \param p_Filename Path to the file.
-		/// \param p_ForceMono Makes the sound mono if true.
-		/// 
+		/// \param p_SoundBuffer The sound buffer.
+		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromFile(	const std::string & p_Filename, 
-									const bool p_ForceMono = false );
+		virtual void AttachBuffer(	const SoundBuffer & p_SoundBuffer );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Load sound from WAVE file.
+		/// \brief Destroy the sound.
 		///
-		/// \param p_Filename Path to the file.
-		/// \param p_ForceMono Makes the sound mono if true.
+		/// Not necessary to call before the destructor.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromWaveFile(	const std::string & p_Filename, 
-										const bool p_ForceMono = false );
+		virtual void Destroy( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Play the sound.
@@ -140,8 +144,8 @@ namespace Bit
 
 	private:
 
-		ALuint m_Source;
-		ALuint m_Buffer;
+		// Private vataibles
+		ALuint m_Source;	///< OpenAL sound source.
 
 	};
 

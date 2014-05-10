@@ -22,10 +22,12 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_AUDIO_AUDIO_BUFFER_HPP
-#define BIT_AUDIO_AUDIO_BUFFER_HPP
+#ifndef BIT_AUDIO_OPENAL_SOUND_BUFFER_HPP
+#define BIT_AUDIO_OPENAL_SOUND_BUFFER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Audio/SoundBuffer.hpp>
+#include <Bit/Audio/OpenAL/OpenAL.hpp>
 #include <string>
 
 namespace Bit
@@ -33,12 +35,12 @@ namespace Bit
 	
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Audio
-	/// \brief Audio buffer class.
+	/// \brief OpenAL sound buffer class.
 	///
 	/// This class loads audio files into a buffer.
 	/// 
 	////////////////////////////////////////////////////////////////
-	class BIT_API AudioBuffer
+	class BIT_API OpenALSoundBuffer : public SoundBuffer
 	{
 
 	public:
@@ -47,13 +49,33 @@ namespace Bit
 		/// \brief Default constructor
 		/// 
 		////////////////////////////////////////////////////////////////
-		AudioBuffer( );
+		OpenALSoundBuffer( );
 
 		/////////////////////////////////////////////////////////////////
 		/// \brief Destructor
 		/// 
 		////////////////////////////////////////////////////////////////
-		~AudioBuffer( );
+		~OpenALSoundBuffer( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Load buffer from memory
+		///
+		/// Loads raw audio data from memory.
+		/// You are allowed to delete the passed data when the function call is done.
+		///
+		///	\param p_pData Pointer to the audio data.
+		/// \param p_DataSize Audio data size.
+		///	\param p_ChannelCount Channel count. 1 - mono, 2 - stereo, etc.
+		/// \param p_SampleRate Sample rate, 8000, 44100, etc.
+		/// \param m_BitsPerSample Bits per sample, 8, 16, etc.
+		/// \param p_ForceMono Converting the sound to mono if true.
+		///
+		/// \return true if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool LoadFromMemory(	const Uint8 * p_pData, const SizeType p_DataSize,
+										const SizeType p_ChannelCount, const SizeType p_SampleRate,
+										const SizeType p_BitsPerSample, const bool p_ForceMono = false );
 
 		/////////////////////////////////////////////////////////////////
 		/// \brief Load buffer from file.
@@ -62,55 +84,84 @@ namespace Bit
 		/// depending on the file extension.
 		///
 		/// \param p_Filename Path to the file.
+		/// \param p_ForceMono Converting the sound to mono if true.
 		/// 
 		////////////////////////////////////////////////////////////////
-		Bool LoadFromFile( const std::string & p_Filename );
+		virtual Bool LoadFromFile(	const std::string & p_Filename,
+									const bool p_ForceMono = false );
 
 		/////////////////////////////////////////////////////////////////
 		/// \brief Load buffer from WAV file.
 		///
 		/// \param p_Filename Path to the file.
+		/// \param p_ForceMono Converting the sound to mono if true.
 		/// 
 		////////////////////////////////////////////////////////////////
-		Bool LoadFromWavFile( const std::string & p_Filename );
+		virtual Bool LoadFromWavFile(	const std::string & p_Filename,
+										const bool p_ForceMono = false );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destroy the sound buffer.
+		///
+		/// Not necessary to call before the destructor.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Destroy( );
 
 		/////////////////////////////////////////////////////////////////
 		/// \brief Get the raw data.
 		/// 
 		////////////////////////////////////////////////////////////////
-		Uint8 * GetData( ) const;
+		virtual Uint8 * GetData( ) const;
 
 		/////////////////////////////////////////////////////////////////
 		/// \brief Get the size of the raw data.
 		/// 
 		////////////////////////////////////////////////////////////////
-		SizeType GetDataSize( ) const;
+		virtual SizeType GetDataSize( ) const;
 
 		/////////////////////////////////////////////////////////////////
 		/// \brief Get the channel count.
 		/// 
 		////////////////////////////////////////////////////////////////
-		SizeType GetChannelCount( ) const;
+		virtual SizeType GetChannelCount( ) const;
 
 		/////////////////////////////////////////////////////////////////
 		/// \brief Get the sample rate.
 		/// 
 		////////////////////////////////////////////////////////////////
-		SizeType GetSampleRate( ) const;
+		virtual SizeType GetSampleRate( ) const;
 
 		/////////////////////////////////////////////////////////////////
 		/// \brief Get the bits per sample count.
 		/// 
 		////////////////////////////////////////////////////////////////
-		SizeType GetBitsPerSample( ) const;
+		virtual SizeType GetBitsPerSample( ) const;
+
+		/////////////////////////////////////////////////////////////////
+		/// \brief Get buffer.
+		/// 
+		////////////////////////////////////////////////////////////////
+		virtual const void * GetBuffer( ) const;
 
 	private:
 
-		Uint8 * m_pData;
-		SizeType m_DataSize;
-		SizeType m_ChannelCount;
-		SizeType m_SampleRate;
-		SizeType m_BitsPerSample;
+		// Private functions
+		////////////////////////////////////////////////////////////////
+		/// \brief Convert from stereo to mono.
+		/// 
+		////////////////////////////////////////////////////////////////
+		void ConvertToMono( Uint8 * p_pDestination, const Uint8 * p_pSource,
+							const SizeType p_SourceSize, const Uint16 p_BitsPerSample,
+							ALenum & p_OpenALFormat );
+
+		// Private varialbes
+		ALuint m_Buffer;			///< OpenAl buffer.
+		Uint8 * m_pData;			///< Raw buffer data.
+		SizeType m_DataSize;		///< Buffer size.
+		SizeType m_ChannelCount;	///< Channel count, 1 - mono, 2 - stereo, etc.
+		SizeType m_SampleRate;		///< Sample rate/frequency.
+		SizeType m_BitsPerSample;	///< Bits per sample, 8, 16, etc.
 
 	};
 

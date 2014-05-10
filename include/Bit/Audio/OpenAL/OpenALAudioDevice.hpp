@@ -73,6 +73,14 @@ namespace Bit
 		virtual Sound * CreateSound( );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Create a sound buffer object.
+		///
+		/// \return A pointer to the sound buffer.
+		/// 
+		////////////////////////////////////////////////////////////////
+		virtual SoundBuffer * CreateSoundBuffer( );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Set the global volume. Value from 0.0 to 1.0.
 		/// 
 		////////////////////////////////////////////////////////////////
@@ -111,9 +119,10 @@ namespace Bit
 
 	private:
 
-		Bool m_Open;
-		ALCdevice * m_pDevice;
-		ALCcontext * m_pContext;
+		// Private varaibles
+		Bool m_Open;				///< Is the device open?
+		ALCdevice * m_pDevice;		///< OpenAL device.
+		ALCcontext * m_pContext;	///< OpenAl context.
 
 	};
 

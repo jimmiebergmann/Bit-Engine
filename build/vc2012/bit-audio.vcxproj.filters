@@ -14,9 +14,12 @@
       <Filter>OpenAL</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Audio\Sound.hpp" />
-    <ClInclude Include="..\..\include\Bit\Audio\AudioBuffer.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\WaveFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenALSound.hpp">
+      <Filter>OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Audio\SoundBuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenALSoundBuffer.hpp">
       <Filter>OpenAL</Filter>
     </ClInclude>
   </ItemGroup>
@@ -24,9 +27,11 @@
     <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALAudioDevice.cpp">
       <Filter>OpenAL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Audio\AudioBuffer.cpp" />
     <ClCompile Include="..\..\source\Bit\Audio\WaveFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALSound.cpp">
+      <Filter>OpenAL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALSoundBuffer.cpp">
       <Filter>OpenAL</Filter>
     </ClCompile>
   </ItemGroup>

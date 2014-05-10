@@ -24,6 +24,7 @@
 
 #include <Bit/Audio/OpenAL/OpenALAudioDevice.hpp>
 #include <Bit/Audio/OpenAL/OpenALSound.hpp>
+#include <Bit/Audio/OpenAL/OpenALSoundBuffer.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -88,6 +89,11 @@ namespace Bit
 		return new OpenALSound;
 	}
 
+	SoundBuffer * OpenALAudioDevice::CreateSoundBuffer( )
+	{
+		return new OpenALSoundBuffer;
+	}
+
 	void OpenALAudioDevice::SetGlobalVolume( Float32 p_Volume )
 	{
 		alListenerf( AL_GAIN, p_Volume );
@@ -115,6 +121,6 @@ namespace Bit
 	Bool OpenALAudioDevice::IsOpen( ) const
 	{
 		return m_Open;
-	}	
+	}
 
 }
