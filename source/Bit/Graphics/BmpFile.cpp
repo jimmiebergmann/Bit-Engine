@@ -300,10 +300,10 @@ namespace Bit
 
 		// Caulcate the data size
 		SizeType rowSize = m_DibHeader.m_BitmapWidth * ( m_DibHeader.m_PixelDepth / 8 );
-		SizeType dataSize = rowSize * m_DibHeader.m_BitmapHeight;
+		m_DataSize = rowSize * m_DibHeader.m_BitmapHeight;
 
 		// Allocate memory for the pixel data
-		m_pData = new Uint8[ dataSize ];
+		m_pData = new Uint8[ m_DataSize ];
 
 		// Read the data from the stream
 		// We have to read the data through a loop, because of padding.
@@ -348,6 +348,86 @@ namespace Bit
 
 		// Return the status
 		return status;
+	}
+
+	Bool BmpFile::SaveToMemory( std::string & p_Memory, const Bool p_Validate )
+	{
+		// Load a string stream
+		std::stringstream ss;
+
+		// Save the stream
+		if( SaveToStream( ss, p_Validate ) == false )
+		{
+			return false;
+		}
+
+		// Get the string
+		p_Memory = ss.str( );
+
+		// Succeeded
+		return true;
+	}
+
+	Bool BmpFile::SaveToStream( std::ostream & p_Stream, const Bool p_Validate )
+	{
+		if( m_pData == NULL || m_DataSize == 0 )
+		{
+			std::cout << "[BmpFile::SaveToStream] No image data." << std::endl;
+			return false;
+		}
+
+		// Write the bitmap header
+		p_Stream.write( reinterpret_cast<char *>( &m_BitmapHeader.m_Identifier ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_BitmapHeader.m_FileSize ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_BitmapHeader.m_Reserved ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_BitmapHeader.m_PixelArrayOffset ), 4 );
+
+		// Write the DIB header
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_HeaderSize ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_BitmapWidth ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_BitmapHeight ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_ColorPlanes ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_PixelDepth ), 2 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_Compression ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_DataSize ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_HorizontalResolution ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_VerticalResolution ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_ColorPalette ), 4 );
+		p_Stream.write( reinterpret_cast<char *>( &m_DibHeader.m_ImportantColors ), 4 );
+
+		// Write the data
+		p_Stream.write( reinterpret_cast<char *>( m_pData ), m_DataSize );
+
+		return true;
+	}
+
+	Bool BmpFile::SaveToFile( const std::string & p_Filename, const Bool p_Validate )
+	{
+		// Load a string stream.
+		std::stringstream ss;
+
+		// Save the stream.
+		if( SaveToStream( ss, p_Validate ) == false )
+		{
+			return false;
+		}
+
+		// Open the file.
+		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
+		if( fout.is_open( ) == false )
+		{
+			std::cout << "[BmpFile::SaveToFile] Can not open the file. " << std::endl;
+			return false;
+		}
+
+		// Write the string stream to the file
+		fout.write( ss.str( ).c_str( ), ss.str( ).length( ) );
+
+		// Close the file.
+		fout.close( );
+
+		// Succeeded.
+		return true;
 	}
 
 	void BmpFile::Clear( )

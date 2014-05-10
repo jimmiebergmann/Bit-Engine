@@ -90,6 +90,106 @@ namespace Bit
 		return status;
 	}
 
+	Bool PngFile::SaveToMemory( std::string & p_Memory )
+	{
+		// Load a string stream
+		std::stringstream ss;
+
+		// Save the stream
+		if( SaveToStream( ss ) == false )
+		{
+			return false;
+		}
+
+		// Get the string
+		p_Memory = ss.str( );
+
+		// Succeeded
+		return true;
+	}
+
+	Bool PngFile::SaveToStream( std::ostream & p_Stream )
+	{
+		if( m_pData == NULL || m_DataSize == 0 )
+		{
+			std::cout << "[PngFile::SaveToStream] No image data." << std::endl;
+			return false;
+		}
+
+		// We need to create a new, and row flipped array
+		// Allocate the data memory
+		Uint8 * pNewData = new Uint8[ m_DataSize ];
+
+		// Go through each row and copy the data to the data memory
+		SizeType ry = 0;
+		SizeType rowSize = m_PixelDepth / 8 * m_ImageSize.x;
+		for( Int32 y = m_ImageSize.y - 1; y >= 0; y-- )
+		{
+			// Copy the memory from the vector to the data array
+			memcpy( pNewData + (ry * rowSize ),
+					m_pData + (y * rowSize ),
+					rowSize );
+
+			// Increase the "real" y values.
+			ry++;
+		}
+
+
+		// Store the decoded data in a vector.
+		std::vector<unsigned char> dataVector;
+
+		// Decode the data
+		lodepng::State state;
+		unsigned int width = m_ImageSize.x;
+		unsigned int height = m_ImageSize.y;
+		unsigned int status = lodepng::encode( dataVector, pNewData, width, height, state );
+
+		// Delete the new data
+		delete [ ] pNewData;
+
+		// Error check the loading
+		if( status || dataVector.size( ) == 0 )
+		{
+			std::cout << "[PngFile::SaveToStream] Failed to decode image: " << lodepng_error_text( status ) << std::endl;
+			return false;
+		}
+
+		// Write the data to the stream
+		p_Stream.write( reinterpret_cast<char *>( dataVector.data( ) ), dataVector.size( ) );
+
+		// Succeeded
+		return true;
+	}
+
+	Bool PngFile::SaveToFile( const std::string & p_Filename )
+	{
+		// Load a string stream.
+		std::stringstream ss;
+
+		// Save the stream.
+		if( SaveToStream( ss ) == false )
+		{
+			return false;
+		}
+
+		// Open the file.
+		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
+		if( fout.is_open( ) == false )
+		{
+			std::cout << "[BmpFile::SaveToFile] Can not open the file. " << std::endl;
+			return false;
+		}
+
+		// Write the string stream to the file
+		fout.write( ss.str( ).c_str( ), ss.str( ).length( ) );
+
+		// Close the file.
+		fout.close( );
+
+		// Succeeded.
+		return true;
+	}
+
 	void PngFile::Clear( )
 	{
 		// Delete the allocated data
@@ -200,7 +300,8 @@ namespace Bit
 		m_PixelDepth = componentCount * 8;
 
 		// Allocate the data memory
-		m_pData = new Uint8[ dataVector.size( ) ];
+		m_DataSize = dataVector.size( );
+		m_pData = new Uint8[ m_DataSize ];
 
 		// Go through each row and copy the data to the data memory
 		SizeType ry = 0;

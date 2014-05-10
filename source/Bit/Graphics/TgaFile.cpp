@@ -401,6 +401,13 @@ namespace Bit
 
 	Bool TgaFile::SaveToStream( std::ostream & p_Stream, const Bool p_Validate )
 	{
+		// Error check the data
+		if( m_pData == NULL || m_DataSize == 0 )
+		{
+			std::cout << "[TgaFile::SaveToStream] No image data." << std::endl;
+			return false;
+		}
+
 		// Write header data
 		if( p_Validate )
 		{

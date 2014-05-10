@@ -129,7 +129,7 @@ namespace Bit
 		private:
 
 			Uint16 m_Identifier;		///< Contains "BM"/ 0x424D
-			Uint32 m_FileSize;			///< BMP file in bytes.
+			Uint32 m_FileSize;			///< BMP file size in bytes.
 			Uint32 m_Reserved;			///< Reserved values.
 			Uint32 m_PixelArrayOffset;	///< Offset to the pixel array, in bytes.
 
@@ -352,6 +352,42 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Bool LoadFromFile( const std::string & p_Filename );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save BMP to memory.
+		///
+		/// \param p_pMemory Reference to the memory.
+		/// \param p_Validate, If true, makes sure to save a valid BMP file.
+		///		Setting default values for invalid data in the BMP structures.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToMemory( std::string & p_Memory, const Bool p_Validate = true );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save BMP to stream.
+		///
+		/// \param p_Stream Output stream.
+		/// \param p_Validate, If true, makes sure to save a valid BMP file.
+		///		Setting default values for invalid data in the BMP structures.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToStream( std::ostream & p_Stream, const Bool p_Validate = true );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save BMP to file.
+		///
+		/// \param p_Filename Output file.
+		/// \param p_Validate, If true, makes sure to save a valid BMP file.
+		///		Setting default values for invalid data in the BMP structure.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToFile( const std::string & p_Filename, const Bool p_Validate = true );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Clear the BMP header and data.

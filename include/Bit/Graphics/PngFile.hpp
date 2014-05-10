@@ -78,7 +78,37 @@ namespace Bit
 		Bool LoadFromFile( const std::string & p_Filename );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Clear the BMP header and data.
+		/// \brief Save PNG to memory.
+		///
+		/// \param p_pMemory Reference to the memory.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToMemory( std::string & p_Memory );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save PNG to stream.
+		///
+		/// \param p_Stream Output stream.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToStream( std::ostream & p_Stream );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save PNG to file.
+		///
+		/// \param p_Filename Output file.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToFile( const std::string & p_Filename );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Clear the PNG data.
 		///
 		////////////////////////////////////////////////////////////////
 		void Clear( );
@@ -132,7 +162,7 @@ namespace Bit
 
 		// Private variables
 		Vector2u32 m_ImageSize;	///< The image size.
-		Uint8 m_PixelDepth;		///< The pixel depth.
+		Uint8 m_PixelDepth;		///< The pixel depth in bits.
 		Uint8 * m_pData;		///< Raw pixel data.
 		SizeType m_DataSize;	///< The data size in bytes.
 		Bool m_DeallocateFlag;	///< Data deallocation at destruction flag, true by default.
