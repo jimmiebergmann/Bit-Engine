@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_TEXTURE_OPENGL_HPP
-#define BIT_GRAPHICS_TEXTURE_OPENGL_HPP
+#ifndef BIT_GRAPHICS_OPENGL_TEXTURE_HPP
+#define BIT_GRAPHICS_OPENGL_TEXTURE_HPP
 
 #include <Bit/Graphics/Texture.hpp>
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
@@ -152,6 +152,12 @@ namespace Bit
 		virtual Vector2u32 GetSize( ) const;
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Get the texture's pixel format.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ePixelFormat GetPixelFormat( ) const;
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Check if the texture is successfully loaded.
 		///
 		////////////////////////////////////////////////////////////////
@@ -166,9 +172,10 @@ namespace Bit
 	private:
 
 		// Private variables
-		GLuint m_Id;		///< OpenGL texture id.		
-		Bool m_Loaded;		///< Indicates if the texture is loaded.
-		Vector2u32 m_Size;	///< Texture size.
+		GLuint m_Id;				///< OpenGL texture id.		
+		Bool m_Loaded;				///< Indicates if the texture is loaded.
+		Vector2u32 m_Size;			///< Texture size.
+		ePixelFormat m_PixelFormat;	///< Pixel format.
 
 	};
 }

@@ -108,6 +108,9 @@ namespace Bit
 		// Set the size and format
 		m_Size = p_Size;
 
+		// Set the pixel format
+		m_PixelFormat = p_Format;
+
 		// OpenGL formats
 		static const GLenum openGLTextureFormats[ 4 ] = { GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL, GL_RGB, GL_RGBA };
 
@@ -170,6 +173,9 @@ namespace Bit
 			std::cout << "[OpenGLTexture::LoadFromImage] Not a 24 or 32 bit image.\n";
 			return false;
 		}
+
+		// Get the pixel format
+		m_PixelFormat = static_cast<ePixelFormat>( depth - 1 );
 
 		// Get the opengl format of the image data.
 		static const GLenum openGLTextureFormats[ 2 ] = { GL_RGB, GL_RGBA };
@@ -275,6 +281,11 @@ namespace Bit
 	Vector2u32 OpenGLTexture::GetSize( ) const
 	{
 		return m_Size;
+	}
+
+	Texture::ePixelFormat OpenGLTexture::GetPixelFormat( ) const
+	{
+		return m_PixelFormat;
 	}
 
 	Bool OpenGLTexture::IsLoaded( ) const

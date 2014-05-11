@@ -22,44 +22,50 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_FRAMEBUFFER_HPP
-#define BIT_GRAPHICS_FRAMEBUFFER_HPP
+#ifndef BIT_GRAPHICS_OPENGL_FRAMEBUFFER_HPP
+#define BIT_GRAPHICS_OPENGL_FRAMEBUFFER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Graphics/Framebuffer.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLTexture.hpp>
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
 
 namespace Bit
 {
-	// Forward declaractions
-	class Texture;
-	class RenderBuffer;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Frambuffer base class.
+	/// \brief OpenGL frambuffer class.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Framebuffer 
+	class BIT_API OpenGLFramebuffer : public Framebuffer
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor.
+		/// \brief Default constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~Framebuffer( ) { }
+		OpenGLFramebuffer( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor.
+		///
+		////////////////////////////////////////////////////////////////
+		~OpenGLFramebuffer( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Bind framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Bind( ) = 0;
+		virtual void Bind( );
 
 		///////////////////////////////////////////////////////////////
 		/// \brief Unbind framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Unbind( ) = 0;
+		virtual void Unbind( );
 
 		///////////////////////////////////////////////////////////////
 		/// \brief Attach a texture to the framebuffer.
@@ -67,13 +73,25 @@ namespace Bit
 		/// The attachment type depends on the pixel format used.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Attach( const Texture & p_pTexture ) = 0;
+		virtual Bool Attach( const Texture & p_pTexture );
 
 		///////////////////////////////////////////////////////////////
 		/// \brief Attach a render buffer to the framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Attach( const RenderBuffer & p_pRenderBuffer ) = 0;
+		virtual Bool Attach( const RenderBuffer & p_pRenderBuffer );
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Get OpenGL framebuffer ID.
+		///
+		////////////////////////////////////////////////////////////////
+		GLuint GetId( ) const;
+
+	private:
+
+		GLuint m_FramebufferObject;		///< OpenGL framebuffer object.
+		Uint32 m_ColorAttachmentCount;	///< Number of attached color textures/render buffers.
+		Bool m_DepthAttached;			///< Indicates if a depth texture/render buffer is attached.
 
 	};
 

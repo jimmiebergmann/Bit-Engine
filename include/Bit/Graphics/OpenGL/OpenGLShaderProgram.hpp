@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_SHADER_PROGRAM_OPENGL_HPP
-#define BIT_GRAPHICS_SHADER_PROGRAM_OPENGL_HPP
+#ifndef BIT_GRAPHICS_OPENGL_SHADER_PROGRAM_HPP
+#define BIT_GRAPHICS_OPENGL_SHADER_PROGRAM_HPP
 
 #include <Bit/Build.hpp>
 #include <Bit/Graphics/ShaderProgram.hpp>
