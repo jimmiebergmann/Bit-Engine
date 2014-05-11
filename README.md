@@ -24,8 +24,8 @@ git clone https://github.com/jimmiebergmann/Bit-Engine.git
 <br><del>**Linux:** Open and build the Code::Blocks 10 workspace.</del>
 <br><del>Or:</del>
 ```sh
-<del>cd build/makefile</del>
-<del>make</del>
+cd build/makefile
+make
 ```
 
 Usage
