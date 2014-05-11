@@ -34,6 +34,7 @@ namespace Bit
 {
 
 	// Forward declarations
+	class Framebuffer;
 	class VertexArray;
 	class VertexBuffer;
 	class Shader;
@@ -169,6 +170,14 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual void DisableSmoothLines( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a framebuffer.
+		///
+		/// \return A pointer to the new framebuffer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Framebuffer * CreateFramebuffer( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a vertex array.

@@ -25,6 +25,7 @@
 #include <Bit/Graphics/OpenGL/Win32/OpenGLGraphicDeviceWin32.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLFramebuffer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLVertexArray.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLVertexBuffer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
@@ -237,6 +238,11 @@ namespace Bit
 	void OpenGLGraphicDeviceWin32::DisableSmoothLines( )
 	{
 		glDisable( GL_LINE_SMOOTH );
+	}
+
+	Framebuffer * OpenGLGraphicDeviceWin32::CreateFramebuffer( ) const
+	{
+		return new OpenGLFramebuffer;
 	}
 
 	VertexArray * OpenGLGraphicDeviceWin32::CreateVertexArray( ) const
