@@ -22,20 +22,20 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Graphics/OpenGL/OpenGLVertexBufferObject.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLVertexBuffer.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	OpenGLVertexBufferObject::OpenGLVertexBufferObject(  ) :
+	OpenGLVertexBuffer::OpenGLVertexBuffer(  ) :
 		m_pVertexBufferObject( 0 ),
 		m_DataSize( 0 )
 	{
 		glGenBuffers( 1, &m_pVertexBufferObject );
 	}
 
-	OpenGLVertexBufferObject::OpenGLVertexBufferObject( const SizeType p_DataSize, void * p_pVertexData ) :
+	OpenGLVertexBuffer::OpenGLVertexBuffer( const SizeType p_DataSize, void * p_pVertexData ) :
 		m_pVertexBufferObject( 0 ),
 		m_DataSize( 0 )
 	{
@@ -43,7 +43,7 @@ namespace Bit
 		Load( p_DataSize, p_pVertexData );
 	}
 
-	OpenGLVertexBufferObject::~OpenGLVertexBufferObject( )
+	OpenGLVertexBuffer::~OpenGLVertexBuffer( )
 	{
 		if(m_pVertexBufferObject )
 		{
@@ -53,12 +53,12 @@ namespace Bit
 		}
 	}
 
-	void OpenGLVertexBufferObject::Bind( ) const
+	void OpenGLVertexBuffer::Bind( ) const
 	{
 		glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObject );
 	}
 
-	Bool OpenGLVertexBufferObject::Load( const SizeType p_DataSize, void * p_pVertexData )
+	Bool OpenGLVertexBuffer::Load( const SizeType p_DataSize, void * p_pVertexData )
 	{
 		// Check the buffer size
 		if( p_DataSize == 0 )
@@ -79,7 +79,7 @@ namespace Bit
 		return true;
 	}
 
-	SizeType OpenGLVertexBufferObject::GetBufferSize( ) const
+	SizeType OpenGLVertexBuffer::GetBufferSize( ) const
 	{
 		return m_DataSize;
 	}

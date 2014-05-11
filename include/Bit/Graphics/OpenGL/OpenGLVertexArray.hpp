@@ -22,31 +22,38 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_VERTEX_ARRAY_OBJECT_HPP
-#define BIT_GRAPHICS_VERTEX_ARRAY_OBJECT_HPP
+#ifndef BIT_GRAPHICS_OPENGL_VERTEX_ARRAY_HPP
+#define BIT_GRAPHICS_OPENGL_VERTEX_ARRAY_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Graphics/VertexBufferObject.hpp>
-#include <Bit/Graphics/PrimitiveMode.hpp>
+#include <Bit/Graphics/VertexArray.hpp>
+#include <Bit/Graphics/VertexBuffer.hpp>
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Vertex array object base class.
+	/// \brief OpenGL Vertex buffer object.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexArrayObject
+	class BIT_API OpenGLVertexArray : public VertexArray
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor.
+		/// \brief Default constructor
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~VertexArrayObject( ) { }
+		OpenGLVertexArray( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor
+		///
+		////////////////////////////////////////////////////////////////
+		~OpenGLVertexArray( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Adding VBO to the VBA
@@ -59,15 +66,21 @@ namespace Bit
 		///	\param p_DataType The type of the vertex data.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool AddVertexBuffer(	VertexBufferObject & p_VertexBufferObject,
+		virtual Bool AddVertexBuffer(	VertexBuffer & p_VertexBuffer,
 										const SizeType p_ComponentCount = 3, 
-										const DataType::eType p_DataType = DataType::Float32 ) = 0;
+										const DataType::eType p_DataType = DataType::Float32 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Render the vertex array object
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Render( PrimitiveMode::eMode p_PrimitiveMode ) = 0;
+		virtual void Render( PrimitiveMode::eMode p_PrimitiveMode );
+
+	private:
+
+		GLuint m_VertexArrayObject;	///< The OpenGL vertex array object.
+		GLuint m_BufferCount;		///< Amount of attached buffers.
+		Uint32 m_VertexSize;		///< The vertex data size( vertexCount * componentCount )
 
 	};
 

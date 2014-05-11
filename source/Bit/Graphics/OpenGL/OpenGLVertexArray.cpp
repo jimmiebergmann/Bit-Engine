@@ -22,7 +22,7 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Graphics/OpenGL/OpenGLVertexArrayObject.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLVertexArray.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -72,7 +72,7 @@ namespace Bit
 		/*TriangleFan	*/ GL_TRIANGLE_FAN
 	};
 
-	OpenGLVertexArrayObject::OpenGLVertexArrayObject( ) :
+	OpenGLVertexArray::OpenGLVertexArray( ) :
 		m_VertexArrayObject( 0 ),
 		m_VertexSize( 0 ),
 		m_BufferCount( 0 )
@@ -81,7 +81,7 @@ namespace Bit
 		glGenVertexArrays( 1, &m_VertexArrayObject );
 	}
 
-	OpenGLVertexArrayObject::~OpenGLVertexArrayObject( )
+	OpenGLVertexArray::~OpenGLVertexArray( )
 	{
 		if( m_VertexArrayObject )
 		{
@@ -91,9 +91,9 @@ namespace Bit
 		}
 	}
 
-	Bool OpenGLVertexArrayObject::AddVertexBuffer(	VertexBufferObject & p_VertexBufferObject,
-													const SizeType p_ComponentCount, 
-													const DataType::eType p_DataType )
+	Bool OpenGLVertexArray::AddVertexBuffer(	VertexBuffer & p_VertexBufferObject,
+												const SizeType p_ComponentCount, 
+												const DataType::eType p_DataType )
 	{
 		// Make sure the component count is a value between 1 and 4
 		if( p_ComponentCount < 1 || p_ComponentCount > 4 )
@@ -130,7 +130,7 @@ namespace Bit
 		return true;
 	}
 
-	void OpenGLVertexArrayObject::Render( PrimitiveMode::eMode p_PrimitiveMode )
+	void OpenGLVertexArray::Render( PrimitiveMode::eMode p_PrimitiveMode )
 	{
 		glBindVertexArray( m_VertexArrayObject );
 		glDrawArrays( g_OpenGLPrimitiveModes[ static_cast<SizeType>( p_PrimitiveMode ) ], 0, m_VertexSize );

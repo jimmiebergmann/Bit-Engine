@@ -183,20 +183,20 @@ namespace Bit
 		virtual void DisableSmoothLines( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Create a vertex array object.
+		/// \brief Create a vertex array.
 		///
 		/// \return A pointer to the VAO
 		///
 		////////////////////////////////////////////////////////////////
-		virtual VertexArrayObject * CreateVertexArrayObject( ) const;
+		virtual VertexArray * CreateVertexArray( ) const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Create a vertex buffer object.
+		/// \brief Create a vertex buffer.
 		///
 		/// \return A pointer to the VBO
 		///
 		////////////////////////////////////////////////////////////////
-		virtual VertexBufferObject * CreateVertexBufferObject( ) const;
+		virtual VertexBuffer * CreateVertexBuffer( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a shader

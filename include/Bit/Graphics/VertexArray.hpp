@@ -22,74 +22,54 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_OPENGL_VERTEX_BUFFER_OBJECT_HPP
-#define BIT_GRAPHICS_OPENGL_VERTEX_BUFFER_OBJECT_HPP
+#ifndef BIT_GRAPHICS_VERTEX_ARRAY_HPP
+#define BIT_GRAPHICS_VERTEX_ARRAY_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Graphics/VertexBufferObject.hpp>
-#include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/PrimitiveMode.hpp>
 
 namespace Bit
 {
 
+	// Forward declaractions
+	class VertexBuffer;
+
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief OpenGL Vertex buffer object.
+	/// \brief Vertex array object base class.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API OpenGLVertexBufferObject : public VertexBufferObject
+	class BIT_API VertexArray
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor
+		/// \brief Virtual destructor.
 		///
 		////////////////////////////////////////////////////////////////
-		OpenGLVertexBufferObject( );
+		virtual ~VertexArray( ) { }
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Constructor
+		/// \brief Adding VBO to the VBA
 		///
-		/// Loads the vertex buffer object
+		/// The VBO must be fully loaded before adding.
 		///
-		/// \param p_DataSize The vertex data size, in bytes.
-		/// \param p_pVertexData The vertex data.
-		/// \param p_DataType The data type of the vertex data.
-		///
-		/// \see Load
+		/// \param p_VertexBufferObject The vertex buffer object to add.
+		/// \param p_ComponentCount Number of vertex components,
+		///		must be 1, 2, 3 or 4.
+		///	\param p_DataType The type of the vertex data.
 		///
 		////////////////////////////////////////////////////////////////
-		OpenGLVertexBufferObject( const SizeType p_DataSize, void * p_pVertexData = NULL );
+		virtual Bool AddVertexBuffer(	VertexBuffer & p_VertexBuffer,
+										const SizeType p_ComponentCount = 3, 
+										const DataType::eType p_DataType = DataType::Float32 ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Destructor
+		/// \brief Render the vertex array object
 		///
 		////////////////////////////////////////////////////////////////
-		~OpenGLVertexBufferObject( );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Binding the vertex buffer object
-		///
-		////////////////////////////////////////////////////////////////
-		virtual void Bind( ) const;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Loading the vertex buffer object
-		///
-		/// \param p_DataSize The vertex data size, in bytes.
-		/// \param p_pVertexData The vertex data.
-		/// \param p_DataType The data type of the vertex data.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL );  
-
-		virtual SizeType GetBufferSize( ) const;
-
-	private:
-
-		GLuint m_pVertexBufferObject;
-		SizeType m_DataSize;
+		virtual void Render( PrimitiveMode::eMode p_PrimitiveMode ) = 0;
 
 	};
 

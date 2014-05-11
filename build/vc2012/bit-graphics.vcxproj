@@ -179,9 +179,9 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLGraphicDevice.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShader.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShaderProgram.hpp" />
-    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexArrayObject.hpp" />
-    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLTexture.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexArray.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexBuffer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\PngFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\PrimitiveMode.hpp" />
@@ -190,8 +190,8 @@
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Texture.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\TgaFile.hpp" />
-    <ClInclude Include="..\..\include\Bit\Graphics\VertexArrayObject.hpp" />
-    <ClInclude Include="..\..\include\Bit\Graphics\VertexBufferObject.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\VertexArray.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\VertexBuffer.hpp" />
     <ClInclude Include="..\..\source\Bit\Graphics\LodePng\lodepng.h" />
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +203,9 @@
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShaderProgram.cpp" />
-    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexArrayObject.cpp" />
-    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLTexture.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBuffer.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\PngFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\TgaFile.cpp" />

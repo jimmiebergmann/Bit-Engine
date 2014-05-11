@@ -25,8 +25,8 @@
 #include <Bit/Graphics/OpenGL/Win32/OpenGLGraphicDeviceWin32.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
-#include <Bit/Graphics/OpenGL/OpenGLVertexArrayObject.hpp>
-#include <Bit/Graphics/OpenGL/OpenGLVertexBufferObject.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLVertexArray.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLVertexBuffer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShaderProgram.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLTexture.hpp>
@@ -239,14 +239,14 @@ namespace Bit
 		glDisable( GL_LINE_SMOOTH );
 	}
 
-	VertexArrayObject * OpenGLGraphicDeviceWin32::CreateVertexArrayObject( ) const
+	VertexArray * OpenGLGraphicDeviceWin32::CreateVertexArray( ) const
 	{
-		return new OpenGLVertexArrayObject;
+		return new OpenGLVertexArray;
 	}
 
-	VertexBufferObject * OpenGLGraphicDeviceWin32::CreateVertexBufferObject( ) const
+	VertexBuffer * OpenGLGraphicDeviceWin32::CreateVertexBuffer( ) const
 	{
-		return new OpenGLVertexBufferObject;
+		return new OpenGLVertexBuffer;
 	}
 
 	Shader * OpenGLGraphicDeviceWin32::CreateShader( ShaderType::eType p_Type ) const

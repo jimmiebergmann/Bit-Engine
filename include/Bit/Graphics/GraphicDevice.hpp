@@ -34,8 +34,8 @@ namespace Bit
 {
 
 	// Forward declarations
-	class VertexArrayObject;
-	class VertexBufferObject;
+	class VertexArray;
+	class VertexBuffer;
 	class Shader;
 	class ShaderProgram;
 	class Texture;
@@ -171,20 +171,20 @@ namespace Bit
 		virtual void DisableSmoothLines( ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Create a vertex array object.
+		/// \brief Create a vertex array.
 		///
 		/// \return A pointer to the new VAO
 		///
 		////////////////////////////////////////////////////////////////
-		virtual VertexArrayObject * CreateVertexArrayObject( ) const = 0;
+		virtual VertexArray * CreateVertexArray( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Create a vertex buffer object.
+		/// \brief Create a vertex buffer.
 		///
 		/// \return A pointer to the new VBO
 		///
 		////////////////////////////////////////////////////////////////
-		virtual VertexBufferObject * CreateVertexBufferObject( ) const = 0;
+		virtual VertexBuffer * CreateVertexBuffer( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a shader

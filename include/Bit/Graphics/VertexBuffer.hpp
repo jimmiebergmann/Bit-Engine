@@ -22,8 +22,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_VERTEX_BUFFER_OBJECT_HPP
-#define BIT_GRAPHICS_VERTEX_BUFFER_OBJECT_HPP
+#ifndef BIT_GRAPHICS_VERTEX_BUFFER_HPP
+#define BIT_GRAPHICS_VERTEX_BUFFER_HPP
 
 #include <Bit/Build.hpp>
 
@@ -35,7 +35,7 @@ namespace Bit
 	/// \brief Vertex buffer object base class.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexBufferObject
+	class BIT_API VertexBuffer
 	{
 
 	public:
@@ -44,7 +44,7 @@ namespace Bit
 		/// \brief Virtual destructor
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~VertexBufferObject( ) { }
+		virtual ~VertexBuffer( ) { }
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Binding the vertex buffer object
@@ -62,6 +62,10 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual Bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL ) = 0;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the buffer size in bytes.
+		///
+		////////////////////////////////////////////////////////////////
 		virtual SizeType GetBufferSize( ) const = 0;
 
 	};

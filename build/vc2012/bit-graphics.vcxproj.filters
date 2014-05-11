@@ -22,14 +22,6 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.hpp">
       <Filter>OpenGL\Win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Graphics\VertexArrayObject.hpp" />
-    <ClInclude Include="..\..\include\Bit\Graphics\VertexBufferObject.hpp" />
-    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexArrayObject.hpp">
-      <Filter>OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.hpp">
-      <Filter>OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\Bit\Graphics\Shader.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShader.hpp">
@@ -55,6 +47,14 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLFramebuffer.hpp">
       <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\VertexArray.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\VertexBuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexArray.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexBuffer.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
@@ -63,12 +63,6 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp">
       <Filter>OpenGL\Win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexArrayObject.cpp">
-      <Filter>OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBufferObject.cpp">
-      <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShader.cpp">
       <Filter>OpenGL</Filter>
@@ -87,6 +81,12 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\PngFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLFramebuffer.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexArray.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBuffer.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
