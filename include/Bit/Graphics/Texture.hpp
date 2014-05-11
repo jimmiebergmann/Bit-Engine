@@ -57,13 +57,17 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Filter enumerator
 		///
+		/// Do not use mipmap filters for magnification.
+		///
 		////////////////////////////////////////////////////////////////
 		enum eFilter
 		{
-			Nearest,
-			NearestMipmap,
-			Linear = 3,
-			LinearMipmap,
+			Nearest,				/// Nearest neighbor blending.
+			NearestMipmapNearest,	///< Not linear within mip-level.
+			NearestMipmapLinear,	///< Same as previous, but linear between mip-levels.
+			Linear,					///< Linear blend between texels.
+			LinearMipmapNearest,	///< Linear within mip-level.
+			LinearMipmapLinear,		///< Same as previous, but linear between mip-levels.
 		};
 
 		////////////////////////////////////////////////////////////////
@@ -160,39 +164,31 @@ namespace Bit
 		/// \brief Set wrapping for X axis.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrappingX( const eWarpping p_WrapX, const eWarpping p_WrapY ) = 0;
+		virtual Bool SetWrappingX( const eWarpping p_WrapX ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set wrapping for Y axis.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrappingY( const eWarpping p_WrapX, const eWarpping p_WrapY ) = 0;
+		virtual Bool SetWrappingY( const eWarpping p_WrapY ) = 0;
 
-
+		////////////////////////////////////////////////////////////////
+		/// \brief Set anisotropic level.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool SetAnisotropic( const Uint32 p_Level ) = 0;
+		
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the texture size(width and height)
 		///
 		////////////////////////////////////////////////////////////////
-		inline Vector2u32 GetSize( ) const { return m_Size; };
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the texture format
-		///
-		////////////////////////////////////////////////////////////////
-		//inline Pixel::eFormat GetFormat( ) const { return m_Format; };
+		virtual Vector2u32 GetSize( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Check if the texture is successfully loaded.
 		///
 		////////////////////////////////////////////////////////////////
-		inline Bool IsLoaded( ) const { return m_Loaded; };
-
-	protected:
-
-		// Protexted variables
-		Bool m_Loaded;				///< Indicates if the texture is loaded.
-		Vector2u32 m_Size;			///< Texture size.
-		//Pixel::eFormat m_Format;	///< The internal component format.
+		virtual Bool IsLoaded( ) const = 0;
 
 	};
 }

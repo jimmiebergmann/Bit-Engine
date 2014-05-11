@@ -62,7 +62,7 @@ namespace Bit
 									const Version & p_Version = Version::Default );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Destructor.
+		/// \brief Destructor. Closing the device.
 		///
 		////////////////////////////////////////////////////////////////
 		~OpenGLGraphicDeviceWin32( );

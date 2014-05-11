@@ -116,6 +116,9 @@ namespace Bit
 	static Bool BIT_ARB_vertex_shader = false;
 	static Bool BIT_ARB_fragment_shader = false;
 
+	static Bool BIT_EXT_texture_filter_anisotropic = false;
+	static Uint32 g_AnisotropicMaxLevel = 0;
+
 	// My own availability variables
 	static Bool s_AllShaderFunctions = false;
 	static Bool s_GeneralBuffersFunctions = false;
@@ -127,58 +130,65 @@ namespace Bit
 		BIT_API bool BindOpenGLExtensions( const Uint32 p_Major, const Uint32 p_Minor )
 		{
 			// Get all the available extensions
-			std::list< std::string > AvailableExtensions;
-			GLint AvailableExtensionCount = 0;
+			std::list< std::string > availableExtensions;
+			GLint availableExtensionCount = 0;
 
 			// Get the available extension count
-			glGetIntegerv( GL_NUM_EXTENSIONS, &AvailableExtensionCount );
+			glGetIntegerv( GL_NUM_EXTENSIONS, &availableExtensionCount );
 
 			// Get the proc address for glGetStringi
 			__glGetStringi = (PFNGLGETSTRINGIPROC)glGetProcAddress( "glGetStringi" );
 
 			// Get all the available extensions
-			for( SizeType i = 0; i < (SizeType)AvailableExtensionCount; i++ )
+			for( SizeType i = 0; i < (SizeType)availableExtensionCount; i++ )
 			{
-				//if( std::string( (char*)__glGetStringi( GL_EXTENSIONS, i ) ) == "GL_ARB_shading_language_100" )
-				//{
-				//}
-
-				AvailableExtensions.push_back( ( char * )( __glGetStringi( GL_EXTENSIONS, i ) ) );
+				availableExtensions.push_back( ( char * )( __glGetStringi( GL_EXTENSIONS, i ) ) );
 			}
 
 			// Go through some of the extensions to confirm some of them.
-			for( std::list< std::string >::iterator it = AvailableExtensions.begin( );
-				it != AvailableExtensions.end( ); it++ )
+			for( std::list< std::string >::iterator it = availableExtensions.begin( );
+				it != availableExtensions.end( ); it++ )
 			{
 				if( *it == "GL_ARB_vertex_buffer_object" )
 				{
 					BIT_ARB_vertex_buffer_object = true;
 				}
-				if( *it == "GL_ARB_vertex_array_object" )
+				else if( *it == "GL_ARB_vertex_array_object" )
 				{
 					BIT_ARB_vertex_array_object = true;
 				}
-				if( *it == "GL_ARB_framebuffer_object" )
+				else if( *it == "GL_ARB_framebuffer_object" )
 				{
 					BIT_ARB_framebuffer_object = true;
 				}
 
 				// Checking for shader extensions
-				if( *it == "GL_ARB_shading_language_100" )
+				else if( *it == "GL_ARB_shading_language_100" )
 				{
 					BIT_ARB_shading_language_100 = true;
 				}
-				if( *it == "GL_ARB_shader_objects" )
+				else if( *it == "GL_ARB_shader_objects" )
 				{
 					BIT_ARB_shader_objects = true;
 				}
-				if( *it == "GL_ARB_vertex_shader" )
+				else if( *it == "GL_ARB_vertex_shader" )
 				{
 					BIT_ARB_vertex_shader = true;
 				}
-				if( *it == "GL_ARB_fragment_shader" )
+				else if( *it == "GL_ARB_fragment_shader" )
 				{
 					BIT_ARB_fragment_shader = true;
+				}
+
+				// Check for texture extensions
+				else if( *it == "GL_EXT_texture_filter_anisotropic" )
+				{
+					BIT_EXT_texture_filter_anisotropic = true;
+
+					// Get the max level
+					GLfloat levels;
+					glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &levels );
+					g_AnisotropicMaxLevel = static_cast<Uint32>( levels + 0.5f );
 				}
 
 			}
@@ -429,26 +439,25 @@ namespace Bit
 
 			}
 
-
 			return true;
 		}
 
-		BIT_API Bool IsVertexObjectAvailability( )
+		BIT_API Bool IsVertexObjectAvailable( )
 		{
 			return	BIT_ARB_vertex_array_object;
 		}
 
-		BIT_API Bool IsGeneralTextureAvailability( )
+		BIT_API Bool IsGeneralTextureAvailable( )
 		{
 			return s_GeneralTextureFunctions;
 		}
 
-		BIT_API Bool IsGeneralBufferAvailability( )
+		BIT_API Bool IsGeneralBufferAvailable( )
 		{
 			return s_GeneralBuffersFunctions;
 		}
 
-		BIT_API Bool IsShaderAvailability( )
+		BIT_API Bool IsShaderAvailable( )
 		{
 			return	s_AllShaderFunctions &&
 					BIT_ARB_shading_language_100 &&
@@ -457,9 +466,19 @@ namespace Bit
 					BIT_ARB_fragment_shader;
 		}
 
-		BIT_API Bool IsFramebufferAvailability( )
+		BIT_API Bool IsFramebufferAvailable( )
 		{
 			return BIT_ARB_framebuffer_object;
+		}
+
+		BIT_API Bool IsAnisotropicFilterAvailable( )
+		{
+			return BIT_EXT_texture_filter_anisotropic;
+		}
+
+		BIT_API Uint32 GetAnisotropicMaxLevel( )
+		{
+			return g_AnisotropicMaxLevel;
 		}
 
 	}

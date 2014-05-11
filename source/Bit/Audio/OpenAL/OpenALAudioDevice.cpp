@@ -84,6 +84,26 @@ namespace Bit
 		return m_Open = true;
 	}
 
+	void OpenALAudioDevice::Close( )
+	{
+		if( m_pContext )
+		{
+			alcMakeContextCurrent( NULL );
+			alcDestroyContext( m_pContext );
+		}
+
+		if( m_pDevice )
+		{
+			alcCloseDevice( m_pDevice );
+		}
+	}
+
+	void OpenALAudioDevice::MakeCurrent( )
+	{
+		// Make the context to the current one
+		alcMakeContextCurrent( m_pContext );
+	}
+
 	Sound * OpenALAudioDevice::CreateSound( )
 	{
 		return new OpenALSound;

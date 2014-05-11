@@ -93,7 +93,7 @@ namespace Bit
 		virtual void MakeCurrent( ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Present the graphics, swap buffers.
+		/// \brief Present the graphics, swap buffers if double-buffering.
 		///
 		/// Call this function when you want to swap the color buffers.
 		/// This function wont clear the buffers.

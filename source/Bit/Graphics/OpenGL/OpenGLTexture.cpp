@@ -48,6 +48,26 @@ namespace Bit
 		/*SizeType	*/ 0
 	};
 
+	static GLint g_OpenGLTextureFilters[ 6 ] =
+	{
+		/*Nearest				*/ GL_NEAREST,
+		/*NearestMipmapNearest	*/ GL_NEAREST_MIPMAP_NEAREST,
+		/*NearestMipmapLinear	*/ GL_NEAREST_MIPMAP_LINEAR,
+		/*Linear				*/ GL_LINEAR,
+		/*LinearMipmapNearest	*/ GL_LINEAR_MIPMAP_NEAREST,
+		/*LinearMipmapLinear	*/ GL_LINEAR_MIPMAP_LINEAR
+	};
+
+	static GLint g_OpenGLTextureWrapping[ 2 ] =
+	{
+		/*Repeat	*/ GL_REPEAT,
+		/*Clamp		*/ GL_CLAMP
+	};
+
+	
+
+		
+
 
 	// Constructor/destrucotr
 	OpenGLTexture::OpenGLTexture( ) :
@@ -133,6 +153,12 @@ namespace Bit
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 
+		// Generate the mipmap
+		if( p_Mipmapping )
+		{
+			glGenerateMipmap( GL_TEXTURE_2D );
+		}
+
 		// Unbind the texture
 		glBindTexture( GL_TEXTURE_2D, 0 );
 
@@ -199,19 +225,11 @@ namespace Bit
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 
-		/*// Generate the mipmap ( Opengl 3.x style )
-		if( !m_OpenGL2 && p_Mipmapping )
+		// Generate the mipmap
+		if( p_Mipmapping )
 		{
 			glGenerateMipmap( GL_TEXTURE_2D );
-		}*/
-
-		// Add anisotropy filtering
-		/*if( p_Mipmapping )
-		{
-			GLfloat Levels;
-			glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &Levels );
-			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 8.0f );
-		}*/
+		}
 
 		// Unbind the texture
 		glBindTexture( GL_TEXTURE_2D, 0 );
@@ -233,115 +251,71 @@ namespace Bit
 
 	Bool OpenGLTexture::SetMagnificationFilter( const eFilter p_Filter )
 	{
-		return false;
+		glBindTexture( GL_TEXTURE_2D, m_Id );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, g_OpenGLTextureFilters[ p_Filter ] );
+		glBindTexture( GL_TEXTURE_2D, 0 );
+		return true;
 	}
 
 	Bool OpenGLTexture::SetMinificationFilter( const eFilter p_Filter )
 	{
-		return false;
+		glBindTexture( GL_TEXTURE_2D, m_Id );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, g_OpenGLTextureFilters[ p_Filter ] );
+		glBindTexture( GL_TEXTURE_2D, 0 );
+		return true;
 	}
 
 	Bool OpenGLTexture::SetWrapping( const eWarpping p_WrapX, const eWarpping p_WrapY )
 	{
-		return false;
+		glBindTexture( GL_TEXTURE_2D, m_Id );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, g_OpenGLTextureWrapping[ p_WrapX ] );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, g_OpenGLTextureWrapping[ p_WrapY ] );
+		glBindTexture( GL_TEXTURE_2D, 0 );
+		return true;
 	}
 
-	Bool OpenGLTexture::SetWrappingX( const eWarpping p_WrapX, const eWarpping p_WrapY )
+	Bool OpenGLTexture::SetWrappingX( const eWarpping p_WrapX )
 	{
-		return false;
+		glBindTexture( GL_TEXTURE_2D, m_Id );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, g_OpenGLTextureWrapping[ p_WrapX ] );
+		glBindTexture( GL_TEXTURE_2D, 0 );
+		return true;
 	}
 
-	Bool OpenGLTexture::SetWrappingY( const eWarpping p_WrapX, const eWarpping p_WrapY )
+	Bool OpenGLTexture::SetWrappingY( const eWarpping p_WrapY )
 	{
-		return false;
+		glBindTexture( GL_TEXTURE_2D, m_Id );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, g_OpenGLTextureWrapping[ p_WrapY ] );
+		glBindTexture( GL_TEXTURE_2D, 0 );
+		return true;
 	}
 
-
-	// Set functions
-	/*BIT_UINT32 TextureOpenGL::SetFilters( const eFilter * p_pFilters )
+	Bool OpenGLTexture::SetAnisotropic( const Uint32 p_Level )
 	{
-		// This code is working, but I don't know about it's efficiency...
-		if( p_pFilters == BIT_NULL ||
-			*p_pFilters == Filter_None || *( p_pFilters + 1 ) == Filter_None )
+		// Error check.
+		if( OpenGL::IsAnisotropicFilterAvailable( ) == false ||
+			p_Level > OpenGL::GetAnisotropicMaxLevel( ) )
 		{
-			bitTrace( "[TextureOpenGL::Load] No filters are passed.\n" );
-			return BIT_ERROR;
+			return false;
 		}
 
-		// Bind the texture
-		glBindTexture( GL_TEXTURE_2D, m_ID );
-
-		// Currently max 4 filters supported.
-		const BIT_UINT32 MaxFilters = 4;
-		GLenum  Filter = 0;
- 		GLint  	Param = 0;
-
-		for( BIT_MEMSIZE i = 0; i < MaxFilters; i++ )
-		{
-			// Make sure the filter or param isn't 0
-			if( *p_pFilters == 0 || *( p_pFilters + 1 ) == 0 )
-			{
-				// Break the for-loop.
-				break;
-			}
-
-			// Swtich the filter type
-			switch( *p_pFilters )
-			{
-			case Filter_Mag:
-				Filter = GL_TEXTURE_MAG_FILTER;
-				break;
-			case Filter_Min:
-				Filter = GL_TEXTURE_MIN_FILTER;
-				break;
-			case Filter_Wrap_X:
-				Filter = GL_TEXTURE_WRAP_S;
-				break;
-			case Filter_Wrap_Y:
-				Filter = GL_TEXTURE_WRAP_T;
-				break;
-			default:
-				glBindTexture( GL_TEXTURE_2D, 0 );
-				return BIT_ERROR;
-			}
-
-			// Swtich the filters value 
-			switch( *(p_pFilters + 1) )
-			{
-			case Filter_Nearest:
-				Param = GL_NEAREST;
-				break;
-			case Filter_Linear:
-				Param = GL_LINEAR;
-				break;
-			case Filter_Nearest_Mipmap:
-				Param = GL_NEAREST_MIPMAP_NEAREST;
-				break;
-			case Filter_Linear_Mipmap:
-				Param = GL_LINEAR_MIPMAP_LINEAR;
-				break;
-			case Filter_Repeat:
-				Param = GL_REPEAT;
-				break;
-			case Filter_Clamp:
-				Param = GL_CLAMP;
-				break;
-			default:
-				glBindTexture( GL_TEXTURE_2D, 0 );
-				return BIT_ERROR;
-			}
-
-			// Set the opengl texture filter.
-			glTexParameteri ( GL_TEXTURE_2D, Filter, Param );
-
-			// Increment the pointer by 2,
-			p_pFilters += 2;
-		}
-
-		// Unbind the texture
+		// Set the anisotropy level.
+		glBindTexture( GL_TEXTURE_2D, m_Id );
+		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, static_cast<GLfloat>( p_Level ) );
 		glBindTexture( GL_TEXTURE_2D, 0 );
 
-		return BIT_OK;
+		// Succeeded
+		return true;
 	}
-	*/
+
+	Vector2u32 OpenGLTexture::GetSize( ) const
+	{
+		return m_Size;
+	}
+
+	Bool OpenGLTexture::IsLoaded( ) const
+	{
+		return m_Loaded;
+	}
+
 }

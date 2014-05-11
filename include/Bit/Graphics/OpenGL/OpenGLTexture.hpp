@@ -131,13 +131,31 @@ namespace Bit
 		/// \brief Set wrapping for X axis.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrappingX( const eWarpping p_WrapX, const eWarpping p_WrapY );
+		virtual Bool SetWrappingX( const eWarpping p_WrapX );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set wrapping for Y axis.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrappingY( const eWarpping p_WrapX, const eWarpping p_WrapY );
+		virtual Bool SetWrappingY( const eWarpping p_WrapY );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set anisotropic level.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool SetAnisotropic( const Uint32 p_Level );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the texture size(width and height)
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Vector2u32 GetSize( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Check if the texture is successfully loaded.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool IsLoaded( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the ID of the OpenGL Texture.
@@ -148,7 +166,9 @@ namespace Bit
 	private:
 
 		// Private variables
-		GLuint m_Id;
+		GLuint m_Id;		///< OpenGL texture id.		
+		Bool m_Loaded;		///< Indicates if the texture is loaded.
+		Vector2u32 m_Size;	///< Texture size.
 
 	};
 }

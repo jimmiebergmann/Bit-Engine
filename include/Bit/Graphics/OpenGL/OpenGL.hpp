@@ -212,11 +212,13 @@ namespace Bit
 	{
 
 		BIT_API Bool BindOpenGLExtensions( const Uint32 p_Major, const Uint32 p_Minor );
-		BIT_API Bool IsVertexObjectAvailability( );
-		BIT_API Bool IsGeneralTextureAvailability( );
-		BIT_API Bool IsGeneralBufferAvailability( );
-		BIT_API Bool IsShaderAvailability( ); // Check if shaders are available
-		BIT_API Bool IsFramebufferAvailability( ); // Check if framebuffers/renderbuffers are available
+		BIT_API Bool IsVertexObjectAvailable( );
+		BIT_API Bool IsGeneralTextureAvailable( );
+		BIT_API Bool IsGeneralBufferAvailable( );
+		BIT_API Bool IsShaderAvailable( );				///< Check if shaders are available
+		BIT_API Bool IsFramebufferAvailable( );			///< Check if framebuffers/renderbuffers are available
+		BIT_API Bool IsAnisotropicFilterAvailable( );	///< Check if anisotropic filter is available
+		BIT_API Uint32 GetAnisotropicMaxLevel( );		///< Get the max anisotropic level.
 
 	}
 }
