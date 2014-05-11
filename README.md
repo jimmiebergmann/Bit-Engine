@@ -1,14 +1,14 @@
 Bit-Engine
 ===
 
-Bit - A bit of help(A helpful multimedia framework for Windows and <del>Linux</del>(Not yet))
+Bit - A bit of help(A helpful multimedia framework for Windows <del>and Linux</del>(not yet))
 
 Required libraries
 ---
  - X11 (Linux)
  - OpenGL
  - Winsock2 (Windows)
- - OpenAL (Not yet)
+ - OpenAL
  - <del>Freetype</del> (Not yet)
 
 Support
