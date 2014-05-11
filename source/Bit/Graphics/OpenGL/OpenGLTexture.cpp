@@ -64,10 +64,6 @@ namespace Bit
 		/*Clamp		*/ GL_CLAMP
 	};
 
-	
-
-		
-
 
 	// Constructor/destrucotr
 	OpenGLTexture::OpenGLTexture( ) :
@@ -98,30 +94,19 @@ namespace Bit
 		// Check if the image already is loaded
 		if( m_Loaded )
 		{
-			std::cout << "[TextureOpenGL::LoadFromMemory] Already loaded.\n";
+			std::cout << "[OpenGLTexture::LoadFromMemory] Already loaded.\n";
 			return false;
 		}
 
-		// Check if the formats are correct
-		/*if( p_Format < 1 || p_Format > 4 )
+		// Check if the color components per pixel is ok.
+		if( p_ColorComponentsPerPixel < 1 || p_ColorComponentsPerPixel > 4 )
 		{
-			std::cout << "[TextureOpenGL::LoadFromMemory] Wrong format.\n";
+			std::cout << "[OpenGLTexture::LoadFromMemory] Componenets per pixel error.\n";
 			return false;
 		}
-		if( p_InternalFormat < 1 || p_InternalFormat > 4 )
-		{
-			std::cout << "[TextureOpenGL::LoadFromMemory] Wrong internal format.\n";
-			return false;
-		}
-		if( p_FormatType < 1 || p_FormatType > 16 )
-		{
-			std::cout << "[TextureOpenGL::LoadFromMemory] Wrong format type.\n";
-			return false;
-		}*/
 
 		// Set the size and format
 		m_Size = p_Size;
-		//m_Format = p_Format;
 
 		// OpenGL formats
 		static const GLenum openGLTextureFormats[ 4 ] = { GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL, GL_RGB, GL_RGBA };
@@ -129,17 +114,6 @@ namespace Bit
 		// Get the needed opengl attributes
 		GLenum dataType = g_OpenGLDataTypes[ static_cast<SizeType>( p_Datatype ) ];
 		GLenum format = openGLTextureFormats[ static_cast<SizeType>( p_Format ) ];
-
-		//GLenum Format = OpenGLTextureFormats[ p_Format - 1];
-		//GLint InternalFormat = OpenGLTextureFormats[ p_InternalFormat - 1];
-	//	GLint FormatType = OpenGLTypes[ p_FormatType ];
-
-		// Make sure we are using a valid format type
-		/*if( FormatType == 0 )
-		{
-			std::cout << "[TextureOpenGL::LoadFromMemory] Parsed invalid format type.\n";
-			return BIT_ERROR;
-		}*/
 
 		// Let's create the texture
 		glGenTextures( 1, &m_Id );
@@ -172,7 +146,7 @@ namespace Bit
 		Image image;
 		if( image.LoadFromFile( p_Filename ) == false )
 		{
-			std::cout << "[TextureOpenGL::LoadFromFile] Can not load the file\n";
+			std::cout << "[OpenGLTexture::LoadFromFile] Can not load the file\n";
 			return false;
 		}
 
@@ -185,7 +159,7 @@ namespace Bit
 		// Check if the image already is loaded
 		if( m_Loaded )
 		{
-			std::cout << "[TextureOpenGL::LoadFromImage] Already loaded.\n";
+			std::cout << "[OpenGLTexture::LoadFromImage] Already loaded.\n";
 			return false;
 		}
 
@@ -193,7 +167,7 @@ namespace Bit
 		const Uint8 depth = p_Image.GetPixelDepth( );
 		if( depth != 3 && depth != 4)
 		{
-			std::cout << "[TextureOpenGL::LoadFromImage] Not a 24 or 32 bit image.\n";
+			std::cout << "[OpenGLTexture::LoadFromImage] Not a 24 or 32 bit image.\n";
 			return false;
 		}
 
@@ -202,19 +176,9 @@ namespace Bit
 		const SizeType openGLTextureIndex = depth - 3;
 		GLenum format = openGLTextureFormats[ openGLTextureIndex ];
 
-		// Get the format
-
-		//m_Format = depth - 2;
-
 		// Generate an OpenGL texture id.
 		glGenTextures( 1, &m_Id );
 		glBindTexture( GL_TEXTURE_2D, m_Id );
-
-		// Generate the mipmap ( Opengl > 1.4 style )
-		/*if( p_Mipmapping )
-		{
-			glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE ); 
-		}*/
 
 		// Set the texure data
 		m_Size = p_Image.GetSize( );

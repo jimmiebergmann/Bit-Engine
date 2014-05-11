@@ -52,6 +52,12 @@ namespace Bit
 		Version( 4, 3 ),
 		Version( 4, 4 )
 	};
+
+	static GLenum g_OpenGLCulling[ 2 ] =
+	{
+		/*FrontFace*/	GL_FRONT,
+		/*BackFace*/	GL_BACK
+	};
 	
 	OpenGLGraphicDeviceWin32::OpenGLGraphicDeviceWin32( ) :
 		m_Open( false ),
@@ -134,6 +140,12 @@ namespace Bit
 		m_Version = contextVersion;
 		m_DeviceContextHandle = p_RenderOutput.GetDeviceContextHandle( );
 
+		// Set default settings.
+		DisableDepthTest( );
+		EnableTexture( );
+		DisableFaceCulling( );
+		DisableSmoothLines( );
+
 		// Return true at success.
 		return true;
 	}
@@ -184,6 +196,47 @@ namespace Bit
 	void OpenGLGraphicDeviceWin32::ClearDepth( )
 	{
 		glClear( GL_DEPTH_BUFFER_BIT );
+	}
+
+	void OpenGLGraphicDeviceWin32::EnableDepthTest( )
+	{
+		glEnable( GL_DEPTH_TEST );
+	}
+
+	void OpenGLGraphicDeviceWin32::EnableTexture( )
+	{
+		glEnable( GL_TEXTURE_2D );
+	}
+
+	void OpenGLGraphicDeviceWin32::EnableFaceCulling( eCulling p_FaceCulling )
+	{
+		glEnable( GL_CULL_FACE );
+		glCullFace( g_OpenGLCulling[ p_FaceCulling ] );
+	}
+
+	void OpenGLGraphicDeviceWin32::EnableSmoothLines( )
+	{
+		glEnable( GL_LINE_SMOOTH );
+	}
+
+	void OpenGLGraphicDeviceWin32::DisableDepthTest( )
+	{
+		glDisable( GL_DEPTH_TEST );
+	}
+
+	void OpenGLGraphicDeviceWin32::DisableTexture( )
+	{
+		glDisable( GL_TEXTURE_2D );
+	}
+
+	void OpenGLGraphicDeviceWin32::DisableFaceCulling( )
+	{
+		glDisable( GL_CULL_FACE );
+	}
+
+	void OpenGLGraphicDeviceWin32::DisableSmoothLines( )
+	{
+		glDisable( GL_LINE_SMOOTH );
 	}
 
 	VertexArrayObject * OpenGLGraphicDeviceWin32::CreateVertexArrayObject( ) const
@@ -325,7 +378,7 @@ namespace Bit
 													Version & p_Version  )
 	{
 		// Loop backwards( the highest version first )
-		for( SizeType i = g_OpenGLVersionCount - 1; i >= 0; i-- )
+		for( Int32 i = g_OpenGLVersionCount - 1; i >= 0; i-- )
 		{
 			//  Try to open the current version, return true if it succeed.
 			if( OpenVersion( p_RenderOutput, g_OpenGLVersions[ i ] ) == true )
