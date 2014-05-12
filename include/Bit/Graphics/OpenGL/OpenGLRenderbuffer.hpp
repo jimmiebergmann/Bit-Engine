@@ -22,70 +22,68 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_WINDOW_VIDEO_MODE_HPP
-#define BIT_WINDOW_VIDEO_MODE_HPP
+#ifndef BIT_GRAPHICS_OPENGL_RENDERBUFFER_HPP
+#define BIT_GRAPHICS_OPENGL_RENDERBUFFER_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/System/Vector2.hpp>
+#include <Bit/Graphics/Renderbuffer.hpp>
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
-	/// \ingroup Window
-	/// \brief Video mode class for the window class
+	/// \ingroup Graphics
+	/// \brief OpenGL Renderbuffer base class.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VideoMode
+	class BIT_API OpenGLRenderbuffer : public Renderbuffer
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor
+		/// \brief Default constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		VideoMode( );
+		OpenGLRenderbuffer( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Constructor
-		///
-		/// \param p_Size Window size.
-		/// \param p_BitsPerPixel Bits per pixel.
-		/// \param p_SampleCount Samples per pixel. Multisampling is enabled
-		///		if p_SampleCount is larger than 1.
+		/// \brief Destructor.
 		///
 		////////////////////////////////////////////////////////////////
-		VideoMode(	const Vector2u32 & p_Size, const Uint32 p_BitsPerPixel = 32 );
+		~OpenGLRenderbuffer( );
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Load renderbuffer
+		///
+		/// \param p_Size The renderbuffer size
+		/// \param p_Format The format for representing the color components.
+		/// \param p_MultisampleLevel The number of samples in the multisample buffer.
+		///		Multisampling is not being used if p_MultisampleLevel == 0.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool Load(	const Vector2u32 p_Size,
+							const Texture::ePixelFormat p_Format,
+							const Uint32 p_MultisampleLevel = 0 );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Set the size
+		/// \brief Get the buffer's pixel format.
 		///
 		////////////////////////////////////////////////////////////////
-		void SetSize( const Vector2u32 & p_Size );
+		virtual Texture::ePixelFormat GetPixelFormat( ) const;
 
+		
 		////////////////////////////////////////////////////////////////
-		/// \brief Set the bits per pixel value
+		/// \brief Get the buffer ID.
 		///
 		////////////////////////////////////////////////////////////////
-		void SetBitsPerPixel( const Uint32 p_BitsPerPixel );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the size
-		///
-		////////////////////////////////////////////////////////////////
-		Vector2u32 GetSize( ) const;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the bits per pixel value
-		///
-		////////////////////////////////////////////////////////////////
-		Uint32 GetBitsPerPixel( ) const;
+		GLuint GetId( ) const;
 
 	private:
 
-		Vector2u32 m_Size;
-		Uint32 m_BitsPerPixel;
+		GLuint m_RenderbufferObject;			///< OpenGL framebuffer object.
+		Texture::ePixelFormat m_PixelFormat;
 
 	};
 

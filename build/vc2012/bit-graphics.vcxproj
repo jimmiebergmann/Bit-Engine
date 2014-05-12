@@ -177,6 +177,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLFramebuffer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLGraphicDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLRenderbuffer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShader.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShaderProgram.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLTexture.hpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\PngFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\PrimitiveMode.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Renderbuffer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Shader.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
@@ -201,6 +203,7 @@
     <ClCompile Include="..\..\source\Bit\Graphics\LodePng\lodepng.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLFramebuffer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLRenderbuffer.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShaderProgram.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLTexture.cpp" />

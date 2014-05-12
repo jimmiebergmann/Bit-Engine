@@ -26,12 +26,13 @@
 #define BIT_GRAPHICS_FRAMEBUFFER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Vector2.hpp>
 
 namespace Bit
 {
 	// Forward declaractions
 	class Texture;
-	class RenderBuffer;
+	class Renderbuffer;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
@@ -42,6 +43,17 @@ namespace Bit
 	{
 
 	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Attachment enumerator.
+		///
+		////////////////////////////////////////////////////////////////
+		enum eAttachment
+		{
+			Color,			///< Color attachment.
+			Depth,			///< Depth attachment.
+			DepthStencil	///< Depth and color attachment.
+		};
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Virtual destructor.
@@ -73,7 +85,34 @@ namespace Bit
 		/// \brief Attach a render buffer to the framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Attach( const RenderBuffer & p_pRenderBuffer ) = 0;
+		virtual Bool Attach( const Renderbuffer & p_pRenderBuffer ) = 0;
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Blit the framebuffer to another.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Blit(	const Framebuffer & p_Destination,
+							const eAttachment p_Attachment,
+							const Vector2u32 p_DestinationPosition,
+							const Vector2u32 p_DestinationSize,
+							const Vector2u32 p_SourcePosition,
+							const Vector2u32 p_SourceSize ) const = 0;
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Blit the framebuffer to the standard framebuffer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Blit(	const eAttachment p_Attachment,
+							const Vector2u32 p_DestinationPosition,
+							const Vector2u32 p_DestinationSize,
+							const Vector2u32 p_SourcePosition,
+							const Vector2u32 p_SourceSize ) const = 0;
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Get default framebuffer object.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual const Framebuffer & GetDefault( ) const = 0;
 
 	};
 

@@ -55,6 +55,10 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexBuffer.hpp">
       <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Renderbuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLRenderbuffer.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
@@ -87,6 +91,9 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBuffer.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLRenderbuffer.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>

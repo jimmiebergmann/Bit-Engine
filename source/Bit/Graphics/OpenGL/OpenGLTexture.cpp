@@ -67,7 +67,8 @@ namespace Bit
 
 	// Constructor/destrucotr
 	OpenGLTexture::OpenGLTexture( ) :
-		m_Id( 0 )
+		m_Id( 0 ),
+		m_Target( 0 )
 	{
 		m_Loaded = false;
 	}
@@ -85,7 +86,7 @@ namespace Bit
 
 	// General public functions
 	Bool OpenGLTexture::LoadFromMemory(	const void * p_pData, 
-										Vector2u32 p_Size,
+										const Vector2u32 p_Size,
 										const SizeType p_ColorComponentsPerPixel,
 										const ePixelFormat p_Format,
 										const DataType::eType p_Datatype,
@@ -105,6 +106,9 @@ namespace Bit
 			return false;
 		}
 
+		// Set the target
+		m_Target = GL_TEXTURE_2D;
+
 		// Set the size and format
 		m_Size = p_Size;
 
@@ -120,24 +124,24 @@ namespace Bit
 
 		// Let's create the texture
 		glGenTextures( 1, &m_Id );
-		glBindTexture( GL_TEXTURE_2D, m_Id );
+		glBindTexture( m_Target, m_Id );
 
 		// Set the data
-		glTexImage2D (	GL_TEXTURE_2D, 0, p_ColorComponentsPerPixel, p_Size.x, p_Size.y, 0,
+		glTexImage2D(	m_Target, 0, p_ColorComponentsPerPixel, p_Size.x, p_Size.y, 0,
 						format, dataType, reinterpret_cast<const GLvoid *>( p_pData ) );
 
 		// Set default filters
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+		glTexParameteri( m_Target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+		glTexParameteri( m_Target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 
 		// Generate the mipmap
 		if( p_Mipmapping )
 		{
-			glGenerateMipmap( GL_TEXTURE_2D );
+			glGenerateMipmap( m_Target );
 		}
 
 		// Unbind the texture
-		glBindTexture( GL_TEXTURE_2D, 0 );
+		glBindTexture( m_Target, 0 );
 
 		// Succeeded.
 		return m_Loaded = true;
@@ -174,6 +178,9 @@ namespace Bit
 			return false;
 		}
 
+		// Set the target
+		m_Target = GL_TEXTURE_2D;
+
 		// Get the pixel format
 		m_PixelFormat = static_cast<ePixelFormat>( depth - 1 );
 
@@ -184,29 +191,61 @@ namespace Bit
 
 		// Generate an OpenGL texture id.
 		glGenTextures( 1, &m_Id );
-		glBindTexture( GL_TEXTURE_2D, m_Id );
+		glBindTexture( m_Target, m_Id );
 
 		// Set the texure data
 		m_Size = p_Image.GetSize( );
-		glTexImage2D (	GL_TEXTURE_2D, 0, format, m_Size.x, m_Size.y, 0,
+		glTexImage2D (	m_Target, 0, format, m_Size.x, m_Size.y, 0,
 						format, GL_UNSIGNED_BYTE, reinterpret_cast<const GLvoid *>( p_Image.GetData( )) );
 
 		// Set default filers
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+		glTexParameteri( m_Target, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+		glTexParameteri( m_Target, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 
 		// Generate the mipmap
 		if( p_Mipmapping )
 		{
-			glGenerateMipmap( GL_TEXTURE_2D );
+			glGenerateMipmap( m_Target );
 		}
 
 		// Unbind the texture
-		glBindTexture( GL_TEXTURE_2D, 0 );
+		glBindTexture( m_Target, 0 );
 		
 		// Succeeded.
 		return m_Loaded = true;
 	}
+
+	Bool OpenGLTexture::LoadMultisample(	const Vector2u32 p_Size,
+											const ePixelFormat p_Format,
+											const Uint32 p_MultisampleLevel )
+	{
+		// Set the target
+		m_Target = GL_TEXTURE_2D_MULTISAMPLE;
+		m_PixelFormat = p_Format;
+
+		// OpenGL formats
+		static const GLenum openGLTextureFormats[ 4 ] = { GL_DEPTH_COMPONENT, GL_DEPTH_STENCIL, GL_RGB, GL_RGBA };
+
+		// Get the needed opengl attributes
+		GLenum format = openGLTextureFormats[ static_cast<SizeType>( p_Format ) ];
+
+		// Set the texure data
+		m_Size = p_Size;
+
+		// Generate an OpenGL texture id.
+		glGenTextures( 1, &m_Id );
+		glBindTexture( m_Target, m_Id );
+
+		glTexImage2DMultisample( m_Target , p_MultisampleLevel, format, p_Size.x, p_Size.y, GL_TRUE );
+
+		// Unbind the texture
+		glBindTexture( m_Target, 0 );
+		
+		// Succeeded.
+		return m_Loaded = true;
+	}
+
+
 
 	void OpenGLTexture::Bind( const Uint32 p_Index )
 	{
@@ -291,6 +330,16 @@ namespace Bit
 	Bool OpenGLTexture::IsLoaded( ) const
 	{
 		return m_Loaded;
+	}
+
+	GLuint OpenGLTexture::GetId( ) const
+	{
+		return m_Id;
+	}
+
+	GLenum OpenGLTexture::GetTarget( ) const
+	{
+		return m_Target;
 	}
 
 }

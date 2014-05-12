@@ -66,7 +66,7 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Bool LoadFromMemory(	const void * p_pData, 
-										Vector2u32 p_Size,
+										const Vector2u32 p_Size,
 										const SizeType p_ColorComponentsPerPixel = 4,
 										const ePixelFormat p_Format = Rgba,
 										const DataType::eType p_Datatype = DataType::Uint8,
@@ -96,6 +96,18 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Bool LoadFromImage( const Image & p_Image, const Bool p_Mipmapping = false );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Load multisample texture.
+		///
+		/// \param p_Size The image to load pixel data from.
+		/// \param p_Format The format for representing the color components.
+		/// \param p_MultisampleLevel The number of samples in the multisample texture.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool LoadMultisample(	const Vector2u32 p_Size,
+										const ePixelFormat p_Format,
+										const Uint32 p_MultisampleLevel );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Bind the texture to the given index(0 by default).
@@ -167,12 +179,19 @@ namespace Bit
 		/// \brief Get the ID of the OpenGL Texture.
 		///
 		////////////////////////////////////////////////////////////////
-		inline GLuint GetId( ) const { return m_Id; }
+		GLuint GetId( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the target of the OpenGL Texture.
+		///
+		////////////////////////////////////////////////////////////////
+		GLenum GetTarget( ) const;
 
 	private:
 
 		// Private variables
-		GLuint m_Id;				///< OpenGL texture id.		
+		GLuint m_Id;				///< OpenGL texture id.
+		GLenum m_Target;			///< OpenGL texture target.
 		Bool m_Loaded;				///< Indicates if the texture is loaded.
 		Vector2u32 m_Size;			///< Texture size.
 		ePixelFormat m_PixelFormat;	///< Pixel format.

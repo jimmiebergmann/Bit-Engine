@@ -70,6 +70,7 @@ extern PFNGLDELETEBUFFERSPROC __glDeleteBuffers;
 extern PFNGLGENBUFFERSPROC __glGenBuffers;
 
 // Framebuffers/renderbuffers, OpenGL 3.0
+extern PFNGLBLITFRAMEBUFFERPROC __glBlitFramebuffer;
 extern PFNGLBINDFRAMEBUFFERPROC __glBindFramebuffer;
 extern PFNGLBINDRENDERBUFFERPROC __glBindRenderbuffer;
 extern PFNGLCHECKFRAMEBUFFERSTATUSPROC __glCheckFramebufferStatus;
@@ -78,8 +79,11 @@ extern PFNGLDELETERENDERBUFFERSPROC __glDeleteRenderbuffers;
 extern PFNGLFRAMEBUFFERRENDERBUFFERPROC __glFramebufferRenderbuffer;
 extern PFNGLFRAMEBUFFERTEXTURE2DPROC __glFramebufferTexture2D;
 extern PFNGLGENFRAMEBUFFERSPROC __glGenFramebuffers;
-extern PFNGLGENRENDERBUFFERSPROC __glGenrRenderbuffers;
+extern PFNGLGENRENDERBUFFERSPROC __glGenRenderbuffers;
 extern PFNGLRENDERBUFFERSTORAGEPROC __glRenderbufferStorage;
+extern PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC __glRenderbufferStorageMultisample;
+extern PFNGLTEXIMAGE2DMULTISAMPLEPROC __glTexImage2DMultisample;
+
 
 // Texture functions
 extern PFNGLGENERATEMIPMAPPROC __glGenerateMipmap;
@@ -150,6 +154,8 @@ extern PFNGLUNIFORMMATRIX4FVPROC __glUniformMatrix4fv;
 #define glGenBuffers __glGenBuffers
 
 // Framebuffers/renderbuffers, OpenGL 3.0
+
+#define glBlitFramebuffer __glBlitFramebuffer
 #define glBindFramebuffer __glBindFramebuffer
 #define glBindRenderbuffer __glBindRenderbuffer
 #define glCheckFramebufferStatus __glCheckFramebufferStatus
@@ -158,8 +164,10 @@ extern PFNGLUNIFORMMATRIX4FVPROC __glUniformMatrix4fv;
 #define glFramebufferRenderbuffer __glFramebufferRenderbuffer
 #define glFramebufferTexture2D __glFramebufferTexture2D
 #define glGenFramebuffers __glGenFramebuffers
-#define glGenrRenderbuffers __glGenrRenderbuffers
+#define glGenRenderbuffers __glGenRenderbuffers
 #define glRenderbufferStorage __glRenderbufferStorage
+#define glRenderbufferStorageMultisample __glRenderbufferStorageMultisample
+#define glTexImage2DMultisample __glTexImage2DMultisample
 
 // Texture functions
 #define glGenerateMipmap __glGenerateMipmap

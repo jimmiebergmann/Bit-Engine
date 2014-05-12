@@ -26,6 +26,7 @@
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLFramebuffer.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLRenderbuffer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLVertexArray.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLVertexBuffer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
@@ -209,6 +210,11 @@ namespace Bit
 		glEnable( GL_TEXTURE_2D );
 	}
 
+	void OpenGLGraphicDeviceWin32::EnableMultisampling( )
+	{
+		glEnable( GL_MULTISAMPLE );
+	}
+
 	void OpenGLGraphicDeviceWin32::EnableFaceCulling( eCulling p_FaceCulling )
 	{
 		glEnable( GL_CULL_FACE );
@@ -243,6 +249,12 @@ namespace Bit
 	Framebuffer * OpenGLGraphicDeviceWin32::CreateFramebuffer( ) const
 	{
 		return new OpenGLFramebuffer;
+	}
+
+	
+	Renderbuffer * OpenGLGraphicDeviceWin32::CreateRenderbuffer( ) const
+	{
+		return new OpenGLRenderbuffer;
 	}
 
 	VertexArray * OpenGLGraphicDeviceWin32::CreateVertexArray( ) const

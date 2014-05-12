@@ -47,6 +47,7 @@ PFNGLDELETEBUFFERSPROC __glDeleteBuffers = NULL;
 PFNGLGENBUFFERSPROC __glGenBuffers = NULL;
 
 // Framebuffers/renderbuffers, OpenGL 3.0
+PFNGLBLITFRAMEBUFFERPROC __glBlitFramebuffer = NULL;
 PFNGLBINDFRAMEBUFFERPROC __glBindFramebuffer = NULL;
 PFNGLBINDRENDERBUFFERPROC __glBindRenderbuffer = NULL;
 PFNGLCHECKFRAMEBUFFERSTATUSPROC __glCheckFramebufferStatus = NULL;
@@ -55,8 +56,10 @@ PFNGLDELETERENDERBUFFERSPROC __glDeleteRenderbuffers = NULL;
 PFNGLFRAMEBUFFERRENDERBUFFERPROC __glFramebufferRenderbuffer = NULL;
 PFNGLFRAMEBUFFERTEXTURE2DPROC __glFramebufferTexture2D = NULL;
 PFNGLGENFRAMEBUFFERSPROC __glGenFramebuffers = NULL;
-PFNGLGENRENDERBUFFERSPROC __glGenrRenderbuffers = NULL;
+PFNGLGENRENDERBUFFERSPROC __glGenRenderbuffers = NULL;
 PFNGLRENDERBUFFERSTORAGEPROC __glRenderbufferStorage = NULL;
+PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC __glRenderbufferStorageMultisample = NULL;
+PFNGLTEXIMAGE2DMULTISAMPLEPROC __glTexImage2DMultisample = NULL;
 
 // Texture functions
 PFNGLGENERATEMIPMAPPROC __glGenerateMipmap = NULL;
@@ -200,6 +203,10 @@ namespace Bit
 			// Get the texture functions
 			if( BIT_ARB_framebuffer_object )
 			{
+
+				Ret |= ( __glBlitFramebuffer = ( PFNGLBLITFRAMEBUFFERPROC )
+					glGetProcAddress( "glBlitFramebuffer" ) ) == NULL;
+
 				Ret |= ( __glGenerateMipmap = ( PFNGLGENERATEMIPMAPPROC )
 					glGetProcAddress( "glGenerateMipmap" ) ) == NULL;
 
@@ -227,11 +234,17 @@ namespace Bit
 				Ret |= ( __glGenFramebuffers = ( PFNGLGENFRAMEBUFFERSPROC )
 					glGetProcAddress( "glGenFramebuffers" ) ) == NULL;
 
-				Ret |= ( __glGenrRenderbuffers = ( PFNGLGENRENDERBUFFERSPROC )
-					glGetProcAddress( "glGenrRenderbuffers" ) ) == NULL;
+				Ret |= ( __glGenRenderbuffers = ( PFNGLGENRENDERBUFFERSPROC )
+					glGetProcAddress( "glGenRenderbuffers" ) ) == NULL;
 
 				Ret |= ( __glRenderbufferStorage = ( PFNGLRENDERBUFFERSTORAGEPROC )
 					glGetProcAddress( "glRenderbufferStorage" ) ) == NULL;
+
+				Ret |= ( __glRenderbufferStorageMultisample = ( PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC )
+					glGetProcAddress( "glRenderbufferStorageMultisample" ) ) == NULL;
+
+				Ret |= ( __glTexImage2DMultisample = ( PFNGLTEXIMAGE2DMULTISAMPLEPROC )
+					glGetProcAddress( "glTexImage2DMultisample" ) ) == NULL;
 
 				if( !Ret )
 				{

@@ -79,7 +79,34 @@ namespace Bit
 		/// \brief Attach a render buffer to the framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Attach( const RenderBuffer & p_pRenderBuffer );
+		virtual Bool Attach( const Renderbuffer & p_pRenderBuffer );
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Blit the framebuffer to another.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Blit(	const Framebuffer & p_Destination,
+							const eAttachment p_Attachment,
+							const Vector2u32 p_DestinationPosition,
+							const Vector2u32 p_DestinationSize,
+							const Vector2u32 p_SourcePosition,
+							const Vector2u32 p_SourceSize ) const;
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Blit the framebuffer to the standard framebuffer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Blit(	const eAttachment p_Attachment,
+							const Vector2u32 p_DestinationPosition,
+							const Vector2u32 p_DestinationSize,
+							const Vector2u32 p_SourcePosition,
+							const Vector2u32 p_SourceSize ) const;
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Get default framebuffer object.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual const Framebuffer & GetDefault( ) const;
 
 		///////////////////////////////////////////////////////////////
 		/// \brief Get OpenGL framebuffer ID.
@@ -89,9 +116,10 @@ namespace Bit
 
 	private:
 
-		GLuint m_FramebufferObject;		///< OpenGL framebuffer object.
-		Uint32 m_ColorAttachmentCount;	///< Number of attached color textures/render buffers.
-		Bool m_DepthAttached;			///< Indicates if a depth texture/render buffer is attached.
+		GLuint m_FramebufferObject;						///< OpenGL framebuffer object.
+		Uint32 m_ColorAttachmentCount;					///< Number of attached color textures/render buffers.
+		Bool m_DepthAttached;							///< Indicates if a depth texture/render buffer is attached.
+		static OpenGLFramebuffer s_DefaultFramebuffer;	///< Default framebuffer
 
 	};
 

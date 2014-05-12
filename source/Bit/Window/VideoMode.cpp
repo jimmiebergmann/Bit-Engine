@@ -34,7 +34,7 @@ namespace Bit
 	{
 	}
 
-	VideoMode::VideoMode( const Vector2u32 & p_Size, const Uint32 p_BitsPerPixel ) :
+	VideoMode::VideoMode(	const Vector2u32 & p_Size, const Uint32 p_BitsPerPixel ) :
 		m_Size( p_Size ),
 		m_BitsPerPixel( p_BitsPerPixel )
 	{
