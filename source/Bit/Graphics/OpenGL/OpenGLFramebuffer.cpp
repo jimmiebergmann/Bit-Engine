@@ -29,7 +29,6 @@
 
 namespace Bit
 {
-	OpenGLFramebuffer OpenGLFramebuffer::s_DefaultFramebuffer;
 
 	static const GLenum g_OpenGLFrambufferAttachments[ 4 ] =
 	{
@@ -117,7 +116,7 @@ namespace Bit
 
 		// Attach the texture
 		glFramebufferTexture2D( GL_FRAMEBUFFER, attachment,
-								pOpenGLTexture->GetTarget( ), pOpenGLTexture->GetId( ), 0 );
+								GL_TEXTURE_2D, pOpenGLTexture->GetId( ), 0 );
 
 		// Check the framebuffer status!
 		GLenum FramebufferStatus = glCheckFramebufferStatus( GL_FRAMEBUFFER );
@@ -202,74 +201,93 @@ namespace Bit
 		return true;
 	}
 
+	
 	void OpenGLFramebuffer::Blit(	const Framebuffer & p_Destination,
-									const eAttachment p_Attachment,
-									const Vector2u32 p_DestinationPosition,
-									const Vector2u32 p_DestinationSize,
-									const Vector2u32 p_SourcePosition,
-									const Vector2u32 p_SourceSize ) const
+									const Vector2u32 p_Size,
+									const Uint32 p_Attachment ) const
 	{
-		static const GLbitfield openGLAttachments[ 3 ] =
+		// Create the opengl bitmask.
+		GLbitfield mask = 0;
+		if( p_Attachment & Color )
 		{
-			/* Color		*/ GL_COLOR_BUFFER_BIT,
-			/* Depth		*/ GL_DEPTH_BUFFER_BIT,
-			/* DepthStencil	*/ GL_STENCIL_BUFFER_BIT
-		};
-
-		const GLbitfield attachment = openGLAttachments[ p_Attachment ];
+			mask |= GL_COLOR_BUFFER_BIT;
+		}
+		if( p_Attachment & Depth )
+		{
+			mask |= GL_DEPTH_BUFFER_BIT;
+		}
+		if( p_Attachment & DepthStencil )
+		{
+			mask |= GL_DEPTH_BUFFER_BIT;
+			mask |= GL_STENCIL_BUFFER_BIT;
+		}
 
 		// Cast the texture pointer to an opengl texture
 		const OpenGLFramebuffer * pOpenGLFramebuffer =
 			reinterpret_cast< const OpenGLFramebuffer * >( &p_Destination );
 
+		// Bind the framebuffers
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_FramebufferObject);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pOpenGLFramebuffer->GetId( ) ); 
-		glBlitFramebuffer(	p_SourcePosition.x, p_SourcePosition.y,
-							p_SourceSize.x, p_SourceSize.y,
-							p_DestinationPosition.x, p_DestinationPosition.y,
-							p_DestinationSize.x, p_DestinationSize.y,
-							attachment, GL_NEAREST );
-	}
+		
+		// Blit
+		glBlitFramebuffer(	0, 0,
+							p_Size.x, p_Size.y,
+							0, 0,
+							p_Size.x, p_Size.y,
+							mask, GL_NEAREST );
 
-	void OpenGLFramebuffer::Blit(	const eAttachment p_Attachment,
-									const Vector2u32 p_DestinationPosition,
-									const Vector2u32 p_DestinationSize,
-									const Vector2u32 p_SourcePosition,
-									const Vector2u32 p_SourceSize ) const
-	{
-		static const GLbitfield openGLAttachments[ 3 ] =
-		{
-			/* Color		*/ GL_COLOR_BUFFER_BIT,
-			/* Depth		*/ GL_DEPTH_BUFFER_BIT,
-			/* DepthStencil	*/ GL_STENCIL_BUFFER_BIT
-		};
-
-		const GLbitfield attachment = openGLAttachments[ p_Attachment ];
-
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_FramebufferObject);
+		// Unbind the framebuffers
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0 );
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0 ); 
-		glBlitFramebuffer(	p_SourcePosition.x, p_SourcePosition.y,
-							p_SourceSize.x, p_SourceSize.y,
-							p_DestinationPosition.x, p_DestinationPosition.y,
-							p_DestinationSize.x, p_DestinationSize.y,
-							attachment, GL_NEAREST );
 	}
 
-	const Framebuffer & OpenGLFramebuffer::GetDefault( ) const
+	void OpenGLFramebuffer::Blit(	const Framebuffer & p_Destination,
+									const Vector2u32 p_DestinationBoundLow,
+									const Vector2u32 p_DestinationBoundHigh,
+									const Vector2u32 p_SourceBoundLow,
+									const Vector2u32 p_SourceBoundHigh,
+									const Uint32 p_Attachment ) const
 	{
-		return s_DefaultFramebuffer;
+		// Create the opengl bitmask.
+		GLbitfield mask = 0;
+		if( p_Attachment & Color )
+		{
+			mask |= GL_COLOR_BUFFER_BIT;
+		}
+		if( p_Attachment & Depth )
+		{
+			mask |= GL_DEPTH_BUFFER_BIT;
+		}
+		if( p_Attachment & DepthStencil )
+		{
+			mask |= GL_DEPTH_BUFFER_BIT;
+			mask |= GL_STENCIL_BUFFER_BIT;
+		}
+
+		// Cast the texture pointer to an opengl texture
+		const OpenGLFramebuffer * pOpenGLFramebuffer =
+			reinterpret_cast< const OpenGLFramebuffer * >( &p_Destination );
+
+		// Bind the framebuffers
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_FramebufferObject);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, pOpenGLFramebuffer->GetId( ) ); 
+		
+		// Blit
+		glBlitFramebuffer(	p_SourceBoundLow.x, p_SourceBoundLow.y,
+							p_SourceBoundHigh.x, p_SourceBoundHigh.y,
+							p_DestinationBoundLow.x, p_DestinationBoundLow.y,
+							p_DestinationBoundHigh.x, p_DestinationBoundHigh.y,
+							mask, GL_NEAREST );
+
+		// Unbind the framebuffers
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0 );
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0 ); 
 	}
 
 	GLuint OpenGLFramebuffer::GetId( ) const
 	{
 		return m_FramebufferObject;
 	}
-/*
-	void OpenGLFramebuffer::Foo( )
-	{
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_FramebufferObject);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0 ); 
-		glBlitFramebuffer(0, 0, 800, 600, 0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	}*/
 
 }

@@ -25,7 +25,6 @@
 #include <Bit/Graphics/OpenGL/Win32/OpenGLGraphicDeviceWin32.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Bit/Graphics/OpenGL/OpenGL.hpp>
-#include <Bit/Graphics/OpenGL/OpenGLFramebuffer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLRenderbuffer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLVertexArray.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLVertexBuffer.hpp>
@@ -37,6 +36,10 @@
 
 namespace Bit
 {
+
+	// Static member variables
+	OpenGLFramebuffer OpenGLGraphicDeviceWin32::s_DefaultFramebuffer;
+
 	// Global varaibles
 	// Save all the avaible opengl versions.
 	static const SizeType g_OpenGLVersionCount = 11;
@@ -304,6 +307,11 @@ namespace Bit
 	Version OpenGLGraphicDeviceWin32::GetVersion( ) const
 	{
 		return m_Version;
+	}
+
+	const Framebuffer & OpenGLGraphicDeviceWin32::GetDefaultFramebuffer( ) const
+	{
+		return s_DefaultFramebuffer;
 	}
 
 	bool OpenGLGraphicDeviceWin32::OpenVersion( const RenderWindow & p_RenderOutput,

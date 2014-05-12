@@ -50,9 +50,9 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		enum eAttachment
 		{
-			Color,			///< Color attachment.
-			Depth,			///< Depth attachment.
-			DepthStencil	///< Depth and color attachment.
+			Color = 1,			///< Color attachment.
+			Depth = 2,			///< Depth attachment.
+			DepthStencil = 4	///< Depth and color attachment.
 		};
 
 		////////////////////////////////////////////////////////////////
@@ -90,29 +90,34 @@ namespace Bit
 		///////////////////////////////////////////////////////////////
 		/// \brief Blit the framebuffer to another.
 		///
+		/// \param p_Destination The destination framebuffer.
+		/// \param p_Size The size of the area to blit, from the data position(0, 0).
+		/// \param p_Attachment Bitfield mask of the attachments to blit.
+		///		The available attachments are defined in Framebuffer::eAttachment.
+		///
 		////////////////////////////////////////////////////////////////
 		virtual void Blit(	const Framebuffer & p_Destination,
-							const eAttachment p_Attachment,
-							const Vector2u32 p_DestinationPosition,
-							const Vector2u32 p_DestinationSize,
-							const Vector2u32 p_SourcePosition,
-							const Vector2u32 p_SourceSize ) const = 0;
+							const Vector2u32 p_Size,
+							const Uint32 p_Attachment = Color ) const = 0;
 
 		///////////////////////////////////////////////////////////////
-		/// \brief Blit the framebuffer to the standard framebuffer.
+		/// \brief Blit the framebuffer to another.
+		///
+		/// \param p_Destination The destination framebuffer.
+		/// \param p_DestinationBoundLow The lower bounds of the destination.
+		/// \param p_DestinationBoundHigh The higher bounds of the destination.
+		/// \param p_SourceBoundLow The lower bounds of the source.
+		/// \param p_SourceBoundHigh The higher bounds of the source.
+		/// \param p_Attachment Bitfield mask of the attachments to blit.
+		///		The available attachments are defined in Framebuffer::eAttachment.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Blit(	const eAttachment p_Attachment,
-							const Vector2u32 p_DestinationPosition,
-							const Vector2u32 p_DestinationSize,
-							const Vector2u32 p_SourcePosition,
-							const Vector2u32 p_SourceSize ) const = 0;
-
-		///////////////////////////////////////////////////////////////
-		/// \brief Get default framebuffer object.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual const Framebuffer & GetDefault( ) const = 0;
+		virtual void Blit(	const Framebuffer & p_Destination,
+							const Vector2u32 p_DestinationBoundLow,
+							const Vector2u32 p_DestinationBoundHigh,
+							const Vector2u32 p_SourceBoundLow,
+							const Vector2u32 p_SourceBoundHigh,
+							const Uint32 p_Attachment = Color ) const = 0;
 
 	};
 

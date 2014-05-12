@@ -54,7 +54,9 @@ namespace Bit
 		/// \brief Constructor
 		///
 		////////////////////////////////////////////////////////////////
-		RenderWindowWin32( const VideoMode & p_VideoMode, const std::string & p_Title = "", const Uint32 p_Style = Style::Default );
+		RenderWindowWin32(	const VideoMode & p_VideoMode,
+							const std::string & p_Title = "",
+							const Uint32 p_Style = Style::Default );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Destructor
@@ -68,7 +70,9 @@ namespace Bit
 		/// This function may be used instead of the custom constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Open( const VideoMode & p_VideoMode, const std::string & p_Title = "", const Uint32 p_Style = Style::Default );
+		virtual Bool Open(	const VideoMode & p_VideoMode,
+							const std::string & p_Title = "",
+							const Uint32 p_Style = Style::Default );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the window.

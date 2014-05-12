@@ -131,18 +131,6 @@ namespace Bit
 		virtual Bool LoadFromImage( const Image & p_Image, const Bool p_Mipmapping = false ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Load multisample texture.
-		///
-		/// \param p_Size The size of the texture(width and height).
-		/// \param p_Format The format for representing the color components.
-		/// \param p_MultisampleLevel The number of samples in the multisample texture.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool LoadMultisample(	const Vector2u32 p_Size,
-										const ePixelFormat p_Format,
-										const Uint32 p_MultisampleLevel ) = 0;
-
-		////////////////////////////////////////////////////////////////
 		/// \brief Bind the texture to the given index(0 by default).
 		///
 		////////////////////////////////////////////////////////////////

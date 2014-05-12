@@ -29,6 +29,7 @@
 #ifdef BIT_PLATFORM_WINDOWS
 
 #include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLFramebuffer.hpp>
 
 namespace Bit
 {
@@ -281,6 +282,12 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual Version GetVersion( ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the default framebuffer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual const Framebuffer & GetDefaultFramebuffer( ) const;
+
 	private:
 
 		// Private functions
@@ -288,10 +295,11 @@ namespace Bit
 		bool OpenBestVersion( const RenderWindow & p_RenderOutput, Version & p_Version );
 
 		// Private variables
-		Bool m_Open;				///< Is the GD open.
-		Version m_Version;			///< The version of the GD.
-		HDC m_DeviceContextHandle;	///< Device context handle from the render output.
-		HGLRC m_Context;			///< The OpenGL context.
+		Bool m_Open;									///< Is the GD open.
+		Version m_Version;								///< The version of the GD.
+		HDC m_DeviceContextHandle;						///< Device context handle from the render output.
+		HGLRC m_Context;								///< The OpenGL context.
+		static OpenGLFramebuffer s_DefaultFramebuffer;	///< Default framebuffer.
 
 	};
 

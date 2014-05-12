@@ -54,7 +54,9 @@ namespace Bit
 		/// \brief Open(create) the window.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Open( const VideoMode & p_VideoMode, const std::string & p_Title, const Uint32 p_Style ) = 0;
+		virtual Bool Open(	const VideoMode & p_VideoMode,
+							const std::string & p_Title = "",
+							const Uint32 p_Style = Style::Default ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the window.
