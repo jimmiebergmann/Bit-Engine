@@ -59,6 +59,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLRenderbuffer.hpp">
       <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\ObjFile.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
@@ -96,5 +97,6 @@
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLRenderbuffer.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\ObjFile.cpp" />
   </ItemGroup>
 </Project>

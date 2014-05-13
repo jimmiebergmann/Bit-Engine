@@ -310,7 +310,7 @@ namespace Bit
 		SizeType position = 0;
 		SizeType streamPosition = 0;
 		SizeType streamStart = static_cast<SizeType>( p_Stream.tellg( ) );
-		for( SizeType y = 0; y < m_DibHeader.m_BitmapHeight; y++ )
+		for( Int32 y = 0; y < m_DibHeader.m_BitmapHeight; y++ )
 		{
 			// Calculate the offsets
 			position = y * rowSize;
