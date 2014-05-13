@@ -26,6 +26,7 @@
 #define BIT_AUDIO_OPENAL_SOUND_BUFFER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/Audio/SoundBuffer.hpp>
 #include <Bit/Audio/OpenAL/OpenAL.hpp>
 #include <string>
@@ -40,7 +41,7 @@ namespace Bit
 	/// This class loads audio files into a buffer.
 	/// 
 	////////////////////////////////////////////////////////////////
-	class BIT_API OpenALSoundBuffer : public SoundBuffer
+	class BIT_API OpenALSoundBuffer : public SoundBuffer, NonCopyable
 	{
 
 	public:

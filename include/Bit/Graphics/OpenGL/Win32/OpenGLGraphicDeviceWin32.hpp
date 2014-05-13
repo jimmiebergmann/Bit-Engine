@@ -29,6 +29,7 @@
 #ifdef BIT_PLATFORM_WINDOWS
 
 #include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLFramebuffer.hpp>
 
 namespace Bit
@@ -45,7 +46,7 @@ namespace Bit
 	///	 -	Smooth lines disabled.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API OpenGLGraphicDeviceWin32 : public GraphicDevice
+	class BIT_API OpenGLGraphicDeviceWin32 : public GraphicDevice, NonCopyable
 	{
 
 	public:

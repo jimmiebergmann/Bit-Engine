@@ -22,6 +22,7 @@
 #define BIT_GRAPHICS_PNG_FILE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <string>
 
@@ -36,7 +37,7 @@ namespace Bit
 	/// Currently not supporting RLE compression.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API PngFile
+	class BIT_API PngFile : public NonCopyable
 	{
 
 	public:

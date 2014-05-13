@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Build.hpp" />
+    <ClInclude Include="..\..\include\Bit\NonCopyable.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Angle.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Bencode.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Reader.hpp" />

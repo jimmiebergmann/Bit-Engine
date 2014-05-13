@@ -26,6 +26,7 @@
 #define BIT_GRAPHICS_IMAGE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <Bit/System/Vector3.hpp>
 #include <string>
@@ -95,7 +96,7 @@ namespace Bit
 	/// \see Texture
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Image
+	class BIT_API Image : public NonCopyable
 	{
 
 	public:

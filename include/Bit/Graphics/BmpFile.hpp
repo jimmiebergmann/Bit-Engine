@@ -22,6 +22,7 @@
 #define BIT_GRAPHICS_BMP_FILE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <string>
 
 namespace Bit
@@ -35,7 +36,7 @@ namespace Bit
 	/// Currently not supporting RLE compression.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API BmpFile
+	class BIT_API BmpFile : public NonCopyable
 	{
 
 	public:

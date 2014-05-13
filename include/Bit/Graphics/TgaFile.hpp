@@ -26,6 +26,7 @@
 #define BIT_GRAPHICS_TGA_FILE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <string>
 
 namespace Bit
@@ -41,7 +42,7 @@ namespace Bit
 	/// Currently not supporting 15 bit pixel data.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API TgaFile
+	class BIT_API TgaFile : public NonCopyable
 	{
 
 	public:

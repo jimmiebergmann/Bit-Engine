@@ -28,6 +28,7 @@
 #include <Bit/Build.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Bit/Window/Window.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Windows.h>
 #include <queue>
 
@@ -39,7 +40,7 @@ namespace Bit
 	/// \brief Render window for win32
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API RenderWindowWin32 : public Window
+	class BIT_API RenderWindowWin32 : public Window, NonCopyable
 	{
 
 	public:

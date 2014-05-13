@@ -26,6 +26,7 @@
 #define BIT_AUDIO_WAVE_FILE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <string>
 
 namespace Bit
@@ -36,7 +37,7 @@ namespace Bit
 	/// \brief Micro$oft WAVE file class.
 	/// 
 	////////////////////////////////////////////////////////////////
-	class BIT_API WaveFile
+	class BIT_API WaveFile : public NonCopyable
 	{
 
 	public:

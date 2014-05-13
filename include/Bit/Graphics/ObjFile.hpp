@@ -22,6 +22,7 @@
 #define BIT_GRAPHICS_PNG_FILE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/System/Vector3.hpp>
 #include <string>
 #include <vector>
@@ -36,7 +37,7 @@ namespace Bit
 	/// Contains the material data as well.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API ObjFile
+	class BIT_API ObjFile : public NonCopyable
 	{
 
 	public:

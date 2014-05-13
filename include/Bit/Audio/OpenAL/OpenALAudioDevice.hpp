@@ -26,6 +26,7 @@
 #define BIT_AUDIO_OPENAL_AUDIO_DEVICE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/Audio/AudioDevice.hpp>
 #include <Bit/Audio/OpenAL/OpenAL.hpp>
 
@@ -41,7 +42,7 @@ namespace Bit
 	/// will work in any 3D scene.
 	/// 
 	////////////////////////////////////////////////////////////////
-	class BIT_API OpenALAudioDevice : public AudioDevice
+	class BIT_API OpenALAudioDevice : public AudioDevice, NonCopyable
 	{
 
 	public:

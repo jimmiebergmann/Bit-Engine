@@ -46,6 +46,7 @@
     <ClInclude Include="..\..\include\Bit\System\KeyboardBase.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Time.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Version.hpp" />
+    <ClInclude Include="..\..\include\Bit\NonCopyable.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
