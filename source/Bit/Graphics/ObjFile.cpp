@@ -165,13 +165,78 @@ namespace Bit
 
 	Bool ObjFile::LoadFromStream( std::istream & p_Stream )
 	{
+		const SizeType maxLineLength = 128;
+		char line[ maxLineLength ];
+		std::string pre;
+		pre.reserve( 32 );
+
+		// Add an object to the obj file class.
+		//m_Objects.push_back(
+
+
+		// Keep on looping until we reach the end of the file.
+		while( p_Stream.eof( ) == false )
+		{
+			// Get the first word on the current line.
+			p_Stream >> pre;
+
+			// Get the current line
+			p_Stream.getline( line, maxLineLength );
+
+			// Parse the line, check the first character
+			switch( pre[ 0 ] )
+			{
+				// mtllib
+				case 'm':
+				{
+				}
+				break;
+				// usemtl
+				case 'u':
+				{
+				}
+				break;
+				// Object
+				case 'o':
+				{
+				}
+				break;
+				// Group
+				case 'g':
+				{
+				}
+				break;
+				// Smoothing group
+				case 's':
+				{
+				}
+				break;
+				// Vertex position/texture coord/normal
+				case 'v':
+				{
+				}
+				break;
+				// face normal
+				case 'f':
+				{
+				}
+				break;
+				// Unknown
+				default:
+				{
+				}
+				break;
+			}
+
+		}
+
 		return false;
 	}
 
 	Bool ObjFile::LoadFromFile( const std::string & p_Filename )
 	{
 		// Open the file.
-		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
+		std::ifstream fin( p_Filename.c_str( ) );
 		if( fin.is_open( ) == false )
 		{
 			std::cout << "[BmpFile::LoadFromFile] Can not open the file. " << std::endl;
