@@ -52,6 +52,18 @@ namespace Bit
 	{
 	}
 
+	ObjFile::MaterialGroup::~MaterialGroup( )
+	{
+		for( FaceVector::size_type i = 0; i < m_FlatFaces.size( ); i++ )
+		{
+			delete m_FlatFaces[ i ];
+		}
+		for( FaceVector::size_type i = 0; i < m_SmoothFaces.size( ); i++ )
+		{
+			delete m_SmoothFaces[ i ];
+		}
+	}
+
 	const std::string & ObjFile::MaterialGroup::GetMaterialName( ) const
 	{
 		return m_MaterialName;
@@ -59,12 +71,12 @@ namespace Bit
 
 	const ObjFile::Face & ObjFile::MaterialGroup::GetFlatFace( const SizeType p_Index ) const
 	{
-		return m_FlatFaces[ p_Index ];
+		return *m_FlatFaces[ p_Index ];
 	}
 
 	const ObjFile::Face & ObjFile::MaterialGroup::GetSmoothFace( const SizeType p_Index ) const
 	{
-		return m_SmoothFaces[ p_Index ];
+		return *m_SmoothFaces[ p_Index ];
 	}
 
 	SizeType ObjFile::MaterialGroup::GetFlatFaceCount( ) const
@@ -83,9 +95,22 @@ namespace Bit
 	{
 	}
 
+	ObjFile::ObjectGroup::~ObjectGroup( )
+	{
+		for( MaterialGroupVector::size_type i = 0; i < m_MaterialGroups.size( ); i++ )
+		{
+			delete m_MaterialGroups[ i ];
+		}
+	}
+
+	const std::string & ObjFile::ObjectGroup::GetName( ) const
+	{
+		return m_Name;
+	}
+
 	const ObjFile::MaterialGroup & ObjFile::ObjectGroup::GetMaterialGroup( const SizeType p_Index ) const
 	{
-		return m_MaterialGroups[ p_Index ];
+		return *m_MaterialGroups[ p_Index ];
 	}
 
 	SizeType ObjFile::ObjectGroup::GetMaterialGroupCount( ) const
@@ -97,6 +122,19 @@ namespace Bit
 	// Object class
 	ObjFile::Object::Object( )
 	{
+	}
+
+	ObjFile::Object::~Object( )
+	{
+		for( ObjectGroupVector::size_type i = 0; i < m_ObjectGroups.size( ); i++ )
+		{
+			delete m_ObjectGroups[ i ];
+		}
+	}
+
+	const std::string & ObjFile::Object::GetName( ) const
+	{
+		return m_Name;
 	}
 
 	const Vector3f32 & ObjFile::Object::GetVertex( const SizeType p_Index ) const
@@ -116,7 +154,7 @@ namespace Bit
 
 	const ObjFile::ObjectGroup & ObjFile::Object::GetObjectGroup( const SizeType p_Index ) const
 	{
-		return m_ObjectGroups[ p_Index ];
+		return *m_ObjectGroups[ p_Index ];
 	}
 
 	SizeType ObjFile::Object::GetVertexCount( ) const
@@ -148,13 +186,17 @@ namespace Bit
 
 	ObjFile::~ObjFile( )
 	{
+		for( ObjectVector::size_type i = 0; i < m_Objects.size( ); i++ )
+		{
+			delete m_Objects[ i ];
+		}
 	}
 
 	Bool ObjFile::LoadFromMemory( const std::string & p_Memory )
 	{
 		// Load a string stream
 		std::stringstream ss;
-		ss.str( p_Memory );
+		ss.rdbuf( )->pubsetbuf( const_cast<char*>( p_Memory.c_str( ) ), p_Memory.size( ) );
 
 		// Read the stream
 		Bool status = LoadFromStream( ss );
@@ -167,18 +209,41 @@ namespace Bit
 	{
 		const SizeType maxLineLength = 128;
 		char line[ maxLineLength ];
+		char character;
 		std::string pre;
 		pre.reserve( 32 );
+		std::string faceGroup;
+		faceGroup.reserve( 32 );
 
-		// Add an object to the obj file class.
-		//m_Objects.push_back(
+		// Variables for checking if we've found different groups
+		Bool foundObject = false;
+		Bool foundObjectGroup = false;
+		Bool foundMaterialGroup = false;
 
+		// Create a new object
+		// pCurrentObject is always pointing to the current object.
+		Object * pCurrentObject = new Object;
+		ObjectGroup * pCurrentObjectGroup = new ObjectGroup;
+		MaterialGroup * pCurrentMaterialGroup = new MaterialGroup;
+		MaterialGroup::FaceVector * pCurrentSmoothGroup = &pCurrentMaterialGroup->m_SmoothFaces;
+		pCurrentObjectGroup->m_MaterialGroups.push_back( pCurrentMaterialGroup );
+		pCurrentObject->m_ObjectGroups.push_back( pCurrentObjectGroup );
+		m_Objects.push_back( pCurrentObject );
 
 		// Keep on looping until we reach the end of the file.
 		while( p_Stream.eof( ) == false )
 		{
 			// Get the first word on the current line.
 			p_Stream >> pre;
+
+			// Error check the stream.
+			if( p_Stream.eof( ) )
+			{
+				break;
+			}
+
+			// Get a single character, in order to get rid of the space( NOT necessary? )
+			p_Stream.get( character );
 
 			// Get the current line
 			p_Stream.getline( line, maxLineLength );
@@ -189,36 +254,176 @@ namespace Bit
 				// mtllib
 				case 'm':
 				{
-				}
-				break;
-				// usemtl
-				case 'u':
-				{
+					if( pre == "mtllib" )
+					{
+						m_MaterialFilename = line;
+					}
 				}
 				break;
 				// Object
 				case 'o':
 				{
+					// Make sure that the rest of the line is fine.
+					if( line[ 0 ] == 0 )
+					{
+						// Ignore the line.
+						break;
+					}
+
+					// Create a new object
+					if( foundObject )
+					{
+						pCurrentObject = new Object;
+						pCurrentObjectGroup = new ObjectGroup;
+						pCurrentMaterialGroup = new MaterialGroup;
+						pCurrentSmoothGroup = &pCurrentMaterialGroup->m_SmoothFaces;
+						pCurrentObjectGroup->m_MaterialGroups.push_back( pCurrentMaterialGroup );
+						pCurrentObject->m_ObjectGroups.push_back( pCurrentObjectGroup );
+						m_Objects.push_back( pCurrentObject );		
+					}
+
+					// Set the name of the object
+					pCurrentObject->m_Name = line;
+
+					// Set the found object flag to true.
+					// Reset some other flags as well.
+					foundObject = true;
+					foundObjectGroup = false;
+					foundMaterialGroup = false;
 				}
 				break;
 				// Group
 				case 'g':
 				{
+					// Create a new object group
+					if( foundObjectGroup )
+					{
+						pCurrentObjectGroup = new ObjectGroup;
+						pCurrentMaterialGroup = new MaterialGroup;
+						pCurrentSmoothGroup = &pCurrentMaterialGroup->m_SmoothFaces;
+						pCurrentObjectGroup->m_MaterialGroups.push_back( pCurrentMaterialGroup );
+						pCurrentObject->m_ObjectGroups.push_back( pCurrentObjectGroup );
+					}
+
+					// Set the name of the object group
+					pCurrentObjectGroup->m_Name = line;
+
+					// Set the found object group flag to true.
+					// Reset some other flags as well.
+					foundObjectGroup = true;
+					foundMaterialGroup = false;
+				}
+				break;
+				// usemtl
+				case 'u':
+				{
+					// Create a new material
+					if( foundMaterialGroup )
+					{
+						pCurrentMaterialGroup = new MaterialGroup;
+						pCurrentSmoothGroup = &pCurrentMaterialGroup->m_SmoothFaces;
+						pCurrentObjectGroup->m_MaterialGroups.push_back( pCurrentMaterialGroup );
+					}
+
+					// Set the name of the object group
+					pCurrentMaterialGroup->m_MaterialName = line;
+
+					// Set the found object group flag to true.
+					// Reset some other flags as well.
+					foundMaterialGroup = true;
 				}
 				break;
 				// Smoothing group
 				case 's':
 				{
+					// Set the smooth group pointer
+					if( strcmp( line, "0" ) == 0 || strcmp( line, "off" ) == 0 )
+					{
+						pCurrentSmoothGroup = &pCurrentMaterialGroup->m_FlatFaces;
+					}
+					else
+					{
+						pCurrentSmoothGroup = &pCurrentMaterialGroup->m_SmoothFaces;
+					}
 				}
 				break;
 				// Vertex position/texture coord/normal
 				case 'v':
 				{
+					if( pre == "v" )
+					{
+						std::stringstream parser( line );
+						Vector3f32 coord;
+						parser >> coord.x;
+						parser >> coord.y;
+						parser >> coord.z;
+						pCurrentObject->m_Vertices.push_back( coord );
+					}
+					else if( pre == "vt")
+					{
+						std::stringstream parser( line );
+						Vector3f32 coord;
+						parser >> coord.x;
+						parser >> coord.y;
+						parser >> coord.z;
+						pCurrentObject->m_TextureCoords.push_back( coord );
+					}
+					else if( pre == "vn" )
+					{
+						std::stringstream parser( line );
+						Vector3f32 coord;
+						parser >> coord.x;
+						parser >> coord.y;
+						parser >> coord.z;
+						pCurrentObject->m_Normals.push_back( coord );
+					}
 				}
 				break;
 				// face normal
 				case 'f':
 				{
+					// Prepare the face parser
+					std::stringstream parser( line );
+					Face * pFace = new Face;
+					pCurrentSmoothGroup->push_back( pFace );
+
+					// Read every single index group in the current face.
+					while( parser.eof( ) == false )
+					{
+						parser >> faceGroup;
+						FaceCorner faceCorner;
+
+						// Parse the face group
+						if( sscanf( faceGroup.c_str( ), "%i/%i/%i",
+							&faceCorner.VertexIndex,
+							&faceCorner.TextureCoordIndex,
+							&faceCorner.NormalIndex ) == 3 )
+						{
+							pFace->m_FaceCorners.push_back( faceCorner );
+						}
+						else if( sscanf( faceGroup.c_str( ), "%i//%i",
+							&faceCorner.VertexIndex,
+							&faceCorner.NormalIndex ) == 2 )
+						{
+							faceCorner.TextureCoordIndex = -1;
+							pFace->m_FaceCorners.push_back( faceCorner );
+						}
+						else if( sscanf( faceGroup.c_str( ), "%i/%i",
+							&faceCorner.VertexIndex,
+							&faceCorner.TextureCoordIndex ) == 2 )
+						{
+							faceCorner.NormalIndex = -1;
+							pFace->m_FaceCorners.push_back( faceCorner );
+						}
+						else if( sscanf( faceGroup.c_str( ), "%i",
+							&faceCorner.VertexIndex ) == 1 )
+						{
+							faceCorner.TextureCoordIndex = -1;
+							faceCorner.NormalIndex = -1;
+							pFace->m_FaceCorners.push_back( faceCorner );
+						}
+						
+					}
 				}
 				break;
 				// Unknown
@@ -227,10 +432,10 @@ namespace Bit
 				}
 				break;
 			}
-
 		}
 
-		return false;
+		// Succeeded.
+		return true;
 	}
 
 	Bool ObjFile::LoadFromFile( const std::string & p_Filename )
@@ -243,11 +448,28 @@ namespace Bit
 			return false;
 		}
 
-		// Read the stream
-		Bool status = LoadFromStream( fin );
+		// Check the filesize
+		fin.seekg( 0, std::ifstream::end );
+		SizeType fileSize = static_cast<SizeType>( fin.tellg( ) );
+		fin.seekg( 0, std::ifstream::beg );
+
+		// Create a buffer
+		char * pBuffer = new char[ fileSize + 1 ];
+		fin.read( pBuffer, fileSize );
+		pBuffer[ fileSize ] = 0;
 
 		// Close the file
 		fin.close( );
+
+		// Create a stream
+		std::stringstream       ss;
+		ss.write( pBuffer, fileSize );
+
+		// Delete buffer
+		delete [ ] pBuffer;
+
+		// Read the stream
+		Bool status = LoadFromStream( ss );
 
 		// Return the status
 		return status;
@@ -307,6 +529,13 @@ namespace Bit
 
 	void ObjFile::Clear( )
 	{
+		m_MaterialFilename = "";
+
+		for( ObjectVector::size_type i = 0; i < m_Objects.size( ); i++ )
+		{
+			delete m_Objects[ i ];
+		}
+		m_Objects.clear( );
 	}
 
 	const std::string & ObjFile::GetMaterialFilename( ) const
@@ -316,7 +545,7 @@ namespace Bit
 
 	ObjFile::Object & ObjFile::GetObject( const SizeType p_Index )
 	{
-		return m_Objects[ p_Index ];
+		return *m_Objects[ p_Index ];
 	}
 
 	SizeType ObjFile::GetObjectCount( ) const

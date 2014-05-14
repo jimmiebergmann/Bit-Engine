@@ -85,7 +85,6 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			SizeType GetFaceCornerCount( ) const;
 
-
 		private:
 
 			// Private typedefs
@@ -113,6 +112,12 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			MaterialGroup( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Destructor
+			///
+			////////////////////////////////////////////////////////////////
+			~MaterialGroup( );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get material name.
@@ -147,7 +152,7 @@ namespace Bit
 		private:
 
 			// Private typedefs
-			typedef std::vector<Face> FaceVector;
+			typedef std::vector<Face *> FaceVector;
 
 			// Private variables
 			std::string m_MaterialName;
@@ -173,6 +178,18 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			ObjectGroup( );
+			
+			////////////////////////////////////////////////////////////////
+			/// \brief Destructor
+			///
+			////////////////////////////////////////////////////////////////
+			~ObjectGroup( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get group name.
+			///
+			////////////////////////////////////////////////////////////////
+			const std::string & GetName( ) const;	
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get material group.
@@ -189,9 +206,10 @@ namespace Bit
 		private:
 
 			// Private typedefs
-			typedef std::vector<MaterialGroup> MaterialGroupVector;
+			typedef std::vector<MaterialGroup *> MaterialGroupVector;
 
 			// Private variables
+			std::string m_Name;
 			MaterialGroupVector m_MaterialGroups;
 
 		};
@@ -213,6 +231,18 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Object( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Destructor
+			///
+			////////////////////////////////////////////////////////////////
+			~Object( );
+			
+			////////////////////////////////////////////////////////////////
+			/// \brief Get object name.
+			///
+			////////////////////////////////////////////////////////////////
+			const std::string & GetName( ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get vertex.
@@ -268,9 +298,10 @@ namespace Bit
 			typedef std::vector<Vector3f32> Vertices;
 			typedef std::vector<Vector3f32> TextureCoords;
 			typedef std::vector<Vector3f32> Normals;
-			typedef std::vector<ObjectGroup> ObjectGroupVector;
+			typedef std::vector<ObjectGroup *> ObjectGroupVector;
 
 			// Private variables
+			std::string m_Name;
 			Vertices m_Vertices;
 			TextureCoords m_TextureCoords;
 			Normals m_Normals;
@@ -375,7 +406,7 @@ namespace Bit
 	private:
 
 		// Private typedefs
-		typedef std::vector< Object > ObjectVector;
+		typedef std::vector<Object *> ObjectVector;
 
 		// Private variables
 		std::string m_MaterialFilename;
