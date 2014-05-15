@@ -214,6 +214,8 @@ namespace Bit
 		pre.reserve( 32 );
 		std::string faceGroup;
 		faceGroup.reserve( 32 );
+		Vector3f32 coord;
+		Uint32 commonFaceCount = 0;
 
 		// Variables for checking if we've found different groups
 		Bool foundObject = false;
@@ -237,7 +239,7 @@ namespace Bit
 			p_Stream >> pre;
 
 			// Error check the stream.
-			if( p_Stream.eof( ) )
+			if( pre.size( ) == 0 || p_Stream.eof( ) )
 			{
 				break;
 			}
@@ -350,32 +352,37 @@ namespace Bit
 				// Vertex position/texture coord/normal
 				case 'v':
 				{
-					if( pre == "v" )
+					if( pre.size( ) < 2 )
 					{
-						std::stringstream parser( line );
-						Vector3f32 coord;
-						parser >> coord.x;
-						parser >> coord.y;
-						parser >> coord.z;
-						pCurrentObject->m_Vertices.push_back( coord );
+						if( sscanf( line, "%f %f %f",
+							&coord.x, &coord.y, &coord.z ) == 3 )
+						{
+							pCurrentObject->m_Vertices.push_back( coord );
+						}
 					}
-					else if( pre == "vt")
+					else
 					{
-						std::stringstream parser( line );
-						Vector3f32 coord;
-						parser >> coord.x;
-						parser >> coord.y;
-						parser >> coord.z;
-						pCurrentObject->m_TextureCoords.push_back( coord );
-					}
-					else if( pre == "vn" )
-					{
-						std::stringstream parser( line );
-						Vector3f32 coord;
-						parser >> coord.x;
-						parser >> coord.y;
-						parser >> coord.z;
-						pCurrentObject->m_Normals.push_back( coord );
+						switch( pre[ 1 ] )
+						{
+							case 't':
+							{
+								if( sscanf( line, "%f %f %f",
+									&coord.x, &coord.y, &coord.z ) == 3 )
+								{
+									pCurrentObject->m_TextureCoords.push_back( coord );
+								}
+							}
+							break;
+							case 'n':
+							{
+								if( sscanf( line, "%f %f %f",
+									&coord.x, &coord.y, &coord.z ) == 3 )
+								{
+									pCurrentObject->m_Normals.push_back( coord );
+								}
+							}
+							break;
+						}
 					}
 				}
 				break;
@@ -387,9 +394,19 @@ namespace Bit
 					Face * pFace = new Face;
 					pCurrentSmoothGroup->push_back( pFace );
 
+					// Reserve space for faces
+					pFace->m_FaceCorners.reserve( commonFaceCount );
+
+					// Reset the common face counter
+					commonFaceCount = 0;
+
 					// Read every single index group in the current face.
 					while( parser.eof( ) == false )
 					{
+						// Increment the face counter
+						commonFaceCount++;
+
+						// Get the face corner group
 						parser >> faceGroup;
 						FaceCorner faceCorner;
 
@@ -447,7 +464,7 @@ namespace Bit
 			std::cout << "[BmpFile::LoadFromFile] Can not open the file. " << std::endl;
 			return false;
 		}
-
+/*
 		// Check the filesize
 		fin.seekg( 0, std::ifstream::end );
 		SizeType fileSize = static_cast<SizeType>( fin.tellg( ) );
@@ -457,7 +474,7 @@ namespace Bit
 		char * pBuffer = new char[ fileSize + 1 ];
 		fin.read( pBuffer, fileSize );
 		pBuffer[ fileSize ] = 0;
-
+		
 		// Close the file
 		fin.close( );
 
@@ -470,6 +487,11 @@ namespace Bit
 
 		// Read the stream
 		Bool status = LoadFromStream( ss );
+*/
+
+		Bool status = LoadFromStream( fin );
+		fin.close( );
+
 
 		// Return the status
 		return status;
@@ -495,7 +517,200 @@ namespace Bit
 
 	Bool ObjFile::SaveToStream( std::ostream & p_Stream )
 	{
-		return false;
+		p_Stream << "#Bit Engine v" << BIT_VERSION_MAJOR << "." << BIT_VERSION_MINOR << "\n";
+		p_Stream << "#https://github.com/jimmiebergmann/Bit-Engine\n";
+
+		// Write the material if any
+		if( m_MaterialFilename.size( ) )
+		{
+			p_Stream << "mtllib " << m_MaterialFilename << "\n";
+		}
+
+		// Write all the objects
+		for( ObjectVector::size_type i = 0; i < m_Objects.size( ); i++ )
+		{
+			// Get the current object
+			Object * pObject = m_Objects[ i ];
+
+			// Write the "o" keyword if there's any name.
+			if( pObject->m_Name.size( ) )
+			{
+				p_Stream << "o " << pObject->m_Name << "\n";
+			}
+
+			// Write all the verticies
+			for( Object::Vertices::size_type j = 0; j < pObject->m_Vertices.size( ); j++ )
+			{
+				p_Stream << "v ";
+				p_Stream << pObject->m_Vertices[ j ].x << " ";
+				p_Stream << pObject->m_Vertices[ j ].y << " ";
+				p_Stream << pObject->m_Vertices[ j ].z << "\n";
+			}
+
+			// Write all the texture coords
+			for( Object::Vertices::size_type j = 0; j < pObject->m_TextureCoords.size( ); j++ )
+			{
+				p_Stream << "v ";
+				p_Stream << pObject->m_TextureCoords[ j ].x << " ";
+				p_Stream << pObject->m_TextureCoords[ j ].y << " ";
+				p_Stream << pObject->m_TextureCoords[ j ].z << "\n";
+			}
+
+			// Write all the normals
+			for( Object::Vertices::size_type j = 0; j < pObject->m_Normals.size( ); j++ )
+			{
+				p_Stream << "v ";
+				p_Stream << pObject->m_Normals[ j ].x << " ";
+				p_Stream << pObject->m_Normals[ j ].y << " ";
+				p_Stream << pObject->m_Normals[ j ].z << "\n";
+			}
+
+			// Write all the object groups
+			for( Object::ObjectGroupVector::size_type j = 0; j < pObject->m_ObjectGroups.size( ); j++ )
+			{
+				// Get the current object group
+				ObjectGroup * pObjectGroup = pObject->m_ObjectGroups[ j ];
+
+				// Write the "g" keyword if there's any name.
+				if( pObjectGroup->m_Name.size( ) )
+				{
+					p_Stream << "g " << pObjectGroup->m_Name << "\n";
+				}
+
+				// Write the materials
+				for( ObjectGroup::MaterialGroupVector::size_type k = 0; k < pObjectGroup->m_MaterialGroups.size( ); k++ )
+				{
+					// Get the material
+					MaterialGroup * pMaterialGroup = pObjectGroup->m_MaterialGroups[ k ];
+
+					// Write the material keyname if any
+					if( pMaterialGroup->m_MaterialName.size( ) )
+					{
+						p_Stream << "usemtl " << pMaterialGroup->m_MaterialName << "\n";
+
+						// Write the flat faces 
+						if( pMaterialGroup->m_FlatFaces.size( ) )
+						{
+							p_Stream << "s off\n";
+						}
+						for( MaterialGroup::FaceVector::size_type l = 0; l < pMaterialGroup->m_FlatFaces.size( ); l++ )
+						{
+							// Get the face
+							Face * pFace = pMaterialGroup->m_FlatFaces[ l ];
+
+							// Write all the face corners
+							if( pFace->m_FaceCorners.size( ) )
+							{
+								p_Stream << "f ";
+							}
+							for( Face::FaceCornerVector::size_type m = 0; m < pFace->m_FaceCorners.size( ); m++ )
+							{
+								FaceCorner * pCorner = &(pFace->m_FaceCorners[ m ]);
+
+								// Write the vertex
+								if( pCorner->VertexIndex > 0 )
+								{
+									p_Stream << pCorner->VertexIndex;
+								}
+
+								if( pCorner->TextureCoordIndex > 0 || pCorner->NormalIndex > 0 )
+								{
+									p_Stream << "/";
+								}
+
+								// Write the texture coordinate
+								if( pCorner->TextureCoordIndex > 0 )
+								{
+									p_Stream << pCorner->TextureCoordIndex;
+								}
+
+								if( pCorner->NormalIndex > 0 )
+								{
+									p_Stream << "/";
+								}
+
+								// Write the normal
+								if( pCorner->NormalIndex > 0 )
+								{
+									p_Stream << pCorner->NormalIndex;
+								}
+
+								// Write a space
+								p_Stream << " ";
+
+							}
+
+							// Write a new line
+							p_Stream << "\n";
+
+						} // End of flat faces
+
+
+						// Write the smooth faces 
+						if( pMaterialGroup->m_SmoothFaces.size( ) )
+						{
+							p_Stream << "s 1\n";
+						}
+						for( MaterialGroup::FaceVector::size_type l = 0; l < pMaterialGroup->m_SmoothFaces.size( ); l++ )
+						{
+							// Get the face
+							Face * pFace = pMaterialGroup->m_SmoothFaces[ l ];
+
+							// Write all the face corners
+							if( pFace->m_FaceCorners.size( ) )
+							{
+								p_Stream << "f ";
+							}
+							for( Face::FaceCornerVector::size_type m = 0; m < pFace->m_FaceCorners.size( ); m++ )
+							{
+								FaceCorner * pCorner = &(pFace->m_FaceCorners[ m ]);
+
+								// Write the vertex
+								if( pCorner->VertexIndex> 0 )
+								{
+									p_Stream << pCorner->VertexIndex;
+								}
+
+								if( pCorner->TextureCoordIndex > 0 || pCorner->NormalIndex> 0 )
+								{
+									p_Stream << "/";
+								}
+
+								// Write the texture coordinate
+								if( pCorner->TextureCoordIndex > 0 )
+								{
+									p_Stream << pCorner->TextureCoordIndex;
+								}
+
+								if( pCorner->NormalIndex > 0 )
+								{
+									p_Stream << "/";
+								}
+
+								// Write the normal
+								if( pCorner->NormalIndex > 0 )
+								{
+									p_Stream << pCorner->NormalIndex;
+								}
+
+								// Write a space
+								p_Stream << " ";
+
+							}
+
+							// Write a new line
+							p_Stream << "\n";
+
+						} // End of smooth faces
+
+					}
+
+				} // End of material groups
+
+			} // End of object groups
+		}
+
+		return true;
 	}
 
 	Bool ObjFile::SaveToFile( const std::string & p_Filename )
