@@ -22,29 +22,24 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_MODEL_SKELETON_HPP
-#define BIT_GRAPHICS_MODEL_SKELETON_HPP
+#ifndef BIT_GRAPHICS_MODEL_VERTEX_ANIMATION_HPP
+#define BIT_GRAPHICS_MODEL_VERTEX_ANIMATION_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Graphics/Model/Skeleton.hpp>
+#include <Bit/Graphics/Model/Animation.hpp>
 #include <vector>
 
 namespace Bit
 {
 
-	// Forward declaractions
-	class Animation;
-	class VertexAnimation;
-	class Bone;
-
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief 3D model skeleton class.
+	/// \brief Vertex animation class.
 	///
-	/// \see Model
+	/// \see Animation
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Skeleton
+	class BIT_API VertexAnimation : public Animation
 	{
 
 	public:
@@ -53,71 +48,75 @@ namespace Bit
 		/// \brief Default constructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		Skeleton( );
+		VertexAnimation( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Destructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		~Skeleton( );
+		virtual ~VertexAnimation( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Create and add vertex animation.
+		/// \brief Create and add an animation track.
 		///
-		/// \return Pointer to the created key frame animation
+		/// \return Pointer to the created animation track
 		///		if successfully created, else NULL.
 		///
 		////////////////////////////////////////////////////////////////
-		VertexAnimation * CreateVertexAnimation( );
+		virtual AnimationTrack * CreateTrack( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Delete and remove all the animations.
+		/// \brief Delete and remove all the animation tracks.
 		///
 		////////////////////////////////////////////////////////////////
-		void DeleteAllAnimations( );
+		virtual void DeleteAllTracks( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Delete and remove an animation.
+		/// \brief Delete and remove an animation track.
 		///		Destroying the pointer as well.
 		///
-		/// \param p_pAnimation Pointer to the animation to delete.
+		/// \param p_pTrack Pointer to the track to delete.
 		///
 		/// \return true if track was successfully deleted, else false.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool DeleteAnimation( Animation * p_pAnimation );
+		virtual Bool DeleteTrack( AnimationTrack * p_pTrack );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Delete and remove an animation.
+		/// \brief Delete and remove an animation track.
 		///
-		/// \param p_Index Index of the animation to delete.
+		/// \param p_Index Index of the track to delete.
 		///
 		/// \return true if track was successfully deleted, else false.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool DeleteAnimation( const SizeType p_Index );
+		virtual Bool DeleteTrack( const SizeType p_Index );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get animation at the given index.
+		/// \brief Get animation track at the given index.
 		///
 		////////////////////////////////////////////////////////////////
-		Animation * GetAnimation( const SizeType p_Index );
+		virtual AnimationTrack * GetTrack( const SizeType p_Index );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get animation count.
+		/// \brief Get animation track count
 		///
 		////////////////////////////////////////////////////////////////
-		SizeType GetAnimationCount( );
+		virtual SizeType GetTrackCount( );
+		
+		////////////////////////////////////////////////////////////////
+		/// \brief Get animation type
+		///
+		////////////////////////////////////////////////////////////////
+		virtual eType GetType( );
 
 	private:
 
 		// Private typedefs
-		typedef std::vector<Animation *> AnimationVector;
-		typedef std::vector<Bone *> BoneVector;
-
+		typedef std::vector<AnimationTrack *> TrackVector;
+		
 		// Private variables
-		AnimationVector m_Animations; ///< Animations of for this skeleton.
-		//BoneVector m_Bones; ///< Bone nodes of this skeleton(bones has children).
+		TrackVector m_Tracks;	///< Animation tracks.
 
 	};
 

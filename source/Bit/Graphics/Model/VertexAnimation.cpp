@@ -22,53 +22,49 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Graphics/Model/Skeleton.hpp>
 #include <Bit/Graphics/Model/VertexAnimation.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-	Skeleton::Skeleton( )
+	VertexAnimation::VertexAnimation( )
 	{
 	}
 
-	Skeleton::~Skeleton( )
+	VertexAnimation::~VertexAnimation( )
 	{
 		// Go through and delete all the animations
-		for( AnimationVector::iterator it = m_Animations.begin( ); it != m_Animations.end( ); it++ )
+		for( TrackVector::iterator it = m_Tracks.begin( ); it != m_Tracks.end( ); it++ )
 		{
 			delete (*it);
 		}
 	}
 
-	VertexAnimation * Skeleton::CreateVertexAnimation( )
+	AnimationTrack * VertexAnimation::CreateTrack( )
 	{
-		// Create, append and return the key frame animation
-		VertexAnimation * pAnimation = new VertexAnimation;
-		m_Animations.push_back( pAnimation );
-		return pAnimation;
+		return NULL;
 	}
 
-	void Skeleton::DeleteAllAnimations( )
+	void VertexAnimation::DeleteAllTracks( )
 	{
 		// Go through and delete all the animations
-		for( AnimationVector::iterator it = m_Animations.begin( ); it != m_Animations.end( ); it++ )
+		for( TrackVector::iterator it = m_Tracks.begin( ); it != m_Tracks.end( ); it++ )
 		{
 			delete (*it);
 		}
-		m_Animations.clear( );
+		m_Tracks.clear( );
 	}
 
-	Bool Skeleton::DeleteAnimation( Animation * p_pAnimation )
+	Bool VertexAnimation::DeleteTrack( AnimationTrack * p_pTrack )
 	{
 		// Search for the pointer and find it's index
 		Int32 index = -1;
 
-		// Go through all the animations
-		for( Int32 i = 0; i < m_Animations.size( ); i++ )
+		// Go through all the track
+		for( Int32 i = 0; i < m_Tracks.size( ); i++ )
 		{
-			if( m_Animations[ i ] == p_pAnimation )
+			if( m_Tracks[ i ] == p_pTrack )
 			{
 				index = i;
 				break;
@@ -82,47 +78,52 @@ namespace Bit
 		}
 
 		// Delete the pointer
-		delete m_Animations[ index ];
+		delete m_Tracks[ index ];
 
-		// Erase the animation from the vector
-		m_Animations.erase( m_Animations.begin( ) + index );
+		// Erase the track from the vector
+		m_Tracks.erase( m_Tracks.begin( ) + index );
 
 		// Succeeded.
 		return true;
 	}
 
-	Bool Skeleton::DeleteAnimation( const SizeType p_Index )
+	Bool VertexAnimation::DeleteTrack( const SizeType p_Index )
 	{
 		// Error check the index.
-		if( p_Index >= static_cast<SizeType>( m_Animations.size( ) ) )
+		if( p_Index >= static_cast<SizeType>( m_Tracks.size( ) ) )
 		{
 			return false;
 		}
 
 		// Delete the pointer
-		delete m_Animations[ p_Index ];
+		delete m_Tracks[ p_Index ];
 
-		// Erase the animation from the vector
-		m_Animations.erase( m_Animations.begin( ) + p_Index );
+		// Erase the track from the vector
+		m_Tracks.erase( m_Tracks.begin( ) + p_Index );
 
 		// Succeeded.
 		return true;
 	}
 
-	Animation * Skeleton::GetAnimation( const SizeType p_Index )
+	AnimationTrack * VertexAnimation::GetTrack( const SizeType p_Index )
 	{
 		// Error check the index.
-		if( p_Index >= static_cast<SizeType>( m_Animations.size( ) ) )
+		if( p_Index >= static_cast<SizeType>( m_Tracks.size( ) ) )
 		{
 			return NULL;
 		}
 		
-		return m_Animations[ p_Index ];
+		return m_Tracks[ p_Index ];
 	}
 
-	SizeType Skeleton::GetAnimationCount( )
+	SizeType VertexAnimation::GetTrackCount( )
 	{
-		return static_cast<SizeType>( m_Animations.size( ) );
+		return static_cast<SizeType>( m_Tracks.size( ) );
+	}
+
+	Animation::eType VertexAnimation::GetType( )
+	{
+		return PerVertex;
 	}
 
 }

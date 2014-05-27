@@ -83,12 +83,6 @@ namespace Bit
 		/// \brief Get animation type.
 		///
 		////////////////////////////////////////////////////////////////
-		Animation::eType GetAnimationType( );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get animation type.
-		///
-		////////////////////////////////////////////////////////////////
 		Skeleton & GetSkeleton( );
 
 	private:
@@ -108,7 +102,6 @@ namespace Bit
 		// Private variables
 		const GraphicDevice & m_GraphicDevice; ///< Reference of the parent graphic device.
 		Skeleton m_Skeleton;
-		Animation::eType m_AnimationType;
 
 
 		/*

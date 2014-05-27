@@ -74,7 +74,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\Model\Skeleton.hpp">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Graphics\Model\KeyFrameAnimation.hpp">
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimation.hpp">
       <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>
@@ -123,7 +123,7 @@
     <ClCompile Include="..\..\source\Bit\Graphics\Model\Skeleton.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Graphics\Model\KeyFrameAnimation.cpp">
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimation.cpp">
       <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>

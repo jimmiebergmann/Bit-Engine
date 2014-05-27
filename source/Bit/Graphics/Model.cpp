@@ -31,8 +31,7 @@
 namespace Bit
 {
 	Model::Model( const GraphicDevice & p_GraphicDevice ) :
-		m_GraphicDevice( p_GraphicDevice ),
-		m_AnimationType( Animation::None )
+		m_GraphicDevice( p_GraphicDevice )
 	{
 	}
 
@@ -91,11 +90,6 @@ namespace Bit
 	Bool  Model::LoadFromObjFile( const std::string & p_Filename )
 	{
 		return false;
-	}
-
-	Animation::eType Model::GetAnimationType( )
-	{
-		return m_AnimationType;
 	}
 
 	Skeleton & Model::GetSkeleton( )
