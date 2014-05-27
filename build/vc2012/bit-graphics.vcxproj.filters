@@ -77,6 +77,18 @@
     <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimation.hpp">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationTrack.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimationTrack.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\KeyFrame.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexKeyFrame.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
@@ -124,6 +136,12 @@
       <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimation.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimationTrack.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexKeyFrame.cpp">
       <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>

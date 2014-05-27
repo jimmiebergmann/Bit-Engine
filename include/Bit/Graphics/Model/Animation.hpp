@@ -35,7 +35,7 @@ namespace Bit
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief 3D model animation base class.
+	/// \brief Animation base class for 3D models.
 	///
 	/// \see Skeleton
 	///

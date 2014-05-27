@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/Model/VertexAnimation.hpp>
+#include <Bit/Graphics/Model/VertexAnimationTrack.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -43,7 +44,10 @@ namespace Bit
 
 	AnimationTrack * VertexAnimation::CreateTrack( )
 	{
-		return NULL;
+		// Create, append and return the key frame animation
+		VertexAnimationTrack * pTrack = new VertexAnimationTrack;
+		m_Tracks.push_back( pTrack );
+		return pTrack;
 	}
 
 	void VertexAnimation::DeleteAllTracks( )

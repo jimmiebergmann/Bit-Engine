@@ -22,101 +22,91 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_MODEL_VERTEX_ANIMATION_HPP
-#define BIT_GRAPHICS_MODEL_VERTEX_ANIMATION_HPP
+#ifndef BIT_GRAPHICS_MODEL_ANIMATION_TRACK_HPP
+#define BIT_GRAPHICS_MODEL_ANIMATION_TRACK_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Graphics/Model/Animation.hpp>
-#include <vector>
+#include <Bit/System/Time.hpp>
 
 namespace Bit
 {
 
+	// Forward declaractions
+	class KeyFrame;
+
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Vertex animation class for 3D models.
+	/// \brief Animation track base class for 3D models.
 	///
-	/// \see Animation
+	/// \see Skeleton
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexAnimation : public Animation
+	class BIT_API AnimationTrack
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor. 
+		/// \brief Virtual destructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		VertexAnimation( );
+		virtual ~AnimationTrack( ) { }
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Destructor. 
+		/// \brief Create and add a key frame.
 		///
-		////////////////////////////////////////////////////////////////
-		virtual ~VertexAnimation( );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Create and add an animation track.
-		///
-		/// \return Pointer to the created animation track
+		/// \return Pointer to the created key frame
 		///		if successfully created, else NULL.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual AnimationTrack * CreateTrack( );
+		virtual KeyFrame * CreateKeyFrame( const Time & p_Time ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Delete and remove all the animation tracks.
+		/// \brief Delete and remove all the key frames.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DeleteAllTracks( );
+		virtual void DeleteAllKeyFrames( ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Delete and remove an animation track.
+		/// \brief Delete and remove a key frame.
 		///		Destroying the pointer as well.
 		///
-		/// \param p_pTrack Pointer to the track to delete.
+		/// \param p_pTrack Pointer to the key frame to delete.
 		///
 		/// \return true if track was successfully deleted, else false.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool DeleteTrack( AnimationTrack * p_pTrack );
+		virtual Bool DeleteKeyFrame( KeyFrame * p_pKeyFrame ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Delete and remove an animation track.
+		/// \brief Delete and remove a key frame.
 		///
-		/// \param p_Index Index of the track to delete.
+		/// \param p_Index Index of the key frame to delete.
 		///
 		/// \return true if track was successfully deleted, else false.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool DeleteTrack( const SizeType p_Index );
+		virtual Bool DeleteKeyFrame( const SizeType p_Index ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get animation track at the given index.
+		/// \brief Get key frame at the given index.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual AnimationTrack * GetTrack( const SizeType p_Index );
+		virtual KeyFrame * GetKeyFrame( const SizeType p_Index ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get animation track count
+		/// \brief Get key frame at the given time.
+		///
+		/// Picking the key frame closest to the time.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual SizeType GetTrackCount( );
-		
+		virtual KeyFrame * GetKeyFrame( const Time & p_Time ) = 0;
+
 		////////////////////////////////////////////////////////////////
-		/// \brief Get animation type
+		/// \brief Get key frame count
 		///
 		////////////////////////////////////////////////////////////////
-		virtual eType GetType( );
-
-	private:
-
-		// Private typedefs
-		typedef std::vector<AnimationTrack *> TrackVector;
-		
-		// Private variables
-		TrackVector m_Tracks;	///< Animation tracks.
+		virtual SizeType GetKeyFrameCount( ) = 0;
 
 	};
 

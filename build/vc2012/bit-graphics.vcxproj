@@ -177,9 +177,13 @@
     <ClInclude Include="..\..\include\Bit\Graphics\Model.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ModelRenderer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\Animation.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationTrack.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\KeyFrame.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\ModelVertexData.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\Skeleton.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimation.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimationTrack.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexKeyFrame.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ObjFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLFramebuffer.hpp" />
@@ -213,6 +217,8 @@
     <ClCompile Include="..\..\source\Bit\Graphics\Model\ModelVertexData.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model\Skeleton.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimation.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimationTrack.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexKeyFrame.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\ObjFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLFramebuffer.cpp" />
