@@ -22,84 +22,85 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_OPENGL_VERTEX_BUFFER_HPP
-#define BIT_GRAPHICS_OPENGL_VERTEX_BUFFER_HPP
+#ifndef BIT_GRAPHICS_MODEL_VERTEX_DATA_HPP
+#define BIT_GRAPHICS_MODEL_VERTEX_DATA_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Graphics/VertexBuffer.hpp>
-#include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <vector>
 
 namespace Bit
 {
 
+	// Forward declaractions
+	class VertexBuffer;
+	class VertexArray;
+
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief OpenGL Vertex buffer object.
+	/// \brief 3D model vertex data class.
+	///
+	/// \see Model
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API OpenGLVertexBuffer : public VertexBuffer
+	class BIT_API ModelVertexData
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor
+		/// \brief Default constructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		OpenGLVertexBuffer( );
+		ModelVertexData( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Constructor
-		///
-		/// Loads the vertex buffer object
-		///
-		/// \param p_DataSize The vertex data size, in bytes.
-		/// \param p_pVertexData The vertex data.
-		/// \param p_DataType The data type of the vertex data.
-		///
-		/// \see Load
+		/// \brief Destructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		OpenGLVertexBuffer( const SizeType p_DataSize, void * p_pVertexData = NULL );
+		~ModelVertexData( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Destructor
+		/// \brief Add a vertex array. Only the pointer will be copied,
+		///		which means that ModelVertexData will take over
+		///		the responsibility of the vertex buffer.
+		///
+		/// \return false i the pointer is NULL or if the vertex buffer
+		///		isn't loaded, else true.
 		///
 		////////////////////////////////////////////////////////////////
-		~OpenGLVertexBuffer( );
+		Bool AddVertexBuffer( VertexBuffer * p_pVertexBuffer );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Binding the vertex buffer object
+		/// \brief Get the number of vertex buffers. 
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Bind( ) const;
+		SizeType GetVertexBufferCount( ) const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Loading the vertex buffer object
-		///
-		/// \param p_DataSize The vertex data size, in bytes.
-		/// \param p_pVertexData The vertex data.
-		/// \param p_DataType The data type of the vertex data.
+		/// \brief Get the vertex buffer at the given index.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL );  
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the buffer size in bytes.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual SizeType GetBufferSize( ) const;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Checks if the vertex buffer is loaded.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool IsLoaded( ) const;
+		const VertexBuffer * GetVertexBuffer( const SizeType & p_Index ) const;
 
 	private:
 
-		GLuint m_pVertexBufferObject;
-		SizeType m_DataSize;
+		////////////////////////////////////////////////////////////////
+		/// \brief Private copy constructor. 
+		///
+		////////////////////////////////////////////////////////////////
+		ModelVertexData( const ModelVertexData & p_Model );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Private assignment operator.
+		///
+		////////////////////////////////////////////////////////////////
+		ModelVertexData & operator = ( const ModelVertexData & p_Model );
+
+		// Private typedefs.
+		typedef std::vector<VertexBuffer *> VertexBufferVector;
+
+		// Private varaibles.
+		VertexBufferVector m_VertexBuffers; ///< Vector of vertex buffers.
 
 	};
 

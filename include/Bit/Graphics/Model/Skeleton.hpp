@@ -22,57 +22,64 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_VERTEX_BUFFER_HPP
-#define BIT_GRAPHICS_VERTEX_BUFFER_HPP
+#ifndef BIT_GRAPHICS_MODEL_SKELETON_HPP
+#define BIT_GRAPHICS_MODEL_SKELETON_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Graphics/Model/Skeleton.hpp>
+#include <Bit/Graphics/Model/Animation.hpp>
+#include <vector>
 
 namespace Bit
 {
 
+	// Forward declaractions
+	class Animation;
+	class KeyFrameAnimation;
+	class Bone;
+
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Vertex buffer object base class.
+	/// \brief 3D model skeleton class.
+	///
+	/// \see Model
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexBuffer
+	class BIT_API Skeleton
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor
+		/// \brief Default constructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~VertexBuffer( ) { }
+		Skeleton( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Binding the vertex buffer object
+		/// \brief Destructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Bind( ) const = 0;
+		~Skeleton( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Loading the vertex buffer object
+		/// \brief Create keyframe animation .
 		///
-		/// \param p_DataSize The vertex data size, in bytes.
-		/// \param p_pVertexData The vertex data.
-		/// \param p_DataType The data type of the vertex data.
+		/// \return Pointer to the created key frame animation
+		///		if successfully created, else NULL.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL ) = 0;
+		KeyFrameAnimation * CreateKeyFrameAnimation( );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the buffer size in bytes.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual SizeType GetBufferSize( ) const = 0;
+	private:
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Checks if the vertex buffer is loaded.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool IsLoaded( ) const = 0;
+		// Private typedefs
+		typedef std::vector<Animation *> AnimationVector;
+		typedef std::vector<Bone *> BoneVector;
+
+		// Private variables
+		AnimationVector m_Animations; ///< Animations of for this skeleton.
+		//BoneVector m_Bones; ///< Bone nodes of this skeleton(bones has children).
 
 	};
 

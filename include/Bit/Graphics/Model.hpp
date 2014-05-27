@@ -25,18 +25,93 @@
 #ifndef BIT_GRAPHICS_MODEL_HPP
 #define BIT_GRAPHICS_MODEL_HPP
 
-#include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/VertexObject.hpp>
-#include <Bit/Graphics/Texture.hpp>
+#include <Bit/Build.hpp>
+#include <Bit/Graphics/Model/ModelVertexData.hpp>
+#include <Bit/Graphics/Model/Skeleton.hpp>
 
 namespace Bit
 {
 
+	// Forward declaractions
+	class GraphicDevice;
+	class VertexArray;
+
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Graphics
+	/// \brief 3D model class.
+	///
+	/// \see ModelRenderer
+	///
+	////////////////////////////////////////////////////////////////
 	class BIT_API Model
 	{
 
 	public:
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Default constructor. 
+		///
+		////////////////////////////////////////////////////////////////
+		Model( const GraphicDevice & p_GraphicDevice );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor. 
+		///
+		////////////////////////////////////////////////////////////////
+		~Model( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Load 3D model from a file.
+		///
+		/// The filename must contain a file suffix in order to let the function
+		/// know what kind of model format you are trying to load.
+		///
+		/// \return true if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromFile( const std::string & p_Filename );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Load 3D model from a OBJ file.
+		///
+		/// \return true if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromObjFile( const std::string & p_Filename );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get animation type.
+		///
+		////////////////////////////////////////////////////////////////
+		Animation::eType GetAnimationType( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get animation type.
+		///
+		////////////////////////////////////////////////////////////////
+		Skeleton & GetSkeleton( );
+
+	private:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Private copy constructor. 
+		///
+		////////////////////////////////////////////////////////////////
+		Model( const Model & p_Model );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Private assignment operator.
+		///
+		////////////////////////////////////////////////////////////////
+		Model & operator = ( const Model & p_Model );
+
+		// Private variables
+		const GraphicDevice & m_GraphicDevice; ///< Reference of the parent graphic device.
+		Skeleton m_Skeleton;
+		Animation::eType m_AnimationType;
+
+
+		/*
 		// Public enum
 		enum eModelType
 		{
@@ -73,7 +148,7 @@ namespace Bit
 
 		BIT_BOOL m_Loaded;
 		eModelType m_Type;
-
+		*/
 	};
 
 }

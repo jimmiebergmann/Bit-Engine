@@ -22,58 +22,54 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_VERTEX_BUFFER_HPP
-#define BIT_GRAPHICS_VERTEX_BUFFER_HPP
+#ifndef BIT_GRAPHICS_MODEL_ANIMATION_HPP
+#define BIT_GRAPHICS_MODEL_ANIMATION_HPP
 
 #include <Bit/Build.hpp>
 
 namespace Bit
 {
 
+	// Forward declaractions
+	class AnimationTrack;
+
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Vertex buffer object base class.
+	/// \brief 3D model animation base class.
+	///
+	/// \see Skeleton
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexBuffer
+	class BIT_API Animation
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor
+		/// \brief Animation type enumerator
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~VertexBuffer( ) { }
+		enum eType
+		{
+			None = 0,	///< No animation
+			PerVertex,	///< Per vertex animation.
+			Skeletal	///< Skeletal animation.
+		};
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Binding the vertex buffer object
+		/// \brief Virtual destructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Bind( ) const = 0;
+		virtual ~Animation( ) { }
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Loading the vertex buffer object
+		/// \brief Create and add an animation track.
 		///
-		/// \param p_DataSize The vertex data size, in bytes.
-		/// \param p_pVertexData The vertex data.
-		/// \param p_DataType The data type of the vertex data.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the buffer size in bytes.
+		/// \return Pointer to the created animation track
+		///		if successfully created, else NULL.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual SizeType GetBufferSize( ) const = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Checks if the vertex buffer is loaded.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool IsLoaded( ) const = 0;
-
+		AnimationTrack * CreateAnimationTrack( );
 	};
 
 }

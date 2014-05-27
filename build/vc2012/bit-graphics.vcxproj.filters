@@ -10,6 +10,9 @@
     <Filter Include="LoadePng">
       <UniqueIdentifier>{c1a761eb-3c97-49f6-869a-9a6f656a9dae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{b28e9cb9-b74c-44b4-b10e-c2efe1913897}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
@@ -60,6 +63,20 @@
       <Filter>OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Graphics\ObjFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ModelRenderer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\ModelVertexData.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\Animation.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\Skeleton.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\KeyFrameAnimation.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
@@ -98,5 +115,16 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\ObjFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ModelRenderer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\ModelVertexData.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\Skeleton.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\KeyFrameAnimation.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

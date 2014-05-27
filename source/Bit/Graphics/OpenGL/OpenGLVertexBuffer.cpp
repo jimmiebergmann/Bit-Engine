@@ -32,14 +32,12 @@ namespace Bit
 		m_pVertexBufferObject( 0 ),
 		m_DataSize( 0 )
 	{
-		glGenBuffers( 1, &m_pVertexBufferObject );
 	}
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer( const SizeType p_DataSize, void * p_pVertexData ) :
 		m_pVertexBufferObject( 0 ),
 		m_DataSize( 0 )
 	{
-		glGenBuffers( 1, &m_pVertexBufferObject );
 		Load( p_DataSize, p_pVertexData );
 	}
 
@@ -61,11 +59,20 @@ namespace Bit
 	Bool OpenGLVertexBuffer::Load( const SizeType p_DataSize, void * p_pVertexData )
 	{
 		// Check the buffer size
-		if( p_DataSize == 0 )
+		if( p_DataSize == 0 || p_pVertexData == NULL )
 		{
 
 			return false;
 		}
+
+		// Delete the VBO if needed.
+		if(m_pVertexBufferObject )
+		{
+			glBindBuffer ( GL_ARRAY_BUFFER, 0 );
+			glDeleteBuffers( 1, &m_pVertexBufferObject );
+		}
+
+		glGenBuffers( 1, &m_pVertexBufferObject );
 
 		// Bind and create allocate the VBO
 		glBindBuffer( GL_ARRAY_BUFFER, m_pVertexBufferObject );
@@ -82,6 +89,11 @@ namespace Bit
 	SizeType OpenGLVertexBuffer::GetBufferSize( ) const
 	{
 		return m_DataSize;
+	}
+
+	Bool OpenGLVertexBuffer::IsLoaded( ) const
+	{
+		return m_pVertexBufferObject != 0;
 	}
 
 }

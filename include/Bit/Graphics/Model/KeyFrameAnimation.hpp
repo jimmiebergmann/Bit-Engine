@@ -22,57 +22,52 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_VERTEX_BUFFER_HPP
-#define BIT_GRAPHICS_VERTEX_BUFFER_HPP
+#ifndef BIT_GRAPHICS_MODEL_KEY_FRAME_ANIMATION_HPP
+#define BIT_GRAPHICS_MODEL_KEY_FRAME_ANIMATION_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Graphics/Model/Animation.hpp>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Vertex buffer object base class.
+	/// \brief 3D model animation base class.
+	///
+	/// \see Animation
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexBuffer
+	class BIT_API KeyFrameAnimation : public Animation
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor
+		/// \brief Default constructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~VertexBuffer( ) { }
+		KeyFrameAnimation( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Binding the vertex buffer object
+		/// \brief Destructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Bind( ) const = 0;
+		virtual ~KeyFrameAnimation( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Loading the vertex buffer object
+		/// \brief Create and add an animation track.
 		///
-		/// \param p_DataSize The vertex data size, in bytes.
-		/// \param p_pVertexData The vertex data.
-		/// \param p_DataType The data type of the vertex data.
+		/// \return Pointer to the created animation track
+		///		if successfully created, else NULL.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Load( const SizeType p_DataSize, void * p_pVertexData = NULL ) = 0;
+		AnimationTrack * CreateAnimationTrack( );
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Get the buffer size in bytes.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual SizeType GetBufferSize( ) const = 0;
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Checks if the vertex buffer is loaded.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool IsLoaded( ) const = 0;
+	private:
+
+
 
 	};
 

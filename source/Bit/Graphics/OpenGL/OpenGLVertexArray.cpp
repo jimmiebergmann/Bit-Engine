@@ -77,8 +77,6 @@ namespace Bit
 		m_VertexSize( 0 ),
 		m_BufferCount( 0 )
 	{
-		// Generate a VBO
-		glGenVertexArrays( 1, &m_VertexArrayObject );
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray( )
@@ -106,6 +104,12 @@ namespace Bit
 		if( type == 0 )
 		{
 			return false;
+		}
+
+		// Generate a VBO if needed.
+		if( m_VertexArrayObject == 0 )
+		{
+			glGenVertexArrays( 1, &m_VertexArrayObject );
 		}
 
 		// Bind the VAO
