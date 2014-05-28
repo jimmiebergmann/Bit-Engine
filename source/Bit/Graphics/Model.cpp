@@ -89,12 +89,19 @@ namespace Bit
 
 	Bool  Model::LoadFromObjFile( const std::string & p_Filename )
 	{
+		// Obj files doesn't support
+
 		return false;
 	}
 
 	Skeleton & Model::GetSkeleton( )
 	{
 		return m_Skeleton;
+	}
+
+	ModelVertexData & Model::GetVertexData( )
+	{
+		return m_VertexData;
 	}
 
 }

@@ -45,25 +45,42 @@ namespace Bit
 
 	KeyFrame * VertexAnimationTrack::CreateKeyFrame( const Time & p_Time )
 	{
-		/*
-			VertexKeyFrame * pKeyFrame = new VertexKeyFrame( p_Time );
-			if( m_KeyFrames.size( ) && p_Time > m_KeyFrames.back( )->GetTime( ) )
-			{
-				
-				// Find the right location for the key frame.
-				// ...
+		VertexKeyFrame * pKeyFrame = new VertexKeyFrame( p_Time );
+		if( m_KeyFrames.size( ) && p_Time < m_KeyFrames.back( )->GetTime( ) )
+		{
+			// Find the right location for the key frame with a binary search
+			SizeType min = 0;
+			SizeType max = static_cast<SizeType>( m_KeyFrames.size( ) ) - 1;
+			SizeType pivot = 0;
 
-				// Return the key frame 
-				return pKeyFrame;
+			// Loop until min < max(min != max) 
+			while( min < max )
+			{
+				pivot = ( min + max ) / 2;
+
+				if( p_Time.AsMicroseconds( ) >= m_KeyFrames[ pivot ]->GetTime( ).AsMicroseconds( ) )
+				{
+					min = pivot + 1;
+				}
+				else
+				{
+					max = pivot;
+				}
 			}
-			
-			// Add the key frame to the back
-			m_KeyFrames.push_back( pKeyFrame );
+
+			// Insert the key frame
+			m_KeyFrames.insert( m_KeyFrames.begin( ) + min, pKeyFrame );
 
 			// Return the key frame 
 			return pKeyFrame;
-		*/
-		return NULL;
+		}
+			
+		// Add the key frame to the back
+		m_KeyFrames.push_back( pKeyFrame );
+
+		// Return the key frame 
+		return pKeyFrame;
+
 	}
 
 	void VertexAnimationTrack::DeleteAllKeyFrames( )
@@ -134,7 +151,7 @@ namespace Bit
 
 		// Find the key frame with a binary search
 		SizeType min = 0;
-		SizeType max = static_cast<SizeType>( m_KeyFrames.size( ) );
+		SizeType max = static_cast<SizeType>( m_KeyFrames.size( ) ) - 1;
 		SizeType pivot = 0;
 
 		// Loop until min < max(min != max) 
@@ -142,9 +159,9 @@ namespace Bit
 		{
 			pivot = ( min + max ) / 2;
 
-			if( p_Time.AsMilliseconds( ) >= m_KeyFrames[ pivot ]->GetTime( ).AsMilliseconds( ) )
+			if( p_Time.AsMicroseconds( ) > m_KeyFrames[ pivot ]->GetTime( ).AsMicroseconds( ) )
 			{
-				min = pivot;
+				min = pivot + 1;
 			}
 			else
 			{

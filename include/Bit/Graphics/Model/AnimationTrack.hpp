@@ -97,7 +97,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Get key frame at the given time.
 		///
-		/// Picking the key frame closest to the time.
+		/// Picking the key frame closest to the time, rounded up.
 		///
 		////////////////////////////////////////////////////////////////
 		virtual KeyFrame * GetKeyFrame( const Time & p_Time ) = 0;

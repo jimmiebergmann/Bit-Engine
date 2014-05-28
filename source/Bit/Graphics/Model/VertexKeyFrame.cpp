@@ -43,4 +43,9 @@ namespace Bit
 		return m_Time;
 	}
 
+	ModelVertexData & VertexKeyFrame::GetVertexData( )
+	{
+		return m_VertexData;
+	}
+
 }

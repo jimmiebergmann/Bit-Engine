@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Graphics/Model/KeyFrame.hpp>
+#include <Bit/Graphics/Model/ModelVertexData.hpp>
 
 namespace Bit
 {
@@ -38,7 +39,7 @@ namespace Bit
 	/// \see Skeleton
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexKeyFrame
+	class BIT_API VertexKeyFrame : public KeyFrame
 	{
 
 	public:
@@ -61,9 +62,16 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual const Time & GetTime( ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get vertex data.
+		///
+		////////////////////////////////////////////////////////////////
+		ModelVertexData & GetVertexData( );
+
 	private:
 
 		Time m_Time;
+		ModelVertexData m_VertexData;
 
 	};
 
