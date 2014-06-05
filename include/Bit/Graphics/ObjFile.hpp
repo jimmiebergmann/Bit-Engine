@@ -27,6 +27,11 @@
 #include <string>
 #include <vector>
 
+// Win32 fix
+#ifdef GetObject
+#undef GetObject
+#endif
+
 namespace Bit
 {
 
@@ -77,7 +82,7 @@ namespace Bit
 			/// \brief Get face corner.
 			///
 			////////////////////////////////////////////////////////////////
-			const FaceCorner & GetFaceCorner( const SizeType p_Index ) const;
+			FaceCorner & GetFaceCorner( const SizeType p_Index );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get face corner count.
@@ -129,13 +134,13 @@ namespace Bit
 			/// \brief Get flat face.
 			///
 			////////////////////////////////////////////////////////////////
-			const Face & GetFlatFace( const SizeType p_Index ) const;
+			Face & GetFlatFace( const SizeType p_Index );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get smooth face.
 			///
 			////////////////////////////////////////////////////////////////
-			const Face & GetSmoothFace( const SizeType p_Index ) const;
+			Face & GetSmoothFace( const SizeType p_Index );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get flat face count.
@@ -195,7 +200,7 @@ namespace Bit
 			/// \brief Get material group.
 			///
 			////////////////////////////////////////////////////////////////
-			const MaterialGroup & GetMaterialGroup( const SizeType p_Index ) const;
+			MaterialGroup & GetMaterialGroup( const SizeType p_Index );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get material group count.
@@ -266,7 +271,7 @@ namespace Bit
 			/// \brief Get object group.
 			///
 			////////////////////////////////////////////////////////////////
-			const ObjectGroup & GetObjectGroup( const SizeType p_Index ) const;
+			ObjectGroup & GetObjectGroup( const SizeType p_Index );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get vertex count.

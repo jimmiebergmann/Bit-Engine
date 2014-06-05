@@ -41,6 +41,8 @@ namespace Bit
 	class Shader;
 	class ShaderProgram;
 	class Texture;
+	class Model;
+	class ModelRenderer;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
@@ -237,6 +239,26 @@ namespace Bit
 		virtual Texture * CreateTexture( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Create a model
+		///
+		/// \return A pointer to the new model.
+		///
+		/// \see CreateModelRenderer
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Model * CreateModel( ) const = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a model
+		///
+		/// \return A pointer to the new model.
+		///
+		/// \see CreateModel
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ModelRenderer * CreateModelRenderer( ) const = 0;
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.
 		///
 		/// \param p_Position The position of the viewport.
@@ -276,6 +298,12 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual const Framebuffer & GetDefaultFramebuffer( ) const = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the default model renderer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual const ModelRenderer & GetDefaultModelRenderer( ) = 0;
 
 	};
 

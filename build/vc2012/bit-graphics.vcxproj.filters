@@ -89,6 +89,9 @@
     <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexKeyFrame.hpp">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLModelRenderer.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
@@ -143,6 +146,9 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexKeyFrame.cpp">
       <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLModelRenderer.cpp">
+      <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

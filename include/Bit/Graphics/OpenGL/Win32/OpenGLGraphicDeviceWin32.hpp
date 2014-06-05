@@ -246,7 +246,27 @@ namespace Bit
 		/// \return A pointer to the new texture
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Texture * CreateTexture( ) const ;
+		virtual Texture * CreateTexture( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a model
+		///
+		/// \return A pointer to the new model.
+		///
+		/// \see CreateModelRenderer
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Model * CreateModel( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a model
+		///
+		/// \return A pointer to the new model.
+		///
+		/// \see CreateModel
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ModelRenderer * CreateModelRenderer( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.
@@ -289,6 +309,12 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual const Framebuffer & GetDefaultFramebuffer( ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the default model renderer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual const ModelRenderer & GetDefaultModelRenderer( ) ;
+
 	private:
 
 		// Private functions
@@ -300,7 +326,8 @@ namespace Bit
 		Version m_Version;								///< The version of the GD.
 		HDC m_DeviceContextHandle;						///< Device context handle from the render output.
 		HGLRC m_Context;								///< The OpenGL context.
-		static OpenGLFramebuffer s_DefaultFramebuffer;	///< Default framebuffer.
+		static OpenGLFramebuffer s_DefaultFramebuffer;	///< Default framebuffer(static).
+		ModelRenderer * m_pDefaultModelRenderer;		///< Default model renderer.
 
 	};
 

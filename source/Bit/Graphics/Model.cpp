@@ -24,6 +24,8 @@
 
 #include <Bit/Graphics/Model.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Graphics/VertexBuffer.hpp>
+#include <Bit/Graphics/ObjFile.hpp>
 #include <iostream>
 #include <algorithm>
 #include <Bit/System/MemoryLeak.hpp>
@@ -57,7 +59,7 @@ namespace Bit
 		std::transform( fileExtension.begin( ), fileExtension.end( ), fileExtension.begin( ), ::toupper );
 
 		// Load the right format.
-		if( fileExtension == "Obj" )
+		if( fileExtension == "OBJ" )
 		{
 			return LoadFromObjFile( p_Filename );
 		}
@@ -87,11 +89,110 @@ namespace Bit
 		return false;
 	}
 
-	Bool  Model::LoadFromObjFile( const std::string & p_Filename )
+	Bool Model::LoadFromObjFile( const std::string & p_Filename )
 	{
-		// Obj files doesn't support
+		// Obj files does not support animations
+		// Should we use an index buffer for faces???
+		// Currently just loading one object with one group, with one material and so on,
+		// not supporting any face shape other than triangles.
 
-		return false;
+		// Load a obj file.
+		ObjFile obj;
+		if( obj.LoadFromFile( p_Filename ) == false )
+		{
+			return false;
+		}
+
+		// Get the first object
+		if( obj.GetObjectCount( ) == 0 )
+		{
+			std::cout << "[Model::LoadFromObjFile] No objects were found." << std::endl;
+			return false;
+		}
+		ObjFile::Object & object = obj.GetObject( 0 );
+
+		// Error check the object group
+		if( object.GetObjectGroupCount( ) == 0 )
+		{
+			std::cout << "[Model::LoadFromObjFile] No object groups were found." << std::endl;
+			return false;
+		}
+		ObjFile::ObjectGroup & objectGroup = object.GetObjectGroup( 0 );
+		
+		// Error check the material group
+		if( objectGroup.GetMaterialGroupCount( ) == 0 )
+		{
+			std::cout << "[Model::LoadFromObjFile] No material groups were found." << std::endl;
+			return false;
+		}
+		ObjFile::MaterialGroup & materialGroup = objectGroup.GetMaterialGroup( 0 );
+
+		// Calculate the buffer size
+		SizeType bufferSize =	( materialGroup.GetFlatFaceCount( )		* 3 * 3 )/* +
+								( materialGroup.GetSmoothFaceCount( )	* 3 * 3 )*/;
+
+		// Create a vertex buffer
+		VertexBuffer * pVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+		Float32 * pBufferData = new Float32[ bufferSize ];
+
+		// Go throguh the flat faces and add the data to the buffer
+		for( SizeType i = 0; i < materialGroup.GetSmoothFaceCount( ); i++ )
+		{
+			// Get the current face
+			ObjFile::Face & face = materialGroup.GetFlatFace( i );
+			if( face.GetFaceCornerCount( ) != 3 )
+			{
+				std::cout << "[Model::LoadFromObjFile] Face corner counter error:" << face.GetFaceCornerCount( ) << std::endl;
+				
+				// Delete the allocated data
+				delete [ ] pBufferData;
+				return false;
+			}
+
+			// Go throguh the face corners
+			for( SizeType j = 0; j < 3; j++ )
+			{
+				// Get the current corner
+				ObjFile::FaceCorner & faceCorner = face.GetFaceCorner( j );
+
+				// Get the vertex index.
+				Int32 vertexIndex = faceCorner.VertexIndex;
+
+				if( vertexIndex < 0 || vertexIndex >= object.GetVertexCount( ) )
+				{
+					std::cout << "[Model::LoadFromObjFile] Vertex index error:" << vertexIndex << std::endl;
+				
+					// Delete the allocated data
+					delete [ ] pBufferData;
+					return false;
+				}
+
+				// Get the vertex coordinate.
+				const Vector3f32 position = object.GetVertex( vertexIndex );
+
+				// Set the buffer data
+				pBufferData[ ( i * 9 ) + ( j * 3 ) ] = position.x;
+				pBufferData[ ( i * 9 ) + ( j * 3 ) + 1 ] = position.y;
+				pBufferData[ ( i * 9 ) + ( j * 3 ) + 2 ] = position.z;
+			}
+		}
+
+
+		// Load the vertex buffer
+		if( pVertexBuffer->Load( bufferSize * 4, pBufferData ) == false )
+		{
+			std::cout << "[Model::LoadFromObjFile] Can not load the vertex buffer" << std::endl;
+			return false;
+		}
+
+		// Delete the allocated data
+		delete [ ] pBufferData;
+
+		// Add the vertex buffer to the vertex data class.
+		m_VertexData.AddVertexBuffer( pVertexBuffer );
+
+		// Succeeded
+		return true;
 	}
 
 	Skeleton & Model::GetSkeleton( )

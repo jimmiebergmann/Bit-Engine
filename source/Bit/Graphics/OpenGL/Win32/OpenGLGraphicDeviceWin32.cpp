@@ -31,6 +31,8 @@
 #include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShaderProgram.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLTexture.hpp>
+#include <Bit/Graphics/Model.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLModelRenderer.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -68,7 +70,8 @@ namespace Bit
 		m_Open( false ),
 		m_Version( 0, 0 ),
 		m_DeviceContextHandle( NULL ),
-		m_Context( NULL )
+		m_Context( NULL ),
+		m_pDefaultModelRenderer( NULL )
 	{
 	}
 
@@ -78,7 +81,8 @@ namespace Bit
 		m_Open( false ),
 		m_Version( 0, 0 ),
 		m_DeviceContextHandle( NULL ),
-		m_Context( NULL )
+		m_Context( NULL ),
+		m_pDefaultModelRenderer( NULL )
 	{
 		Open( p_RenderOutput, p_Version );
 	}
@@ -159,6 +163,13 @@ namespace Bit
 	{
 		if( m_Context )
 		{
+			// Destory the default model renderer.
+			if( m_pDefaultModelRenderer )
+			{
+				delete m_pDefaultModelRenderer;
+				m_pDefaultModelRenderer = NULL;
+			}
+
 			// Release the context from the current thread
 			if( !wglMakeCurrent( NULL, NULL ) )
 			{
@@ -170,12 +181,13 @@ namespace Bit
 			{
 				std::cout << "[OpenGLGraphicDeviceWin32::Close] Can not delete the context.\n";
 			}
+
+			m_Context = NULL;
 		}
 
 		m_Open = false;
 		m_Version = Version( 0, 0, 0 );
 		m_DeviceContextHandle = NULL;
-		m_Context = NULL;
 	}
 
 	void OpenGLGraphicDeviceWin32::MakeCurrent( )
@@ -284,6 +296,16 @@ namespace Bit
 	{
 		return new OpenGLTexture;
 	}
+
+	Model * OpenGLGraphicDeviceWin32::CreateModel( ) const
+	{
+		return new Model( *this );
+	}
+
+	ModelRenderer * OpenGLGraphicDeviceWin32::CreateModelRenderer( ) const
+	{
+		return NULL;
+	}
 	
 	void OpenGLGraphicDeviceWin32::SetViewport( const Vector2u32 & p_Position, const Vector2u32 & p_Size )
 	{
@@ -312,6 +334,16 @@ namespace Bit
 	const Framebuffer & OpenGLGraphicDeviceWin32::GetDefaultFramebuffer( ) const
 	{
 		return s_DefaultFramebuffer;
+	}
+
+	const ModelRenderer & OpenGLGraphicDeviceWin32::GetDefaultModelRenderer( )
+	{
+		if( m_pDefaultModelRenderer == NULL )
+		{
+			m_pDefaultModelRenderer = new OpenGLModelRenderer( *this );
+		}
+
+		return *m_pDefaultModelRenderer;
 	}
 
 	bool OpenGLGraphicDeviceWin32::OpenVersion( const RenderWindow & p_RenderOutput,

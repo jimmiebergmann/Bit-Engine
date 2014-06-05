@@ -36,7 +36,7 @@ namespace Bit
 	{
 	}
 
-	const ObjFile::FaceCorner & ObjFile::Face::GetFaceCorner( const SizeType p_Index ) const
+	ObjFile::FaceCorner & ObjFile::Face::GetFaceCorner( const SizeType p_Index )
 	{
 		return m_FaceCorners[ p_Index ];
 	}
@@ -69,12 +69,12 @@ namespace Bit
 		return m_MaterialName;
 	}
 
-	const ObjFile::Face & ObjFile::MaterialGroup::GetFlatFace( const SizeType p_Index ) const
+	ObjFile::Face & ObjFile::MaterialGroup::GetFlatFace( const SizeType p_Index )
 	{
 		return *m_FlatFaces[ p_Index ];
 	}
 
-	const ObjFile::Face & ObjFile::MaterialGroup::GetSmoothFace( const SizeType p_Index ) const
+	ObjFile::Face & ObjFile::MaterialGroup::GetSmoothFace( const SizeType p_Index )
 	{
 		return *m_SmoothFaces[ p_Index ];
 	}
@@ -108,7 +108,7 @@ namespace Bit
 		return m_Name;
 	}
 
-	const ObjFile::MaterialGroup & ObjFile::ObjectGroup::GetMaterialGroup( const SizeType p_Index ) const
+	ObjFile::MaterialGroup & ObjFile::ObjectGroup::GetMaterialGroup( const SizeType p_Index )
 	{
 		return *m_MaterialGroups[ p_Index ];
 	}
@@ -152,7 +152,7 @@ namespace Bit
 		return m_Normals[ p_Index ];
 	}
 
-	const ObjFile::ObjectGroup & ObjFile::Object::GetObjectGroup( const SizeType p_Index ) const
+	ObjFile::ObjectGroup & ObjFile::Object::GetObjectGroup( const SizeType p_Index )
 	{
 		return *m_ObjectGroups[ p_Index ];
 	}

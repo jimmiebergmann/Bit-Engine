@@ -35,6 +35,11 @@ namespace Bit
 
 	ModelVertexData::~ModelVertexData( )
 	{
+		// Delete all the vertex buffers
+		for( VertexBufferVector::iterator it = m_VertexBuffers.begin( ); it != m_VertexBuffers.end( ); it++ )
+		{
+			delete (*it);
+		}
 	}
 
 	Bool ModelVertexData::AddVertexBuffer( VertexBuffer * p_pVertexBuffer )
@@ -43,6 +48,8 @@ namespace Bit
 		{
 			return false;
 		}
+
+		m_VertexBuffers.push_back( p_pVertexBuffer );
 
 		return true;
 	}

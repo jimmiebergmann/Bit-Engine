@@ -22,43 +22,26 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_MODEL_RENDERER_HPP
-#define BIT_GRAPHICS_MODEL_RENDERER_HPP
-
-#include <Bit/Build.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLModelRenderer.hpp>
+#include <Bit/Graphics/Model.hpp>
+#include <iostream>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-	// Forward declaractions
-	class Model;
 
-	////////////////////////////////////////////////////////////////
-	/// \ingroup Graphics
-	/// \brief 3D model renderer base class.
-	///
-	/// \see Model
-	/// \see OpenGLModelRenderer
-	///
-	////////////////////////////////////////////////////////////////
-	class BIT_API ModelRenderer
+	OpenGLModelRenderer::OpenGLModelRenderer( const GraphicDevice & p_GraphicDevice ) :
+		m_GraphicDevice( p_GraphicDevice )
+	{
+	}
+
+	OpenGLModelRenderer::~OpenGLModelRenderer( )
+	{
+	}
+
+	void OpenGLModelRenderer::Render( const Model & p_Model )
 	{
 
-	public:
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor. 
-		///
-		////////////////////////////////////////////////////////////////
-		virtual ~ModelRenderer( ) { }
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Function for rendering a model.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual void Render( const Model & p_Model ) = 0;
-
-	};
+	}
 
 }
-
-#endif

@@ -22,15 +22,17 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_MODEL_RENDERER_HPP
-#define BIT_GRAPHICS_MODEL_RENDERER_HPP
+#ifndef BIT_GRAPHICS_OPENGL_MODEL_RENDERER_HPP
+#define BIT_GRAPHICS_OPENGL_MODEL_RENDERER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Graphics/ModelRenderer.hpp>
 
 namespace Bit
 {
-	// Forward declaractions
-	class Model;
+
+	// Forward declarations
+	class GraphicDevice;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
@@ -40,23 +42,32 @@ namespace Bit
 	/// \see OpenGLModelRenderer
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API ModelRenderer
+	class BIT_API OpenGLModelRenderer : public ModelRenderer
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor. 
+		/// \brief Default constructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~ModelRenderer( ) { }
+		OpenGLModelRenderer( const GraphicDevice & p_GraphicDevice );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor. 
+		///
+		////////////////////////////////////////////////////////////////
+		~OpenGLModelRenderer( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Function for rendering a model.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Render( const Model & p_Model ) = 0;
+		virtual void Render( const Model & p_Model );
+	
+	private:
 
+		const GraphicDevice & m_GraphicDevice;
 	};
 
 }
