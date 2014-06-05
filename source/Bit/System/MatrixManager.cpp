@@ -24,124 +24,190 @@
 
 #include <Bit/System/MatrixManager.hpp>
 #include <deque>
-#include <Bit/System/Debugger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 	// Dummy matrix variable used for the stack initialization
-	Matrix4x4 DummyMatrix;
-	std::deque< Matrix4x4 > DummyDeque( 1, DummyMatrix );
+	Matrix4x4f32 DummyMatrix;
+	std::deque< Matrix4x4f32 > DummyDeque( 1, DummyMatrix );
 
 	// Set the private static variables
-	MatrixManager::eMode MatrixManager::m_Mode = MatrixManager::Mode_ModelView;
-	std::stack< Matrix4x4 > MatrixManager::m_MatrixStacks[ 2 ] =
+	MatrixManager::eMatrixMode MatrixManager::s_Mode = MatrixManager::ModelView;
+	// Intialize the stacks
+	MatrixManager::MatrixStack MatrixManager::s_MatrixStacks[ 2 ] =
 	{
-		std::stack< Matrix4x4 >( DummyDeque ),
-		std::stack< Matrix4x4 >( DummyDeque )
+		std::stack< Matrix4x4f32 >( DummyDeque ),
+		std::stack< Matrix4x4f32 >( DummyDeque )
 	};
+	// Intiialize the reference to the current stack.
+	MatrixManager::MatrixStack & MatrixManager::s_CurrentStack = MatrixManager::s_MatrixStacks[ 0 ];
 
-	// Public functions
-	void MatrixManager::LoadIdentity( )
-	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Identity( );
-	}
-
-	void MatrixManager::LoadLookAt( const Vector3_f32 p_Eye, const Vector3_f32 p_Center, const Vector3_f32 p_Up )
-	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).LookAt( p_Eye, p_Center, p_Up );
-	}
-
-	void MatrixManager::LoadOrthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
-			const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
-	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Orthographic( p_Left, p_Right, p_Bottom, p_Top, p_ZNear, p_ZFar );
-	}
-
-	void MatrixManager::LoadPerspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
-			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar )
-	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Perspective( p_Fov, p_Aspect, p_ZNear, p_ZFar );
-	}
 
 	void MatrixManager::Push( )
 	{
-		// Push the top
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].push( m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ) );
+		// Get the current matrix.
+		const Matrix4x4f32 & matrix = s_CurrentStack.top( );
+
+		// Push the current matrix.
+		s_CurrentStack.push( matrix );
 	}
 
 	void MatrixManager::Pop( )
 	{
-		// Pop the top
-		if( m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].size( ) > 1 )
+		// Pop the stack if possible.
+		if( s_CurrentStack.size( ) > 1 )
 		{
-			m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].pop( );
+			s_CurrentStack.pop( );
 		}
 	}
 
-	void MatrixManager::RotateX( const BIT_FLOAT32 p_Angle )
+	void MatrixManager::SetMode( const eMatrixMode p_Mode )
 	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).RotateX( p_Angle );
+		s_Mode = p_Mode;
+		s_CurrentStack = s_MatrixStacks[ static_cast<SizeType>( s_Mode ) ];
 	}
 
-	void MatrixManager::RotateY( const BIT_FLOAT32 p_Angle )
+	void MatrixManager::SetMatrix( const Matrix4x4f32 & p_Matrix )
 	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).RotateY( p_Angle );
+		// Set the current matrix.
+		s_CurrentStack.top( ) = p_Matrix;
 	}
 
-	void MatrixManager::RotateZ( const BIT_FLOAT32 p_Angle )
+	void MatrixManager::LoadIdentity( )
 	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).RotateZ( p_Angle );
+		s_CurrentStack.top( ).Identity( );
 	}
 
-	void MatrixManager::Scale( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+	void MatrixManager::LoadLookAt( const Vector3f32 p_Eye, const Vector3f32 p_Center, const Vector3f32 p_Up )
 	{
-		Matrix4x4 ScaleMat;
-		ScaleMat.Identity( );
-		ScaleMat.Scale( p_X, p_Y, p_Z );
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ) = m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ) * ScaleMat;
+		s_CurrentStack.top( ).LookAt( p_Eye, p_Center, p_Up );
 	}
 
-	void MatrixManager::Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z )
+	void MatrixManager::LoadOrthographic(	const Float32 p_Left, const Float32 p_Right, const Float32 p_Bottom,
+											const Float32 p_Top, const Float32 p_ZNear, const Float32 p_ZFar )
 	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ).Translate( p_X, p_Y, p_Z );
+		s_CurrentStack.top( ).Orthographic( p_Left, p_Right, p_Bottom, p_Top, p_ZNear, p_ZFar );
 	}
 
-	// Set functions
-	void MatrixManager::SetMode( const eMode p_Mode )
+	void MatrixManager::LoadPerspective(	const Float32 p_Fov, const Float32 p_Aspect,
+											const Float32 p_ZNear, const Float32 p_ZFar )
 	{
-		m_Mode = p_Mode;
+		s_CurrentStack.top( ).Perspective( p_Fov, p_Aspect, p_ZNear, p_ZFar );
 	}
 
-	void MatrixManager::SetMatrix( const Matrix4x4 & p_Matrix )
+	void MatrixManager::RotateX( const Float32 p_Angle )
 	{
-		m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( ) = p_Matrix;
+		// Calculate the rotation matrix
+		const Float32 AngleSin = Math::SinDegrees<Float32>( p_Angle );
+		const Float32 AngleCos = Math::CosDegrees<Float32>( p_Angle );
+
+		Matrix4x4f32 rotation (	1.0f, 0.0,			0.0,		0.0f,
+								0.0f, AngleCos,		-AngleSin,	0.0f,
+								0.0f, AngleSin,		AngleCos,	0.0f,
+								0.0f, 0.0,			0.0,		1.0f );
+
+		// Multiply the rotation matrix by the current matrix.
+		s_CurrentStack.top( ) = s_CurrentStack.top( ) * rotation;
 	}
 
-	// Get functions
-	Matrix4x4 & MatrixManager::GetMatrix( )
+	void MatrixManager::RotateY( const Float32 p_Angle )
 	{
-		return m_MatrixStacks[ (BIT_MEMSIZE)m_Mode ].top( );
+		// Calculate the rotation matrix
+		const Float32 AngleSin = Math::SinDegrees<Float32>( p_Angle );
+		const Float32 AngleCos = Math::CosDegrees<Float32>( p_Angle );
+
+		Matrix4x4f32 rotation (	AngleCos,	0.0, AngleSin,	0.0,
+								0.0f,		1.0, 0.0,		0.0,
+								-AngleSin,	0.0, AngleCos,	0.0,
+								0.0f,		0.0, 0.0,		1.0f );
+
+		// Multiply the rotation matrix by the current matrix.
+		s_CurrentStack.top( ) = s_CurrentStack.top( ) * rotation;
 	}
 
-	Matrix4x4 & MatrixManager::GetMatrix( const eMode p_Mode )
+	void MatrixManager::RotateZ( const Float32 p_Angle )
 	{
-		return m_MatrixStacks[ (BIT_MEMSIZE)p_Mode ].top( );
+		// Calculate the rotation matrix
+		const Float32 AngleSin = Math::SinDegrees<Float32>( p_Angle );
+		const Float32 AngleCos = Math::CosDegrees<Float32>( p_Angle );
+
+		Matrix4x4f32 rotation (	AngleCos,	-AngleSin,	0.0, 0.0f,
+								AngleSin,	AngleCos,	0.0, 0.0f,
+								0.0f,		0.0,		1.0, 0.0f,
+								0.0f,		0.0,		0.0, 1.0f );
+
+		// Multiply the rotation matrix by the current matrix.
+		s_CurrentStack.top( ) = s_CurrentStack.top( ) * rotation;
 	}
 
-	MatrixManager::eMode MatrixManager::GetMode( )
+	void MatrixManager::Scale( const Float32 p_X, const Float32 p_Y, const Float32 p_Z )
 	{
-		return m_Mode;
+		Matrix4x4f32 scale (	p_X, 0.0, 0.0, 0.0f,
+								0.0f, p_Y, 0.0, 0.0f,
+								0.0f, 0.0, p_Z, 0.0f,
+								0.0f, 0.0, 0.0, 1.0f );
+
+		// Multiply the rotation matrix by the current matrix.
+		s_CurrentStack.top( ) = s_CurrentStack.top( ) * scale;
 	}
 
-	Matrix4x4 & MatrixManager::GetModelViewMatrix( )
+	void MatrixManager::Scale( const Vector3f32 p_Scale )
 	{
-		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_ModelView ].top( );
+		Matrix4x4f32 scale (	p_Scale.x, 0.0, 0.0, 0.0f,
+								0.0f, p_Scale.y, 0.0, 0.0f,
+								0.0f, 0.0, p_Scale.z, 0.0f,
+								0.0f, 0.0, 0.0, 1.0f );
+
+		// Multiply the rotation matrix by the current matrix.
+		s_CurrentStack.top( ) = s_CurrentStack.top( ) * scale;
 	}
 
-	Matrix4x4 & MatrixManager::GetProjectionMatrix( )
+	void MatrixManager::Translate( const Float32 p_X, const Float32 p_Y, const Float32 p_Z )
 	{
-		return m_MatrixStacks[ (BIT_MEMSIZE)Mode_Projection ].top( );
+		Matrix4x4f32 translation (	1.0f, 0.0, 0.0, p_X,
+									0.0f, 1.0, 0.0, p_Y,
+									0.0f, 0.0, 1.0, p_Z,
+									0.0f, 0.0, 0.0, 1.0f );
+
+		// Multiply the rotation matrix by the current matrix.
+		s_CurrentStack.top( ) = s_CurrentStack.top( ) * translation;
+	}
+
+	void MatrixManager::Translate( const Vector3f32 p_Translation )
+	{
+		Matrix4x4f32 translation (	1.0f, 0.0, 0.0, p_Translation.x,
+									0.0f, 1.0, 0.0, p_Translation.y,
+									0.0f, 0.0, 1.0, p_Translation.z,
+									0.0f, 0.0, 0.0, 1.0f );
+
+		// Multiply the rotation matrix by the current matrix.
+		s_CurrentStack.top( ) = s_CurrentStack.top( ) * translation;
+	}
+
+	MatrixManager::eMatrixMode MatrixManager::GetMatrixMode( )
+	{
+		return s_Mode;
+	}
+
+	const Matrix4x4f32 & MatrixManager::GetMatrix( )
+	{
+		return s_CurrentStack.top( );
+	}
+
+	const Matrix4x4f32 & MatrixManager::GetMatrix( const eMatrixMode p_Mode )
+	{
+		return s_MatrixStacks[ static_cast<SizeType>( p_Mode ) ].top( );
+	}
+
+	const Matrix4x4f32 & MatrixManager::GetModelViewMatrix( )
+	{
+		return s_MatrixStacks[ static_cast<SizeType>( ModelView ) ].top( );
+	}
+
+	const Matrix4x4f32 & MatrixManager::GetProjectionMatrix( )
+	{
+		return s_MatrixStacks[ static_cast<SizeType>( Projection ) ].top( );
 	}
 
 }

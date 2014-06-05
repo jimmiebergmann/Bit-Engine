@@ -47,6 +47,7 @@
     <ClInclude Include="..\..\include\Bit\System\Time.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Version.hpp" />
     <ClInclude Include="..\..\include\Bit\NonCopyable.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\MatrixManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -86,6 +87,7 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\System\Time.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Version.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\MatrixManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">

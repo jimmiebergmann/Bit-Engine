@@ -23,61 +23,192 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 // TODO: Make sure to multiply a new matrix with the old one when you are transforming.
-// Right now, scaling wont work if you've rotaded the object.
+// Right now, scaling wont work if you're rotating the object.
 
 
 #ifndef BIT_SYSTEM_MATRIX_MANAGER_HPP
 #define BIT_SYSTEM_MATRIX_MANAGER_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Build.hpp>
 #include <Bit/System/Matrix4x4.hpp>
 #include <stack>
 
 namespace Bit
 {
 
+	////////////////////////////////////////////////////////////////
+	/// \ingroup System
+	/// \brief Matrix manager class.
+	///
+	////////////////////////////////////////////////////////////////
 	class BIT_API MatrixManager
 	{
 
 	public:
 
-		// Public enums
-		enum eMode
+		////////////////////////////////////////////////////////////////
+		/// \brief Matrix mode enumerator.
+		///
+		////////////////////////////////////////////////////////////////
+		enum eMatrixMode
 		{
-			Mode_ModelView = 0,
-			Mode_Projection = 1
+			ModelView,	///< Model view matrix mode.
+			Projection	///< Projection matrix mode.
 		};
 
-		// Public functions
-		static void LoadIdentity( );
-		static void LoadLookAt( const Vector3_f32 p_Eye, const Vector3_f32 p_Center, const Vector3_f32 p_Up );
-		static void LoadOrthographic( const BIT_FLOAT32 p_Left, const BIT_FLOAT32 p_Right, const BIT_FLOAT32 p_Bottom,
-			const BIT_FLOAT32 p_Top, const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
-		static void LoadPerspective( const BIT_FLOAT32 p_Fov, const BIT_FLOAT32 p_Aspect,
-			const BIT_FLOAT32 p_ZNear, const BIT_FLOAT32 p_ZFar );
-		static void Pop( );
+		////////////////////////////////////////////////////////////////
+		/// \brief Push the current matrix to the stack.
+		///
+		////////////////////////////////////////////////////////////////
 		static void Push( );
-		static void RotateX( const BIT_FLOAT32 p_Angle );
-		static void RotateY( const BIT_FLOAT32 p_Angle );
-		static void RotateZ( const BIT_FLOAT32 p_Angle );
-		static void Scale( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
-		static void Translate( const BIT_FLOAT32 p_X, const BIT_FLOAT32 p_Y, const BIT_FLOAT32 p_Z );
+		
+		////////////////////////////////////////////////////////////////
+		/// \brief Pop the last pushed matrix from the stack.
+		///
+		////////////////////////////////////////////////////////////////
+		static void Pop( );
 
-		// Set functions
-		static void SetMode( const eMode p_Mode );
-		static void SetMatrix( const Matrix4x4 & p_Matrix );
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the current matrix mode.
+		///
+		////////////////////////////////////////////////////////////////
+		static void SetMode( const eMatrixMode p_Mode );
 
-		// Get functions
-		static Matrix4x4 & GetMatrix( );
-		static Matrix4x4 & GetMatrix( const eMode p_Mode );
-		static eMode GetMode( );
-		static Matrix4x4 & GetModelViewMatrix( );
-		static Matrix4x4 & GetProjectionMatrix( );
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the current matrix.
+		///
+		/// This function will override any changes to the current matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static void SetMatrix( const Matrix4x4f32 & p_Matrix );
+		
+		////////////////////////////////////////////////////////////////
+		/// \brief Turn the current matrix into an identity matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static void LoadIdentity( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Turn the current matrix into a "look at" matrix.
+		///
+		/// This kind of matrix works well for any kind of camera.
+		///
+		////////////////////////////////////////////////////////////////
+		static void LoadLookAt( const Vector3f32 p_Eye, const Vector3f32 p_Center, const Vector3f32 p_Up );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Turn the current matrix into an orthograpic projection matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static void LoadOrthographic(	const Float32 p_Left, const Float32 p_Right, const Float32 p_Bottom,
+										const Float32 p_Top, const Float32 p_ZNear, const Float32 p_ZFar );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Turn the current matrix into a perspective projection matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static void LoadPerspective(	const Float32 p_Fov, const Float32 p_Aspect,
+										const Float32 p_ZNear, const Float32 p_ZFar );
+		
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix by the X axis.
+		///
+		/// \param p_Angle The angle in degrees to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static void RotateX( const Float32 p_Angle );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix by the Y axis.
+		///
+		/// \param p_Angle The angle in degrees to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static void RotateY( const Float32 p_Angle );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix by the Z axis.
+		///
+		/// \param p_Angle The angle in degrees to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static void RotateZ( const Float32 p_Angle );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Scale the current matrix.
+		///
+		/// \param p_X Amount of scale by the x-axis.
+		/// \param p_Y Amount of scale by the y-axis.
+		/// \param p_Z Amount of scale by the z-axis.
+		///
+		////////////////////////////////////////////////////////////////
+		static void Scale( const Float32 p_X, const Float32 p_Y, const Float32 p_Z );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Scale the current matrix.
+		///
+		/// \param p_Scale Vector representing the amount of scale by the xyz-axis.
+		///
+		////////////////////////////////////////////////////////////////
+		static void Scale( const Vector3f32 p_Scale );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Translate the current matrix.
+		///
+		/// \param p_X Amount of translation by the x-axis.
+		/// \param p_Y Amount of translation by the y-axis.
+		/// \param p_Z Amount of translation by the z-axis.
+		///
+		////////////////////////////////////////////////////////////////
+		static void Translate( const Float32 p_X, const Float32 p_Y, const Float32 p_Z );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Translate the current matrix.
+		///
+		/// \param p_Scale Vector representing the amount of translation by the xyz-axis.
+		///
+		////////////////////////////////////////////////////////////////
+		static void Translate( const Vector3f32 p_Translation );
+		
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the current matrix mode.
+		///
+		////////////////////////////////////////////////////////////////
+		static eMatrixMode GetMatrixMode( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the current matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static const Matrix4x4f32 & GetMatrix( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get current state of any matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static const Matrix4x4f32 & GetMatrix( const eMatrixMode p_Mode );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get model view matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static const Matrix4x4f32 & GetModelViewMatrix( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get projection matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static const Matrix4x4f32 & GetProjectionMatrix( );
 
 	private:
 
-		static eMode m_Mode;
-		static std::stack< Matrix4x4 > m_MatrixStacks[ 2 ];
+		// Private typedefs
+		typedef std::stack< Matrix4x4f32 > MatrixStack;
+
+		// Private variables.
+		static eMatrixMode s_Mode;					///< Current matrix mode.
+		static MatrixStack s_MatrixStacks[ 2 ];		///< Array of matrix stacks.
+		static MatrixStack & s_CurrentStack;		///< Reference to the current stack.
 
 	};
 
