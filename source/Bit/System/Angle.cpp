@@ -22,32 +22,45 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-template <typename T>
-inline Angle<T>::Angle( ) :
-	m_Radians( static_cast<T>( 0 ) )
-{
-}
+#include <Bit/System/Angle.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
-template <typename T>
-inline Angle<T>::Angle( const T p_Angle ) :
-	m_Radians( p_Angle )
+namespace Bit
 {
-}
 
-template <typename T>
-inline T Angle<T>::AsDegrees( ) const
-{
-	return m_Radians * static_cast<T>( 180.0f / Pi );
-}
+	Angle::Angle( ) :
+		m_Radians( 0 )
+	{
+	}
 
-template <typename T>
-inline T Angle<T>::AsRadians( ) const
-{
-	return m_Radians;
-}
+	Angle::Angle( const Float64 & p_Radians ) :
+		m_Radians( p_Radians )
+	{
+	}
 
-template <typename T>
-inline T Angle<T>::operator( ) ( ) const
-{
-	return m_Radians;
+	Float64 Angle::AsDegrees( ) const
+	{
+		return m_Radians * 180.0f / Pi ;
+	}
+
+	Float64 Angle::AsRadians( ) const
+	{
+		return m_Radians;
+	}
+
+	Float64 Angle::operator( ) ( ) const
+	{
+		return m_Radians;
+	}
+
+	BIT_API Angle Degrees( const Float64 & p_Degrees )
+	{
+		return Angle( p_Degrees * Pi / 180.0f );
+	}
+
+	BIT_API Angle Radians( const Float64 & p_Radians )
+	{
+		return Angle( p_Radians );
+	}
+
 }

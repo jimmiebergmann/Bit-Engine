@@ -52,13 +52,13 @@
     <ClInclude Include="..\..\include\Bit\System\Win32\ThreadWin32.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\include\Bit\System\Angle.inl" />
     <None Include="..\..\include\Bit\System\Math.inl" />
     <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
     <None Include="..\..\include\Bit\System\Vector2.inl" />
     <None Include="..\..\include\Bit\System\Vector3.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\System\Angle.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Bencode\Reader.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Bencode\Value.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Bencode\Writer.cpp" />

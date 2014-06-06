@@ -258,10 +258,10 @@ inline void Vector3<T>::Rotate( const Float64 p_Angle, const Float64 p_X, const 
 }
 
 template <typename T>
-inline void Vector3<T>::RotateX( const Float64 p_Angle )
+inline void Vector3<T>::RotateX( const Angle & p_Angle )
 {
-	const Float64 sin = Math::Sin<Float64>( Math::DegreesToRadians<Float64>( p_Angle ) );
-	const Float64 cos = Math::Cos<Float64>( Math::DegreesToRadians<Float64>( p_Angle ) );
+	const Float64 sin = Math::Sin<Float64>( p_Angle.AsRadians( ) );
+	const Float64 cos = Math::Cos<Float64>( p_Angle.AsRadians( ) );
 
 	// Store the new y and z in tempory variables
 	const Float64 ty = ( static_cast<Float64>( y ) * cos ) - ( static_cast<Float64>( z ) * sin );
@@ -272,10 +272,10 @@ inline void Vector3<T>::RotateX( const Float64 p_Angle )
 }
 
 template <typename T>
-inline void Vector3<T>::RotateY( const Float64 p_Angle )
+inline void Vector3<T>::RotateY( const Angle & p_Angle )
 {
-	const Float64 sin = Math::Sin<Float64>( Math::DegreesToRadians<Float64>(p_Angle ) );
-	const Float64 cos = Math::Cos<Float64>( Math::DegreesToRadians<Float64>(p_Angle ) );
+	const Float64 sin = Math::Sin<Float64>( p_Angle.AsRadians( ) );
+	const Float64 cos = Math::Cos<Float64>( p_Angle.AsRadians( ) );
 	// Store the new x and z in tempory variables
 	const Float64 tx = ( static_cast<Float64>( x ) * cos ) - ( static_cast<Float64>( z ) * sin );
 	const Float64 tz = ( static_cast<Float64>( x ) * sin ) + ( static_cast<Float64>( z ) * cos );
@@ -285,10 +285,10 @@ inline void Vector3<T>::RotateY( const Float64 p_Angle )
 }
 
 template <typename T>
-inline void Vector3<T>::RotateZ( const Float64 p_Angle )
+inline void Vector3<T>::RotateZ( const Angle & p_Angle )
 {
-	const Float64 sin = Math::Sin<Float64>( Math::DegreesToRadians<Float64>(p_Angle ) );
-	const Float64 cos = Math::Cos<Float64>( Math::DegreesToRadians<Float64>(p_Angle ) );
+	const Float64 sin = Math::Sin<Float64>( p_Angle.AsRadians( ) );
+	const Float64 cos = Math::Cos<Float64>( p_Angle.AsRadians( ) );
 
 	// Store the new x and y in tempory variables
 	const Float64 tx = ( static_cast<Float64>( x ) * cos ) - ( static_cast<Float64>( y ) * sin );
@@ -323,14 +323,14 @@ inline Vector3<T> Vector3<T>::Cross( const Vector3<T> & p_Vector1, const Vector3
 }
 
 template <typename T>
-inline Angle<Float64> Vector3<T>::AngleBetweenVectors( const Vector3<T> & p_Vector1, const Vector3<T> & p_Vector2 )
+inline Angle Vector3<T>::AngleBetweenVectors( const Vector3<T> & p_Vector1, const Vector3<T> & p_Vector2 )
 {
 	Float64 angleRad = acos( p_Vector1.Normal( ).Dot( p_Vector2 ) );
 
 	if( bitIsNan( angleRad ) )
 	{
-		return 0.0f;
+		return Radians( 0.0f );
 	}
 
-	return Angle<Float64>( angleRad );
+	return Radians( angleRad );
 }

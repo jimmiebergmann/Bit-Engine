@@ -168,7 +168,7 @@ namespace Bit
 		/// \param p_Angle The angle in degrees to rotate.
 		///
 		////////////////////////////////////////////////////////////////
-		void Rotate( Float64 p_Angle );
+		void Rotate( const Angle & p_Angle );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Calculate the dot product between two vectors.
@@ -188,7 +188,7 @@ namespace Bit
 		/// \return The angle in degrees between two vectors.
 		///
 		////////////////////////////////////////////////////////////////
-		static Angle<Float64> AngleBetweenVectors( const Vector2<T> & p_Vector1, const Vector2<T> & p_Vector2 );
+		static Angle AngleBetweenVectors( const Vector2<T> & p_Vector1, const Vector2<T> & p_Vector2 );
 		
 		////////////////////////////////////////////////////////////////
 		// Public variable members
