@@ -31,6 +31,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Matrix4x4.hpp>
+#include <vector>
 #include <stack>
 
 namespace Bit
@@ -40,6 +41,14 @@ namespace Bit
 	/// \ingroup System
 	/// \brief Matrix manager class.
 	///
+	/// The matrix manager contains 2 stacks by default,
+	/// but it's possible to add new stacks with the AddStack function.
+	/// You can change the current matrix stack by using the already existing
+	/// enumeration called eMatrixStack as the index.
+	/// The first manually added stack has the index 2,
+	///	the next one has the index 3, and so on...
+	/// The maximum ammount of stacks is 16.
+	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API MatrixManager
 	{
@@ -47,14 +56,32 @@ namespace Bit
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Matrix mode enumerator.
+		/// \brief Matrix stack enumerator.
 		///
 		////////////////////////////////////////////////////////////////
-		enum eMatrixMode
+		enum eMatrixStack
 		{
-			ModelView,	///< Model view matrix mode.
-			Projection	///< Projection matrix mode.
+			ModelView	= 0,	///< Model view matrix stack.
+			Projection	= 1		///< Projection matrix stack.
 		};
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Add another stack.
+		///
+		/// \return The index of the stack.
+		///
+		////////////////////////////////////////////////////////////////
+		static SizeType AddStack( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Remove stack from matrix manager.
+		///
+		/// \param p_Index Index 2 to 15 of any manually added stack.
+		///
+		/// \return True if successfully removed stack, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		static Bool RemoveStack( const SizeType p_Index );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Push the current matrix to the stack.
@@ -69,10 +96,16 @@ namespace Bit
 		static void Pop( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Set the current matrix mode.
+		/// \brief Set the current matrix stack(only default stacks)
 		///
 		////////////////////////////////////////////////////////////////
-		static void SetMode( const eMatrixMode p_Mode );
+		static void SetCurrentStack( const eMatrixStack p_Stack );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the current matrix stack(any stack, even manually added).
+		///
+		////////////////////////////////////////////////////////////////
+		static void SetCurrentStack( const SizeType p_Index );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the current matrix.
@@ -171,10 +204,10 @@ namespace Bit
 		static void Translate( const Vector3f32 p_Translation );
 		
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the current matrix mode.
+		/// \brief Get the index of the current stack.
 		///
 		////////////////////////////////////////////////////////////////
-		static eMatrixMode GetMatrixMode( );
+		static SizeType GetCurrentStack( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the current matrix.
@@ -183,10 +216,16 @@ namespace Bit
 		static const Matrix4x4f32 & GetMatrix( );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Get current state of any default matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static const Matrix4x4f32 & GetMatrix( const eMatrixStack p_Stack );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Get current state of any matrix.
 		///
 		////////////////////////////////////////////////////////////////
-		static const Matrix4x4f32 & GetMatrix( const eMatrixMode p_Mode );
+		static const Matrix4x4f32 & GetMatrix( const SizeType p_Index );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get model view matrix.
@@ -203,11 +242,13 @@ namespace Bit
 	private:
 
 		// Private typedefs
-		typedef std::stack< Matrix4x4f32 > MatrixStack;
+		
+		typedef std::stack<Matrix4x4f32> MatrixStack;
+		typedef std::vector<MatrixStack> MatrixStackVector;
 
 		// Private variables.
-		static eMatrixMode s_Mode;					///< Current matrix mode.
-		static MatrixStack s_MatrixStacks[ 2 ];		///< Array of matrix stacks.
+		static SizeType s_CurrentStackIndex;		///< Current matrix mode.
+		static MatrixStackVector s_MatrixStacks;	///< Vector of matrix stacks.
 		static MatrixStack & s_CurrentStack;		///< Reference to the current stack.
 
 	};

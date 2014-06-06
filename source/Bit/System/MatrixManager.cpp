@@ -28,21 +28,57 @@
 
 namespace Bit
 {
+
+	// Global varaibles
+	static SizeType g_StackCountLimit = 16;
+
 	// Dummy matrix variable used for the stack initialization
-	Matrix4x4f32 DummyMatrix;
-	std::deque< Matrix4x4f32 > DummyDeque( 1, DummyMatrix );
+	Matrix4x4f32 dummyMatrix;
+	std::deque< Matrix4x4f32 > dummyDeque( 1, dummyMatrix );
 
 	// Set the private static variables
-	MatrixManager::eMatrixMode MatrixManager::s_Mode = MatrixManager::ModelView;
+	SizeType MatrixManager::s_CurrentStackIndex = 0;
 	// Intialize the stacks
-	MatrixManager::MatrixStack MatrixManager::s_MatrixStacks[ 2 ] =
-	{
-		std::stack< Matrix4x4f32 >( DummyDeque ),
-		std::stack< Matrix4x4f32 >( DummyDeque )
-	};
+	MatrixManager::MatrixStackVector MatrixManager::s_MatrixStacks( 2, std::stack< Matrix4x4f32 >( dummyDeque ) );
 	// Intiialize the reference to the current stack.
 	MatrixManager::MatrixStack & MatrixManager::s_CurrentStack = MatrixManager::s_MatrixStacks[ 0 ];
 
+	////////////////////////////////////////////////////////////////
+	/// \brief Add another stack.
+	///
+	/// \return The index of the stack.
+	///
+	////////////////////////////////////////////////////////////////
+	SizeType MatrixManager::AddStack( )
+	{
+		// Set a stack limit.
+		if( s_MatrixStacks.size( ) >= g_StackCountLimit )
+		{
+			return 0;
+		}
+
+		// Push a new stack
+		MatrixStack stack;
+		s_MatrixStacks.push_back( stack );
+
+		// Return the index of the stack
+		return s_MatrixStacks.size( ) - 1;
+	}
+
+	Bool MatrixManager::RemoveStack( const SizeType p_Index )
+	{
+		// Make sure that the index is valid.
+		if( p_Index < 2 || p_Index > g_StackCountLimit - 1 || p_Index >= s_MatrixStacks.size( ) )
+		{
+			return false;
+		}
+
+		// Erase the stack
+		s_MatrixStacks.erase( s_MatrixStacks.begin( ) + p_Index );
+
+		// Succeeded.
+		return true;
+	}
 
 	void MatrixManager::Push( )
 	{
@@ -62,10 +98,21 @@ namespace Bit
 		}
 	}
 
-	void MatrixManager::SetMode( const eMatrixMode p_Mode )
+	void MatrixManager::SetCurrentStack( const eMatrixStack p_Stack )
 	{
-		s_Mode = p_Mode;
-		s_CurrentStack = s_MatrixStacks[ static_cast<SizeType>( s_Mode ) ];
+		s_CurrentStackIndex = static_cast<SizeType>( p_Stack ); 
+		s_CurrentStack = s_MatrixStacks[ s_CurrentStackIndex ];
+	}
+
+	void MatrixManager::SetCurrentStack( const SizeType p_Index )
+	{
+		if( p_Index >= s_MatrixStacks.size( ) )
+		{
+			return;
+		}
+
+		s_CurrentStackIndex = static_cast<SizeType>( p_Index ); 
+		s_CurrentStack = s_MatrixStacks[ s_CurrentStackIndex ];
 	}
 
 	void MatrixManager::SetMatrix( const Matrix4x4f32 & p_Matrix )
@@ -185,9 +232,9 @@ namespace Bit
 		s_CurrentStack.top( ) = s_CurrentStack.top( ) * translation;
 	}
 
-	MatrixManager::eMatrixMode MatrixManager::GetMatrixMode( )
+	SizeType MatrixManager::GetCurrentStack( )
 	{
-		return s_Mode;
+		return s_CurrentStackIndex;
 	}
 
 	const Matrix4x4f32 & MatrixManager::GetMatrix( )
@@ -195,9 +242,19 @@ namespace Bit
 		return s_CurrentStack.top( );
 	}
 
-	const Matrix4x4f32 & MatrixManager::GetMatrix( const eMatrixMode p_Mode )
+	const Matrix4x4f32 & MatrixManager::GetMatrix( const eMatrixStack p_Stack )
 	{
-		return s_MatrixStacks[ static_cast<SizeType>( p_Mode ) ].top( );
+		return s_MatrixStacks[ static_cast<SizeType>( p_Stack ) ].top( );
+	}
+
+	const Matrix4x4f32 & MatrixManager::GetMatrix( const SizeType p_Index )
+	{
+		if( p_Index >= s_MatrixStacks.size( ) )
+		{
+			return dummyMatrix;
+		}
+
+		return s_MatrixStacks[ static_cast<SizeType>( p_Index ) ].top( );
 	}
 
 	const Matrix4x4f32 & MatrixManager::GetModelViewMatrix( )
