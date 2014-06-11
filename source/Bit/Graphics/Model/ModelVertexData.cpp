@@ -24,12 +24,14 @@
 
 #include <Bit/Graphics/Model/ModelVertexData.hpp>
 #include <Bit/Graphics/VertexBuffer.hpp>
+#include <Bit/Graphics/VertexArray.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-	ModelVertexData::ModelVertexData( )
+	ModelVertexData::ModelVertexData( ) :
+		m_pVertexArray( NULL )
 	{
 	}
 
@@ -40,28 +42,62 @@ namespace Bit
 		{
 			delete (*it);
 		}
+
+		if( m_pVertexArray )
+		{
+			delete m_pVertexArray;
+		}
 	}
 
 	Bool ModelVertexData::AddVertexBuffer( VertexBuffer * p_pVertexBuffer )
 	{
+		// Error check the parameter.
 		if( p_pVertexBuffer == NULL || p_pVertexBuffer->IsLoaded( ) == false )
 		{
 			return false;
 		}
 
+		// Add the vertex buffer to the vector.
 		m_VertexBuffers.push_back( p_pVertexBuffer );
 
+		// Succeeded
+		return true;
+	}
+
+	Bool ModelVertexData::SetVertexArray( VertexArray * p_pVertexArray )
+	{
+		// Error check the parameter.
+		if( p_pVertexArray == NULL )
+		{
+			return false;
+		}
+
+		// Delete the old vertex array if any.
+		if( m_pVertexArray )
+		{
+			delete m_pVertexArray;
+		}
+
+		// Set the new vertex array.
+		m_pVertexArray = p_pVertexArray;
+
+		// Succeeded
 		return true;
 	}
 
 	SizeType ModelVertexData::GetVertexBufferCount( ) const
 	{
 		return static_cast<SizeType>( m_VertexBuffers.size( ) );
-	}
+	}	
 
 	const VertexBuffer * ModelVertexData::GetVertexBuffer( const SizeType & p_Index ) const
 	{
 		return m_VertexBuffers[ p_Index ];
+	}
+
+	const VertexArray * ModelVertexData::GetVertexArray(  ) const
+	{
+		return m_pVertexArray;
 	}
 
 }

@@ -70,8 +70,8 @@ namespace Bit
 		m_Open( false ),
 		m_Version( 0, 0 ),
 		m_DeviceContextHandle( NULL ),
-		m_Context( NULL ),
-		m_pDefaultModelRenderer( NULL )
+		m_Context( NULL )/*,
+		m_pDefaultModelRenderer( NULL )*/
 	{
 	}
 
@@ -81,8 +81,8 @@ namespace Bit
 		m_Open( false ),
 		m_Version( 0, 0 ),
 		m_DeviceContextHandle( NULL ),
-		m_Context( NULL ),
-		m_pDefaultModelRenderer( NULL )
+		m_Context( NULL )/*,
+		m_pDefaultModelRenderer( NULL )*/
 	{
 		Open( p_RenderOutput, p_Version );
 	}
@@ -163,12 +163,12 @@ namespace Bit
 	{
 		if( m_Context )
 		{
-			// Destory the default model renderer.
+			/*// Destory the default model renderer.
 			if( m_pDefaultModelRenderer )
 			{
 				delete m_pDefaultModelRenderer;
 				m_pDefaultModelRenderer = NULL;
-			}
+			}*/
 
 			// Release the context from the current thread
 			if( !wglMakeCurrent( NULL, NULL ) )
@@ -336,7 +336,7 @@ namespace Bit
 		return s_DefaultFramebuffer;
 	}
 
-	const ModelRenderer & OpenGLGraphicDeviceWin32::GetDefaultModelRenderer( )
+	/*const ModelRenderer & OpenGLGraphicDeviceWin32::GetDefaultModelRenderer( )
 	{
 		if( m_pDefaultModelRenderer == NULL )
 		{
@@ -344,7 +344,7 @@ namespace Bit
 		}
 
 		return *m_pDefaultModelRenderer;
-	}
+	}*/
 
 	bool OpenGLGraphicDeviceWin32::OpenVersion( const RenderWindow & p_RenderOutput,
 												const Version & p_Version )

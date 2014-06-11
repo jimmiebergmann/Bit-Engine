@@ -26,6 +26,7 @@
 #define BIT_GRAPHICS_MODEL_VERTEX_DATA_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <vector>
 
 namespace Bit
@@ -42,7 +43,7 @@ namespace Bit
 	/// \see Model
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API ModelVertexData
+	class BIT_API ModelVertexData : public NonCopyable
 	{
 
 	public:
@@ -71,6 +72,17 @@ namespace Bit
 		Bool AddVertexBuffer( VertexBuffer * p_pVertexBuffer );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Set the vertex array. Only the pointer will be copied,
+		///		which means that ModelVertexData will take over
+		///		the responsibility of the vertex buffer.
+		///		The old vertex array, if any, will be destroyed and replaced.
+		///
+		/// \return true if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SetVertexArray( VertexArray * p_pVertexArray );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Get the number of vertex buffers. 
 		///
 		////////////////////////////////////////////////////////////////
@@ -82,25 +94,20 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		const VertexBuffer * GetVertexBuffer( const SizeType & p_Index ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the vertex array.
+		///
+		////////////////////////////////////////////////////////////////
+		const VertexArray * GetVertexArray(  ) const;
+
 	private:
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Private copy constructor. 
-		///
-		////////////////////////////////////////////////////////////////
-		ModelVertexData( const ModelVertexData & p_Model );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Private assignment operator.
-		///
-		////////////////////////////////////////////////////////////////
-		ModelVertexData & operator = ( const ModelVertexData & p_Model );
 
 		// Private typedefs.
 		typedef std::vector<VertexBuffer *> VertexBufferVector;
 
 		// Private varaibles.
 		VertexBufferVector m_VertexBuffers; ///< Vector of vertex buffers.
+		VertexArray * m_pVertexArray;
 
 	};
 

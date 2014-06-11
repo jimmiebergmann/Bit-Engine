@@ -26,6 +26,7 @@
 #define BIT_GRAPHICS_MODEL_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/Graphics/Model/ModelVertexData.hpp>
 #include <Bit/Graphics/Model/Skeleton.hpp>
 
@@ -43,7 +44,7 @@ namespace Bit
 	/// \see ModelRenderer
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Model
+	class BIT_API Model : public NonCopyable
 	{
 
 	public:
@@ -92,18 +93,6 @@ namespace Bit
 		ModelVertexData & GetVertexData( );
 
 	private:
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Private copy constructor. 
-		///
-		////////////////////////////////////////////////////////////////
-		Model( const Model & p_Model );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Private assignment operator.
-		///
-		////////////////////////////////////////////////////////////////
-		Model & operator = ( const Model & p_Model );
 
 		// Private variables
 		const GraphicDevice & m_GraphicDevice; ///< Reference of the parent graphic device.

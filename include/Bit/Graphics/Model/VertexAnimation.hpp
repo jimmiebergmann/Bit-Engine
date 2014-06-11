@@ -26,6 +26,7 @@
 #define BIT_GRAPHICS_MODEL_VERTEX_ANIMATION_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/Graphics/Model/Animation.hpp>
 #include <vector>
 
@@ -39,7 +40,7 @@ namespace Bit
 	/// \see Animation
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexAnimation : public Animation
+	class BIT_API VertexAnimation : public Animation, NonCopyable
 	{
 
 	public:

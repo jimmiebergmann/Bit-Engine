@@ -257,7 +257,7 @@ inline void Matrix4x4<T>::Translate( const T p_X, const T p_Y, const T p_Z )
 }
 
 template <typename T>
-inline Matrix4x4<T> & Matrix4x4<T>::operator = ( const Matrix4x4 & p_Mat )
+inline Matrix4x4<T> & Matrix4x4<T>::operator = ( const Matrix4x4<T> & p_Mat )
 {
 	for( SizeType i = 0; i < 16; i++ )
 	{
@@ -267,7 +267,7 @@ inline Matrix4x4<T> & Matrix4x4<T>::operator = ( const Matrix4x4 & p_Mat )
 }
 
 template <typename T>
-inline Matrix4x4<T> Matrix4x4<T>::operator + ( const Matrix4x4  & p_Mat ) const
+inline Matrix4x4<T> Matrix4x4<T>::operator + ( const Matrix4x4<T> & p_Mat ) const
 {
 	Matrix4x4 Dest = *this;
 
@@ -280,7 +280,7 @@ inline Matrix4x4<T> Matrix4x4<T>::operator + ( const Matrix4x4  & p_Mat ) const
 }
 
 template <typename T>
-inline Matrix4x4<T> Matrix4x4<T>::operator - ( const Matrix4x4  & p_Mat ) const
+inline Matrix4x4<T> Matrix4x4<T>::operator - ( const Matrix4x4<T> & p_Mat ) const
 {
 	Matrix4x4 Dest = *this;
 
@@ -293,7 +293,7 @@ inline Matrix4x4<T> Matrix4x4<T>::operator - ( const Matrix4x4  & p_Mat ) const
 }
 
 template <typename T>
-Matrix4x4<T> Matrix4x4<T>::operator * ( const Matrix4x4 & p_Mat ) const
+Matrix4x4<T> Matrix4x4<T>::operator * ( const Matrix4x4<T> & p_Mat ) const
 {
 	Matrix4x4 Mat1 = *this;
 	Matrix4x4 Dest;
@@ -319,4 +319,32 @@ Matrix4x4<T> Matrix4x4<T>::operator * ( const Matrix4x4 & p_Mat ) const
 	Dest.m[15] = Mat1.m[3] * p_Mat.m[12] + Mat1.m[7] * p_Mat.m[13] + Mat1.m[11] * p_Mat.m[14] + Mat1.m[15] * p_Mat.m[15];
 
 	return Dest;
+}
+
+template <typename T>
+Bool Matrix4x4<T>::operator == ( const Matrix4x4<T> & p_Mat ) const
+{
+	for( SizeType i = 0; i < 16; i++ )
+	{
+		if( m[ i ] != p_Mat.m[ i ] )
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+template <typename T>
+Bool Matrix4x4<T>::operator != ( const Matrix4x4<T> & p_Mat ) const
+{
+	for( SizeType i = 0; i < 16; i++ )
+	{
+		if( m[ i ] != p_Mat.m[ i ] )
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

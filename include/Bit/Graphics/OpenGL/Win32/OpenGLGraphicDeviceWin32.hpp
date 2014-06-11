@@ -309,11 +309,11 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual const Framebuffer & GetDefaultFramebuffer( ) const;
 
-		////////////////////////////////////////////////////////////////
+		/*////////////////////////////////////////////////////////////////
 		/// \brief Get the default model renderer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual const ModelRenderer & GetDefaultModelRenderer( ) ;
+		virtual const ModelRenderer & GetDefaultModelRenderer( ) ;*/
 
 	private:
 
@@ -327,7 +327,7 @@ namespace Bit
 		HDC m_DeviceContextHandle;						///< Device context handle from the render output.
 		HGLRC m_Context;								///< The OpenGL context.
 		static OpenGLFramebuffer s_DefaultFramebuffer;	///< Default framebuffer(static).
-		ModelRenderer * m_pDefaultModelRenderer;		///< Default model renderer.
+		//ModelRenderer * m_pDefaultModelRenderer;		///< Default model renderer.
 
 	};
 

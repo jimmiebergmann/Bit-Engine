@@ -21,7 +21,7 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-
+/*
 #include <Bit/Graphics/OpenGL/OpenGLModelRenderer.hpp>
 #include <Bit/Graphics/Model.hpp>
 #include <iostream>
@@ -39,9 +39,9 @@ namespace Bit
 	{
 	}
 
-	void OpenGLModelRenderer::Render( const Model & p_Model )
+	void OpenGLModelRenderer::Render( Model & p_Model )
 	{
-
+		//p_Model.GetSkeleton( ).
 	}
 
-}
+}*/

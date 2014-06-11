@@ -24,7 +24,7 @@
 
 #ifndef BIT_GRAPHICS_OPENGL_MODEL_RENDERER_HPP
 #define BIT_GRAPHICS_OPENGL_MODEL_RENDERER_HPP
-
+/*
 #include <Bit/Build.hpp>
 #include <Bit/Graphics/ModelRenderer.hpp>
 
@@ -63,7 +63,7 @@ namespace Bit
 		/// \brief Function for rendering a model.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Render( const Model & p_Model );
+		virtual void Render( Model & p_Model );
 	
 	private:
 
@@ -71,5 +71,5 @@ namespace Bit
 	};
 
 }
-
+*/
 #endif

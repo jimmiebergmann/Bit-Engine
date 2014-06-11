@@ -69,7 +69,7 @@ namespace Bit
 		/// \brief Render the vertex array object
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Render( PrimitiveMode::eMode p_PrimitiveMode ) = 0;
+		virtual void Render( PrimitiveMode::eMode p_PrimitiveMode ) const = 0;
 
 	};
 

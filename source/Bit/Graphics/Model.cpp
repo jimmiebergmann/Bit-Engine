@@ -25,6 +25,7 @@
 #include <Bit/Graphics/Model.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/Graphics/VertexBuffer.hpp>
+#include <Bit/Graphics/VertexArray.hpp>
 #include <Bit/Graphics/ObjFile.hpp>
 #include <iostream>
 #include <algorithm>
@@ -136,7 +137,7 @@ namespace Bit
 		Float32 * pBufferData = new Float32[ bufferSize ];
 
 		// Go throguh the flat faces and add the data to the buffer
-		for( SizeType i = 0; i < materialGroup.GetSmoothFaceCount( ); i++ )
+		for( SizeType i = 0; i < materialGroup.GetFlatFaceCount( ); i++ )
 		{
 			// Get the current face
 			ObjFile::Face & face = materialGroup.GetFlatFace( i );
@@ -156,7 +157,7 @@ namespace Bit
 				ObjFile::FaceCorner & faceCorner = face.GetFaceCorner( j );
 
 				// Get the vertex index.
-				Int32 vertexIndex = faceCorner.VertexIndex;
+				Int32 vertexIndex = faceCorner.VertexIndex - 1;
 
 				if( vertexIndex < 0 || vertexIndex >= object.GetVertexCount( ) )
 				{
@@ -188,8 +189,17 @@ namespace Bit
 		// Delete the allocated data
 		delete [ ] pBufferData;
 
+		// Create the vertex array
+		VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray( );
+
+		// Add the vertex buffer to the vertex array.
+		pVertexArray->AddVertexBuffer( *pVertexBuffer );
+
 		// Add the vertex buffer to the vertex data class.
 		m_VertexData.AddVertexBuffer( pVertexBuffer );
+
+		// Set the vertex buffer for the vertex data class.
+		m_VertexData.SetVertexArray( pVertexArray );
 
 		// Succeeded
 		return true;

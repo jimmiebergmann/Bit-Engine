@@ -204,6 +204,12 @@ namespace Bit
 		static void Translate( const Vector3f32 p_Translation );
 		
 		////////////////////////////////////////////////////////////////
+		/// \brief Get the number of stacks.
+		///
+		////////////////////////////////////////////////////////////////
+		static SizeType GetStackCount( );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Get the index of the current stack.
 		///
 		////////////////////////////////////////////////////////////////
@@ -238,18 +244,6 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		static const Matrix4x4f32 & GetProjectionMatrix( );
-
-	private:
-
-		// Private typedefs
-		
-		typedef std::stack<Matrix4x4f32> MatrixStack;
-		typedef std::vector<MatrixStack> MatrixStackVector;
-
-		// Private variables.
-		static SizeType s_CurrentStackIndex;		///< Current matrix mode.
-		static MatrixStackVector s_MatrixStacks;	///< Vector of matrix stacks.
-		static MatrixStack & s_CurrentStack;		///< Reference to the current stack.
 
 	};
 

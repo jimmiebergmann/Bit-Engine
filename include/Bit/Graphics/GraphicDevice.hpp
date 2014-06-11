@@ -303,7 +303,7 @@ namespace Bit
 		/// \brief Get the default model renderer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual const ModelRenderer & GetDefaultModelRenderer( ) = 0;
+		//virtual const ModelRenderer & GetDefaultModelRenderer( ) = 0;
 
 	};
 

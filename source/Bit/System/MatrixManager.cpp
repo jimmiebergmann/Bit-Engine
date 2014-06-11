@@ -29,19 +29,29 @@
 namespace Bit
 {
 
-	// Global varaibles
-	static SizeType g_StackCountLimit = 16;
+
 
 	// Dummy matrix variable used for the stack initialization
 	Matrix4x4f32 dummyMatrix;
 	std::deque< Matrix4x4f32 > dummyDeque( 1, dummyMatrix );
 
 	// Set the private static variables
-	SizeType MatrixManager::s_CurrentStackIndex = 0;
+	/*SizeType MatrixManager::s_CurrentStackIndex = 0;
 	// Intialize the stacks
 	MatrixManager::MatrixStackVector MatrixManager::s_MatrixStacks( 2, std::stack< Matrix4x4f32 >( dummyDeque ) );
 	// Intiialize the reference to the current stack.
 	MatrixManager::MatrixStack & MatrixManager::s_CurrentStack = MatrixManager::s_MatrixStacks[ 0 ];
+	*/
+
+	// Global typedefs
+	typedef std::stack<Matrix4x4f32> MatrixStack;
+	typedef std::vector<MatrixStack> MatrixStackVector;
+
+	// Global varaibles
+	static SizeType g_StackCountLimit = 16;
+	static SizeType g_CurrentStackIndex = 0;		///< Current matrix mode.
+	static MatrixStackVector g_MatrixStacks( 2, std::stack< Matrix4x4f32 >( dummyDeque ) );;	///< Vector of matrix stacks.
+	static MatrixStack * g_pCurrentStack = &g_MatrixStacks[ 0 ];								///< Reference to the current stack.
 
 	////////////////////////////////////////////////////////////////
 	/// \brief Add another stack.
@@ -52,29 +62,29 @@ namespace Bit
 	SizeType MatrixManager::AddStack( )
 	{
 		// Set a stack limit.
-		if( s_MatrixStacks.size( ) >= g_StackCountLimit )
+		if( g_MatrixStacks.size( ) >= g_StackCountLimit )
 		{
 			return 0;
 		}
 
 		// Push a new stack
 		MatrixStack stack;
-		s_MatrixStacks.push_back( stack );
+		g_MatrixStacks.push_back( stack );
 
 		// Return the index of the stack
-		return s_MatrixStacks.size( ) - 1;
+		return g_MatrixStacks.size( ) - 1;
 	}
 
 	Bool MatrixManager::RemoveStack( const SizeType p_Index )
 	{
 		// Make sure that the index is valid.
-		if( p_Index < 2 || p_Index > g_StackCountLimit - 1 || p_Index >= s_MatrixStacks.size( ) )
+		if( p_Index < 2 || p_Index > g_StackCountLimit - 1 || p_Index >= g_MatrixStacks.size( ) )
 		{
 			return false;
 		}
 
 		// Erase the stack
-		s_MatrixStacks.erase( s_MatrixStacks.begin( ) + p_Index );
+		g_MatrixStacks.erase( g_MatrixStacks.begin( ) + p_Index );
 
 		// Succeeded.
 		return true;
@@ -83,64 +93,64 @@ namespace Bit
 	void MatrixManager::Push( )
 	{
 		// Get the current matrix.
-		const Matrix4x4f32 & matrix = s_CurrentStack.top( );
+		const Matrix4x4f32 & matrix = g_pCurrentStack->top( );
 
 		// Push the current matrix.
-		s_CurrentStack.push( matrix );
+		g_pCurrentStack->push( matrix );
 	}
 
 	void MatrixManager::Pop( )
 	{
 		// Pop the stack if possible.
-		if( s_CurrentStack.size( ) > 1 )
+		if( g_pCurrentStack->size( ) > 1 )
 		{
-			s_CurrentStack.pop( );
+			g_pCurrentStack->pop( );
 		}
 	}
 
 	void MatrixManager::SetCurrentStack( const eMatrixStack p_Stack )
 	{
-		s_CurrentStackIndex = static_cast<SizeType>( p_Stack ); 
-		s_CurrentStack = s_MatrixStacks[ s_CurrentStackIndex ];
+		g_CurrentStackIndex = static_cast<SizeType>( p_Stack ); 
+		g_pCurrentStack = &(g_MatrixStacks[ g_CurrentStackIndex ]);
 	}
 
 	void MatrixManager::SetCurrentStack( const SizeType p_Index )
 	{
-		if( p_Index >= s_MatrixStacks.size( ) )
+		if( p_Index >= g_MatrixStacks.size( ) )
 		{
 			return;
 		}
 
-		s_CurrentStackIndex = static_cast<SizeType>( p_Index ); 
-		s_CurrentStack = s_MatrixStacks[ s_CurrentStackIndex ];
+		g_CurrentStackIndex = static_cast<SizeType>( p_Index ); 
+		g_pCurrentStack = &(g_MatrixStacks[ g_CurrentStackIndex ]);
 	}
 
 	void MatrixManager::SetMatrix( const Matrix4x4f32 & p_Matrix )
 	{
 		// Set the current matrix.
-		s_CurrentStack.top( ) = p_Matrix;
+		g_pCurrentStack->top( ) = p_Matrix;
 	}
 
 	void MatrixManager::LoadIdentity( )
 	{
-		s_CurrentStack.top( ).Identity( );
+		g_pCurrentStack->top( ).Identity( );
 	}
 
 	void MatrixManager::LoadLookAt( const Vector3f32 p_Eye, const Vector3f32 p_Center, const Vector3f32 p_Up )
 	{
-		s_CurrentStack.top( ).LookAt( p_Eye, p_Center, p_Up );
+		g_pCurrentStack->top( ).LookAt( p_Eye, p_Center, p_Up );
 	}
 
 	void MatrixManager::LoadOrthographic(	const Float32 p_Left, const Float32 p_Right, const Float32 p_Bottom,
 											const Float32 p_Top, const Float32 p_ZNear, const Float32 p_ZFar )
 	{
-		s_CurrentStack.top( ).Orthographic( p_Left, p_Right, p_Bottom, p_Top, p_ZNear, p_ZFar );
+		g_pCurrentStack->top( ).Orthographic( p_Left, p_Right, p_Bottom, p_Top, p_ZNear, p_ZFar );
 	}
 
 	void MatrixManager::LoadPerspective(	const Float32 p_Fov, const Float32 p_Aspect,
 											const Float32 p_ZNear, const Float32 p_ZFar )
 	{
-		s_CurrentStack.top( ).Perspective( p_Fov, p_Aspect, p_ZNear, p_ZFar );
+		g_pCurrentStack->top( ).Perspective( p_Fov, p_Aspect, p_ZNear, p_ZFar );
 	}
 
 	void MatrixManager::RotateX( const Float32 p_Angle )
@@ -155,7 +165,7 @@ namespace Bit
 								0.0f, 0.0,			0.0,		1.0f );
 
 		// Multiply the rotation matrix by the current matrix.
-		s_CurrentStack.top( ) = s_CurrentStack.top( ) * rotation;
+		g_pCurrentStack->top( ) = g_pCurrentStack->top( ) * rotation;
 	}
 
 	void MatrixManager::RotateY( const Float32 p_Angle )
@@ -170,7 +180,7 @@ namespace Bit
 								0.0f,		0.0, 0.0,		1.0f );
 
 		// Multiply the rotation matrix by the current matrix.
-		s_CurrentStack.top( ) = s_CurrentStack.top( ) * rotation;
+		g_pCurrentStack->top( ) = g_pCurrentStack->top( ) * rotation;
 	}
 
 	void MatrixManager::RotateZ( const Float32 p_Angle )
@@ -185,7 +195,7 @@ namespace Bit
 								0.0f,		0.0,		0.0, 1.0f );
 
 		// Multiply the rotation matrix by the current matrix.
-		s_CurrentStack.top( ) = s_CurrentStack.top( ) * rotation;
+		g_pCurrentStack->top( ) = g_pCurrentStack->top( ) * rotation;
 	}
 
 	void MatrixManager::Scale( const Float32 p_X, const Float32 p_Y, const Float32 p_Z )
@@ -196,7 +206,7 @@ namespace Bit
 								0.0f, 0.0, 0.0, 1.0f );
 
 		// Multiply the rotation matrix by the current matrix.
-		s_CurrentStack.top( ) = s_CurrentStack.top( ) * scale;
+		g_pCurrentStack->top( ) = g_pCurrentStack->top( ) * scale;
 	}
 
 	void MatrixManager::Scale( const Vector3f32 p_Scale )
@@ -207,7 +217,7 @@ namespace Bit
 								0.0f, 0.0, 0.0, 1.0f );
 
 		// Multiply the rotation matrix by the current matrix.
-		s_CurrentStack.top( ) = s_CurrentStack.top( ) * scale;
+		g_pCurrentStack->top( ) = g_pCurrentStack->top( ) * scale;
 	}
 
 	void MatrixManager::Translate( const Float32 p_X, const Float32 p_Y, const Float32 p_Z )
@@ -218,7 +228,7 @@ namespace Bit
 									0.0f, 0.0, 0.0, 1.0f );
 
 		// Multiply the rotation matrix by the current matrix.
-		s_CurrentStack.top( ) = s_CurrentStack.top( ) * translation;
+		g_pCurrentStack->top( ) = g_pCurrentStack->top( ) * translation;
 	}
 
 	void MatrixManager::Translate( const Vector3f32 p_Translation )
@@ -229,42 +239,47 @@ namespace Bit
 									0.0f, 0.0, 0.0, 1.0f );
 
 		// Multiply the rotation matrix by the current matrix.
-		s_CurrentStack.top( ) = s_CurrentStack.top( ) * translation;
+		g_pCurrentStack->top( ) = g_pCurrentStack->top( ) * translation;
+	}
+
+	SizeType MatrixManager::GetStackCount( )
+	{
+		return g_MatrixStacks.size( );
 	}
 
 	SizeType MatrixManager::GetCurrentStack( )
 	{
-		return s_CurrentStackIndex;
+		return g_CurrentStackIndex;
 	}
 
 	const Matrix4x4f32 & MatrixManager::GetMatrix( )
 	{
-		return s_CurrentStack.top( );
+		return g_pCurrentStack->top( );
 	}
 
 	const Matrix4x4f32 & MatrixManager::GetMatrix( const eMatrixStack p_Stack )
 	{
-		return s_MatrixStacks[ static_cast<SizeType>( p_Stack ) ].top( );
+		return g_MatrixStacks[ static_cast<SizeType>( p_Stack ) ].top( );
 	}
 
 	const Matrix4x4f32 & MatrixManager::GetMatrix( const SizeType p_Index )
 	{
-		if( p_Index >= s_MatrixStacks.size( ) )
+		if( p_Index >= g_MatrixStacks.size( ) )
 		{
 			return dummyMatrix;
 		}
 
-		return s_MatrixStacks[ static_cast<SizeType>( p_Index ) ].top( );
+		return g_MatrixStacks[ static_cast<SizeType>( p_Index ) ].top( );
 	}
 
 	const Matrix4x4f32 & MatrixManager::GetModelViewMatrix( )
 	{
-		return s_MatrixStacks[ static_cast<SizeType>( ModelView ) ].top( );
+		return g_MatrixStacks[ static_cast<SizeType>( ModelView ) ].top( );
 	}
 
 	const Matrix4x4f32 & MatrixManager::GetProjectionMatrix( )
 	{
-		return s_MatrixStacks[ static_cast<SizeType>( Projection ) ].top( );
+		return g_MatrixStacks[ static_cast<SizeType>( Projection ) ].top( );
 	}
 
 }

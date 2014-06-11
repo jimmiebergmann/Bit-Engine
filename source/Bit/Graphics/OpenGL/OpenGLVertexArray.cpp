@@ -134,7 +134,7 @@ namespace Bit
 		return true;
 	}
 
-	void OpenGLVertexArray::Render( PrimitiveMode::eMode p_PrimitiveMode )
+	void OpenGLVertexArray::Render( PrimitiveMode::eMode p_PrimitiveMode ) const
 	{
 		glBindVertexArray( m_VertexArrayObject );
 		glDrawArrays( g_OpenGLPrimitiveModes[ static_cast<SizeType>( p_PrimitiveMode ) ], 0, m_VertexSize );

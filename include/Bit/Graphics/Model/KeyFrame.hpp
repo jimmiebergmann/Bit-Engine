@@ -26,6 +26,7 @@
 #define BIT_GRAPHICS_MODEL_KEY_FRAME_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/System/Time.hpp>
 
 namespace Bit
@@ -38,7 +39,7 @@ namespace Bit
 	/// \see Skeleton
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API KeyFrame
+	class BIT_API KeyFrame : public NonCopyable
 	{
 
 	public:

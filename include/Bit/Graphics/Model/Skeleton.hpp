@@ -26,6 +26,7 @@
 #define BIT_GRAPHICS_MODEL_SKELETON_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 #include <Bit/Graphics/Model/Skeleton.hpp>
 #include <vector>
 
@@ -44,7 +45,7 @@ namespace Bit
 	/// \see Model
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Skeleton
+	class BIT_API Skeleton : public NonCopyable
 	{
 
 	public:
