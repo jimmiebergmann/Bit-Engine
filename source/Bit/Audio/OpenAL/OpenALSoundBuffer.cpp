@@ -150,7 +150,7 @@ namespace Bit
 	{
 		// Get the file's extension
 		std::string fileExtension = "";
-		for( SizeType i = p_Filename.size( ) - 2; i >= 0; i-- )
+		for( Int32 i = p_Filename.size( ) - 2; i >= 0; i-- )
 		{
 			// Look for '.'
 			if( p_Filename[ i ] == '.' )
