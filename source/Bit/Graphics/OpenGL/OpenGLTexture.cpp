@@ -31,7 +31,7 @@
 namespace Bit
 {
 
-	static GLenum g_OpenGLDataTypes[ static_cast<SizeType>( DataType::SizeType ) + 1 ] =
+	static const GLenum g_OpenGLDataTypes[ static_cast<SizeType>( DataType::SizeType ) + 1 ] =
 	{
 		/*None		*/ 0,
 		/*Int8		*/ GL_BYTE,
@@ -48,7 +48,16 @@ namespace Bit
 		/*SizeType	*/ 0
 	};
 
-	static GLint g_OpenGLTextureFilters[ 6 ] =
+	static const GLenum g_OpenGLInternalFormat[ 4 ] =
+	{
+		/*1	*/ 	GL_RED,
+		/*2	*/	GL_RG,
+		/*3	*/	GL_RGB,
+		/*4	*/	GL_RGBA,
+	};
+
+
+	static const GLint g_OpenGLTextureFilters[ 6 ] =
 	{
 		/*Nearest				*/ GL_NEAREST,
 		/*NearestMipmapNearest	*/ GL_NEAREST_MIPMAP_NEAREST,
@@ -58,7 +67,7 @@ namespace Bit
 		/*LinearMipmapLinear	*/ GL_LINEAR_MIPMAP_LINEAR
 	};
 
-	static GLint g_OpenGLTextureWrapping[ 2 ] =
+	static const GLint g_OpenGLTextureWrapping[ 2 ] =
 	{
 		/*Repeat	*/ GL_REPEAT,
 		/*Clamp		*/ GL_CLAMP
@@ -86,7 +95,7 @@ namespace Bit
 	// General public functions
 	Bool OpenGLTexture::LoadFromMemory(	const void * p_pData, 
 										const Vector2u32 p_Size,
-										const SizeType p_ColorComponentsPerPixel,
+										const SizeType p_BytesPerPixel,
 										const ePixelFormat p_Format,
 										const DataType::eType p_Datatype,
 										const Bool p_Mipmapping )
@@ -99,11 +108,14 @@ namespace Bit
 		}
 
 		// Check if the color components per pixel is ok.
-		if( p_ColorComponentsPerPixel < 1 || p_ColorComponentsPerPixel > 4 )
+		if( p_BytesPerPixel < 1 || p_BytesPerPixel > 4 )
 		{
-			std::cout << "[OpenGLTexture::LoadFromMemory] Componenets per pixel error.\n";
+			std::cout << "[OpenGLTexture::LoadFromMemory] Bytes per pixel error.\n";
 			return false;
 		}
+
+		// Get the internal format
+		GLenum internalFormat = g_OpenGLInternalFormat[ p_BytesPerPixel - 1 ];
 
 		// Set the size and format
 		m_Size = p_Size;
@@ -123,7 +135,7 @@ namespace Bit
 		glBindTexture( GL_TEXTURE_2D, m_Id );
 
 		// Set the data
-		glTexImage2D(	GL_TEXTURE_2D, 0, p_ColorComponentsPerPixel, p_Size.x, p_Size.y, 0,
+		glTexImage2D(	GL_TEXTURE_2D, 0, internalFormat, p_Size.x, p_Size.y, 0,
 						format, dataType, reinterpret_cast<const GLvoid *>( p_pData ) );
 
 		// Set default filters
@@ -178,9 +190,7 @@ namespace Bit
 		m_PixelFormat = static_cast<ePixelFormat>( depth - 1 );
 
 		// Get the opengl format of the image data.
-		static const GLenum openGLTextureFormats[ 2 ] = { GL_RGB, GL_RGBA };
-		const SizeType openGLTextureIndex = depth - 3;
-		GLenum format = openGLTextureFormats[ openGLTextureIndex ];
+		GLenum format = g_OpenGLInternalFormat[ depth - 1 ];
 
 		// Generate an OpenGL texture id.
 		glGenTextures( 1, &m_Id );

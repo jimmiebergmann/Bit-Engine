@@ -91,7 +91,7 @@ namespace Bit
 		///
 		/// \param p_pData Pointer to the pixel data.
 		/// \param p_Size The size of the texture(width and height).
-		/// \param p_ColorComponentCount Number of color components per pixel.
+		/// \param p_BytesPerPixel Number of bytes per pixel.
 		///		Must be one of the following: 1/2/3/4.
 		/// \param p_Format The format for representing the color components.
 		/// \param p_Datatype The data type as the components are stored as.
@@ -100,7 +100,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual Bool LoadFromMemory(	const void * p_pData, 
 										const Vector2u32 p_Size,
-										const SizeType p_ColorComponentsPerPixel = 4,
+										const SizeType p_BytesPerPixel = 4,
 										const ePixelFormat p_Format = Rgba,
 										const DataType::eType p_Datatype = DataType::Uint8,
 										const Bool p_Mipmapping = false ) = 0;
