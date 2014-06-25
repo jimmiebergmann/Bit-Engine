@@ -23,7 +23,7 @@ git clone https://github.com/jimmiebergmann/Bit-Engine.git
 **Windows:** Open and build the Visual Studio 2012 solution.
 **Linux:**
 ```sh
-apt-get install libglapi-mesa libosmesa6
+sudo apt-get install libx11-dev libglapi-mesa libosmesa6
 <del>cd Bit-Engine</del>
 <del>make</del>
 ```

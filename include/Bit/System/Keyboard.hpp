@@ -27,19 +27,19 @@
 
 #include <Bit/Build.hpp>
 
-#ifdef BIT_PLATFORM_WINDOWS
+#if defined( BIT_PLATFORM_WINDOWS )
 	#include <Bit/System/Win32/KeyboardWin32.hpp>
-#elif BIT_PLATFORM_LINUX
-	//#include <Bit/System/Linux/KeyboardLinux.hpp>
+#elif defined( BIT_PLATFORM_LINUX )
+	#include <Bit/System/Linux/KeyboardLinux.hpp>
 #endif
 
 namespace Bit
 {
 
-	#ifdef BIT_PLATFORM_WINDOWS
+	#if defined( BIT_PLATFORM_WINDOWS )
 		typedef KeyboardWin32 Keyboard;
-	#elif BIT_PLATFORM_LINUX
-		#error No render window is available for this platform.
+	#elif defined( BIT_PLATFORM_LINUX )
+		typedef KeyboardLinux Keyboard;
 	#endif
 
 }

@@ -25,61 +25,66 @@
 #ifndef BIT_SYSTEM_KEYBOARD_LINUX_HPP
 #define BIT_SYSTEM_KEYBOARD_LINUX_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Build.hpp>
 
 #ifdef BIT_PLATFORM_LINUX
 
-#include <Bit/System/Keyboard.hpp>
+#include <Bit/System/KeyboardBase.hpp>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <vector>
 
+// Make sure to undefine Bool, defined in Xlib.h
+#undef Bool
+
 namespace Bit
 {
 
-    class BIT_API KeyboardLinux : public Keyboard
+    class BIT_API KeyboardLinux : public Private::KeyboardBase
     {
 
     public:
 
-        // Constructor/destructor
-        KeyboardLinux( );
-        virtual ~KeyboardLinux( );
+        // Friend classes
+		friend class RenderWindowLinux;
 
-         // Public general functions
-        virtual void Update( );
+		// Constructor/destructor
+		KeyboardLinux( );
+		~KeyboardLinux( );
 
-        // Key translation function for platform keys
-        virtual eKey TranslateKeyToBitKey( const BIT_UINT16 p_Key );
-        virtual BIT_UINT16 TranslateKeyToSystemKey( const eKey p_Key );
+		// Public general functions
+		virtual void Update( );
 
-        // Get state functions
-        virtual BIT_BOOL KeyIsDown( const eKey p_Key );
-        virtual BIT_BOOL KeyIsUp( const eKey p_Key );
-        virtual BIT_BOOL KeyIsJustPressed( const eKey p_Key );
-        virtual BIT_BOOL KeyIsJustReleased( const eKey p_Key );
-        BIT_BOOL GetCurrentKeyState( const eKey p_Key );
-        BIT_BOOL GetPreviousKeyState( const eKey p_Key );
+		// Key translation function for platform keys
+		virtual eKey TranslateKeyToBitKey( const Uint16 p_Key );
+		virtual Uint16 TranslateKeyToSystemKey( const eKey p_Key );
 
-        // Set state functions
-        void SetCurrentKeyState( const eKey p_Key, const BIT_BOOL p_State );
-        void SetPreviousKeyState( const eKey p_Key, const BIT_BOOL p_State );
+		// Get state functions
+		virtual Bool KeyIsDown( const eKey p_Key );
+		virtual Bool KeyIsUp( const eKey p_Key );
+		virtual Bool KeyIsJustPressed( const eKey p_Key );
+		virtual Bool KeyIsJustReleased( const eKey p_Key );
 
-        // Public static varialbes
-        static const BIT_UINT32 s_ReservedKeyCount = 64;
+	private:
 
-    private:
+		// Set state functions
+		virtual Bool GetCurrentKeyState( const eKey p_Key );
+		virtual Bool GetPreviousKeyState( const eKey p_Key );
+		virtual void SetCurrentKeyState( const eKey p_key, const Bool p_State );
+        virtual void SetPreviousKeyState( const eKey p_key, const Bool p_State );
 
-        // Private functions
-        BIT_BOOL GetKeyStatus( const eKey p_Key );
+		// Private functions
+        Bool GetKeyStatus( const eKey p_key );
 
-        // Private variables
-        ::Display * m_pDisplay;
-        BIT_BOOL m_CurrentKeyState[ Key_Count ];
-        BIT_BOOL m_PreviousKeyState[ Key_Count ];
+		// Private variables
+		::Display * m_pDisplay;
+		Bool m_CurrentKeyState[ KeyCount ];
+        Bool m_PreviousKeyState[ KeyCount ];
         std::vector< eKey > m_ChangedKeys;
-        KeySym m_KeyTranslationsBit[ Key_Count ];
-        eKey m_KeyTranslationsSystem[ 65536 ];
+
+		// MAKE STATIC
+		Uint16 m_KeyTranslationsBitToWin32[ KeyCount ];
+        eKey m_KeyTranslationsWin32ToBit[ 65536 ];
 
     };
 

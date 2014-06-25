@@ -34,52 +34,56 @@
 #include <X11/keysym.h>
 #include <vector>
 
+// Make sure to undefine Bool, defined in Xlib.h
+#undef Bool
+
 namespace Bit
 {
 
-    class BIT_API MouseLinux : public Mouse
+    class BIT_API MouseLinux : public Private::MouseBase
     {
 
     public:
 
+        	// Friend classes
+		friend class RenderWindowLinux;
+
         // Constructor/destructor
         MouseLinux( );
-        virtual ~MouseLinux( );
+        ~MouseLinux( );
 
         // Public general functions
         virtual void Update( );
 
         // Button translation function for platform keys
-        virtual eButton TranslateButtonToBitKey( const BIT_UINT16 p_Button );
-        virtual BIT_UINT16 TranslateButtonToSystemKey( const eButton p_Button );
+		virtual eButton TranslateButtonToBitButton( const Uint16 p_Button );
+        virtual Uint16 TranslateButtonToSystemButton( const eButton p_Button );
 
         // Get state functions
-        virtual BIT_BOOL ButtonIsDown( const eButton p_Button );
-        virtual BIT_BOOL ButtonIsUp( const eButton p_Button );
-        virtual BIT_BOOL ButtonIsJustPressed( const eButton p_Button );
-        virtual BIT_BOOL ButtonIsJustReleased( const eButton p_Button );
-        BIT_BOOL GetCurrentButtonState( const eButton p_Button );
-        BIT_BOOL GetPreviousButtonState( const eButton p_Button );
-
-        // Set state functions
-        void SetCurrentButtonState( const eButton p_Button, const BIT_BOOL p_State );
-        void SetPreviousButtonState( const eButton p_Button, const BIT_BOOL p_State );
-
-        // Public static varialbes
-        static const BIT_UINT32 s_ReservedButtonCount = 16;
+		virtual Vector2i32 GetPosition( ) const;
+		virtual Bool ButtonIsDown( const eButton p_Button );
+		virtual Bool ButtonIsUp( const eButton p_Button );
+		virtual Bool ButtonIsJustPressed( const eButton p_Button );
+		virtual Bool ButtonIsJustReleased( const eButton p_Button );
 
     private:
 
+		// Set state functions
+		virtual Bool GetCurrentButtonState( const eButton p_Button );
+		virtual Bool GetPreviousButtonState( const eButton p_Button );
+        void SetCurrentButtonState( const eButton p_Button, const Bool p_State );
+        void SetPreviousButtonState( const eButton p_Button, const Bool p_State );
+
         // Private functions
-        BIT_BOOL GetButtonStatus( const eButton p_Button );
+        Bool GetButtonStatus( const eButton p_Button );
 
         // Private variables
         ::Display * m_pDisplay;
-        BIT_BOOL m_CurrentButtonState[ Button_Count ];
-        BIT_BOOL m_PreviousButtonState[ Button_Count ];
-        std::vector< eButton > m_ChangedButtons;
-        BIT_UINT32 m_ButtonTranslationsBit[ Button_Count ];
-        eButton m_ButtonTranslationsSystem[ 8 ];
+        Bool m_CurrentButtonState[ ButtonCount ];					///< Current states of all buttons
+        Bool m_PreviousButtonState[ ButtonCount ];					///< Previous states of all buttons
+        std::vector< eButton > m_ChangedButtons;					///< Vector of all buttons that were changed since last Update( ) call.
+        Uint16 m_ButtonTranslationsBitToWin32[ ButtonCount + 1 ];	///< Translation table from bit keys to win32 keys
+        eButton m_ButtonTranslationsWin32ToBit[ ButtonCount + 2 ];	///< Translation table from system keys to bit keys
 
     };
 

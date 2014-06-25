@@ -26,9 +26,9 @@
 #include <Bit/System/MemoryLeak.hpp>
 
 #include <float.h>
-#ifdef BIT_PLATFORM_WINDOWS
+#if defined( BIT_PLATFORM_WINDOWS )
 	#include <Windows.h>
-#elif BIT_PLATFORM_LINUX
+#elif defined( BIT_PLATFORM_LINUX )
 	#include <unistd.h>
 #endif
 
@@ -37,10 +37,10 @@ namespace Bit
 
 	BIT_API void Sleep( const Time & m_Time )
 	{
-#ifdef BIT_PLATFORM_WINDOWS
+#if defined( BIT_PLATFORM_WINDOWS )
 		::Sleep( static_cast<DWORD>( m_Time.AsMilliseconds( ) ) );
-#elif BIT_PLATFORM_LINUX
-		usleep( m_Time.AsMicroseconds( ) ) 
+#elif defined( BIT_PLATFORM_LINUX )
+		usleep( m_Time.AsMicroseconds( ) );
 #endif
 	}
 
