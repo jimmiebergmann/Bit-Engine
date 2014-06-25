@@ -21,11 +21,11 @@ Installation
 git clone https://github.com/jimmiebergmann/Bit-Engine.git
 ```
 **Windows:** Open and build the Visual Studio 2012 solution.
-<br><del>**Linux:** Open and build the Code::Blocks 10 workspace.</del>
-<br><del>Or:</del>
+**Linux:**
 ```sh
-cd build/makefile
-make
+apt-get install libglapi-mesa libosmesa6
+<del>cd Bit-Engine</del>
+<del>make</del>
 ```
 
 Usage
