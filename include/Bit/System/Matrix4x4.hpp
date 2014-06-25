@@ -30,10 +30,10 @@
 #include <Bit/System/Vector3.hpp>
 
 #include <float.h>
-#ifdef BIT_PLATFORM_WIN32
+#if defined( BIT_PLATFORM_WIN32 )
 	#define bitIsNan _isnan
-#elif BIT_PLATFORM_LINUX
-	define bitIsNan isnan
+#elif defined( BIT_PLATFORM_LINUX )
+	#define bitIsNan isnan
 #endif
 
 namespace Bit
@@ -74,7 +74,7 @@ namespace Bit
 					const T X_y, const T Y_y, const T Z_y, const T P_y,
 					const T X_z, const T Y_z, const T Z_z, const T P_z,
 					const T X_a, const T Y_a, const T Z_a, const T P_a );
-		
+
 		////////////////////////////////////////////////////////////////
 		/// \brief Turning the matrix into an identity matrix.
 		///

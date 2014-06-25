@@ -24,6 +24,7 @@
 
 #include <Bit/System/Hash.hpp>
 #include <Bit/Network/Url.hpp>
+#include <stdexcept>
 #include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -34,13 +35,13 @@ namespace Bit
 	static std::string GetHexValue( const Uint8 p_Value, const bool p_Uppercase )
 	{
 		// Array of the 16 base values in upper and lowercase.
-		static Uint8 hexLow[ 16 ] = 
+		static Uint8 hexLow[ 16 ] =
 		{
 			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 			'a', 'b', 'c', 'd', 'e', 'f'
 		};
 
-		static Uint8 hexHigh[ 16 ] = 
+		static Uint8 hexHigh[ 16 ] =
 		{
 			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 			'A', 'B', 'C', 'D', 'E', 'F'
@@ -113,7 +114,7 @@ namespace Bit
 	void Hash::Set( const std::string & p_String )
 	{
 		m_Bytes.clear( );
-		
+
 		// Push back all the characters in the string.
 		for( SizeType i = 0; i < p_String.size( ); i++ )
 		{

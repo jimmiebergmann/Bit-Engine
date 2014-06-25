@@ -41,7 +41,7 @@ inline T Math::Sin( const T p_Radians )
 }
 
 template <typename T>
-inline static T Math::Cos( const T p_Radians )
+inline T Math::Cos( const T p_Radians )
 {
 	return static_cast<T>( cos( static_cast<double>( p_Radians ) ) );
 }

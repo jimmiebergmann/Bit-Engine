@@ -22,26 +22,33 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_SYSTEM_MUTEX_HPP
-#define BIT_SYSTEM_MUTEX_HPP
-
-#include <Bit/Build.hpp>
-
-#if defined( BIT_PLATFORM_WINDOWS )
-	#include <Bit/System/Win32/MutexWin32.hpp>
-#elif defined( BIT_PLATFORM_LINUX )
-	#include <Bit/System/Linux/MutexLinux.hpp>
-#endif
+#include <Bit/System/Win32/MutexWin32.hpp>
+#ifdef BIT_PLATFORM_WINDOWS
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	#ifdef BIT_PLATFORM_WINDOWS
-		typedef MutexWin32 Mutex;
-	#elif BIT_PLATFORM_LINUX
-		typedef MutexLinux Mutex;
-	#endif
+	MutexWin32::MutexWin32( )
+	{
+		m_Mutex = CreateMutex( NULL, FALSE, NULL );
+	}
+		
+	MutexWin32::~MutexWin32( )
+	{
+		CloseHandle( m_Mutex );
+	}
+		
+	void MutexWin32::Lock( )
+	{
+		WaitForSingleObject(  m_Mutex, INFINITE );
+	}
 
-};
+	void MutexWin32::Unlock( )
+	{
+		ReleaseMutex( m_Mutex );
+	}
+
+}
 
 #endif

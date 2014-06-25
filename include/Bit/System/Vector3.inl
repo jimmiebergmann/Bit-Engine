@@ -195,7 +195,7 @@ inline Vector3<T> & Vector3<T>::Normalize( )
 
 	if( bitIsNan( length ) )
 	{
-		x = y = z = static_cast< T >( 0 ); 
+		x = y = z = static_cast< T >( 0 );
 		return *this;
 	}
 
@@ -243,7 +243,7 @@ inline void Vector3<T>::Rotate( const Float64 p_Angle, const Float64 p_X, const 
 	Float64 qx = p_X * Math::SinDegrees( p_Angle / 2.0f );
 	Float64 qy = p_Y * Math::SinDegrees( p_Angle / 2.0f );
 	Float64 qz = p_Z * Math::SinDegrees(  p_Angle / 2.0f );
-	Float64 qw = CosDegrees( p_Angle / 2.0f );
+	Float64 qw = Math::CosDegrees( p_Angle / 2.0f );
 
 	// Convert our vector into a quaternion
 	Float64 vx = x;

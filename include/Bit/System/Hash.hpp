@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <vector>
+#include <string>
 
 namespace Bit
 {
@@ -34,7 +35,7 @@ namespace Bit
 	////////////////////////////////////////////////////////////////
 	/// \ingroup System
 	/// \brief Hash class.
-	/// 
+	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API Hash
 	{
@@ -46,7 +47,7 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		Hash( );
 
@@ -58,7 +59,7 @@ namespace Bit
 		/// it's a string of raw bytes.
 		///
 		/// \param p_String String of the hash data.
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		Hash( const std::string & p_String );
 
@@ -69,7 +70,7 @@ namespace Bit
 		///
 		/// \param p_pBytes Pointer to the bytes.
 		/// \param p_Count The numbers of bytes to copy from the passed byte pointer.
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		Hash( const Uint8 * p_pBytes, const SizeType p_Count );
 
@@ -81,7 +82,7 @@ namespace Bit
 		///
 		/// Example input:
 		/// 5gsu3oFgh4!5%dg
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		void Set( const std::string & p_String );
 
@@ -90,7 +91,7 @@ namespace Bit
 		///
 		/// \param p_pBytes Pointer to the bytes.
 		/// \param p_Count The numbers of bytes to copy from the passed byte pointer.
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		void Set( const Uint8 * p_pBytes, const SizeType p_Count );
 
@@ -103,19 +104,19 @@ namespace Bit
 		///
 		/// Example input:
 		/// 6FEd28AaB27D
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		Bool SetHexString( const std::string & p_HexString );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Add a byte to the hash value.
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		void AddByte( const Uint8 p_Byte );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Clear the hash value
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		void Clear( );
 
@@ -132,19 +133,19 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the hash as a string
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		std::string AsString( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the hash as a hex string
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		std::string AsHexString( const bool p_Uppercase = true ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the hash as a URI encoded string
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		std::string AsUrlEncodedString( ) const;
 
@@ -152,7 +153,7 @@ namespace Bit
 		/// \brief Get the raw hash data. (all the bytes)
 		///
 		/// \see GetByte
-		/// 
+		///
 		////////////////////////////////////////////////////////////////
 		const ByteVector & AsRaw( ) const;
 
@@ -162,7 +163,7 @@ namespace Bit
 		ByteVector m_Bytes;		///< Vector of all the hash bytes.
 
 	};
-	
+
 }
 
 #endif

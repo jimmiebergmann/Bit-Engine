@@ -23,6 +23,8 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/System/Sha1.hpp>
+#include <stdio.h>
+#include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -58,7 +60,7 @@ namespace Bit
 
 		// Now, cumpute the last block
 		// There should always be one padded block at the end.
-		
+
 		// The block should just be padded.
 		if( remainder < 56 )
 		{
@@ -151,7 +153,7 @@ namespace Bit
 		m_States[ 3 ] = 0x10325476;
 		m_States[ 4 ] = 0xC3D2E1F0;
 	}
-		
+
 	void Sha1::ComputeBlock( const Uint8 * p_Data )
 	{
 		Uint32 w[ 80 ];
@@ -211,7 +213,7 @@ namespace Bit
 			b = a;
 			a = temp;
 		}
-		
+
 		// Ass this chunk's hash to result so far.
 		m_States[ 0 ] += a;
 		m_States[ 1 ] += b;
@@ -219,5 +221,5 @@ namespace Bit
 		m_States[ 3 ] += d;
 		m_States[ 4 ] += e;
 	}
-	
+
 }
