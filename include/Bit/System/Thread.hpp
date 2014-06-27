@@ -27,19 +27,19 @@
 
 #include <Bit/Build.hpp>
 
-#ifdef BIT_PLATFORM_WINDOWS
+#if defined( BIT_PLATFORM_WINDOWS )
 	#include <Bit/System/Win32/ThreadWin32.hpp>
-#elif BIT_PLATFORM_LINUX
+#elif defined( BIT_PLATFORM_LINUX )
 	#include <Bit/System/Linux/ThreadLinux.hpp>
 #endif
 
 namespace Bit
 {
 
-	#ifdef BIT_PLATFORM_WINDOWS
+	#if defined( BIT_PLATFORM_WINDOWS )
 		typedef ThreadWin32 Thread;
-	#elif BIT_PLATFORM_LINUX
-		#error No render window is available for this platform.
+	#elif defined( BIT_PLATFORM_LINUX )
+		typedef ThreadLinux Thread;
 	#endif
 
 };

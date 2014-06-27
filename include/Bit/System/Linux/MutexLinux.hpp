@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #ifdef BIT_PLATFORM_LINUX
+#include <pthread.h>
 
 namespace Bit
 {
@@ -68,7 +69,7 @@ namespace Bit
 
 	private:
 
-		//HANDLE m_Mutex;
+		pthread_mutex_t m_Mutex;
 
 	};
 

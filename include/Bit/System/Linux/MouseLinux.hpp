@@ -25,11 +25,11 @@
 #ifndef BIT_SYSTEM_MOUSE_LINUX_HPP
 #define BIT_SYSTEM_MOUSE_LINUX_HPP
 
-#include <Bit/DataTypes.hpp>
+#include <Bit/Build.hpp>
 
 #ifdef BIT_PLATFORM_LINUX
 
-#include <Bit/System/Mouse.hpp>
+#include <Bit/System/MouseBase.hpp>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <vector>
@@ -45,7 +45,7 @@ namespace Bit
 
     public:
 
-        	// Friend classes
+        // Friend classes
 		friend class RenderWindowLinux;
 
         // Constructor/destructor
@@ -82,8 +82,8 @@ namespace Bit
         Bool m_CurrentButtonState[ ButtonCount ];					///< Current states of all buttons
         Bool m_PreviousButtonState[ ButtonCount ];					///< Previous states of all buttons
         std::vector< eButton > m_ChangedButtons;					///< Vector of all buttons that were changed since last Update( ) call.
-        Uint16 m_ButtonTranslationsBitToWin32[ ButtonCount + 1 ];	///< Translation table from bit keys to win32 keys
-        eButton m_ButtonTranslationsWin32ToBit[ ButtonCount + 2 ];	///< Translation table from system keys to bit keys
+        Uint16 m_ButtonTranslationsBitToSystem[ ButtonCount + 1 ];	///< Translation table from bit keys to win32 keys
+        eButton m_ButtonTranslationsSystemToBit[ ButtonCount + 2 ];	///< Translation table from system keys to bit keys
 
     };
 

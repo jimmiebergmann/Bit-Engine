@@ -31,22 +31,22 @@ namespace Bit
 
 	MutexLinux::MutexLinux( )
 	{
-		//m_Mutex = CreateMutex( NULL, FALSE, NULL );
+		pthread_mutex_init( &m_Mutex, NULL );
 	}
 
 	MutexLinux::~MutexLinux( )
 	{
-		//CloseHandle( m_Mutex );
+		pthread_mutex_destroy( &m_Mutex );
 	}
 
 	void MutexLinux::Lock( )
 	{
-		//WaitForSingleObject(  m_Mutex, INFINITE );
+	    pthread_mutex_lock( &m_Mutex );
 	}
 
 	void MutexLinux::Unlock( )
 	{
-		//ReleaseMutex( m_Mutex );
+	    pthread_mutex_unlock( &m_Mutex );
 	}
 
 }

@@ -43,18 +43,116 @@ namespace Bit
 			m_PreviousKeyState[ i ] = false;
 
 			// Initialize the translation array for bit to win32 keys
-			m_KeyTranslationsBitToWin32[ i ] = 0;
+			m_KeyTranslationsBitToSystem[ i ] = 0;
 		}
 
         // Clear the system key translations
         for( SizeType i = 0; i < 65536; i++ )
         {
-            m_KeyTranslationsWin32ToBit[ i ] = Unknown;
+            m_KeyTranslationsSystemToBit[ i ] = Unknown;
         }
 
 		// Reserve the changed keys vector
 		m_ChangedKeys.clear( );
 		m_ChangedKeys.resize( KeyCount );
+
+        // Set our BIT key translations
+        m_KeyTranslationsBitToSystem[ A ] = XK_a;
+        m_KeyTranslationsBitToSystem[ B ] = XK_b;
+        m_KeyTranslationsBitToSystem[ C ] = XK_c;
+        m_KeyTranslationsBitToSystem[ D ] = XK_d;
+        m_KeyTranslationsBitToSystem[ E ] = XK_e;
+        m_KeyTranslationsBitToSystem[ F ] = XK_f;
+        m_KeyTranslationsBitToSystem[ G ] = XK_g;
+        m_KeyTranslationsBitToSystem[ H ] = XK_h;
+        m_KeyTranslationsBitToSystem[ I ] = XK_i;
+        m_KeyTranslationsBitToSystem[ J ] = XK_j;
+        m_KeyTranslationsBitToSystem[ K ] = XK_k;
+        m_KeyTranslationsBitToSystem[ L ] = XK_l;
+        m_KeyTranslationsBitToSystem[ M ] = XK_m;
+        m_KeyTranslationsBitToSystem[ N ] = XK_n;
+        m_KeyTranslationsBitToSystem[ O ] = XK_o;
+        m_KeyTranslationsBitToSystem[ P ] = XK_p;
+        m_KeyTranslationsBitToSystem[ Q ] = XK_q;
+        m_KeyTranslationsBitToSystem[ R ] = XK_r;
+        m_KeyTranslationsBitToSystem[ S ] = XK_s;
+        m_KeyTranslationsBitToSystem[ T ] = XK_t;
+        m_KeyTranslationsBitToSystem[ U ] = XK_u;
+        m_KeyTranslationsBitToSystem[ V ] = XK_v;
+        m_KeyTranslationsBitToSystem[ W ] = XK_w;
+        m_KeyTranslationsBitToSystem[ X ] = XK_x;
+        m_KeyTranslationsBitToSystem[ Y ] = XK_y;
+        m_KeyTranslationsBitToSystem[ Z ] = XK_z;
+
+        m_KeyTranslationsBitToSystem[ Num0 ] = XK_0;
+        m_KeyTranslationsBitToSystem[ Num1 ] = XK_1;
+        m_KeyTranslationsBitToSystem[ Num2 ] = XK_2;
+        m_KeyTranslationsBitToSystem[ Num3 ] = XK_3;
+        m_KeyTranslationsBitToSystem[ Num4 ] = XK_4;
+        m_KeyTranslationsBitToSystem[ Num5 ] = XK_5;
+        m_KeyTranslationsBitToSystem[ Num6 ] = XK_6;
+        m_KeyTranslationsBitToSystem[ Num7 ] = XK_7;
+        m_KeyTranslationsBitToSystem[ Num8 ] = XK_8;
+        m_KeyTranslationsBitToSystem[ Num9 ] = XK_9;
+
+        m_KeyTranslationsBitToSystem[ F1 ] = XK_F1;
+        m_KeyTranslationsBitToSystem[ F2 ] = XK_F2;
+        m_KeyTranslationsBitToSystem[ F3 ] = XK_F3;
+        m_KeyTranslationsBitToSystem[ F4 ] = XK_F4;
+        m_KeyTranslationsBitToSystem[ F5 ] = XK_F5;
+        m_KeyTranslationsBitToSystem[ F6 ] = XK_F6;
+        m_KeyTranslationsBitToSystem[ F7 ] = XK_F7;
+        m_KeyTranslationsBitToSystem[ F8 ] = XK_F8;
+        m_KeyTranslationsBitToSystem[ F9 ] = XK_F9;
+        m_KeyTranslationsBitToSystem[ F10 ] = XK_F10;
+        m_KeyTranslationsBitToSystem[ F11 ] = XK_F11;
+        m_KeyTranslationsBitToSystem[ F12 ] = XK_F12;
+
+        m_KeyTranslationsBitToSystem[ Down ]    = XK_Down;
+        m_KeyTranslationsBitToSystem[ Left ]    = XK_Left;
+        m_KeyTranslationsBitToSystem[ Right ]   = XK_Right;
+        m_KeyTranslationsBitToSystem[ Up ]      = XK_Up;
+
+        m_KeyTranslationsBitToSystem[ AltLeft ]           = XK_Alt_L;
+        m_KeyTranslationsBitToSystem[ AltRight ]          = XK_Alt_R;
+        m_KeyTranslationsBitToSystem[ Backspace ]         = XK_BackSpace;
+        m_KeyTranslationsBitToSystem[ BraceLeft ]         = XK_braceleft;
+        m_KeyTranslationsBitToSystem[ BraceRight ]        = XK_braceright;
+        m_KeyTranslationsBitToSystem[ BracketLeft ]       = XK_bracketleft;
+        m_KeyTranslationsBitToSystem[ BracketRight ]      = XK_bracketright;
+        m_KeyTranslationsBitToSystem[ Break ]             = XK_Break;
+        m_KeyTranslationsBitToSystem[ Capslock ]          = XK_Caps_Lock;
+        m_KeyTranslationsBitToSystem[ Colon ]             = XK_colon;
+        m_KeyTranslationsBitToSystem[ ControlLeft ]       = XK_Control_L;
+        m_KeyTranslationsBitToSystem[ ControlRight ]      = XK_Control_R;
+        m_KeyTranslationsBitToSystem[ Comma ]             = XK_comma;
+        m_KeyTranslationsBitToSystem[ Delete ]            = XK_Delete;
+        m_KeyTranslationsBitToSystem[ End ]               = XK_End;
+        m_KeyTranslationsBitToSystem[ Escape ]            = XK_Escape;
+        m_KeyTranslationsBitToSystem[ Greater ]           = XK_greater;
+        m_KeyTranslationsBitToSystem[ Home ]              = XK_Home;
+        m_KeyTranslationsBitToSystem[ Insert ]            = XK_Insert;
+        m_KeyTranslationsBitToSystem[ Less ]              = XK_less;
+        m_KeyTranslationsBitToSystem[ Minus ]             = XK_minus;
+        m_KeyTranslationsBitToSystem[ NumLock ]           = XK_Num_Lock;
+        m_KeyTranslationsBitToSystem[ PageDown ]          = XK_Page_Down;
+        m_KeyTranslationsBitToSystem[ PageUp ]            = XK_Page_Up;
+        m_KeyTranslationsBitToSystem[ Period ]            = XK_period;
+        m_KeyTranslationsBitToSystem[ Plus ]              = XK_plus;
+        m_KeyTranslationsBitToSystem[ Print ]             = XK_Print;
+        m_KeyTranslationsBitToSystem[ Return ]            = XK_Return;
+        m_KeyTranslationsBitToSystem[ ScrollLock ]        = XK_Scroll_Lock;
+        m_KeyTranslationsBitToSystem[ SemiColon ]         = XK_semicolon;
+        m_KeyTranslationsBitToSystem[ ShiftLeft ]         = XK_Shift_L;
+        m_KeyTranslationsBitToSystem[ ShiftRight ]        = XK_Shift_R;
+        m_KeyTranslationsBitToSystem[ Space ]             = XK_space;
+        m_KeyTranslationsBitToSystem[ SuperLeft ]         = XK_Super_L;
+        m_KeyTranslationsBitToSystem[ SuperRight ]        = XK_Super_R;
+        m_KeyTranslationsBitToSystem[ Tab ]               = XK_Tab;
+        m_KeyTranslationsBitToSystem[ Underscore ]        = XK_underscore;
+
+
+
 /*
 		 // Set our BIT key translations
         m_KeyTranslationsBitToWin32[ A ] = 'A';
@@ -279,7 +377,7 @@ namespace Bit
 	// Key translation function for platform keys
 	KeyboardLinux::eKey KeyboardLinux::TranslateKeyToBitKey( const Uint16 p_Key )
 	{
-		return m_KeyTranslationsWin32ToBit[ p_Key ];
+		return m_KeyTranslationsSystemToBit[ p_Key ];
 	}
 	Uint16 KeyboardLinux::TranslateKeyToSystemKey( const eKey p_Key )
 	{
@@ -288,7 +386,7 @@ namespace Bit
 			return 0;
 		}
 
-		return m_KeyTranslationsBitToWin32[ static_cast< SizeType >( p_Key ) ];
+		return m_KeyTranslationsBitToSystem[ static_cast< SizeType >( p_Key ) ];
 	}
 
 	// Get state functions
@@ -489,7 +587,7 @@ namespace Bit
         // NOT REQUIRED WHEN ALL THE KEY CODES ARE SET
         for( BIT_MEMSIZE i = 0; i < Keyboard::Key_Count; i++ )
         {
-            m_KeyTranslationsBit[ i ] = 0;
+            m_KeyTranslationsBitToSystem[ i ] = 0;
         }
 
         // Clear the system key translations
@@ -511,99 +609,99 @@ namespace Bit
 
         // ///////////////////////////////////////////////////////
         // Set our BIT key translations
-        m_KeyTranslationsBit[ Key_A ] = XK_a;
-        m_KeyTranslationsBit[ Key_B ] = XK_b;
-        m_KeyTranslationsBit[ Key_C ] = XK_c;
-        m_KeyTranslationsBit[ Key_D ] = XK_d;
-        m_KeyTranslationsBit[ Key_E ] = XK_e;
-        m_KeyTranslationsBit[ Key_F ] = XK_f;
-        m_KeyTranslationsBit[ Key_G ] = XK_g;
-        m_KeyTranslationsBit[ Key_H ] = XK_h;
-        m_KeyTranslationsBit[ Key_I ] = XK_i;
-        m_KeyTranslationsBit[ Key_J ] = XK_j;
-        m_KeyTranslationsBit[ Key_K ] = XK_k;
-        m_KeyTranslationsBit[ Key_L ] = XK_l;
-        m_KeyTranslationsBit[ Key_M ] = XK_m;
-        m_KeyTranslationsBit[ Key_N ] = XK_n;
-        m_KeyTranslationsBit[ Key_O ] = XK_o;
-        m_KeyTranslationsBit[ Key_P ] = XK_p;
-        m_KeyTranslationsBit[ Key_Q ] = XK_q;
-        m_KeyTranslationsBit[ Key_R ] = XK_r;
-        m_KeyTranslationsBit[ Key_S ] = XK_s;
-        m_KeyTranslationsBit[ Key_T ] = XK_t;
-        m_KeyTranslationsBit[ Key_U ] = XK_u;
-        m_KeyTranslationsBit[ Key_V ] = XK_v;
-        m_KeyTranslationsBit[ Key_W ] = XK_w;
-        m_KeyTranslationsBit[ Key_X ] = XK_x;
-        m_KeyTranslationsBit[ Key_Y ] = XK_y;
-        m_KeyTranslationsBit[ Key_Z ] = XK_z;
+        m_KeyTranslationsBitToSystem[ Key_A ] = XK_a;
+        m_KeyTranslationsBitToSystem[ Key_B ] = XK_b;
+        m_KeyTranslationsBitToSystem[ Key_C ] = XK_c;
+        m_KeyTranslationsBitToSystem[ Key_D ] = XK_d;
+        m_KeyTranslationsBitToSystem[ Key_E ] = XK_e;
+        m_KeyTranslationsBitToSystem[ Key_F ] = XK_f;
+        m_KeyTranslationsBitToSystem[ Key_G ] = XK_g;
+        m_KeyTranslationsBitToSystem[ Key_H ] = XK_h;
+        m_KeyTranslationsBitToSystem[ Key_I ] = XK_i;
+        m_KeyTranslationsBitToSystem[ Key_J ] = XK_j;
+        m_KeyTranslationsBitToSystem[ Key_K ] = XK_k;
+        m_KeyTranslationsBitToSystem[ Key_L ] = XK_l;
+        m_KeyTranslationsBitToSystem[ Key_M ] = XK_m;
+        m_KeyTranslationsBitToSystem[ Key_N ] = XK_n;
+        m_KeyTranslationsBitToSystem[ Key_O ] = XK_o;
+        m_KeyTranslationsBitToSystem[ Key_P ] = XK_p;
+        m_KeyTranslationsBitToSystem[ Key_Q ] = XK_q;
+        m_KeyTranslationsBitToSystem[ Key_R ] = XK_r;
+        m_KeyTranslationsBitToSystem[ Key_S ] = XK_s;
+        m_KeyTranslationsBitToSystem[ Key_T ] = XK_t;
+        m_KeyTranslationsBitToSystem[ Key_U ] = XK_u;
+        m_KeyTranslationsBitToSystem[ Key_V ] = XK_v;
+        m_KeyTranslationsBitToSystem[ Key_W ] = XK_w;
+        m_KeyTranslationsBitToSystem[ Key_X ] = XK_x;
+        m_KeyTranslationsBitToSystem[ Key_Y ] = XK_y;
+        m_KeyTranslationsBitToSystem[ Key_Z ] = XK_z;
 
-        m_KeyTranslationsBit[ Key_0 ] = XK_0;
-        m_KeyTranslationsBit[ Key_1 ] = XK_1;
-        m_KeyTranslationsBit[ Key_2 ] = XK_2;
-        m_KeyTranslationsBit[ Key_3 ] = XK_3;
-        m_KeyTranslationsBit[ Key_4 ] = XK_4;
-        m_KeyTranslationsBit[ Key_5 ] = XK_5;
-        m_KeyTranslationsBit[ Key_6 ] = XK_6;
-        m_KeyTranslationsBit[ Key_7 ] = XK_7;
-        m_KeyTranslationsBit[ Key_8 ] = XK_8;
-        m_KeyTranslationsBit[ Key_9 ] = XK_9;
+        m_KeyTranslationsBitToSystem[ Key_0 ] = XK_0;
+        m_KeyTranslationsBitToSystem[ Key_1 ] = XK_1;
+        m_KeyTranslationsBitToSystem[ Key_2 ] = XK_2;
+        m_KeyTranslationsBitToSystem[ Key_3 ] = XK_3;
+        m_KeyTranslationsBitToSystem[ Key_4 ] = XK_4;
+        m_KeyTranslationsBitToSystem[ Key_5 ] = XK_5;
+        m_KeyTranslationsBitToSystem[ Key_6 ] = XK_6;
+        m_KeyTranslationsBitToSystem[ Key_7 ] = XK_7;
+        m_KeyTranslationsBitToSystem[ Key_8 ] = XK_8;
+        m_KeyTranslationsBitToSystem[ Key_9 ] = XK_9;
 
-        m_KeyTranslationsBit[ Key_F1 ] = XK_F1;
-        m_KeyTranslationsBit[ Key_F2 ] = XK_F2;
-        m_KeyTranslationsBit[ Key_F3 ] = XK_F3;
-        m_KeyTranslationsBit[ Key_F4 ] = XK_F4;
-        m_KeyTranslationsBit[ Key_F5 ] = XK_F5;
-        m_KeyTranslationsBit[ Key_F6 ] = XK_F6;
-        m_KeyTranslationsBit[ Key_F7 ] = XK_F7;
-        m_KeyTranslationsBit[ Key_F8 ] = XK_F8;
-        m_KeyTranslationsBit[ Key_F9 ] = XK_F9;
-        m_KeyTranslationsBit[ Key_F10 ] = XK_F10;
-        m_KeyTranslationsBit[ Key_F11 ] = XK_F11;
-        m_KeyTranslationsBit[ Key_F12 ] = XK_F12;
+        m_KeyTranslationsBitToSystem[ Key_F1 ] = XK_F1;
+        m_KeyTranslationsBitToSystem[ Key_F2 ] = XK_F2;
+        m_KeyTranslationsBitToSystem[ Key_F3 ] = XK_F3;
+        m_KeyTranslationsBitToSystem[ Key_F4 ] = XK_F4;
+        m_KeyTranslationsBitToSystem[ Key_F5 ] = XK_F5;
+        m_KeyTranslationsBitToSystem[ Key_F6 ] = XK_F6;
+        m_KeyTranslationsBitToSystem[ Key_F7 ] = XK_F7;
+        m_KeyTranslationsBitToSystem[ Key_F8 ] = XK_F8;
+        m_KeyTranslationsBitToSystem[ Key_F9 ] = XK_F9;
+        m_KeyTranslationsBitToSystem[ Key_F10 ] = XK_F10;
+        m_KeyTranslationsBitToSystem[ Key_F11 ] = XK_F11;
+        m_KeyTranslationsBitToSystem[ Key_F12 ] = XK_F12;
 
-        m_KeyTranslationsBit[ Key_Down ] = XK_Down;
-        m_KeyTranslationsBit[ Key_Left ] = XK_Left;
-        m_KeyTranslationsBit[ Key_Right ] = XK_Right;
-        m_KeyTranslationsBit[ Key_Up ] = XK_Up;
+        m_KeyTranslationsBitToSystem[ Key_Down ] = XK_Down;
+        m_KeyTranslationsBitToSystem[ Key_Left ] = XK_Left;
+        m_KeyTranslationsBitToSystem[ Key_Right ] = XK_Right;
+        m_KeyTranslationsBitToSystem[ Key_Up ] = XK_Up;
 
-        m_KeyTranslationsBit[ Key_Alt_L ]             = XK_Alt_L;
-        m_KeyTranslationsBit[ Key_Alt_R ]             = XK_Alt_R;
-        m_KeyTranslationsBit[ Key_Backspace ]         = XK_BackSpace;
-        m_KeyTranslationsBit[ Key_Brace_Left ]        = XK_braceleft;
-        m_KeyTranslationsBit[ Key_Brace_Right ]       = XK_braceright;
-        m_KeyTranslationsBit[ Key_Bracket_L ]         = XK_bracketleft;
-        m_KeyTranslationsBit[ Key_Bracket_R ]         = XK_bracketright;
-        m_KeyTranslationsBit[ Key_Break ]             = XK_Break;
-        m_KeyTranslationsBit[ Key_Capslock ]          = XK_Caps_Lock;
-        m_KeyTranslationsBit[ Key_Colon ]             = XK_colon;
-        m_KeyTranslationsBit[ Key_Control_L ]         = XK_Control_L;
-        m_KeyTranslationsBit[ Key_Control_R ]         = XK_Control_R;
-        m_KeyTranslationsBit[ Key_Comma ]             = XK_comma;
-        m_KeyTranslationsBit[ Key_Delete ]            = XK_Delete;
-        m_KeyTranslationsBit[ Key_End ]               = XK_End;
-        m_KeyTranslationsBit[ Key_Escape ]            = XK_Escape;
-        m_KeyTranslationsBit[ Key_Greater ]           = XK_greater;
-        m_KeyTranslationsBit[ Key_Home ]              = XK_Home;
-        m_KeyTranslationsBit[ Key_Insert ]            = XK_Insert;
-        m_KeyTranslationsBit[ Key_Less ]              = XK_less;
-        m_KeyTranslationsBit[ Key_Minus ]             = XK_minus;
-        m_KeyTranslationsBit[ Key_NumLock ]           = XK_Num_Lock;
-        m_KeyTranslationsBit[ Key_PageDown ]          = XK_Page_Down;
-        m_KeyTranslationsBit[ Key_PageUp ]            = XK_Page_Up;
-        m_KeyTranslationsBit[ Key_Period ]            = XK_period;
-        m_KeyTranslationsBit[ Key_Plus ]              = XK_plus;
-        m_KeyTranslationsBit[ Key_Print ]             = XK_Print;
-        m_KeyTranslationsBit[ Key_Return ]            = XK_Return;
-        m_KeyTranslationsBit[ Key_ScrollLock ]        = XK_Scroll_Lock;
-        m_KeyTranslationsBit[ Key_SemiColon ]         = XK_semicolon;
-        m_KeyTranslationsBit[ Key_Shift_L ]           = XK_Shift_L;
-        m_KeyTranslationsBit[ Key_Shift_R ]           = XK_Shift_R;
-        m_KeyTranslationsBit[ Key_Space ]             = XK_space;
-        m_KeyTranslationsBit[ key_Super_L ]           = XK_Super_L;
-        m_KeyTranslationsBit[ key_Super_R ]           = XK_Super_R;
-        m_KeyTranslationsBit[ Key_Tab ]               = XK_Tab;
-        m_KeyTranslationsBit[ Key_Underscore ]        = XK_underscore;
+        m_KeyTranslationsBitToSystem[ Key_Alt_L ]             = XK_Alt_L;
+        m_KeyTranslationsBitToSystem[ Key_Alt_R ]             = XK_Alt_R;
+        m_KeyTranslationsBitToSystem[ Key_Backspace ]         = XK_BackSpace;
+        m_KeyTranslationsBitToSystem[ Key_Brace_Left ]        = XK_braceleft;
+        m_KeyTranslationsBitToSystem[ Key_Brace_Right ]       = XK_braceright;
+        m_KeyTranslationsBitToSystem[ Key_Bracket_L ]         = XK_bracketleft;
+        m_KeyTranslationsBitToSystem[ Key_Bracket_R ]         = XK_bracketright;
+        m_KeyTranslationsBitToSystem[ Key_Break ]             = XK_Break;
+        m_KeyTranslationsBitToSystem[ Key_Capslock ]          = XK_Caps_Lock;
+        m_KeyTranslationsBitToSystem[ Key_Colon ]             = XK_colon;
+        m_KeyTranslationsBitToSystem[ Key_Control_L ]         = XK_Control_L;
+        m_KeyTranslationsBitToSystem[ Key_Control_R ]         = XK_Control_R;
+        m_KeyTranslationsBitToSystem[ Key_Comma ]             = XK_comma;
+        m_KeyTranslationsBitToSystem[ Key_Delete ]            = XK_Delete;
+        m_KeyTranslationsBitToSystem[ Key_End ]               = XK_End;
+        m_KeyTranslationsBitToSystem[ Key_Escape ]            = XK_Escape;
+        m_KeyTranslationsBitToSystem[ Key_Greater ]           = XK_greater;
+        m_KeyTranslationsBitToSystem[ Key_Home ]              = XK_Home;
+        m_KeyTranslationsBitToSystem[ Key_Insert ]            = XK_Insert;
+        m_KeyTranslationsBitToSystem[ Key_Less ]              = XK_less;
+        m_KeyTranslationsBitToSystem[ Key_Minus ]             = XK_minus;
+        m_KeyTranslationsBitToSystem[ Key_NumLock ]           = XK_Num_Lock;
+        m_KeyTranslationsBitToSystem[ Key_PageDown ]          = XK_Page_Down;
+        m_KeyTranslationsBitToSystem[ Key_PageUp ]            = XK_Page_Up;
+        m_KeyTranslationsBitToSystem[ Key_Period ]            = XK_period;
+        m_KeyTranslationsBitToSystem[ Key_Plus ]              = XK_plus;
+        m_KeyTranslationsBitToSystem[ Key_Print ]             = XK_Print;
+        m_KeyTranslationsBitToSystem[ Key_Return ]            = XK_Return;
+        m_KeyTranslationsBitToSystem[ Key_ScrollLock ]        = XK_Scroll_Lock;
+        m_KeyTranslationsBitToSystem[ Key_SemiColon ]         = XK_semicolon;
+        m_KeyTranslationsBitToSystem[ Key_Shift_L ]           = XK_Shift_L;
+        m_KeyTranslationsBitToSystem[ Key_Shift_R ]           = XK_Shift_R;
+        m_KeyTranslationsBitToSystem[ Key_Space ]             = XK_space;
+        m_KeyTranslationsBitToSystem[ key_Super_L ]           = XK_Super_L;
+        m_KeyTranslationsBitToSystem[ key_Super_R ]           = XK_Super_R;
+        m_KeyTranslationsBitToSystem[ Key_Tab ]               = XK_Tab;
+        m_KeyTranslationsBitToSystem[ Key_Underscore ]        = XK_underscore;
 
 
         // ///////////////////////////////////////////////////////
@@ -736,7 +834,7 @@ namespace Bit
 
     BIT_UINT16 KeyboardLinux::TranslateKeyToSystemKey( const eKey p_Key )
     {
-        return m_KeyTranslationsBit[ static_cast< BIT_UINT16 >( p_Key ) ];
+        return m_KeyTranslationsBitToSystem[ static_cast< BIT_UINT16 >( p_Key ) ];
     }
 
     // Get state functions
@@ -846,7 +944,7 @@ namespace Bit
         }
 
         // Transalte the eKey to a KeySym
-        KeySym KeyTranslation = m_KeyTranslationsBit[ p_Key ];
+        KeySym KeyTranslation = m_KeyTranslationsBitToSystem[ p_Key ];
 
         // Get the case key code
         KeyCode Code = XKeysymToKeycode( m_pDisplay, KeyTranslation );

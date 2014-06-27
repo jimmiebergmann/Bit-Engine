@@ -83,8 +83,8 @@ namespace Bit
         std::vector< eKey > m_ChangedKeys;
 
 		// MAKE STATIC
-		Uint16 m_KeyTranslationsBitToWin32[ KeyCount ];
-        eKey m_KeyTranslationsWin32ToBit[ 65536 ];
+		Uint16 m_KeyTranslationsBitToSystem[ KeyCount ];
+        eKey m_KeyTranslationsSystemToBit[ 65536 ];
 
     };
 

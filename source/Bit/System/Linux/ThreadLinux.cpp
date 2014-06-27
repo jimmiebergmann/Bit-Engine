@@ -30,76 +30,59 @@ namespace Bit
 {
 
 	ThreadLinux::ThreadLinux( ) :
-		m_Running( false )/*,
-		m_Handle( NULL )*/
+		m_Running( false )
 	{
 	}
 
 	ThreadLinux::ThreadLinux( Function p_Function ) :
-		m_Running( false )/*,
-		m_Handle( NULL )*/
+		m_Running( false )
 	{
 		Execute( p_Function );
 	}
 
 	ThreadLinux::~ThreadLinux( )
 	{
-		/*if( m_Handle )
-		{
-			CloseHandle( m_Handle );
-			m_Handle = NULL;
-		}*/
 	}
 
 	void ThreadLinux::Execute( Function p_Function )
 	{
 		if( m_Running == false )
 		{
-			/*m_Function = p_Function;
-			m_Handle = CreateThread( NULL, 0, StaticThreadFunction, reinterpret_cast<LPVOID>( this ), 0, NULL );*/
+			m_Function = p_Function;
+
+			pthread_create( &m_Thread, NULL, StaticThreadFunction, reinterpret_cast<void *>( this ) );
 		}
 	}
 
 	void ThreadLinux::Finish( )
 	{
-		// Wait for the function to finish
-		/*WaitForSingleObject( m_Handle, INFINITE );
-
-		// Close the handle
-		if( m_Handle )
-		{
-			CloseHandle( m_Handle );
-			m_Handle = NULL;
-		}*/
-
-	}
+	    // Wait for the function to finish
+        pthread_join( m_Thread, NULL );
+    }
 
 	void ThreadLinux::Terminate( )
 	{
 		// Terminate the thread.
-		/*TerminateThread( m_Handle, 0 );
-
-		// Close the handle
-		if( m_Handle )
-		{
-			CloseHandle( m_Handle );
-			m_Handle = NULL;
-		}*/
+		pthread_cancel( m_Thread );
 	}
 
 	Bool ThreadLinux::IsRunning( )
 	{
-		/*Bit::SmartMutex smartMutex( m_Mutex );
-		smartMutex.Lock( );*/
+		Bit::SmartMutex smartMutex( m_Mutex );
+		smartMutex.Lock( );
 		return m_Running;
 	}
 
-	/*DWORD WINAPI ThreadLinux::StaticThreadFunction( LPVOID p_pParam )
-	{
-		// Get the thread from the param
+
+    void * ThreadLinux::StaticThreadFunction( void * p_pParam )
+    {
+        // Make the thread cancelable.
+        pthread_setcancelstate( PTHREAD_CANCEL_ENABLE, NULL );
+
+        // Get the thread from the param
 		ThreadLinux * pThread = reinterpret_cast< ThreadLinux * >( p_pParam );
 
-		// Mark the thread as running
+        // Mark the thread as running
 		pThread->m_Mutex.Lock( );
 		pThread->m_Running = true;
 		pThread->m_Mutex.Unlock( );
@@ -112,9 +95,8 @@ namespace Bit
 		pThread->m_Running = false;
 		pThread->m_Mutex.Unlock( );
 
-		// Succeeded
-		return 0;
-	}*/
+        return NULL;
+    }
 
 }
 

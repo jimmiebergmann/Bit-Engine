@@ -22,17 +22,17 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/System/Win32/MouseWin32.hpp>
+#include <Bit/System/Linux/MouseLinux.hpp>
 
-#ifdef BIT_PLATFORM_WINDOWS
-#include <Windows.h>
+#ifdef BIT_PLATFORM_LINUX
+
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
     // Global static varialbes
-    const static BIT_UINT32 s_ButtonMask = 0x0700;
+    const static Uint32 s_ButtonMask = 0x0700;
 
     // Constructor/destructor
     MouseLinux::MouseLinux( )
@@ -51,16 +51,16 @@ namespace Bit
 		m_ChangedButtons.clear( );
 		m_ChangedButtons.resize( ButtonCount );
 
-        m_ButtonTranslationsBitToWin32[ Left ] = 0x0100;
-        m_ButtonTranslationsBitToWin32[ Middle ] = 0x0200;
-        m_ButtonTranslationsBitToWin32[ Right ] = 0x0400;
+        m_ButtonTranslationsBitToSystem[ Left ] = 0x0100;
+        m_ButtonTranslationsBitToSystem[ Middle ] = 0x0200;
+        m_ButtonTranslationsBitToSystem[ Right ] = 0x0400;
 
         //  Set the SYSTEM button translations
-        m_ButtonTranslationsWin32ToBit[ 0 ] = Unknown;
-        m_ButtonTranslationsWin32ToBit[ 1 ] = Left ;
-        m_ButtonTranslationsWin32ToBit[ 2 ] = Middle;
-        m_ButtonTranslationsWin32ToBit[ 3 ] = Right;
-        m_ButtonTranslationsWin32ToBit[ 4 ] = Unknown;
+        m_ButtonTranslationsSystemToBit[ 0 ] = Unknown;
+        m_ButtonTranslationsSystemToBit[ 1 ] = Left ;
+        m_ButtonTranslationsSystemToBit[ 2 ] = Middle;
+        m_ButtonTranslationsSystemToBit[ 3 ] = Right;
+        m_ButtonTranslationsSystemToBit[ 4 ] = Unknown;
 
 		/*// Set the BIT button translations
 		m_ButtonTranslationsBitToWin32[ Left ] = VK_LBUTTON;
@@ -94,7 +94,7 @@ namespace Bit
 	// Button translation function for platform keys
 	MouseLinux::eButton MouseLinux::TranslateButtonToBitButton( const Uint16 p_Button )
 	{
-		return m_ButtonTranslationsWin32ToBit[ p_Button ];
+		return m_ButtonTranslationsSystemToBit[ p_Button ];
 	}
 
 	Uint16 MouseLinux::TranslateButtonToSystemButton( const eButton p_Button )
@@ -104,20 +104,23 @@ namespace Bit
 			return 0;
 		}
 
-		return m_ButtonTranslationsBitToWin32[ static_cast< SizeType >( p_Button ) ];
+		return m_ButtonTranslationsBitToSystem[ static_cast< SizeType >( p_Button ) ];
 	}
 
 	// Get state functions
 	Vector2i32 MouseLinux::GetPosition( ) const
 	{
-		/*POINT position;
-		if( GetCursorPos( &position ) )
-		{
-			return Vector2i32(	static_cast<Int32>( position.x ),
-								static_cast<Int32>( position.y ) );
-		}
-*/
-		return Vector2i32( 0, 0 );
+        // Required variables for the XQueryPointer function
+        ::Window rootReturn, childReturn;
+        int x, y, wx, wy;
+        unsigned int buttons;
+
+        // Get the pointer states
+        XQueryPointer( m_pDisplay, DefaultRootWindow( m_pDisplay ), &rootReturn, &childReturn, &x, &y, &wx, &wy, &buttons );
+
+        // Return the mouse position
+		return Vector2i32( static_cast<Int32>( x ),
+                            static_cast<Int32>( y ) );
 	}
 
 	Bool MouseLinux::ButtonIsDown( const eButton p_Button )
@@ -262,15 +265,15 @@ namespace Bit
 		//return static_cast<Uint16>( GetAsyncKeyState( TranslateButtonToSystemButton( p_Button ) ) & 0x8000 ) != 0;
 
 		// Required variables for the XQueryPointer function
-        ::Window RootReturn, ChildReturn;
+        ::Window rootReturn, childReturn;
         int x, y, wx, wy;
         unsigned int buttons;
 
         // Get the pointer states
-        XQueryPointer( m_pDisplay, DefaultRootWindow( m_pDisplay ), &RootReturn, &ChildReturn, &x, &y, &wx, &wy, &Buttons );
+        XQueryPointer( m_pDisplay, DefaultRootWindow( m_pDisplay ), &rootReturn, &childReturn, &x, &y, &wx, &wy, &buttons );
 
         // Create a button mask
-        BIT_UINT32 buttonMask = buttons & s_ButtonMask;
+        Uint32 buttonMask = buttons & s_ButtonMask;
 
         // Make sure that any button is pressed
         if( !buttonMask )
@@ -279,7 +282,7 @@ namespace Bit
         }
 
         // Bit mask once again with the translation map.
-        return ( buttonMask & m_ButtonTranslationsBit[ p_Button ] );
+        return ( buttonMask & m_ButtonTranslationsBitToSystem[ p_Button ] );
 	}
 
 }

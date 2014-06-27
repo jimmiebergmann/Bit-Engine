@@ -100,14 +100,14 @@ namespace Bit
 	private:
 
 		// Private functions
-		/*static DWORD WINAPI StaticThreadFunction( LPVOID p_pParam );
-*/
+		static void * StaticThreadFunction( void * p_pParam );
+
 		// Private variables
 		Bool m_Running;			///< Thread status.
-		/*HANDLE m_Handle;		///< Win32 thread handle.
+		pthread_t m_Thread;		///< POSIX thread.
 		Function m_Function;	///< The thread function.
 		Mutex m_Mutex;			///< Mutex for m_Running variable,
-*/
+
 
 	};
 
