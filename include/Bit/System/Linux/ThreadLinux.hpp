@@ -22,13 +22,12 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_SYSTEM_THREAD_WIN32_HPP
-#define BIT_SYSTEM_THREAD_WIN32_HPP
+#ifndef BIT_SYSTEM_THREAD_LINUX_HPP
+#define BIT_SYSTEM_THREAD_LINUX_HPP
 
 #include <Bit/Build.hpp>
-#ifdef BIT_PLATFORM_WINDOWS
+#ifdef BIT_PLATFORM_LINUX
 #include <Bit/System/SmartMutex.hpp>
-#include <Windows.h>
 #include <functional>
 
 namespace Bit
@@ -36,10 +35,10 @@ namespace Bit
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup System
-	/// \brief Win32 thread.
+	/// \brief Linux thread.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API ThreadWin32
+	class BIT_API ThreadLinux
 	{
 
 	public:
@@ -51,7 +50,7 @@ namespace Bit
 		/// \brief Default constructor
 		///
 		////////////////////////////////////////////////////////////////
-		ThreadWin32( );
+		ThreadLinux( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Creates and executes the thread.
@@ -59,13 +58,13 @@ namespace Bit
 		/// \param p_Function The function to execute.
 		///
 		////////////////////////////////////////////////////////////////
-		ThreadWin32( Function p_Function );
+		ThreadLinux( Function p_Function );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Destructor
 		///
 		////////////////////////////////////////////////////////////////
-		~ThreadWin32( );
+		~ThreadLinux( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Executes the thread.
@@ -101,14 +100,14 @@ namespace Bit
 	private:
 
 		// Private functions
-		static DWORD WINAPI StaticThreadFunction( LPVOID p_pParam );
-
+		/*static DWORD WINAPI StaticThreadFunction( LPVOID p_pParam );
+*/
 		// Private variables
 		Bool m_Running;			///< Thread status.
-		HANDLE m_Handle;		///< Win32 thread handle.
+		/*HANDLE m_Handle;		///< Win32 thread handle.
 		Function m_Function;	///< The thread function.
 		Mutex m_Mutex;			///< Mutex for m_Running variable,
-
+*/
 
 	};
 

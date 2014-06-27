@@ -22,31 +22,31 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/System/Win32/MutexWin32.hpp>
-#ifdef BIT_PLATFORM_WINDOWS
+#include <Bit/System/Linux/MutexLinux.hpp>
+#ifdef BIT_PLATFORM_LINUX
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	MutexWin32::MutexWin32( )
+	MutexLinux::MutexLinux( )
 	{
-		m_Mutex = CreateMutex( NULL, FALSE, NULL );
-	}
-		
-	MutexWin32::~MutexWin32( )
-	{
-		CloseHandle( m_Mutex );
-	}
-		
-	void MutexWin32::Lock( )
-	{
-		WaitForSingleObject(  m_Mutex, INFINITE );
+		//m_Mutex = CreateMutex( NULL, FALSE, NULL );
 	}
 
-	void MutexWin32::Unlock( )
+	MutexLinux::~MutexLinux( )
 	{
-		ReleaseMutex( m_Mutex );
+		//CloseHandle( m_Mutex );
+	}
+
+	void MutexLinux::Lock( )
+	{
+		//WaitForSingleObject(  m_Mutex, INFINITE );
+	}
+
+	void MutexLinux::Unlock( )
+	{
+		//ReleaseMutex( m_Mutex );
 	}
 
 }

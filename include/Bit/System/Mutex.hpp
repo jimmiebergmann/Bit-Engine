@@ -36,9 +36,9 @@
 namespace Bit
 {
 
-	#ifdef BIT_PLATFORM_WINDOWS
+	#if defined( BIT_PLATFORM_WINDOWS )
 		typedef MutexWin32 Mutex;
-	#elif BIT_PLATFORM_LINUX
+	#elif defined( BIT_PLATFORM_LINUX )
 		typedef MutexLinux Mutex;
 	#endif
 

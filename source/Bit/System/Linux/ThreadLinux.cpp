@@ -22,82 +22,82 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/System/Win32/ThreadWin32.hpp>
-#ifdef BIT_PLATFORM_WINDOWS
+#include <Bit/System/Linux/ThreadLinux.hpp>
+#ifdef BIT_PLATFORM_LINUX
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	ThreadWin32::ThreadWin32( ) :
-		m_Running( false ),
-		m_Handle( NULL )
+	ThreadLinux::ThreadLinux( ) :
+		m_Running( false )/*,
+		m_Handle( NULL )*/
 	{
 	}
 
-	ThreadWin32::ThreadWin32( Function p_Function ) :
-		m_Running( false ),
-		m_Handle( NULL )
+	ThreadLinux::ThreadLinux( Function p_Function ) :
+		m_Running( false )/*,
+		m_Handle( NULL )*/
 	{
 		Execute( p_Function );
 	}
 
-	ThreadWin32::~ThreadWin32( )
+	ThreadLinux::~ThreadLinux( )
 	{
-		if( m_Handle )
+		/*if( m_Handle )
 		{
 			CloseHandle( m_Handle );
 			m_Handle = NULL;
-		}
+		}*/
 	}
 
-	void ThreadWin32::Execute( Function p_Function )
+	void ThreadLinux::Execute( Function p_Function )
 	{
 		if( m_Running == false )
 		{
-			m_Function = p_Function;
-			m_Handle = CreateThread( NULL, 0, StaticThreadFunction, reinterpret_cast<LPVOID>( this ), 0, NULL );
+			/*m_Function = p_Function;
+			m_Handle = CreateThread( NULL, 0, StaticThreadFunction, reinterpret_cast<LPVOID>( this ), 0, NULL );*/
 		}
 	}
 
-	void ThreadWin32::Finish( )
+	void ThreadLinux::Finish( )
 	{
 		// Wait for the function to finish
-		WaitForSingleObject( m_Handle, INFINITE );
+		/*WaitForSingleObject( m_Handle, INFINITE );
 
 		// Close the handle
 		if( m_Handle )
 		{
 			CloseHandle( m_Handle );
 			m_Handle = NULL;
-		}
+		}*/
 
 	}
 
-	void ThreadWin32::Terminate( )
+	void ThreadLinux::Terminate( )
 	{
 		// Terminate the thread.
-		TerminateThread( m_Handle, 0 );
+		/*TerminateThread( m_Handle, 0 );
 
 		// Close the handle
 		if( m_Handle )
 		{
 			CloseHandle( m_Handle );
 			m_Handle = NULL;
-		}
+		}*/
 	}
 
-	Bool ThreadWin32::IsRunning( )
+	Bool ThreadLinux::IsRunning( )
 	{
-		Bit::SmartMutex smartMutex( m_Mutex );
-		smartMutex.Lock( );
+		/*Bit::SmartMutex smartMutex( m_Mutex );
+		smartMutex.Lock( );*/
 		return m_Running;
 	}
 
-	DWORD WINAPI ThreadWin32::StaticThreadFunction( LPVOID p_pParam )
+	/*DWORD WINAPI ThreadLinux::StaticThreadFunction( LPVOID p_pParam )
 	{
 		// Get the thread from the param
-		ThreadWin32 * pThread = reinterpret_cast< ThreadWin32 * >( p_pParam );
+		ThreadLinux * pThread = reinterpret_cast< ThreadLinux * >( p_pParam );
 
 		// Mark the thread as running
 		pThread->m_Mutex.Lock( );
@@ -114,7 +114,7 @@ namespace Bit
 
 		// Succeeded
 		return 0;
-	}
+	}*/
 
 }
 

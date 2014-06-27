@@ -31,10 +31,10 @@
 
 // Include isnan and make make it cross-platform.
 #include <float.h>
-#ifdef BIT_PLATFORM_WINDOWS
+#if defined( BIT_PLATFORM_WINDOWS )
 	#define bitIsNan _isnan
-#elif BIT_PLATFORM_LINUX
-	define bitIsNan isnan
+#elif defined( BIT_PLATFORM_LINUX )
+	#define bitIsNan isnan
 #endif
 
 namespace Bit
@@ -83,7 +83,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		template <typename U>
 		Vector2( U p_X, U p_Y );
-		
+
 		////////////////////////////////////////////////////////////////
 		/// \brief Copy constructor.
 		///
@@ -189,7 +189,7 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		static Angle AngleBetweenVectors( const Vector2<T> & p_Vector1, const Vector2<T> & p_Vector2 );
-		
+
 		////////////////////////////////////////////////////////////////
 		// Public variable members
 		////////////////////////////////////////////////////////////////

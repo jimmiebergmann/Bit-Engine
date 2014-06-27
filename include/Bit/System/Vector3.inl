@@ -208,7 +208,9 @@ inline Vector3<T> & Vector3<T>::Normalize( )
 template <typename T>
 inline Vector3<T> Vector3<T>::Absolute( ) const
 {
-	return Vector3<T>((T)abs((T)x), (T)abs((T)y), (T)abs((T)z));
+	return Vector3<T>( (T)std::abs((T)x),
+                        (T)std::abs((T)y),
+                        (T)std::abs((T)z));
 }
 
 template <typename T>

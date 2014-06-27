@@ -98,6 +98,8 @@
 		<Unit filename="../../source/Bit/System/Hash.cpp" />
 		<Unit filename="../../source/Bit/System/Linux/KeyboardLinux.cpp" />
 		<Unit filename="../../source/Bit/System/Linux/MouseLinux.cpp" />
+		<Unit filename="../../source/Bit/System/Linux/MutexLinux.cpp" />
+		<Unit filename="../../source/Bit/System/Linux/ThreadLinux.cpp" />
 		<Unit filename="../../source/Bit/System/MatrixManager.cpp" />
 		<Unit filename="../../source/Bit/System/MemoryLeak.cpp" />
 		<Unit filename="../../source/Bit/System/Sha1.cpp" />

@@ -200,8 +200,8 @@ inline const Vector2<T> & Vector2<T>::Normalize( )
 template <typename T>
 inline Vector2<T> Vector2<T>::Absolute( ) const
 {
-	return Vector2<T>(	(T)abs( (T)x ),
-						(T)abs( (T)y ) );
+	return Vector2<T>(	(T)std::abs( (T)x ),
+						(T)std::abs( (T)y ) );
 }
 
 template <typename T>

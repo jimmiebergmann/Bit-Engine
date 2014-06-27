@@ -22,12 +22,11 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_SYSTEM_MUTEX_WIN32_HPP
-#define BIT_SYSTEM_MUTEX_WIN32_HPP
+#ifndef BIT_SYSTEM_MUTEX_LINUX_HPP
+#define BIT_SYSTEM_MUTEX_LINUX_HPP
 
 #include <Bit/Build.hpp>
-#ifdef BIT_PLATFORM_WINDOWS
-#include <Windows.h>
+#ifdef BIT_PLATFORM_LINUX
 
 namespace Bit
 {
@@ -35,10 +34,10 @@ namespace Bit
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup System
-	/// \brief Win32 mutex.
+	/// \brief Linux mutex.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API MutexWin32
+	class BIT_API MutexLinux
 	{
 
 	public:
@@ -47,13 +46,13 @@ namespace Bit
 		/// \brief Default constructor
 		///
 		////////////////////////////////////////////////////////////////
-		MutexWin32( );
+		MutexLinux( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Destructor
 		///
 		////////////////////////////////////////////////////////////////
-		~MutexWin32( );
+		~MutexLinux( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Locking the mutex
@@ -69,7 +68,7 @@ namespace Bit
 
 	private:
 
-		HANDLE m_Mutex;
+		//HANDLE m_Mutex;
 
 	};
 
