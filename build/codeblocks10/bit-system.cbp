@@ -9,7 +9,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="debug_static">
-				<Option output="../../lib/Linux/32/bit-system-d" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-system-s-d" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../obj/Linux/32/bit-system/debug_static" />
 				<Option type="2" />
@@ -30,9 +30,9 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="release_static">
-				<Option output="../../lib/Linux/32/bit-system" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-system-s" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".../../obj/Linux/32/bit-system/release_static" />
+				<Option object_output="../../obj/Linux/32/bit-system/release_static" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -65,8 +65,13 @@
 			</Target>
 		</Build>
 		<Unit filename="../../include/Bit/Build.hpp" />
+		<Unit filename="../../include/Bit/Network/Url.hpp" />
 		<Unit filename="../../include/Bit/NonCopyable.hpp" />
 		<Unit filename="../../include/Bit/System/Angle.hpp" />
+		<Unit filename="../../include/Bit/System/Bencode/Bencode.hpp" />
+		<Unit filename="../../include/Bit/System/Bencode/Reader.hpp" />
+		<Unit filename="../../include/Bit/System/Bencode/Value.hpp" />
+		<Unit filename="../../include/Bit/System/Bencode/Writer.hpp" />
 		<Unit filename="../../include/Bit/System/Hash.hpp" />
 		<Unit filename="../../include/Bit/System/Keyboard.hpp" />
 		<Unit filename="../../include/Bit/System/KeyboardBase.hpp" />
@@ -94,7 +99,11 @@
 		<Unit filename="../../include/Bit/System/Vector3.hpp" />
 		<Unit filename="../../include/Bit/System/Vector3.inl" />
 		<Unit filename="../../include/Bit/System/Version.hpp" />
+		<Unit filename="../../source/Bit/Network/Url.cpp" />
 		<Unit filename="../../source/Bit/System/Angle.cpp" />
+		<Unit filename="../../source/Bit/System/Bencode/Reader.cpp" />
+		<Unit filename="../../source/Bit/System/Bencode/Value.cpp" />
+		<Unit filename="../../source/Bit/System/Bencode/Writer.cpp" />
 		<Unit filename="../../source/Bit/System/Hash.cpp" />
 		<Unit filename="../../source/Bit/System/Linux/KeyboardLinux.cpp" />
 		<Unit filename="../../source/Bit/System/Linux/MouseLinux.cpp" />

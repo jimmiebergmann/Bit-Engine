@@ -51,12 +51,6 @@
 				</ResourceCompiler>
 			</Target>
 		</Build>
-		<Unit filename="../../include/Bit/Audio.hpp" />
-		<Unit filename="../../include/Bit/Audio/AudioBuffer.hpp" />
-		<Unit filename="../../include/Bit/Audio/XM.hpp" />
-		<Unit filename="../../source/Bit/Audio.cpp" />
-		<Unit filename="../../source/Bit/Audio/AudioBuffer.cpp" />
-		<Unit filename="../../source/Bit/Audio/XM.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

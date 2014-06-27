@@ -26,6 +26,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -240,12 +241,12 @@ namespace Bit
 	{
 		return m_SubChunkId;
 	}
-		
+
 	Uint32 WaveFile::DataChunk::GetSubChunkSize( ) const
 	{
 		return m_SubChunkSize;
 	}
-	
+
 	const Uint8 * WaveFile::DataChunk::GetData( ) const
 	{
 		return m_pData;
@@ -371,9 +372,9 @@ namespace Bit
 
 		// Read the bitmap data
 		p_Stream.read( reinterpret_cast<char *>( m_DataChunk.m_pData ), m_DataChunk.m_SubChunkSize );
-		
+
 		// Go back to the begining of the stream
-		p_Stream.seekg( 0, std::fstream::beg ); 
+		p_Stream.seekg( 0, std::fstream::beg );
 
 		// Succeeded
 		return true;
