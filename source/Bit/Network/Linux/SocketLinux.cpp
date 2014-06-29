@@ -22,7 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Linux/SocketLinux.hpp>
-#ifdef BIT_PLATFORM_WINDOWS
+#ifdef BIT_PLATFORM_LINUX
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -41,7 +41,7 @@ namespace Bit
 
 	SocketLinux::~SocketLinux( )
 	{
-		Close( );
+		CloseHandle( );
 	}
 
 	void SocketLinux::SetBlocking( const Bool p_Blocking )
@@ -69,8 +69,6 @@ namespace Bit
             int result = 0;
             if( ( result = fcntl( m_Handle, F_SETFL, opts ) ) < 0 )
             {
-               // perror("fcntl(F_SETFL)");
-                //exit(EXIT_FAILURE);
                 std::cout << "[SocketLinux::SetBlocking] Failed to set blocking. Error: " << result << std::endl;
                 return;
             }
@@ -107,29 +105,12 @@ namespace Bit
 	{
 		// Get the address
 		sockaddr_in address;
-		int size = sizeof( address );
+		socklen_t size = sizeof( address );
 		getpeername( m_Handle, reinterpret_cast<sockaddr *>( &address ), &size );
 
 		// Return the address
-		return Address( static_cast<Uint32>( ntohl( (u_long)address.sin_addr.S_un.S_addr ) ) );
+		return Address( static_cast<Uint32>( ntohl( (u_long)address.sin_addr.s_addr ) ) );
 	}
-
-
-	// Intiialize winsock( A little hack from sfml )
-	struct WinsockInitializer
-	{
-		WinsockInitializer( )
-		{
-			WSADATA wsaData;
-			if( WSAStartup( MAKEWORD(2,2), &wsaData ) )
-			{
-				std::cout << "[Bit::WinsockInitializer] Failed to initialize winsock." << std::endl;
-			}
-		}
-	};
-
-	// Create an instance of the intiialize
-	static WinsockInitializer g_WinsockInitializer;
 
 }
 

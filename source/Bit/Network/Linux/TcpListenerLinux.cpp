@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Linux/TcpListenerLinux.hpp>
+#ifdef BIT_PLATFORM_LINUX
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -54,7 +55,7 @@ namespace Bit
 		SocketHandle socketHandle;
 		if( ( socketHandle = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )
 		{
-			std::cout << "[TcpListenerLinux::Start] Can not create the socket. Error: "/* <<  GetLastError( )*/ << std::endl;
+			std::cout << "[TcpListenerLinux::Start] Can not create the socket. Error: " << errno << std::endl;
 			return false;
 		}
 		m_Socket.SetHandle( socketHandle );
@@ -68,7 +69,7 @@ namespace Bit
 		// Bind
 		if( bind( m_Socket.GetHandle( ), reinterpret_cast<const sockaddr *>( &service ), sizeof( service ) ) != 0 )
 		{
-			std::cout << "[TcpListenerLinux::Start] Can not bind the socket. Error: " /*<<  GetLastError( )*/ << std::endl;
+			std::cout << "[TcpListenerLinux::Start] Can not bind the socket. Error: " << errno << std::endl;
 			Stop( );
 			return false;
 		}
@@ -91,7 +92,7 @@ namespace Bit
 		// Listen for incomming clients
 		if( listen( m_Socket.GetHandle( ), SOMAXCONN ) != 0 )
 		{
-			std::cout << "[TcpListenerLinux::Listen] Can not listen for clients. Error: " /*<< GetLastError( )*/ << std::endl;
+			std::cout << "[TcpListenerLinux::Listen] Can not listen for clients. Error: " << errno << std::endl;
 			return false;
 		}
 
@@ -99,7 +100,7 @@ namespace Bit
 		SocketHandle acceptSocket = 0;
 		if( ( acceptSocket = accept( m_Socket.GetHandle( ), NULL, NULL ) ) == -1 )
 		{
-			std::cout << "[TcpListenerLinux::Listen] Can not accept the client. Error: " /*<< GetLastError( )*/ << std::endl;
+			std::cout << "[TcpListenerLinux::Listen] Can not accept the client. Error: " << errno << std::endl;
 			return false;
 		}
 
@@ -116,3 +117,5 @@ namespace Bit
 	}
 
 }
+
+#endif

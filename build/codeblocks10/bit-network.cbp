@@ -55,7 +55,7 @@
 		<Unit filename="../../include/Bit/Network/Linux/SocketLinux.hpp" />
 		<Unit filename="../../include/Bit/Network/Linux/TcpListenerLinux.hpp" />
 		<Unit filename="../../include/Bit/Network/Linux/TcpSocketLinux.hpp" />
-		<Unit filename="../../include/Bit/Network/Linux/UdpSocketLinux .hpp" />
+		<Unit filename="../../include/Bit/Network/Linux/UdpSocketLinux.hpp" />
 		<Unit filename="../../include/Bit/Network/Ntp.hpp" />
 		<Unit filename="../../include/Bit/Network/NtpTimestamp.hpp" />
 		<Unit filename="../../include/Bit/Network/Packet.hpp" />
@@ -70,22 +70,21 @@
 		<Unit filename="../../include/Bit/Network/Torrent.hpp" />
 		<Unit filename="../../include/Bit/Network/UdpSocket.hpp" />
 		<Unit filename="../../include/Bit/Network/Url.hpp" />
+		<Unit filename="../../include/Bit/System/Randomizer.hpp" />
 		<Unit filename="../../source/Bit/Network/Address.cpp" />
 		<Unit filename="../../source/Bit/Network/Http.cpp" />
 		<Unit filename="../../source/Bit/Network/Linux/SocketLinux.cpp" />
 		<Unit filename="../../source/Bit/Network/Linux/TcpListenerLinux.cpp" />
 		<Unit filename="../../source/Bit/Network/Linux/TcpSocketLinux.cpp" />
-		<Unit filename="../../source/Bit/Network/Linux/UdpSocketLinux .cpp" />
+		<Unit filename="../../source/Bit/Network/Linux/UdpSocketLinux.cpp" />
 		<Unit filename="../../source/Bit/Network/Ntp.cpp" />
 		<Unit filename="../../source/Bit/Network/NtpTimestamp.cpp" />
 		<Unit filename="../../source/Bit/Network/Packet.cpp" />
 		<Unit filename="../../source/Bit/Network/Private/SocketBase.cpp" />
 		<Unit filename="../../source/Bit/Network/Socket.cpp" />
-		<Unit filename="../../source/Bit/Network/TcpListener.cpp" />
-		<Unit filename="../../source/Bit/Network/TcpSocket.cpp" />
 		<Unit filename="../../source/Bit/Network/Torrent.cpp" />
-		<Unit filename="../../source/Bit/Network/UdpSocket.cpp" />
 		<Unit filename="../../source/Bit/Network/Url.cpp" />
+		<Unit filename="../../source/Bit/System/Randomizer.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

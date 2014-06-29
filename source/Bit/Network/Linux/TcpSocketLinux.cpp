@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Linux/TcpSocketLinux.hpp>
+#ifdef BIT_PLATFORM_LINUX
 #include <Bit/System/Sleep.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -68,16 +69,14 @@ namespace Bit
 		FD_SET( m_Handle, &fdset );
 
 		// Connect
-		if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) != 0 )
+		int status = 0;
+		if( ( status = connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) ) != 0 )
 		{
-			// Ignore the WSAEWOULDBLOCK error
-			//DWORD lastError = GetLastError( );
-			//if( lastError != WSAEWOULDBLOCK )
-			//{
-			//	Disconnect( );
-			//	return false;
-			//}
-			return false;
+		    if( errno != EINPROGRESS )
+		    {
+		        Disconnect( );
+				return false;
+		    }
 		}
 
 		// We failed to connect, but we are waiting for the connection to establish
@@ -106,9 +105,8 @@ namespace Bit
 			}
 		}
 
-		// Failed to connect. Close the socket, and restore the blocking status.
+		// Failed to connect. Close the socket.
 		Disconnect( );
-		SetBlocking( blocking );
 
 		// Failed.
 		return false;
@@ -195,3 +193,5 @@ namespace Bit
 	}
 
 }
+
+#endif

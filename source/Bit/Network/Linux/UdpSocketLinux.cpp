@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Linux/UdpSocketLinux.hpp>
+#ifdef BIT_PLATFORM_LINUX
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -51,7 +52,7 @@ namespace Bit
 		// Create the socket
 		if( ( m_Handle = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP ) ) <= 0 )
 		{
-			std::cout << "[UdpSocketLinux::Start] Can not create the socket. Error: " /*<<  GetLastError( )*/ << std::endl;
+			std::cout << "[UdpSocketLinux::Start] Can not create the socket. Error: " << errno << std::endl;
 			return false;
 		}
 
@@ -63,7 +64,7 @@ namespace Bit
 
 		if( bind( m_Handle, reinterpret_cast<const sockaddr *>( &service ), sizeof( service ) ) != 0 )
 		{
-			std::cout << "[UdpSocketLinux::Start] Can not bind the socket. Error: " /*<<  GetLastError( )*/ << std::endl;
+			std::cout << "[UdpSocketLinux::Start] Can not bind the socket. Error: " << errno << std::endl;
 			Close( );
 			return false;
 		}
@@ -182,3 +183,5 @@ namespace Bit
 	}
 
 }
+
+#endif
