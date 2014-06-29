@@ -4,13 +4,12 @@
 	<Project>
 		<Option title="bit-network" />
 		<Option makefile="build/makefile/Makefile-bit-network" />
-		<Option makefile_is_custom="1" />
 		<Option execution_dir="../../../Bit-Engine" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="debug_static">
-				<Option output="../../lib/Linux/32/bit-network-d" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-network-s-d" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../obj/Linux/32/bit-network/debug_static" />
 				<Option type="2" />
@@ -31,7 +30,7 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="release_static">
-				<Option output="../../lib/Linux/32/bit-network" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-network-s" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../obj/Linux/32/bit-network/release_static" />
 				<Option type="2" />
@@ -51,8 +50,42 @@
 				</ResourceCompiler>
 			</Target>
 		</Build>
-		<Unit filename="../../include/Bit/Network.hpp" />
-		<Unit filename="../../source/Bit/Network.cpp" />
+		<Unit filename="../../include/Bit/Network/Address.hpp" />
+		<Unit filename="../../include/Bit/Network/Http.hpp" />
+		<Unit filename="../../include/Bit/Network/Linux/SocketLinux.hpp" />
+		<Unit filename="../../include/Bit/Network/Linux/TcpListenerLinux.hpp" />
+		<Unit filename="../../include/Bit/Network/Linux/TcpSocketLinux.hpp" />
+		<Unit filename="../../include/Bit/Network/Linux/UdpSocketLinux .hpp" />
+		<Unit filename="../../include/Bit/Network/Ntp.hpp" />
+		<Unit filename="../../include/Bit/Network/NtpTimestamp.hpp" />
+		<Unit filename="../../include/Bit/Network/Packet.hpp" />
+		<Unit filename="../../include/Bit/Network/Private/SocketBase.hpp" />
+		<Unit filename="../../include/Bit/Network/Private/TcpListenerBase.hpp" />
+		<Unit filename="../../include/Bit/Network/Private/TcpSocketBase.hpp" />
+		<Unit filename="../../include/Bit/Network/Private/UdpSocketBase.hpp" />
+		<Unit filename="../../include/Bit/Network/Socket.hpp" />
+		<Unit filename="../../include/Bit/Network/SocketHandle.hpp" />
+		<Unit filename="../../include/Bit/Network/TcpListener.hpp" />
+		<Unit filename="../../include/Bit/Network/TcpSocket.hpp" />
+		<Unit filename="../../include/Bit/Network/Torrent.hpp" />
+		<Unit filename="../../include/Bit/Network/UdpSocket.hpp" />
+		<Unit filename="../../include/Bit/Network/Url.hpp" />
+		<Unit filename="../../source/Bit/Network/Address.cpp" />
+		<Unit filename="../../source/Bit/Network/Http.cpp" />
+		<Unit filename="../../source/Bit/Network/Linux/SocketLinux.cpp" />
+		<Unit filename="../../source/Bit/Network/Linux/TcpListenerLinux.cpp" />
+		<Unit filename="../../source/Bit/Network/Linux/TcpSocketLinux.cpp" />
+		<Unit filename="../../source/Bit/Network/Linux/UdpSocketLinux .cpp" />
+		<Unit filename="../../source/Bit/Network/Ntp.cpp" />
+		<Unit filename="../../source/Bit/Network/NtpTimestamp.cpp" />
+		<Unit filename="../../source/Bit/Network/Packet.cpp" />
+		<Unit filename="../../source/Bit/Network/Private/SocketBase.cpp" />
+		<Unit filename="../../source/Bit/Network/Socket.cpp" />
+		<Unit filename="../../source/Bit/Network/TcpListener.cpp" />
+		<Unit filename="../../source/Bit/Network/TcpSocket.cpp" />
+		<Unit filename="../../source/Bit/Network/Torrent.cpp" />
+		<Unit filename="../../source/Bit/Network/UdpSocket.cpp" />
+		<Unit filename="../../source/Bit/Network/Url.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

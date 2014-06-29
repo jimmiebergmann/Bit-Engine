@@ -4,13 +4,12 @@
 	<Project>
 		<Option title="bit-audio" />
 		<Option makefile="build/makefile/Makefile-bit-audio" />
-		<Option makefile_is_custom="1" />
 		<Option execution_dir="../../../Bit-Engine" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="debug_static">
-				<Option output="../../lib/Linux/32/bit-audio-d" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-audio-s-d" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../obj/Linux/32/bit-audio/debug_static" />
 				<Option type="2" />
@@ -22,16 +21,19 @@
 					<Add option="-O0" />
 					<Add option="-std=gnu++0x" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DBIT_STATIC_LIB" />
+					<Add option="-DBIT_STATIC" />
 					<Add directory="../../include" />
 					<Add directory="../../extlibs/include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="../../include" />
 				</ResourceCompiler>
+				<Linker>
+					<Add library="AL" />
+				</Linker>
 			</Target>
 			<Target title="release_static">
-				<Option output="../../lib/Linux/32/bit-audio" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-audio-s" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../obj/Linux/32/bit-audio/release_static" />
 				<Option type="2" />
@@ -42,15 +44,30 @@
 					<Add option="-W" />
 					<Add option="-std=gnu++0x" />
 					<Add option="-DNDEBUG" />
-					<Add option="-DBIT_STATIC_LIB" />
+					<Add option="-DBIT_STATIC" />
 					<Add directory="../../include" />
 					<Add directory="../../extlibs/include" />
 				</Compiler>
 				<ResourceCompiler>
 					<Add directory="../../include" />
 				</ResourceCompiler>
+				<Linker>
+					<Add library="AL" />
+				</Linker>
 			</Target>
 		</Build>
+		<Unit filename="../../include/Bit/Audio/AudioDevice.hpp" />
+		<Unit filename="../../include/Bit/Audio/OpenAL/OpenAL.hpp" />
+		<Unit filename="../../include/Bit/Audio/OpenAL/OpenALAudioDevice.hpp" />
+		<Unit filename="../../include/Bit/Audio/OpenAL/OpenALSound.hpp" />
+		<Unit filename="../../include/Bit/Audio/OpenAL/OpenALSoundBuffer.hpp" />
+		<Unit filename="../../include/Bit/Audio/Sound.hpp" />
+		<Unit filename="../../include/Bit/Audio/SoundBuffer.hpp" />
+		<Unit filename="../../include/Bit/Audio/WaveFile.hpp" />
+		<Unit filename="../../source/Bit/Audio/OpenAL/OpenALAudioDevice.cpp" />
+		<Unit filename="../../source/Bit/Audio/OpenAL/OpenALSound.cpp" />
+		<Unit filename="../../source/Bit/Audio/OpenAL/OpenALSoundBuffer.cpp" />
+		<Unit filename="../../source/Bit/Audio/WaveFile.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

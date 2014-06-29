@@ -24,6 +24,7 @@
 
 #include <Bit/Network/NtpTimestamp.hpp>
 #include <ctime>
+#include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -88,7 +89,7 @@ namespace Bit
 
 		// Get the time cstring
 		char * charTime = asctime(timeinfo);
-		
+
 		// Remove the newline
 		SizeType stringSize = strlen( charTime );
 		if( stringSize > 2 && charTime[ stringSize - 1 ] == '\n' )
@@ -117,7 +118,7 @@ namespace Bit
 
 		// Get the time cstring
 		char * charTime = asctime(timeinfo);
-		
+
 		// Remove the newline
 		SizeType stringSize = strlen( charTime );
 		if( stringSize > 2 && charTime[ stringSize - 1 ] == '\n' )
@@ -128,5 +129,5 @@ namespace Bit
 		// return the time cstring
 		return charTime;
 	}
-	
+
 }

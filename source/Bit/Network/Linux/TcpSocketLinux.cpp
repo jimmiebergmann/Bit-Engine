@@ -1,28 +1,28 @@
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-// 
+//
 // This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
-// 
+//
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute
 // it freely, subject to the following restrictions:
-// 
+//
 // 1. The origin of this software must not be misrepresented;
 //    you must not claim that you wrote the original software.
 //    If you use this software in a product, an acknowledgment
 //    in the product documentation would be appreciated but
 //    is not required.
-// 
+//
 // 2. Altered source versions must be plainly marked as such,
 //    and must not be misrepresented as being the original software.
-// 
+//
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Network/TcpSocket.hpp>
+#include <Bit/Network/Linux/TcpSocketLinux.hpp>
 #include <Bit/System/Sleep.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -32,22 +32,22 @@ namespace Bit
 
 	static const Uint64 g_MaxTimeout = 2147483647;
 
-	TcpSocket::TcpSocket( ) :
-		Socket( )
+	TcpSocketLinux::TcpSocketLinux( ) :
+		TcpSocketBase( )
 	{
 	}
 
-	TcpSocket::~TcpSocket( )
+	TcpSocketLinux::~TcpSocketLinux( )
 	{
 		Disconnect( );
 	}
 
-	Bool TcpSocket::Connect( const Address & p_Address, const Uint16 p_Port, const Time & p_Timeout )
+	Bool TcpSocketLinux::Connect( const Address & p_Address, const Uint16 p_Port, const Time & p_Timeout )
 	{
 		// Create the socket
 		if( ( m_Handle = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )
 		{
-			std::cout << "[TcpSocket::Connect] Can not create the socket. Error: " << GetLastError( ) << std::endl;
+			std::cout << "[TcpSocketLinux::Connect] Can not create the socket. Error: "<< std::endl;
 			return false;
 		}
 
@@ -63,22 +63,23 @@ namespace Bit
 		SetBlocking( false );
 
 		// Create a FD_SET, and add the m_Handle to the set
-		FD_SET fdset;
+		fd_set fdset;
 		FD_ZERO( &fdset );
 		FD_SET( m_Handle, &fdset );
 
 		// Connect
-		if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) == SOCKET_ERROR )
+		if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) != 0 )
 		{
 			// Ignore the WSAEWOULDBLOCK error
-			DWORD lastError = GetLastError( );
-			if( lastError != WSAEWOULDBLOCK )
-			{
-				Disconnect( );
-				return false;
-			}
+			//DWORD lastError = GetLastError( );
+			//if( lastError != WSAEWOULDBLOCK )
+			//{
+			//	Disconnect( );
+			//	return false;
+			//}
+			return false;
 		}
-			
+
 		// We failed to connect, but we are waiting for the connection to establish
 		struct timeval tv;
 		if( p_Timeout.AsMicroseconds( ) / 1000000ULL > g_MaxTimeout )
@@ -113,22 +114,18 @@ namespace Bit
 		return false;
 	}
 
-	void TcpSocket::Disconnect( )
+	void TcpSocketLinux::Disconnect( )
 	{
-		// Close the socket.
-		if( m_Handle )
-		{
-			closesocket( m_Handle );
-			m_Handle = 0;
-		}
+		// Close the socket handle.
+		CloseHandle( );
 	}
 
-	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size )
+	Int32 TcpSocketLinux::Receive( void * p_pData, const SizeType p_Size )
 	{
 		return recv( m_Handle, reinterpret_cast<char*>( p_pData ), static_cast<int>( p_Size ), 0 );
 	}
 
-	Int32 TcpSocket::Receive( void * p_pData, const SizeType p_Size, const Time & p_Timeout )
+	Int32 TcpSocketLinux::Receive( void * p_pData, const SizeType p_Size, const Time & p_Timeout )
 	{
 		// Create a socket address storage
 		sockaddr_in address;
@@ -142,10 +139,10 @@ namespace Bit
 		}
 
 		// Put the socket handle in a fdset
-		FD_SET fdset;
+		fd_set fdset;
 		FD_ZERO( &fdset );
 		FD_SET( m_Handle, &fdset );
-		
+
 		// Set the time
 		struct timeval tv;
 		if( p_Timeout.AsMicroseconds( ) / 1000000ULL > g_MaxTimeout )
@@ -172,29 +169,29 @@ namespace Bit
 			// return the received message's size
 			return size;
 		}
-		
+
 		// Reset the blocking status and return false
 		SetBlocking( blocking );
 		return status;
 	}
 
-	void TcpSocket::Receive( Packet & p_Packet )
+	void TcpSocketLinux::Receive( Packet & p_Packet )
 	{
 	}
 
-	void TcpSocket::Receive( Packet & p_Packet, const Time & p_Timeout )
+	void TcpSocketLinux::Receive( Packet & p_Packet, const Time & p_Timeout )
 	{
 	}
 
-	Int32 TcpSocket::Send( const void * p_pData, const SizeType p_Size )
+	Int32 TcpSocketLinux::Send( const void * p_pData, const SizeType p_Size )
 	{
 		int size = send( m_Handle, reinterpret_cast<const char*>( p_pData ), static_cast<int>( p_Size ), 0 );
 		return static_cast<Int32>( size );
 	}
 
-	void TcpSocket::Send( const Packet & p_Packet )
+	void TcpSocketLinux::Send( const Packet & p_Packet )
 	{
-		
+
 	}
 
 }
