@@ -26,7 +26,6 @@
 #ifndef BIT_GRAPHICS_MODEL_OBJ_HPP
 #define BIT_GRAPHICS_MODEL_OBJ_HPP
 
-#include <Bit/DataTypes.hpp>
 #include <Bit/Graphics/Model.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/Graphics/Texture.hpp>

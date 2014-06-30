@@ -90,7 +90,9 @@ namespace Bit
 		return false;
 	}
 
-	Bool Model::LoadFromObjFile( const std::string & p_Filename )
+	Bool Model::LoadFromObjFile(	const std::string & p_Filename,
+									const Bool p_LoadTextureCoords,
+									const Bool p_LoadNormalCoords )
 	{
 		// Obj files does not support animations
 		// Should we use an index buffer for faces???
