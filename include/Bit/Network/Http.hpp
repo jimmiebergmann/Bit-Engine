@@ -1,22 +1,22 @@
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-// 
+//
 // This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
-// 
+//
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute
 // it freely, subject to the following restrictions:
-// 
+//
 // 1. The origin of this software must not be misrepresented;
 //    you must not claim that you wrote the original software.
 //    If you use this software in a product, an acknowledgment
 //    in the product documentation would be appreciated but
 //    is not required.
-// 
+//
 // 2. Altered source versions must be plainly marked as such,
 //    and must not be misrepresented as being the original software.
-// 
+//
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		enum eMethod
 		{
-			NoMethod, 
+			NoMethod,
 			Options,	///< Get information about the communication options available.
 			Get,		///< Retrieve whatefter information is identified by the "Request-URI"
 			Head,		///< Same as get, but does not required message-body.
@@ -75,7 +75,7 @@ namespace Bit
 			// Informational codes
 			Continue				= 100, ///< The client should send the remainder of the request
 			SwitchingProtocols		= 101, ///< Server will change protocols
-			
+
 			// Successful codes
 			Ok						= 200,	///< The request has succeeded.
 			Created					= 201,	///< A new resource has been created.
@@ -84,7 +84,7 @@ namespace Bit
 			NoContent				= 204,	///< Fulfilled request, but no body was sent.
 			ResetContent			= 205,	///< FUlfilled request, but used agent should reset the document view.
 			PartialContent			= 206,	///< The server has fulfilled the partial GET request.
-			
+
 			// Redirection codes
 			MultipleChoices			= 300,	///< ?
 			MovedPermanently		= 301,	///< Requested resource has been assigned a new parmanent URI.
@@ -94,7 +94,7 @@ namespace Bit
 			UseProxy				= 305,	///< Requested resource must be accessed through the given proxy("Location" field).
 			Unused					= 306,	///< Removed status code from previous specification version.
 			TemporaryRedirect		= 307,	///< Requested resource resides temporarily under a different URI.
-			
+
 			// Client error codes
 			BadRequest				= 400,	///< The request could not be understood by the server because of syntax errors.
 			Unauthorized			= 401,	///< The request requires user authentication.
@@ -109,12 +109,12 @@ namespace Bit
 			Gone					= 410,	///< Requested resource is no longer available.
 			LengthRequired			= 411,	///< Server requires the "Content-Length" field, it's missing in the request.
 			PreconditionFailed		= 412,	///< Server did not receive a response from it's upstream fast enough.
-			RequestEntityTooLarge	= 413,	///< 
+			RequestEntityTooLarge	= 413,	///<
 			RequestUriTooLong		= 414,	///< The requested URI was too long.
-			UnsupportedMediaType	= 415,	///< 
-			RangeNotSatisfiable		= 416,	///< 
-			ExpectationFailed		= 417,	///< 
-			
+			UnsupportedMediaType	= 415,	///<
+			RangeNotSatisfiable		= 416,	///<
+			ExpectationFailed		= 417,	///<
+
 			// Server error codes
 			InternalServerError		= 500,	///< The server could not fulfill the request.
 			NotImplemented			= 501,	///< The server does not support the functionality required to fulfill the request.
@@ -310,7 +310,7 @@ namespace Bit
 		/// \param p_Timeout Time in milliseconds.
 		///
 		////////////////////////////////////////////////////////////////
-		void SetTimeout( const Time & p_Timeout ); 
+		void SetTimeout( const Time & p_Timeout );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Send request packet
@@ -331,7 +331,7 @@ namespace Bit
 		/// \param p_Response The parsed data packet.
 		///
 		////////////////////////////////////////////////////////////////
-		static Bool ParseResponsePacket( const std::string * p_pData, HttpPacket & p_Packet ); 
+		static Bool ParseResponsePacket( const std::string * p_pData, HttpPacket & p_Packet );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a request string out of a request packet.
@@ -340,12 +340,9 @@ namespace Bit
 		/// \param p_StringStream The output stringstream(holding the string).
 		///
 		////////////////////////////////////////////////////////////////
-		static void CreateRequestString( const Request & p_Request, std::stringstream & p_StringStream ); 
+		static void CreateRequestString( const Request & p_Request, std::stringstream & p_StringStream );
 
 	private:
-
-		// Private functions
-		static SizeType ParseResponse( const Uint8 * p_pData, const SizeType p_DataSize, Response & p_Response );
 
 		// Private variables
 		Uint16 m_Port;

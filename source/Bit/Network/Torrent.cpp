@@ -110,8 +110,9 @@ namespace Bit
 	{
 	}
 
-	Torrent::Tracker::Tracker( const Url & p_Url ) :
-		m_Url( p_Url )
+	Torrent::Tracker::Tracker( const Url & p_Url, const Uint16 p_PeerRequestCount ) :
+		m_Url( p_Url ),
+		m_PeerRequestCount( p_PeerRequestCount )
 	{
 	}
 
