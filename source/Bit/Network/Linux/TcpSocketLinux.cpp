@@ -69,8 +69,7 @@ namespace Bit
 		FD_SET( m_Handle, &fdset );
 
 		// Connect
-		int status = 0;
-		if( ( status = connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) ) != 0 )
+		if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) != 0 )
 		{
 		    if( errno != EINPROGRESS )
 		    {
@@ -89,7 +88,8 @@ namespace Bit
 		else
 		{
 			tv.tv_sec	= static_cast<long>( p_Timeout.AsMicroseconds( ) / 1000000ULL );
-			tv.tv_usec	= static_cast<long>( p_Timeout.AsMicroseconds( ) % 1000000ULL );
+			tv.tv_usec
+			= static_cast<long>( p_Timeout.AsMicroseconds( ) % 1000000ULL );
 		}
 
 		// Select from the set
@@ -104,7 +104,6 @@ namespace Bit
 				return true;
 			}
 		}
-
 		// Failed to connect. Close the socket.
 		Disconnect( );
 

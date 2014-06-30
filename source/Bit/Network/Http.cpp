@@ -1,23 +1,23 @@
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-// 
+//
 // This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
-// 
+//
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute
 // it freely, subject to the following restrictions:
-// 
+//
 // 1. The origin of this software must not be misrepresented;
 //    you must not claim that you wrote the original software.
 //    If you use this software in a product, an acknowledgment
 //    in the product documentation would be appreciated but
 //    is not required.
-// 
+//
 // 2. Altered source versions must be plainly marked as such,
 //    and must not be misrepresented as being the original software.
-// 
+//
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
@@ -242,11 +242,11 @@ namespace Bit
 
 		// Receive the header data( plus some body data sometimes perhaps).
 		receiveSize = tcp.Receive( g_ResponseBuffer, g_ResponseBufferSize );
-			
+
 		// Parse the header fields,
 		// returns the index of where the body data start.
 		bodyStartIndex = ParseResponse( g_ResponseBuffer, receiveSize, p_Response );
-	
+
 		// Append the remaining data from the header buffer to the body string
 		SizeType bodySize = receiveSize - bodyStartIndex;
 		p_Response.m_Body.append( reinterpret_cast<char*>( g_ResponseBuffer ) + bodyStartIndex, bodySize );
@@ -254,6 +254,7 @@ namespace Bit
 		// The download is done in one single packet, clean up and return.
 		if( receiveSize != g_ResponseBufferSize )
 		{
+
 			// Delete the buffer
 			return true;
 		}
@@ -272,7 +273,7 @@ namespace Bit
 
 			// Receive the packet.
 			receiveSize = tcp.Receive( g_ResponseBuffer, g_ResponseBufferSize );
-			
+
 			// Break if the packet is invalid.( or lost connection )
 			if( receiveSize <= 0 )
 			{
@@ -317,7 +318,7 @@ namespace Bit
 		// Add another newline
 		p_StringStream << "\r\n";
 	}
-	
+
 	SizeType Http::ParseResponse( const Uint8 * p_pData, const SizeType p_DataSize, Response & p_Response )
 	{
 		// Error check the paramters

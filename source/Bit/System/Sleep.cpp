@@ -38,6 +38,7 @@ namespace Bit
 	BIT_API void Sleep( const Time & m_Time )
 	{
 #if defined( BIT_PLATFORM_WINDOWS )
+        // USE SELECT INSTEAD
 		::Sleep( static_cast<DWORD>( m_Time.AsMilliseconds( ) ) );
 #elif defined( BIT_PLATFORM_LINUX )
 		usleep( m_Time.AsMicroseconds( ) );
