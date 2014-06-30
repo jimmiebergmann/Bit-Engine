@@ -62,11 +62,12 @@ inline Vector3<T>::Vector3( const Vector3< U > & p_Vector )  :
 }
 
 template <typename T>
-inline Vector3<T> & Vector3<T>::operator = ( const Vector3<T> & p_Vector )
+template <typename U>
+inline Vector3<T> & Vector3<T>::operator = ( const Vector3<U> & p_Vector )
 {
-	x = p_Vector.x;
-	y = p_Vector.y;
-	z = p_Vector.z;
+	x = static_cast< T >( p_Vector.x );
+	y = static_cast< T >( p_Vector.y );
+	z = static_cast< T >( p_Vector.z );
 	return *this;
 }
 

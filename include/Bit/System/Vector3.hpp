@@ -98,7 +98,8 @@ namespace Bit
 		template <typename U>
 		Vector3( const Vector3< U > & p_Vector );
 
-		Vector3<T> & operator = ( const Vector3<T> & p_Vector );
+        template <typename U>
+		Vector3<T> & operator = ( const Vector3<U> & p_Vector );
 
 		Bool operator == ( const Vector3<T> & p_Vector ) const;
 

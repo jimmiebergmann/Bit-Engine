@@ -30,6 +30,11 @@
 #include <Bit/System/Mouse.hpp>
 #include <Bit/System/Keyboard.hpp>
 
+// We need to undef None for linux builds.
+#if defined( BIT_PLATFORM_LINUX )
+    #undef None
+#endif
+
 namespace Bit
 {
 	////////////////////////////////////////////////////////////////

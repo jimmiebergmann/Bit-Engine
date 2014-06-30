@@ -27,18 +27,18 @@
 
 #include <Bit/Build.hpp>
 
-#ifdef BIT_PLATFORM_WINDOWS
+#if defined( BIT_PLATFORM_WINDOWS )
 	#include <Bit/Window/Win32/RenderWindowWin32.hpp>
-#elif BIT_PLATFORM_LINUX
+#elif defined( BIT_PLATFORM_LINUX )
 	#include <Bit/Window/Linux/RenderWindowLinux.hpp>
 #endif
 
 namespace Bit
 {
-	#ifdef BIT_PLATFORM_WINDOWS
+	#if defined( BIT_PLATFORM_WINDOWS )
 		typedef RenderWindowWin32 RenderWindow;
-	#elif BIT_PLATFORM_LINUX
-		#error No render window is available for this platform.
+	#elif defined( BIT_PLATFORM_LINUX )
+        typedef RenderWindowLinux RenderWindow;
 	#endif
 
 };

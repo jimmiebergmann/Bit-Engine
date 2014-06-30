@@ -48,7 +48,7 @@ namespace Bit
 		/// \brief Virtual destructor.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~Window( );
+		virtual ~Window( ) { }
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Open(create) the window.
@@ -80,7 +80,7 @@ namespace Bit
 		/// in the event queue.
 		///
 		/// Example:
-		/// 
+		///
 		/// Event e;
 		/// while( window.PollEvent( e ) )
 		/// {

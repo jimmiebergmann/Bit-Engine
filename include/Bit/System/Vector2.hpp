@@ -94,9 +94,10 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		template <typename U>
-		explicit Vector2( const Vector2< U > & p_Vector );
+		explicit Vector2( const Vector2<U> & p_Vector );
 
-		Vector2<T> & operator = ( const Vector2<T> & p_Vector );
+        template <typename U>
+		Vector2<T> & operator = ( const Vector2<U> & p_Vector );
 
 		Bool operator == ( const Vector2<T> & p_Vector ) const;
 

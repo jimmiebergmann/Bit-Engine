@@ -58,10 +58,11 @@ inline Vector2<T>::Vector2( const Vector2<U> & p_Vector )  :
 }
 
 template <typename T>
-inline Vector2<T> & Vector2<T>::operator = ( const Vector2<T> & p_Vector )
+template <typename U>
+inline Vector2<T> & Vector2<T>::operator = ( const Vector2<U> & p_Vector )
 {
-	x = p_Vector.x;
-	y = p_Vector.y;
+	x = static_cast< T >( p_Vector.x );
+	y = static_cast< T >( p_Vector.y );
 	return *this;
 }
 
