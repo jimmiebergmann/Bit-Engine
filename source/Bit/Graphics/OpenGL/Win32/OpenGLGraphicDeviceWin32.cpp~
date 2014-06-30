@@ -427,6 +427,8 @@ namespace Bit
 			wglMakeCurrent( p_RenderOutput.GetDeviceContextHandle( ), m_Context );
 		}
 
+		glDisable( GL_DEPTH_TEST );
+
 		return true;
 	}
 

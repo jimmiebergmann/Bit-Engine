@@ -28,9 +28,12 @@
 
 // X11 hack, we need to do this because of conflicts with the Bit engine data types.
 #define Bool int
+#include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
+// We need to undef Bool for linux build( In x11 lib)
 #undef Bool
+#undef None
 
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -70,6 +73,7 @@ namespace Bit
 		m_Style( static_cast<Uint32>( Style::None ) ),
         m_pDisplay( NULL ),
         m_Screen( 0 ),
+        m_Window( 0 ),
 		m_Events( ),
 		m_Focused( false )
 	{
@@ -84,6 +88,7 @@ namespace Bit
 		m_Style( static_cast<Uint32>( Style::None ) ),
 		m_pDisplay( NULL ),
         m_Screen( 0 ),
+        m_Window( 0 ),
 		m_Events( ),
 		m_Focused( false )
 	{
@@ -245,6 +250,7 @@ namespace Bit
 	        XCloseDisplay( m_pDisplay );
             m_pDisplay = NULL;
             m_Screen = 0;
+            m_Window = 0;
 	    }
 
         m_Open = false;
@@ -571,6 +577,21 @@ namespace Bit
 	{
 		return m_Title;
 	}
+
+	::Display * RenderWindowLinux::GetDisplayDevice( ) const
+	{
+        return m_pDisplay;
+	}
+
+    ::Window RenderWindowLinux::GetWindowDevice( ) const
+    {
+        return m_Window;
+    }
+
+    int RenderWindowLinux::GetScreenDevice( ) const
+    {
+        return m_Screen;
+    }
 
 
 

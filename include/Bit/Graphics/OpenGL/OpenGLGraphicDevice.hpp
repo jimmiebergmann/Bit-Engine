@@ -24,18 +24,18 @@
 
 #include <Bit/Build.hpp>
 
-#ifdef BIT_PLATFORM_WINDOWS
+#if defined( BIT_PLATFORM_WINDOWS )
 	#include <Bit/Graphics/OpenGL/Win32/OpenGLGraphicDeviceWin32.hpp>
-#elif BIT_PLATFORM_LINUX
+#elif defined( BIT_PLATFORM_LINUX )
 	#include <Bit/Graphics/OpenGL/Linux/OpenGLGraphicDeviceLinux.hpp>
 #endif
 
 namespace Bit
 {
-	#ifdef BIT_PLATFORM_WINDOWS
+	#if defined(BIT_PLATFORM_WINDOWS )
 		typedef OpenGLGraphicDeviceWin32 OpenGLGraphicDevice;
-	#elif BIT_PLATFORM_LINUX
-		#error No opengl graphic device is available for this platform.
+	#elif defined(BIT_PLATFORM_LINUX )
+		typedef OpenGLGraphicDeviceLinux OpenGLGraphicDevice;
 	#endif
 
 };

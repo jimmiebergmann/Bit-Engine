@@ -68,7 +68,7 @@
 		<Unit filename="../../include/Bit/Network/Url.hpp" />
 		<Unit filename="../../include/Bit/NonCopyable.hpp" />
 		<Unit filename="../../include/Bit/System/Angle.hpp" />
-		<Unit filename="../../include/Bit/System/Bencode/Bencode.hpp" />
+		<Unit filename="../../include/Bit/System/Bencode.hpp" />
 		<Unit filename="../../include/Bit/System/Bencode/Reader.hpp" />
 		<Unit filename="../../include/Bit/System/Bencode/Value.hpp" />
 		<Unit filename="../../include/Bit/System/Bencode/Writer.hpp" />

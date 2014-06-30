@@ -25,6 +25,7 @@
 #include <Bit/System/Linux/MouseLinux.hpp>
 
 #ifdef BIT_PLATFORM_LINUX
+#undef Bool
 
 #include <Bit/System/MemoryLeak.hpp>
 

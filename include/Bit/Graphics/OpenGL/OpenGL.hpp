@@ -34,11 +34,14 @@
 	#include <GL/glext.h>
 	#include <GL/wglext.h>
 #elif defined( BIT_PLATFORM_LINUX )
+    #define Bool int
 	#include <X11/Xlib.h>
 	#include <GL/gl.h>
 	#include <GL/glx.h>
 	#include <GL/glext.h>
 	#include <GL/glxext.h>
+	#undef Bool
+	#undef None
 #endif
 
 // Function for grabbing the opengl functions
@@ -46,6 +49,9 @@
 	#define glGetProcAddress( p_Ext ) wglGetProcAddress( p_Ext )
 #elif defined( BIT_PLATFORM_LINUX )
 	#define glGetProcAddress( p_Ext ) glXGetProcAddress( ( const GLubyte *) p_Ext )
+	#define GLX_CONTEXT_MAJOR_VERSION_ARB		0x2091
+    #define GLX_CONTEXT_MINOR_VERSION_ARB		0x2092
+    typedef ::GLXContext (*GLXCREATECONTEXTATTRIBSARBPROC)(::Display*, ::GLXFBConfig, ::GLXContext, int, const int*);
 #endif
 
 

@@ -26,6 +26,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -281,7 +282,7 @@ namespace Bit
 						pCurrentSmoothGroup = &pCurrentMaterialGroup->m_SmoothFaces;
 						pCurrentObjectGroup->m_MaterialGroups.push_back( pCurrentMaterialGroup );
 						pCurrentObject->m_ObjectGroups.push_back( pCurrentObjectGroup );
-						m_Objects.push_back( pCurrentObject );		
+						m_Objects.push_back( pCurrentObject );
 					}
 
 					// Set the name of the object
@@ -439,7 +440,7 @@ namespace Bit
 							faceCorner.NormalIndex = -1;
 							pFace->m_FaceCorners.push_back( faceCorner );
 						}
-						
+
 					}
 				}
 				break;
@@ -474,7 +475,7 @@ namespace Bit
 		char * pBuffer = new char[ fileSize + 1 ];
 		fin.read( pBuffer, fileSize );
 		pBuffer[ fileSize ] = 0;
-		
+
 		// Close the file
 		fin.close( );
 
@@ -588,7 +589,7 @@ namespace Bit
 					{
 						p_Stream << "usemtl " << pMaterialGroup->m_MaterialName << "\n";
 
-						// Write the flat faces 
+						// Write the flat faces
 						if( pMaterialGroup->m_FlatFaces.size( ) )
 						{
 							p_Stream << "s off\n";
@@ -646,7 +647,7 @@ namespace Bit
 						} // End of flat faces
 
 
-						// Write the smooth faces 
+						// Write the smooth faces
 						if( pMaterialGroup->m_SmoothFaces.size( ) )
 						{
 							p_Stream << "s 1\n";

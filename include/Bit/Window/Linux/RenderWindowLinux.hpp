@@ -29,11 +29,14 @@
 #ifdef BIT_PLATFORM_LINUX
 #include <Bit/Window/Window.hpp>
 #include <Bit/NonCopyable.hpp>
+#define Bool int
 #include <X11/Xlib.h>
-#include <queue>
-
 // We need to undef Bool for linux build( In x11 lib)
 #undef Bool
+#undef None
+
+#include <queue>
+
 
 namespace Bit
 {
@@ -147,6 +150,30 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual const std::string & GetTitle( ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the window's display device.
+		///
+		/// This function is for linux only.
+		///
+		////////////////////////////////////////////////////////////////
+		::Display * GetDisplayDevice( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the window's display device.
+		///
+		/// This function is for linux only.
+		///
+		////////////////////////////////////////////////////////////////
+		::Window GetWindowDevice( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the window's screen device.
+		///
+		/// This function is for linux only.
+		///
+		////////////////////////////////////////////////////////////////
+		int GetScreenDevice( ) const;
+
     private:
 
 		// Private typedefs
@@ -172,6 +199,7 @@ namespace Bit
 	};
 
 }
+
 
 #endif
 

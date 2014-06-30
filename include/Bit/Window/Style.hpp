@@ -25,6 +25,10 @@
 #ifndef BIT_WINDOW_STYLE_HPP
 #define BIT_WINDOW_STYLE_HPP
 
+#if defined( BIT_PLATFORM_LINUX )
+#undef None
+#endif
+
 namespace Bit
 {
 
@@ -38,7 +42,7 @@ namespace Bit
 
 		enum eStyle
 		{
-			None		= 0, 
+			None		= 0,
 			Close		= 1,
 			Minimize	= 2,
 			Resize		= 4,

@@ -29,6 +29,7 @@
 #include <Bit/NonCopyable.hpp>
 #include <Bit/Graphics/Model/ModelVertexData.hpp>
 #include <Bit/Graphics/Model/Skeleton.hpp>
+#include <string>
 
 namespace Bit
 {
@@ -50,13 +51,13 @@ namespace Bit
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor. 
+		/// \brief Default constructor.
 		///
 		////////////////////////////////////////////////////////////////
 		Model( const GraphicDevice & p_GraphicDevice );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Destructor. 
+		/// \brief Destructor.
 		///
 		////////////////////////////////////////////////////////////////
 		~Model( );

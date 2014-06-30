@@ -4,13 +4,12 @@
 	<Project>
 		<Option title="bit-window" />
 		<Option makefile="build/makefile/Makefile-bit-window" />
-		<Option makefile_is_custom="1" />
 		<Option execution_dir="../../../Bit-Engine" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="debug_static">
-				<Option output="../../lib/Linux/32/bit-window-d" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-window-s-d" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../obj/Linux/32/bit-window/debug_static" />
 				<Option type="2" />
@@ -22,7 +21,7 @@
 					<Add option="-O0" />
 					<Add option="-std=gnu++0x" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DBIT_STATIC_LIB" />
+					<Add option="-DBIT_STATIC" />
 					<Add directory="../../include" />
 					<Add directory="../../extlibs/include" />
 				</Compiler>
@@ -31,7 +30,7 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="release_static">
-				<Option output="../../lib/Linux/32/bit-window" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-window-s" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../obj/Linux/32/bit-window/release_static" />
 				<Option type="2" />
@@ -42,7 +41,7 @@
 					<Add option="-W" />
 					<Add option="-std=gnu++0x" />
 					<Add option="-DNDEBUG" />
-					<Add option="-DBIT_STATIC_LIB" />
+					<Add option="-DBIT_STATIC" />
 					<Add directory="../../include" />
 					<Add directory="../../extlibs/include" />
 				</Compiler>
@@ -52,12 +51,13 @@
 			</Target>
 		</Build>
 		<Unit filename="../../include/Bit/Window/Event.hpp" />
-		<Unit filename="../../include/Bit/Window/Linux/WindowLinux.hpp" />
-		<Unit filename="../../include/Bit/Window/Win32/WindowWin32.hpp" />
+		<Unit filename="../../include/Bit/Window/Linux/RenderWindowLinux.hpp" />
+		<Unit filename="../../include/Bit/Window/RenderWindow.hpp" />
+		<Unit filename="../../include/Bit/Window/Style.hpp" />
+		<Unit filename="../../include/Bit/Window/VideoMode.hpp" />
 		<Unit filename="../../include/Bit/Window/Window.hpp" />
-		<Unit filename="../../source/Bit/Window/Linux/WindowLinux.cpp" />
-		<Unit filename="../../source/Bit/Window/Win32/WindowWin32.cpp" />
-		<Unit filename="../../source/Bit/Window/Window.cpp" />
+		<Unit filename="../../source/Bit/Window/Linux/RenderWindowLinux.cpp" />
+		<Unit filename="../../source/Bit/Window/VideoMode.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

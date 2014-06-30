@@ -26,6 +26,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -355,7 +356,7 @@ namespace Bit
 		}
 
 		// Go back to the begining of the stream
-		p_Stream.seekg( 0, std::fstream::beg ); 
+		p_Stream.seekg( 0, std::fstream::beg );
 
 		// Succeeded.
 		return true;

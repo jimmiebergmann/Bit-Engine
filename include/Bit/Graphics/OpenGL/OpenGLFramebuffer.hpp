@@ -26,9 +26,10 @@
 #define BIT_GRAPHICS_OPENGL_FRAMEBUFFER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
 #include <Bit/Graphics/Framebuffer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLTexture.hpp>
-#include <Bit/Graphics/OpenGL/OpenGL.hpp>
+
 
 namespace Bit
 {

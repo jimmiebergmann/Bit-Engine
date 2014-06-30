@@ -26,6 +26,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -34,8 +35,8 @@ namespace Bit
 	// Bmp header class
 	BmpFile::BitmapHeader::BitmapHeader( ) :
 		m_Identifier( 0 ),
-		m_FileSize( 0 ),	
-		m_Reserved( 0 ),		
+		m_FileSize( 0 ),
+		m_Reserved( 0 ),
 		m_PixelArrayOffset( 0 )
 	{
 	}
@@ -172,7 +173,7 @@ namespace Bit
 	}
 
 	Uint16 BmpFile::DibHeader::GetColorPlaneCount( ) const
-		
+
 	{
 		return m_ColorPlanes;
 	}
@@ -315,16 +316,16 @@ namespace Bit
 			// Calculate the offsets
 			position = y * rowSize;
 			streamPosition = streamStart + ( y * paddedRowSize );
-			
+
 			// Go to the current row
 			p_Stream.seekg( streamPosition, std::ios::beg );
-			
+
 			// Read the row
 			p_Stream.read( reinterpret_cast<char *>( m_pData + position ), rowSize );
 		}
 
 		// Go back to the begining of the stream
-		p_Stream.seekg( 0, std::fstream::beg ); 
+		p_Stream.seekg( 0, std::fstream::beg );
 
 		// Succeeded
 		return true;

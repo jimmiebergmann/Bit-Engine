@@ -22,53 +22,65 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_GRAPHIC_DEVICE_HPP
-#define BIT_GRAPHICS_GRAPHIC_DEVICE_HPP
+#ifndef BIT_GRAPHICS_OPENGL_GRAPHIC_DEVICE_LINUX_HPP
+#define BIT_GRAPHICS_OPENGL_GRAPHIC_DEVICE_LINUX_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/System/Version.hpp>
-#include <Bit/Window/RenderWindow.hpp>
-#include <Bit/Graphics/ShaderType.hpp>
+#ifdef BIT_PLATFORM_LINUX
+
+
+#include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLFramebuffer.hpp>
+#include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/NonCopyable.hpp>
+
 
 namespace Bit
 {
 
-	// Forward declarations
-	class Framebuffer;
-	class Renderbuffer;
-	class VertexArray;
-	class VertexBuffer;
-	class Shader;
-	class ShaderProgram;
-	class Texture;
-	class Model;
-	class ModelRenderer;
-
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Graphic device base class.
+	/// \brief OpenGL Win32 Graphic device base class.
+	///
+	/// Default settings:
+	///	 -	Depth test disabled.
+	///	 -	Textures enabled.
+	///	 -	Face culling disabled.
+	///	 -	Smooth lines disabled.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API GraphicDevice
+	class BIT_API OpenGLGraphicDeviceLinux : public GraphicDevice, NonCopyable
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Enumerator for back or front face culling.
+		/// \brief Default constructor.
+		///
+		/// Initialize the graphic device with the Open function.
+		///
+		/// \see Open
 		///
 		////////////////////////////////////////////////////////////////
-		enum eCulling
-		{
-			FrontFace = 0,
-			BackFace = 1
-		};
+		OpenGLGraphicDeviceLinux( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor.
+		/// \brief Constructor.
+		///
+		/// \param p_RenderOutput The output window.
+		/// \param p_Version The version of the graphic device context
+		///		that you would like to open.
+		///		Using the newest as possible by default.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~GraphicDevice( ) { }
+		OpenGLGraphicDeviceLinux(	const RenderWindow & p_RenderOutput,
+									const Version & p_Version = Version::Default );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor. Closing the device.
+		///
+		////////////////////////////////////////////////////////////////
+		~OpenGLGraphicDeviceLinux( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Open(create) the graphic device.
@@ -76,16 +88,17 @@ namespace Bit
 		/// \param p_RenderOutput The output window.
 		/// \param p_Version The version of the graphic device context
 		///		that you would like to open.
+		///		Using the newest as possible by default.
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Bool Open(	const RenderWindow & p_RenderOutput,
-							const Version & p_Version = Version::Default ) = 0;
+							const Version & p_Version = Version::Default );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Close the graphic device.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Close( ) = 0;
+		virtual void Close( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Making this graphic device to the current one.
@@ -94,10 +107,10 @@ namespace Bit
 		/// for a single render output, for example a window.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void MakeCurrent( ) = 0;
+		virtual void MakeCurrent( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Present the graphics, swap buffers if double-buffering.
+		/// \brief Present the graphics, swap buffers.
 		///
 		/// Call this function when you want to swap the color buffers.
 		/// This function wont clear the buffers.
@@ -106,37 +119,37 @@ namespace Bit
 		/// \see ClearDepth
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Present( ) = 0;
+		virtual void Present( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Clearing the render outputs color buffer
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void ClearColor( ) = 0;
+		virtual void ClearColor( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Clearing the render outputs depth buffer
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void ClearDepth( ) = 0;
+		virtual void ClearDepth( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Enable depth test.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableDepthTest( ) = 0;
+		virtual void EnableDepthTest( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Enable textures.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableTexture( ) = 0;
+		virtual void EnableTexture( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Enable multisampling
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableMultisampling( ) = 0;
+		virtual void EnableMultisampling( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Enable face culling.
@@ -144,7 +157,7 @@ namespace Bit
 		/// \param p_FaceCulling Front of back face culling.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableFaceCulling( eCulling p_FaceCulling ) = 0;
+		virtual void EnableFaceCulling( eCulling p_FaceCulling );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Enable smooth lines.
@@ -152,25 +165,25 @@ namespace Bit
 		/// For primitive mode Lines and LineStrip.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableSmoothLines( ) = 0;
+		virtual void EnableSmoothLines( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Disable depth test.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DisableDepthTest( ) = 0;
+		virtual void DisableDepthTest( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Disable textures.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DisableTexture( ) = 0;
+		virtual void DisableTexture( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Disable face culling.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DisableFaceCulling( ) = 0;
+		virtual void DisableFaceCulling( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Disable smooth lines.
@@ -178,7 +191,7 @@ namespace Bit
 		/// For primitive mode Lines and LineStrip.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DisableSmoothLines( ) = 0;
+		virtual void DisableSmoothLines( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a framebuffer.
@@ -186,7 +199,7 @@ namespace Bit
 		/// \return A pointer to the new framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Framebuffer * CreateFramebuffer( ) const = 0;
+		virtual Framebuffer * CreateFramebuffer( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a renderbuffer.
@@ -194,41 +207,41 @@ namespace Bit
 		/// \return A pointer to the new renderbuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Renderbuffer * CreateRenderbuffer( ) const = 0;
+		virtual Renderbuffer * CreateRenderbuffer( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a vertex array.
 		///
-		/// \return A pointer to the new VAO
+		/// \return A pointer to the VAO
 		///
 		////////////////////////////////////////////////////////////////
-		virtual VertexArray * CreateVertexArray( ) const = 0;
+		virtual VertexArray * CreateVertexArray( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a vertex buffer.
 		///
-		/// \return A pointer to the new VBO
+		/// \return A pointer to the VBO
 		///
 		////////////////////////////////////////////////////////////////
-		virtual VertexBuffer * CreateVertexBuffer( ) const = 0;
+		virtual VertexBuffer * CreateVertexBuffer( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a shader
 		///
 		/// \param p_Type Enumerator of the shader type.
 		///
-		/// \return A pointer to the new shader
+		/// \return A pointer to the shader
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Shader * CreateShader( ShaderType::eType p_Type ) const = 0;
+		virtual Shader * CreateShader( ShaderType::eType p_Type ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a shader program
 		///
-		/// \return A pointer to the new shader program
+		/// \return A pointer to the shader program
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ShaderProgram * CreateShaderProgram( ) const = 0;
+		virtual ShaderProgram * CreateShaderProgram( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a texture
@@ -236,7 +249,7 @@ namespace Bit
 		/// \return A pointer to the new texture
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Texture * CreateTexture( ) const = 0;
+		virtual Texture * CreateTexture( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a model
@@ -246,7 +259,7 @@ namespace Bit
 		/// \see CreateModelRenderer
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Model * CreateModel( ) const = 0;
+		virtual Model * CreateModel( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a model
@@ -256,7 +269,7 @@ namespace Bit
 		/// \see CreateModel
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ModelRenderer * CreateModelRenderer( ) const = 0;
+		virtual ModelRenderer * CreateModelRenderer( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.
@@ -265,7 +278,7 @@ namespace Bit
 		/// \param p_Size The size of the viewport.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void SetViewport( const Vector2u32 & p_Position, const Vector2u32 & p_Size ) = 0;
+		virtual void SetViewport( const Vector2u32 & p_Position, const Vector2u32 & p_Size );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Setting the clear color.
@@ -279,152 +292,53 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual void SetClearColor( const Uint8 p_Red, const Uint8 p_Green,
-									const Uint8 p_Blue, const Uint8 p_Alpha ) = 0;
+									const Uint8 p_Blue, const Uint8 p_Alpha );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Checks if the graphic device is open.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool IsOpen( ) const = 0;
+		virtual Bool IsOpen( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the context version
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Version GetVersion( ) const = 0;
+		virtual Version GetVersion( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the default framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual const Framebuffer & GetDefaultFramebuffer( ) const = 0;
+		virtual const Framebuffer & GetDefaultFramebuffer( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the default model renderer.
 		///
 		////////////////////////////////////////////////////////////////
-		//virtual const ModelRenderer & GetDefaultModelRenderer( ) = 0;
+		//virtual const ModelRenderer & GetDefaultModelRenderer( );
+
+	private:
+
+		// Private functions
+		Bool OpenVersion( const RenderWindow & p_RenderOutput, const Version & p_Version );
+		Bool OpenBestVersion( const RenderWindow & p_RenderOutput, Version & p_Version );
+
+		// Private variables
+		Bool m_Open;									///< Is the GD open.
+		Version m_Version;								///< The version of the GD.
+		RenderWindow * m_pRenderWindow;                 ///< Pointer to the render window
+	    ::Display * m_pDisplay;                         ///< X11 display from the render window.
+		::Window m_Window;                              ///< X11 window from the render window.
+		::GLXContext m_DeviceContext;                   ///< The OpenGL context.
+		::Colormap m_Colormap;                          ///< X11 colormap.
+		static OpenGLFramebuffer s_DefaultFramebuffer;	///< Default framebuffer(static).
+		//ModelRenderer * m_pDefaultModelRenderer;		///< Default model renderer.
 
 	};
 
-	/*
-	// Forward declarations
-	class Framebuffer;
-	class VertexObject;
-	class ShaderProgram;
-	class Texture;
-	class PostProcessingBloom;
-
-
-	// Graphic Device class
-	class BIT_API GraphicDevice
-	{
-
-	public:
-
-		// Public enums
-		enum eDevice
-		{
-			Device_Any = 0,			// Picking the most fitting and newest one.
-			Device_OpenGL_2_1 = 1,	// OpenGL 2.1 context
-			Device_OpenGL_3_1 = 2,	// OpenGL 3.1 context
-		};
-
-		enum eCulling
-		{
-			Culling_FrontFace = 0,
-			Culling_BackFace = 1
-		};
-
-
-		// Constructors/destructors
-		virtual ~GraphicDevice( ) { }
-
-		// Public general functions
-		virtual BIT_UINT32 Open( const Window & p_Window, const BIT_UINT32 p_Devices ) = 0;
-		virtual BIT_UINT32 Close( ) = 0;
-		virtual void Present( ) = 0;
-		virtual void BindDefaultFramebuffer( ) = 0;
-		virtual void BindDefaultShaderProgram( ) = 0;
-
-		// Public functions
-		BIT_INLINE BIT_BOOL IsOpen( ) const { return m_Open; }
-
-		// Create functions for different renderer elements
-		virtual Framebuffer * CreateFramebuffer( ) const = 0;
-		//virtual Renderbuffer * CreateRenderbuffer( ) const = 0;
-		virtual VertexObject * CreateVertexObject( ) const = 0;
-		virtual ShaderProgram * CreateShaderProgram( ) const = 0;
-		virtual Shader * CreateShader( const Shader::eShaderType p_ShaderType ) const = 0;
-		virtual Texture * CreateTexture( ) const = 0;
-		virtual Model * CreateModel( Model::eModelType p_Type ) const = 0;
-		virtual PostProcessingBloom * CreatePostProcessingBloom( VertexObject * p_pVertexObject, Texture * p_pTexture ) = 0;
-
-		// Clear functions
-		virtual void ClearBuffers( const BIT_UINT32 p_ClearBits ) = 0;
-		virtual void ClearColor( ) = 0;
-		virtual void ClearDepth( ) = 0;
-
-		// Enable functions
-		virtual void EnableTexture( ) = 0;
-		virtual void EnableAlpha( ) = 0;
-		virtual void EnableDepthTest( ) = 0;
-		virtual void EnableStencilTest( ) = 0;
-		virtual void EnableFaceCulling( eCulling p_FaceCulling ) = 0;
-		virtual void EnableSmoothLines( ) = 0;
-
-		// Disable functions
-		virtual void DisableTexture( ) = 0;
-		virtual void DisableAlpha( ) = 0;
-		virtual void DisableDepthTest( ) = 0;
-		virtual void DisableStencilTest( ) = 0;
-		virtual void DisableFaceCulling( ) = 0;
-		virtual void DisableSmoothLines( ) = 0;
-
-		// Set functions
-		virtual void SetClearColor( const BIT_FLOAT32 p_R, const BIT_FLOAT32 p_G,
-			const BIT_FLOAT32 p_B, const BIT_FLOAT32 p_A ) = 0;
-		virtual void SetClearDepth( BIT_FLOAT32 p_Depth ) = 0;
-		virtual void SetClearStencil( BIT_UINT32 p_Stencil ) = 0;
-		virtual void SetViewport( const BIT_UINT32 p_LX, const BIT_UINT32 p_LY,
-			const BIT_UINT32 p_HX, const BIT_UINT32 p_HY ) = 0; // Lower and higher coordinates
-		virtual void SetLineWidth( const BIT_FLOAT32 p_Width ) = 0;
-
-		// Get functions(inlines)
-		BIT_INLINE BIT_UINT32 GetDeviceType( ) const { return m_DeviceType; }
-		BIT_INLINE BIT_BOOL GetTextureStatus( ) const { return m_TextureStatus; }
-		BIT_INLINE BIT_BOOL GetAlphaStatus( ) const { return m_AlphaStatus; }
-		BIT_INLINE BIT_BOOL GetDepthTestStatus( ) const { return m_DepthTestStatus; }
-		BIT_INLINE BIT_BOOL GetStencilTestStatus( ) const { return m_StencilTestStatus; }
-		BIT_INLINE BIT_BOOL GetFaceCullingStatus( ) const { return m_FaceCullingStatus; }
-		BIT_INLINE BIT_UINT32 GetFaceCullingType( ) const { return m_FaceCullingType; }
-		BIT_INLINE BIT_BOOL GetSmoothLinesStatus( ) const { return m_SmoothLinesStatus; }
-		BIT_INLINE Vector2_si32 GetViewportSize( ) const { return m_ViewportHigh - m_ViewportLow; }
-		BIT_INLINE Vector2_si32 GetViewportLow( ) const { return m_ViewportLow; }
-		BIT_INLINE Vector2_si32 GetViewportHigh( ) const { return m_ViewportHigh; }
-
-	protected:
-
-		// Protected functions
-		BIT_BOOL m_Open;
-		eDevice m_DeviceType;
-		Vector2_si32 m_ViewportLow;
-		Vector2_si32 m_ViewportHigh;
-
-		// Enable / Disable statuses
-		BIT_BOOL m_TextureStatus;
-		BIT_BOOL m_AlphaStatus;
-		BIT_BOOL m_DepthTestStatus;
-		BIT_BOOL m_StencilTestStatus;
-		BIT_BOOL m_FaceCullingStatus;
-		BIT_UINT32 m_FaceCullingType;
-		BIT_BOOL m_SmoothLinesStatus;
-
-	};
-
-	// Create a cross platform renderer via this function
-	BIT_API GraphicDevice * CreateGraphicDevice( );
-*/
 }
+
+#endif
 
 #endif

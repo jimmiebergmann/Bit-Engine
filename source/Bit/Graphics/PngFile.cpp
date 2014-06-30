@@ -23,7 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/PngFile.hpp>
-#include <lodepng.h>
+#include <Bit/Graphics/LodePng/lodepng.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -82,7 +82,7 @@ namespace Bit
 
 		// Load the png from byte array
 		Bool status = LoadFromByteArray( pBuffer, fileSize );
-		
+
 		// Delete the buffer
 		delete pBuffer;
 
@@ -213,7 +213,7 @@ namespace Bit
 	{
 		return m_ImageSize;
 	}
-			
+
 	Uint8 PngFile::GetPixelDepth( ) const
 	{
 		return m_PixelDepth;

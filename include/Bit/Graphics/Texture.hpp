@@ -98,7 +98,7 @@ namespace Bit
 		/// \param p_Mipmapping Generating mipmaps for the texture if true.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromMemory(	const void * p_pData, 
+		virtual Bool LoadFromMemory(	const void * p_pData,
 										const Vector2u32 p_Size,
 										const SizeType p_BytesPerPixel = 4,
 										const ePixelFormat p_Format = Rgba,
@@ -155,7 +155,7 @@ namespace Bit
 		virtual Bool SetMinificationFilter( const eFilter p_Filter ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Set wrapping for 
+		/// \brief Set wrapping for
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Bool SetWrapping( const eWarpping p_WrapX, const eWarpping p_WrapY ) = 0;
@@ -177,7 +177,7 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Bool SetAnisotropic( const Uint32 p_Level ) = 0;
-		
+
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the texture size(width and height)
 		///

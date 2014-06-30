@@ -4,13 +4,12 @@
 	<Project>
 		<Option title="bit-graphics" />
 		<Option makefile="build/makefile/Makefile-bit-graphics" />
-		<Option makefile_is_custom="1" />
 		<Option execution_dir="../../../Bit-Engine" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="debug_static">
-				<Option output="../../lib/Linux/32/bit-graphics-d" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-graphics-s-d" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../obj/Linux/32/bit-graphics/debug_static" />
 				<Option type="2" />
@@ -23,7 +22,7 @@
 					<Add option="-O0" />
 					<Add option="-std=gnu++0x" />
 					<Add option="-D_DEBUG" />
-					<Add option="-DBIT_STATIC_LIB" />
+					<Add option="-DBIT_STATIC" />
 					<Add directory="../../include" />
 					<Add directory="../../extlibs/include" />
 				</Compiler>
@@ -31,11 +30,11 @@
 					<Add directory="../../include" />
 				</ResourceCompiler>
 				<Linker>
-					<Add library="../../lib/Linux/32/bit-system-d.a" />
+					<Add library="../../lib/bit-system-s-d.a" />
 				</Linker>
 			</Target>
 			<Target title="release_static">
-				<Option output="../../lib/Linux/32/bit-graphics" prefix_auto="0" extension_auto="1" />
+				<Option output="../../lib/bit-graphics-s" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="../../obj/Linux/32/bit-graphics/release_static" />
 				<Option type="2" />
@@ -46,7 +45,7 @@
 					<Add option="-W" />
 					<Add option="-std=gnu++0x" />
 					<Add option="-DNDEBUG" />
-					<Add option="-DBIT_STATIC_LIB" />
+					<Add option="-DBIT_STATIC" />
 					<Add directory="../../include" />
 					<Add directory="../../extlibs/include" />
 				</Compiler>
@@ -63,7 +62,7 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-D_DEBUG" />
-					<Add option="-DBIT_STATIC_LIB" />
+					<Add option="-DBIT_EXPORT" />
 					<Add directory="../../include" />
 					<Add directory="../../extlibs/include" />
 				</Compiler>
@@ -73,40 +72,47 @@
 				</Linker>
 			</Target>
 		</Build>
+		<Unit filename="../../include/Bit/Graphics/BmpFile.hpp" />
 		<Unit filename="../../include/Bit/Graphics/Framebuffer.hpp" />
 		<Unit filename="../../include/Bit/Graphics/GraphicDevice.hpp" />
 		<Unit filename="../../include/Bit/Graphics/Image.hpp" />
-		<Unit filename="../../include/Bit/Graphics/Linux/GraphicDeviceLinux.hpp" />
-		<Unit filename="../../include/Bit/Graphics/Model.hpp" />
-		<Unit filename="../../include/Bit/Graphics/ModelOBJ.hpp" />
-		<Unit filename="../../include/Bit/Graphics/OpenGL/FramebufferOpenGL.hpp" />
+		<Unit filename="../../include/Bit/Graphics/LodePng/lodepng.h" />
+		<Unit filename="../../include/Bit/Graphics/ObjFile.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/Linux/OpenGLGraphicDeviceLinux.hpp" />
 		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGL.hpp" />
-		<Unit filename="../../include/Bit/Graphics/OpenGL/PostProcessingBloomOpenGL.hpp" />
-		<Unit filename="../../include/Bit/Graphics/OpenGL/ShaderOpenGL.hpp" />
-		<Unit filename="../../include/Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp" />
-		<Unit filename="../../include/Bit/Graphics/OpenGL/TextureOpenGL.hpp" />
-		<Unit filename="../../include/Bit/Graphics/OpenGL/VertexObjectOpenGL.hpp" />
-		<Unit filename="../../include/Bit/Graphics/PostProcessing.hpp" />
-		<Unit filename="../../include/Bit/Graphics/PostProcessingBloom.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGLFramebuffer.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGLGraphicDevice.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGLRenderbuffer.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGLShader.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGLShaderProgram.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGLTexture.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGLVertexArray.hpp" />
+		<Unit filename="../../include/Bit/Graphics/OpenGL/OpenGLVertexBuffer.hpp" />
+		<Unit filename="../../include/Bit/Graphics/PngFile.hpp" />
+		<Unit filename="../../include/Bit/Graphics/PrimitiveMode.hpp" />
+		<Unit filename="../../include/Bit/Graphics/Renderbuffer.hpp" />
 		<Unit filename="../../include/Bit/Graphics/Shader.hpp" />
 		<Unit filename="../../include/Bit/Graphics/ShaderProgram.hpp" />
+		<Unit filename="../../include/Bit/Graphics/ShaderType.hpp" />
 		<Unit filename="../../include/Bit/Graphics/Texture.hpp" />
-		<Unit filename="../../include/Bit/Graphics/VertexObject.hpp" />
-		<Unit filename="../../include/Bit/Graphics/Win32/GraphicDeviceWin32.hpp" />
-		<Unit filename="../../source/Bit/Graphics/GraphicDevice.cpp" />
+		<Unit filename="../../include/Bit/Graphics/TgaFile.hpp" />
+		<Unit filename="../../include/Bit/Graphics/VertexArray.hpp" />
+		<Unit filename="../../include/Bit/Graphics/VertexBuffer.hpp" />
+		<Unit filename="../../source/Bit/Graphics/BmpFile.cpp" />
 		<Unit filename="../../source/Bit/Graphics/Image.cpp" />
-		<Unit filename="../../source/Bit/Graphics/Linux/GraphicDeviceLinux.cpp" />
-		<Unit filename="../../source/Bit/Graphics/ModelOBJ.cpp" />
-		<Unit filename="../../source/Bit/Graphics/OpenGL/FramebufferOpenGL.cpp" />
+		<Unit filename="../../source/Bit/Graphics/LodePng/lodepng.cpp" />
+		<Unit filename="../../source/Bit/Graphics/ObjFile.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/Linux/OpenGLGraphicDeviceLinux.cpp" />
 		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGL.cpp" />
-		<Unit filename="../../source/Bit/Graphics/OpenGL/PostProcessingBloomOpenGL.cpp" />
-		<Unit filename="../../source/Bit/Graphics/OpenGL/ShaderOpenGL.cpp" />
-		<Unit filename="../../source/Bit/Graphics/OpenGL/ShaderProgramOpenGL.cpp" />
-		<Unit filename="../../source/Bit/Graphics/OpenGL/TextureOpenGL.cpp" />
-		<Unit filename="../../source/Bit/Graphics/OpenGL/VertexObjectOpenGL.cpp" />
-		<Unit filename="../../source/Bit/Graphics/Shader.cpp" />
-		<Unit filename="../../source/Bit/Graphics/VertexObject.cpp" />
-		<Unit filename="../../source/Bit/Graphics/Win32/GraphicDeviceWin32.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGLFramebuffer.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGLRenderbuffer.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGLShader.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGLShaderProgram.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGLTexture.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGLVertexArray.cpp" />
+		<Unit filename="../../source/Bit/Graphics/OpenGL/OpenGLVertexBuffer.cpp" />
+		<Unit filename="../../source/Bit/Graphics/PngFile.cpp" />
+		<Unit filename="../../source/Bit/Graphics/TgaFile.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

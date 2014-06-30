@@ -130,7 +130,7 @@ namespace Bit
 	namespace OpenGL
 	{
 
-		BIT_API bool BindOpenGLExtensions( const Uint32 p_Major, const Uint32 p_Minor )
+		BIT_API Bool BindOpenGLExtensions( const Uint32 p_Major, const Uint32 p_Minor )
 		{
 			// Get all the available extensions
 			std::list< std::string > availableExtensions;
@@ -255,7 +255,7 @@ namespace Bit
 			// Reset the return flag
 			Ret = 0;
 
-			
+
 			if( p_Major > 1 || ( p_Major == 1 && p_Minor >= 3 ) )
 			{
 				Ret |= ( __glActiveTexture = ( PFNGLACTIVETEXTUREPROC )

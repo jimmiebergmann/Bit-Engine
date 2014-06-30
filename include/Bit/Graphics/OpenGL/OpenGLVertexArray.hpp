@@ -25,6 +25,7 @@
 #ifndef BIT_GRAPHICS_OPENGL_VERTEX_ARRAY_HPP
 #define BIT_GRAPHICS_OPENGL_VERTEX_ARRAY_HPP
 
+
 #include <Bit/Build.hpp>
 #include <Bit/Graphics/VertexArray.hpp>
 #include <Bit/Graphics/VertexBuffer.hpp>
@@ -67,7 +68,7 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Bool AddVertexBuffer(	VertexBuffer & p_VertexBuffer,
-										const SizeType p_ComponentCount = 3, 
+										const SizeType p_ComponentCount = 3,
 										const DataType::eType p_DataType = DataType::Float32 );
 
 		////////////////////////////////////////////////////////////////

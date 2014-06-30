@@ -30,7 +30,7 @@
 
 namespace Bit
 {
-	
+
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
 	/// \brief OpenGL texture class
@@ -65,7 +65,7 @@ namespace Bit
 		/// \param p_Mipmapping Generating mipmaps for the texture if true.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromMemory(	const void * p_pData, 
+		virtual Bool LoadFromMemory(	const void * p_pData,
 										const Vector2u32 p_Size,
 										const SizeType p_BytesPerPixel = 4,
 										const ePixelFormat p_Format = Rgba,
@@ -122,7 +122,7 @@ namespace Bit
 		virtual Bool SetMinificationFilter( const eFilter p_Filter );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Set wrapping for 
+		/// \brief Set wrapping for
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Bool SetWrapping( const eWarpping p_WrapX, const eWarpping p_WrapY );

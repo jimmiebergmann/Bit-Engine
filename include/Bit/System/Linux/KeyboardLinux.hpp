@@ -29,13 +29,13 @@
 
 #ifdef BIT_PLATFORM_LINUX
 
-#include <Bit/System/KeyboardBase.hpp>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#undef Bool
+#undef None
+#include <Bit/System/KeyboardBase.hpp>
 #include <vector>
 
-// Make sure to undefine Bool, defined in Xlib.h
-#undef Bool
 
 namespace Bit
 {
