@@ -45,15 +45,15 @@ namespace Bit
 	static Uint8 g_ResponseBuffer[ g_ResponseBufferSize ];
 
 	// Global functions
-	static std::string GetWord( const Uint8 * p_pData, const SizeType p_DataSize )
+	static std::string GetWord( const std::string & p_Line, const SizeType p_DataPosition )
 	{
 		std::string word;
 
-		for( SizeType i = 0; i < p_DataSize; i++ )
+		for( SizeType i = p_DataPosition; i < p_Line.size( ); i++ )
 		{
-			if( p_pData[ i ] == ' ' || p_pData[ i ] == '\r' )
+			if( p_Line[ i ] == ' ' || p_Line[ i ] == '\r' )
 			{
-				word.append( reinterpret_cast<const char *>( p_pData ), i );
+				word.append( p_Line.begin( ) + p_DataPosition, p_Line.begin( ) + i );
 				break;
 			}
 		}
@@ -61,20 +61,101 @@ namespace Bit
 		return word;
 	}
 
-	static std::string GetLine( const Uint8 * p_pData, const SizeType p_DataSize )
+	static std::string GetLine( const std::string & p_Data, const SizeType p_DataPosition )
 	{
 		std::string line;
 
-		for( SizeType i = 0; i < p_DataSize - 1; i++ )
+		for( SizeType i = p_DataPosition; i < p_Data.size( ) - 1; i++ )
 		{
-			if( p_pData[ i ] == '\r' && p_pData[ i + 1 ] == '\n' )
+			if( p_Data[ i ] == '\r' && p_Data[ i + 1 ] == '\n' )
 			{
-				line.append( reinterpret_cast<const char *>( p_pData ), i );
+				line.append( p_Data.begin( ) + p_DataPosition, p_Data.begin( ) + i );
 				break;
 			}
 		}
 
 		return line;
+	}
+
+	static Bool ParseBodyProtocolLine( const std::string & p_Line, Http::Response & p_Response )
+	{
+		// Parse the protocol
+		std::string protocol = GetWord( p_Line, 0 );
+
+		// Error check the protocol
+		if( protocol.size( ) != 8 ||	protocol[ 0 ] != 'H' || protocol[ 1 ] != 'T' ||
+										protocol[ 2 ] != 'T' || protocol[ 3 ] != 'P' )
+		{
+			return false;
+		}
+
+		// Get the status code
+		//index += protocol.size( ) + 1;
+		const SizeType protocolVersionIndex = protocol.size( ) + 1;
+		std::string version = GetWord( p_Line, protocolVersionIndex );
+
+		// Error check the version
+		if( version.size( ) != 3 )
+		{
+			return false;
+		}
+
+		// Set the version
+		p_Response.SetStatusCode( static_cast<Http::eCode>( atoi( version.c_str( ) ) ) );
+
+		// Succeeded.
+		return true;
+	}
+
+	static Bool ParseBodyLine( const std::string & p_Line, Http::Response & p_Response )
+	{
+		// Get the key.
+		std::string key = GetWord( p_Line, 0 );
+		if( key.size( ) == 0 || key[ key.size( ) -1 ] != ':' )
+		{
+			return false;
+		}
+
+		// Get the field data.
+		const SizeType contentIndex = key.size( ) + 1;
+
+		// Make sure there's any data to copy.
+		if( contentIndex >= p_Line.size( ) )
+		{
+			return false;
+		}
+
+		// Get the content and error check it.
+		std::string content = p_Line.substr( contentIndex, p_Line.size( ) - contentIndex );
+		if( content.size( ) == 0 )
+		{
+			return false;
+		}
+
+		// Set the field.
+		key.resize( key.size( ) - 1 );
+		p_Response.SetField( key, content );
+		
+		// Succeeded.
+		return true;
+	}
+
+	static Bool EndOfBodyData( const std::string & p_Data, const SizeType p_DataPosition )
+	{
+		// Make sure the data size is valid.
+		if( p_DataPosition + 2 > p_Data.size( ) )
+		{
+			return false;
+		}
+
+		// This is a new line.
+		if( p_Data[ p_DataPosition ] == '\r' && p_Data[ p_DataPosition + 1 ] == '\n' )
+		{
+			return true;
+		}
+
+		// This is not a new line(not end of body data).
+		return false;
 	}
 
 	// Http packet base class
@@ -232,36 +313,100 @@ namespace Bit
 			return false;
 		}
 
-		// Receive the response
+		// Receive and handling the response
+		// Kepp on trying to receive data until we've downloaded the entire header file.
+		// Then download the rest of the file while tracking download speed and download completion.
+		Int32 receiveSize = 0;				///< The size of any received message.
+		Bool headerComplete = false;		///< Flag for checking if the header is fully downloaded.
+		Bool failedHeaderOnce = false;		///< Flag for checking if we've failed the header parsing once.
+		Bool firstHeaderLine = true;		///< Indicate if we are handling the first header line(protocol).
+		SizeType bodySize = 0;				///< The expected size of the body. 0 if unknown.
+		std::string headerData;				///< Temporary string for the header data.
+		std::string headerLine;				///< Temporary string for the current header line. From the (headerData) string.
+		SizeType currentDataPosition = 0;	///< Store the current data index for (headerData), sometimes we need to read the data in middle of the data buffer.
 
-		// Create data buffers for the incoming data
-		std::string headString;
-		p_Response.m_Body.clear( );
-		Int32 receiveSize = 0;
-		SizeType bodyStartIndex = 0; // Index of where the body data starts.
-
-		// Receive the header data( plus some body data sometimes perhaps).
-		receiveSize = tcp.Receive( g_ResponseBuffer, g_ResponseBufferSize );
-			
-		// Parse the header fields,
-		// returns the index of where the body data start.
-		bodyStartIndex = ParseResponse( g_ResponseBuffer, receiveSize, p_Response );
-	
-		// Append the remaining data from the header buffer to the body string
-		SizeType bodySize = receiveSize - bodyStartIndex;
-		p_Response.m_Body.append( reinterpret_cast<char*>( g_ResponseBuffer ) + bodyStartIndex, bodySize );
-
-		// The download is done in one single packet, clean up and return.
-		if( receiveSize != g_ResponseBufferSize )
+		// Handle header
+		while( headerComplete == false ) // Keep on handling the header until we're done/fail.
 		{
-			// Delete the buffer
-			return true;
+			// Receive header data
+			receiveSize = tcp.Receive( g_ResponseBuffer, g_ResponseBufferSize );
+
+			// Check if we received any data at all.
+			if( receiveSize == 0 )
+			{
+				std::cout << "[Http::SendRequest] Could not receive the header data." << std::endl;
+				return false;
+			}
+
+			// Append the received data to the temporary header data string.
+			headerData.append( (char*)g_ResponseBuffer, receiveSize );
+
+			// Go throguh the data line by line.
+			while( 1 )
+			{
+				// Check if this is the end of the body data( newline at current line ).
+				if( EndOfBodyData( headerData, currentDataPosition ) )
+				{
+					headerComplete = true;
+					break;
+				}
+
+				// Get the current header line.
+				headerLine = GetLine( headerData, currentDataPosition );
+
+				// Error check the line.
+				if( headerLine.size( ) == 0 )
+				{
+					if( failedHeaderOnce )
+					{
+						return false;
+					}
+
+					// Set the failedHeaderOnce flag and break this loop, try again later when receiving more data.
+					failedHeaderOnce = true;
+					break;
+				}
+
+				// Set the new data position
+				currentDataPosition += static_cast<SizeType>( headerLine.size( ) ) + 2; // + 2 because of newline.
+
+				// Parse the line and add it the the response parameter variable.
+				if( firstHeaderLine )
+				{
+					if( ParseBodyProtocolLine( headerLine, p_Response ) == false )
+					{
+						std::cout << "[Http::SendRequest] Could not parse the protocol." << std::endl;
+						return false;
+					}
+					
+					// Mark the first line as done
+					firstHeaderLine = false;
+				}
+				else if( ParseBodyLine( headerLine, p_Response ) == false )
+				{
+					std::cout << "[Http::SendRequest] Could not parse the body data." << std::endl;
+					return false;
+				}
+			}
+
 		}
 
-		// Receive the body data.
+		if( headerComplete == false )
+		{
+			// Disconnect and return false
+			std::cout << "[Http::SendRequest] Could not receive the entire header." << std::endl;
+			tcp.Disconnect( );
+			return false;
+		}
+
+		// Make sure to copy the rest of the "header data" to the body.
+		p_Response.m_Body.append( headerData.begin( ) + currentDataPosition + 2, headerData.end( ) );
+
+		// Get the expected size of the body if possible
 		const std::string sizeString = p_Response.GetField( "Content-Length" );
 		const SizeType contentSize = sizeString.size( ) ? atoi( sizeString.c_str( ) ) : 0;
 
+		// Download the rest of the data(the body data)
 		while( true )
 		{
 			// Finish the download if we've download the entire file.
@@ -270,7 +415,7 @@ namespace Bit
 				return true;
 			}
 
-			// Receive the packet.
+			// Receive body data.
 			receiveSize = tcp.Receive( g_ResponseBuffer, g_ResponseBufferSize );
 			
 			// Break if the packet is invalid.( or lost connection )
@@ -320,7 +465,8 @@ namespace Bit
 	
 	SizeType Http::ParseResponse( const Uint8 * p_pData, const SizeType p_DataSize, Response & p_Response )
 	{
-		// Error check the paramters
+		return 0;
+		/*// Error check the paramters
 		if( p_pData == NULL || p_DataSize <= 0 )
 		{
 			return 0;
@@ -381,7 +527,7 @@ namespace Bit
 			index += content.size( ) + 2;
 		}
 
-		return index;
+		return index;*/
 	}
 
 

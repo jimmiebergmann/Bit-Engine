@@ -79,8 +79,8 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Bool LoadFromObjFile(	const std::string & p_Filename,
-								Bool p_LoadTextureCoords = true,
-								Bool p_LoadNormalCoords = true );
+								const Bool p_LoadTextureCoords = true,
+								const Bool p_LoadNormalCoords = true );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get animation type.
