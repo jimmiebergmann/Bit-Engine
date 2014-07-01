@@ -210,7 +210,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\BmpFile.cpp" />
-    <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Image.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\LodePng\lodepng.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model.cpp" />

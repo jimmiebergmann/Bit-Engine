@@ -21,21 +21,21 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_UDP_SOCKET_LINUX_HPP
-#define BIT_NETWORK_UDP_SOCKET_LINUX_HPP
+#ifndef BIT_NETWORK_TCP_LISTENER_WIN32_HPP
+#define BIT_NETWORK_TCP_LISTENER_WIN32_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Private/UdpSocketBase.hpp>
+#include <Bit/Network/Private/TcpListenerBase.hpp>
 
 namespace Bit
 {
 
     ////////////////////////////////////////////////////////////////
     /// \ingroup Network
-    /// \brief Linux Udp socket class.
+    /// \brief Win32 Tcp listener class.
     ///
     ////////////////////////////////////////////////////////////////
-    class BIT_API UdpSocketLinux : public Private::UdpSocketBase
+    class BIT_API TcpListenerWin32 : private Private::TcpListenerBase
     {
 
     public:
@@ -44,65 +44,63 @@ namespace Bit
         /// \brief Default constructor
         ///
         ////////////////////////////////////////////////////////////////
-        UdpSocketLinux( );
+        TcpListenerWin32( );
 
         ////////////////////////////////////////////////////////////////
         /// \brief Constructor
         ///
+        /// Start the listener.
+        ///
+        /// \param p_Port The server port.
+        ///
+        /// \see Host
+        ///
         ////////////////////////////////////////////////////////////////
-        UdpSocketLinux( const Uint16 p_Port );
+        TcpListenerWin32( const Uint16 p_Port );
 
         ////////////////////////////////////////////////////////////////
         /// \brief Destructor
         ///
         ////////////////////////////////////////////////////////////////
-        ~UdpSocketLinux( );
+        ~TcpListenerWin32( );
 
         ////////////////////////////////////////////////////////////////
-        /// \brief Open the socket
+        /// \brief Start the listener.
         ///
-        /// The port is set to 0 by default,
-        /// this will cause the socket to pick a random port for you.
+        /// \param p_Port The server port.
         ///
         ////////////////////////////////////////////////////////////////
-        virtual Bool Open( const Uint16 p_Port = 0 );
+        virtual Bool Start( const Uint16 p_Port );
 
         ////////////////////////////////////////////////////////////////
-        /// \brief Close the socket
+        /// \brief Stop the listener
         ///
         ////////////////////////////////////////////////////////////////
-        virtual void Close( );
+        virtual void Stop( );
 
         ////////////////////////////////////////////////////////////////
-        /// \brief Send packet
+        /// \brief Listen for incoming connections
         ///
-        /// \param p_pData The data to be sent to server.
-        /// \param p_Size The size of the data.
-        /// \param p_Address The destination address.
-        /// \param p_Port The destination port.
+        /// This is a modal function.
+        ///
+        /// \param p_TcpSocket The returned connected socket.
         ///
         ////////////////////////////////////////////////////////////////
-        virtual Int32 Send( const void * p_pData, const SizeType p_Size, const Address & p_Address, const Uint16 p_Port );
+        virtual Bool Listen( TcpSocket & p_Connection );
 
         ////////////////////////////////////////////////////////////////
-        /// \brief Receive data packet.
+        /// \brief Checks if the listener is hosted.
         ///
-        /// \param p_pData Received data.
-        /// \param p_Size The size of the data.
+        /// \return True if hosted, else false.
         ///
         ////////////////////////////////////////////////////////////////
-        virtual Int32 Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port );
+        virtual Bool IsRunning( ) const;
 
-        ////////////////////////////////////////////////////////////////
-        /// \brief Receive data packet.
-        ///
-        /// \param p_pData Received data.
-        /// \param p_Size The size of the data.
-        /// \param m_Timeout Time in milliseconds until
-        ///		the attemp in receiving a message timeouts.
-        ///
-        ////////////////////////////////////////////////////////////////
-       virtual Int32 Receive( void * p_pData, const SizeType p_Size, Address & p_Address, Uint16 & p_Port, const Time & p_Timeout );
+    private:
+
+        // Private varaibles
+        Bool m_Running;	    ///< Flag for checking if the listener is running.
+        Socket m_Socket;    ///< Listener socket.
 
     };
 

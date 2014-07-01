@@ -94,7 +94,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>

@@ -180,7 +180,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Window\VideoMode.cpp" />
     <ClCompile Include="..\..\source\Bit\Window\Win32\RenderWindowWin32.cpp" />
-    <ClCompile Include="..\..\source\Bit\Window\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -21,103 +21,116 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_SOCKET_WIN32_HPP
-#define BIT_NETWORK_SOCKET_WIN32_HPP
+#ifndef BIT_NETWORK_TCP_SOCKET_WIN32_HPP
+#define BIT_NETWORK_TCP_SOCKET_WIN32_HPP
 
 #include <Bit/Build.hpp>
-#ifdef BIT_PLATFORM_WINDOWS
-#include <Bit/Network/Private/SocketBase.hpp>
+#include <Bit/Network/Private/TcpSocketBase.hpp>
 
 namespace Bit
 {
 
-    ////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 	/// \ingroup Network
-	/// \brief Win32 socket class.
+	/// \brief Win32 Tcp socket class.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API SocketWin32 : public Private::SocketBase
+	class BIT_API TcpSocketWin32 : public Private::TcpSocketBase
 	{
 
 	public:
-
-        // Friend classes
-		friend class TcpListenerWin32;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor
 		///
 		////////////////////////////////////////////////////////////////
-		SocketWin32( );
+		TcpSocketWin32( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Constructor
+		/// \brief Destructor
 		///
 		////////////////////////////////////////////////////////////////
-		SocketWin32( const SocketHandle & p_SocketHandle );
+		~TcpSocketWin32( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor
+		/// \brief Connect the socket to a server.
+		///
+		/// \param p_Address Server address.
+		/// \param p_Port Server port.
+		/// \param m_Timeout Time in milliseconds until
+		///		the connection attemp timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		~SocketWin32( );
+		virtual Bool Connect( const Address & p_Address, const Uint16 p_Port, const Time & p_Timeout = Time::Infinite );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Enable/disable socket blocking.
-		///
-		/// The Receive function wont return until the socket
-		/// actually receive any data if blocking is set to true.
-		/// Blocking is enabled by default for TCP sockets.
-		///
-		/// \param p_Blocking The blocking flag.
+		/// \brief Disconnect the socket from the server.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void SetBlocking( const Bool p_Blocking );
+		virtual void Disconnect( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the blocking state
+		/// \brief Receive data from server.
+		///
+		/// \param p_pData Data from server.
+		/// \param p_Size The size of the data.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool GetBlocking( ) const;
+		virtual Int32 Receive( void * p_pData, const SizeType p_Size );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get address from hostname.
+		/// \brief Receive data from server.
+		///
+		/// \param p_pData Data from server.
+		/// \param p_Size The size of the data.
+		/// \param m_Timeout Time until the attemp in receiving a message timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		//static Address GetHostByName( const std::string & p_Hostname );
-
-	protected:
-
-        ////////////////////////////////////////////////////////////////
-		/// \brief Close socket handle.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual void CloseHandle( );
+		virtual Int32 Receive( void * p_pData, const SizeType p_Size, const Time & p_Timeout );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Set the handle
+		/// \brief Receive packet from server.
 		///
-		/// \param p_Handle The socket handle.
+		/// NOT AVAILABLE YET.
+		///
+		/// \param p_Packet Packet from server.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void SetHandle( const SocketHandle & p_SocketHandle );
+		virtual void Receive( Packet & p_Packet );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the socket handle.
+		/// \brief Receive packet from server.
+		///
+		/// NOT AVAILABLE YET.
+		///
+		/// \param p_Packet Packet from server.
+		/// \param m_Timeout Time in milliseconds until
+		///		the attemp in receiving a message timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual const SocketHandle GetHandle( ) const;
+		virtual void Receive( Packet & p_Packet, const Time & p_Timeout );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Return the the address of the peer to which a socket is connected.
+		/// \brief Send data to server.
+		///
+		/// \param p_pData The data to be sent to server.
+		/// \param p_Size The size of the data.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Address GetPeerAddress( ) const;
+		virtual Int32 Send( const void * p_pData, const SizeType p_Size );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Send packet to server.
+		///
+		/// NOT AVAILABLE YET.
+		///
+		/// \param p_Packet The packet to be sent to server.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Send( const Packet & p_Packet );
 
 	};
 
 }
-
-#endif
 
 #endif
