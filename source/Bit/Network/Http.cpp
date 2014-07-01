@@ -430,7 +430,6 @@ namespace Bit
 			// Finish the download if we've download the entire file.
 			if( contentSize && p_Response.m_Body.size( ) == contentSize )
 			{
-			    tcp.Disconnect( );
 				return true;
 			}
 
@@ -459,9 +458,6 @@ namespace Bit
 			m_DownloadedSize += static_cast<Uint64>( receiveSize );
 			m_Mutex.Unlock( );
 		}
-
-		// Make sure to disconnect!
-		tcp.Disconnect( );
 
 		// Succeeded
 		return true;
