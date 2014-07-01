@@ -42,6 +42,22 @@
 namespace Bit
 {
 
+    // Global variables and functions
+    static Bit::Bool g_XLibErrorCatched = false;
+
+    static int XLibErrorCatcher( ::Display * d, ::XErrorEvent * e)
+    {
+       /* std::cout << "My X errors:" << std::endl;
+        std::cout << "  Type: " << (int)e->type << std::endl;
+        std::cout << "  Error code: " << (int)e->error_code << std::endl;
+        std::cout << "  Request code: " << (int)e->request_code << std::endl;
+        std::cout << "  Minor code: " << (int)e->minor_code << std::endl;
+        std::cout << "  Serial: " << (int)e->serial << std::endl;*/
+        g_XLibErrorCatched = true;
+        return 0;
+    }
+
+
 	// Static member variables
 	OpenGLFramebuffer OpenGLGraphicDeviceLinux::s_DefaultFramebuffer;
 
@@ -408,7 +424,7 @@ namespace Bit
 		}
 
         // Set the new color map
-        XSetWindowColormap( m_pDisplay, m_Window, m_Colormap );
+        XSetWindowColormap( pDisplay, window, m_Colormap );
 
         // Create a temporary context.
         ::GLXContext temporaryContext = glXCreateContext( pDisplay, pVisualInfo, NULL, GL_TRUE );
@@ -445,14 +461,27 @@ namespace Bit
 			return false;
 		}
 
+		// Get the old error X11 error handler and set a new one in order to track if the opengl context is valid.
+		g_XLibErrorCatched = false;
+        XErrorHandler oldErrorHandler = XSetErrorHandler( XLibErrorCatcher );
+
         // Create the context
 		if( ( m_DeviceContext = glXCreateContextAttribsARB( pDisplay, *fbc, 0, true, attribs ) ) != NULL )
 		{
 			// Delete the old temporary context
-            glXDestroyContext( m_pDisplay, temporaryContext );
+            glXDestroyContext( pDisplay, temporaryContext );
 
 			// Make the new OpenGL context to the current one.
 			glXMakeCurrent( pDisplay, window, m_DeviceContext );
+		}
+
+		// Reset the old X11 error handler
+        XSetErrorHandler( oldErrorHandler );
+
+        // Return false if we catched any error, or else the context is fine.
+		if( g_XLibErrorCatched )
+		{
+            return false;
 		}
 
 
