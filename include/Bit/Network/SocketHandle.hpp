@@ -27,7 +27,6 @@
 #include <Bit/Build.hpp>
 
 #if defined( BIT_PLATFORM_WINDOWS )
-	#include <WinSock2.h>
 	#include <Windows.h>
 	#undef SetPort
 #elif defined( BIT_PLATFORM_LINUX )

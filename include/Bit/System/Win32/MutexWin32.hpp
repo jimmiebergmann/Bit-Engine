@@ -28,6 +28,7 @@
 #include <Bit/Build.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Windows.h>
+#undef SetPort
 
 namespace Bit
 {
