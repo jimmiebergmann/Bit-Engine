@@ -327,9 +327,7 @@ namespace Bit
 		// Private variables
 		Bool m_Open;									///< Is the GD open.
 		Version m_Version;								///< The version of the GD.
-		RenderWindow * m_pRenderWindow;                 ///< Pointer to the render window
-	    ::Display * m_pDisplay;                         ///< X11 display from the render window.
-		::Window m_Window;                              ///< X11 window from the render window.
+		RenderWindow * m_pRenderOutput;                 ///< Pointer to the render window
 		::GLXContext m_DeviceContext;                   ///< The OpenGL context.
 		::Colormap m_Colormap;                          ///< X11 colormap.
 		static OpenGLFramebuffer s_DefaultFramebuffer;	///< Default framebuffer(static).

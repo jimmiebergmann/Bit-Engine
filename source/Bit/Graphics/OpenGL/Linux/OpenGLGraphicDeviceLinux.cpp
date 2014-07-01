@@ -88,8 +88,7 @@ namespace Bit
 	OpenGLGraphicDeviceLinux::OpenGLGraphicDeviceLinux( ) :
 		m_Open( false ),
 		m_Version( 0, 0 ),
-		m_pRenderWindow( NULL ),
-		m_pDisplay( NULL ),
+		m_pRenderOutput( NULL ),
 		m_DeviceContext( NULL )
 	{
 	}
@@ -99,8 +98,7 @@ namespace Bit
 														const Version & p_Version ) :
 		m_Open( false ),
 		m_Version( 0, 0 ),
-		m_pRenderWindow( NULL ),
-		m_pDisplay( NULL ),
+		m_pRenderOutput( NULL ),
 		m_DeviceContext( NULL )
 	{
 		Open( p_RenderOutput, p_Version );
@@ -166,8 +164,7 @@ namespace Bit
 		// Set the some member varaibles
 		m_Open = true;
 		m_Version = contextVersion;
-		m_pDisplay = p_RenderOutput.GetDisplayDevice( );
-		m_Window = p_RenderOutput.GetWindowDevice( );
+        m_pRenderOutput = const_cast<RenderWindow*>( &p_RenderOutput );
 
 		// Set default settings.
 		DisableDepthTest( );
@@ -182,23 +179,23 @@ namespace Bit
 	void OpenGLGraphicDeviceLinux::Close( )
 	{
         // Destroy the OpenGL context
-        if( m_DeviceContext )
+        if( m_pRenderOutput && m_DeviceContext )
         {
             // Release the context from this thread
-            if( !glXMakeCurrent( m_pDisplay, m_Window, m_DeviceContext ) )
+            if( !glXMakeCurrent( XOpenDisplay( NULL ), 0, 0 ) )
             {
                 std::cout << "[OpenGLGraphicDeviceLinux::Close] Can release the OpenGL context.\n";
                 return;
             }
 
-            glXDestroyContext( m_pDisplay, m_DeviceContext );
+            glXDestroyContext( XOpenDisplay( NULL ), m_DeviceContext );
             m_DeviceContext = NULL;
         }
 
         // Free the color map
         if( m_Colormap )
         {
-            XFreeColormap( m_pDisplay, m_Colormap );
+            XFreeColormap( XOpenDisplay( NULL ), m_Colormap );
         }
 
 		m_Open = false;
@@ -208,7 +205,18 @@ namespace Bit
 
 	void OpenGLGraphicDeviceLinux::MakeCurrent( )
 	{
-		glXMakeCurrent( m_pDisplay, m_Window, m_DeviceContext );
+	    // Get the nesseccary varaibles from the render output.
+	    ::Display * pDisplay = m_pRenderOutput->GetDisplayDevice( );
+	    ::Window window = m_pRenderOutput->GetWindowDevice( );
+
+	    // Return if any of the values are invalid.
+	    if( pDisplay == NULL || window == 0 )
+	    {
+            return;
+	    }
+
+	    // Turn the context into the current one.
+		glXMakeCurrent( pDisplay, window, m_DeviceContext );
 	}
 
 	void OpenGLGraphicDeviceLinux::Present( )
@@ -218,7 +226,18 @@ namespace Bit
 			return;
 		}
 
-		glXSwapBuffers( m_pDisplay, m_Window );
+		// Get the nesseccary varaibles from the render output.
+	    ::Display * pDisplay = m_pRenderOutput->GetDisplayDevice( );
+	    ::Window window = m_pRenderOutput->GetWindowDevice( );
+
+	    // Return if any of the values are invalid.
+	    if( pDisplay == NULL || window == 0 )
+	    {
+            return;
+	    }
+
+        // Swap the buffer
+		glXSwapBuffers( pDisplay, window );
 	}
 
 	void OpenGLGraphicDeviceLinux::ClearColor( )
