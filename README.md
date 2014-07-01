@@ -1,13 +1,12 @@
 Bit-Engine
 ===
 
-Bit - A bit of help(A helpful multimedia framework for Windows <del>and Linux</del>(not yet))
+Bit - A bit of help(A helpful multimedia framework for Windows and Linux)
 
 Required libraries
 ---
  - X11 (Linux)
  - OpenGL
- - Winsock2 (Windows)
  - OpenAL
  - <del>Freetype</del> (Not yet)
 
@@ -21,11 +20,12 @@ Installation
 git clone https://github.com/jimmiebergmann/Bit-Engine.git
 ```
 **Windows:** Open and build the Visual Studio 2012 solution.
+
 **Linux:**
 ```sh
 sudo apt-get install libx11-dev libglapi-mesa libosmesa6
-<del>cd Bit-Engine</del>
-<del>make</del>
+cd Bit-Engine
+make
 ```
 
 Usage
