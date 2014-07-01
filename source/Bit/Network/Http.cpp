@@ -24,6 +24,7 @@
 
 #include <Bit/Network/Http.hpp>
 #include <Bit/Network/TcpSocket.hpp>
+#include <Bit/System/SmartMutex.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -276,7 +277,10 @@ namespace Bit
 	Http::Http( const Uint16 p_Port,
 				const Time & p_Timeout ) :
 		m_Port( p_Port ),
-		m_Timeout( p_Timeout )
+		m_Timeout( p_Timeout ),
+		m_FileSize( 0 ),
+		m_DownloadedSize( 0 ),
+        m_Mutex( )
 	{
 	}
 
@@ -292,6 +296,12 @@ namespace Bit
 
 	Bool Http::SendRequest( const Request & p_Request, Response & p_Response, const Address & p_Address )
 	{
+	    // Clear some old variables
+	    m_Mutex.Lock( );
+		m_FileSize = 0;
+		m_DownloadedSize = 0;
+	    m_Mutex.Unlock( );
+
 		// Get the request string
 		std::stringstream requestSs;
 		CreateRequestString( p_Request, requestSs );
@@ -407,6 +417,13 @@ namespace Bit
 		const std::string sizeString = p_Response.GetField( "Content-Length" );
 		const SizeType contentSize = sizeString.size( ) ? atoi( sizeString.c_str( ) ) : 0;
 
+		// Set the file size, to let the client find out about the progress.
+		// Also, set the downloaded size(Rest data from header packet).
+		m_Mutex.Lock( );
+        m_DownloadedSize += static_cast<Uint64>( p_Response.m_Body.size( ) );
+        m_FileSize = static_cast<Uint64>( contentSize );
+        m_Mutex.Unlock( );
+
 		// Download the rest of the data(the body data)
 		while( true )
 		{
@@ -427,11 +444,30 @@ namespace Bit
 
 			// Append the body data.
 			p_Response.m_Body.append( reinterpret_cast<char*>( g_ResponseBuffer ), receiveSize );
+
+			// Increase the downloaded size.
+			m_Mutex.Lock( );
+			m_DownloadedSize += static_cast<Uint64>( receiveSize );
+			m_Mutex.Unlock( );
 		}
 
 		// Succeeded
 		return true;
 	}
+
+	Uint64 Http::GetFileSize( )
+    {
+        SmartMutex smartMutex( m_Mutex );
+        smartMutex.Lock( );
+        return m_FileSize;
+    }
+
+    Uint64 Http::GetDownloadedSize( )
+    {
+        SmartMutex smartMutex( m_Mutex );
+        smartMutex.Lock( );
+        return m_DownloadedSize;
+    }
 
 	void Http::CreateRequestString( const Http::Request & p_Request, std::stringstream & p_StringStream )
 	{

@@ -21,6 +21,7 @@ bin
 *.sdf
 *.opensdf
 *.layout
+*.cbTemp
 *.depend
 *.log
 *.tlog

@@ -70,7 +70,10 @@
 		<Unit filename="../../include/Bit/Network/Torrent.hpp" />
 		<Unit filename="../../include/Bit/Network/UdpSocket.hpp" />
 		<Unit filename="../../include/Bit/Network/Url.hpp" />
+		<Unit filename="../../include/Bit/System/Linux/MutexLinux.hpp" />
+		<Unit filename="../../include/Bit/System/Mutex.hpp" />
 		<Unit filename="../../include/Bit/System/Randomizer.hpp" />
+		<Unit filename="../../include/Bit/System/SmartMutex.hpp" />
 		<Unit filename="../../source/Bit/Network/Address.cpp" />
 		<Unit filename="../../source/Bit/Network/Http.cpp" />
 		<Unit filename="../../source/Bit/Network/Linux/SocketLinux.cpp" />
@@ -84,7 +87,9 @@
 		<Unit filename="../../source/Bit/Network/Socket.cpp" />
 		<Unit filename="../../source/Bit/Network/Torrent.cpp" />
 		<Unit filename="../../source/Bit/Network/Url.cpp" />
+		<Unit filename="../../source/Bit/System/Linux/MutexLinux.cpp" />
 		<Unit filename="../../source/Bit/System/Randomizer.cpp" />
+		<Unit filename="../../source/Bit/System/SmartMutex.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

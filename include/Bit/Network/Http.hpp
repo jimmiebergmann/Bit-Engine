@@ -27,6 +27,7 @@
 #include <Bit/Build.hpp>
 #include <Bit/Network/Address.hpp>
 #include <Bit/System/Time.hpp>
+#include <Bit/System/Mutex.hpp>
 #include <unordered_map>
 #include <sstream>
 
@@ -324,6 +325,26 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		Bool SendRequest( const Request & p_Request, Response & p_Response, const Address & p_Address );
 
+        ////////////////////////////////////////////////////////////////
+		/// \brief Size of the downloading file.
+		///
+		/// This function is thread safe.
+		///
+		/// \return File size in bytes. 0 if omitted or not evaluated yet.
+		///
+		////////////////////////////////////////////////////////////////
+        Uint64 GetFileSize( );
+
+        ////////////////////////////////////////////////////////////////
+		/// \brief Get the size of the so far downloaded data.
+		///
+		/// This function is thread safe.
+		///
+		/// \return Size in bytes.
+		///
+		////////////////////////////////////////////////////////////////
+        Uint64 GetDownloadedSize( );
+
 		////////////////////////////////////////////////////////////////
 		/// \brief Parses a HTTP response packet.
 		///
@@ -345,9 +366,11 @@ namespace Bit
 	private:
 
 		// Private variables
-		Uint16 m_Port;
-		Time m_Timeout;
-
+		Uint16 m_Port;              ///< The port for the connect.
+		Time m_Timeout;             ///< Ammount of time until timeout.
+		Uint64 m_FileSize;          ///< Size of the downloading file. 0 if omitted or not evaluated yet.
+		Uint64 m_DownloadedSize;    ///< Size of the so far downloaded data.
+        Mutex m_Mutex;
 	};
 
 }
