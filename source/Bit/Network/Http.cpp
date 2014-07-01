@@ -430,6 +430,7 @@ namespace Bit
 			// Finish the download if we've download the entire file.
 			if( contentSize && p_Response.m_Body.size( ) == contentSize )
 			{
+			    tcp.Disconnect( );
 				return true;
 			}
 
@@ -439,7 +440,15 @@ namespace Bit
 			// Break if the packet is invalid.( or lost connection )
 			if( receiveSize <= 0 )
 			{
-				return false;
+			    // The content size is known and the file is not fully downloaded yet, we lost the connection.
+			    if( contentSize )
+			    {
+			       return false;
+			    }
+
+                // Else, we either lost the connection or the download is finished.
+                // It's hard to tell when the content's size is unknown to us.
+                return true;
 			}
 
 			// Append the body data.
@@ -450,6 +459,9 @@ namespace Bit
 			m_DownloadedSize += static_cast<Uint64>( receiveSize );
 			m_Mutex.Unlock( );
 		}
+
+		// Make sure to disconnect!
+		tcp.Disconnect( );
 
 		// Succeeded
 		return true;
