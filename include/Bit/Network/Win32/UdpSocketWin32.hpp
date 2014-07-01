@@ -21,8 +21,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_UDP_SOCKET_LINUX_HPP
-#define BIT_NETWORK_UDP_SOCKET_LINUX_HPP
+#ifndef BIT_NETWORK_UDP_SOCKET_WIN32_HPP
+#define BIT_NETWORK_UDP_SOCKET_WIN32_HPP
 
 #include <Bit/Build.hpp>
 #include <Bit/Network/Private/UdpSocketBase.hpp>
@@ -32,10 +32,10 @@ namespace Bit
 
     ////////////////////////////////////////////////////////////////
     /// \ingroup Network
-    /// \brief Linux Udp socket class.
+    /// \brief Win32 Udp socket class.
     ///
     ////////////////////////////////////////////////////////////////
-    class BIT_API UdpSocketLinux : public Private::UdpSocketBase
+    class BIT_API UdpSocketWin32 : public Private::UdpSocketBase
     {
 
     public:
@@ -44,19 +44,19 @@ namespace Bit
         /// \brief Default constructor
         ///
         ////////////////////////////////////////////////////////////////
-        UdpSocketLinux( );
+        UdpSocketWin32( );
 
         ////////////////////////////////////////////////////////////////
         /// \brief Constructor
         ///
         ////////////////////////////////////////////////////////////////
-        UdpSocketLinux( const Uint16 p_Port );
+        UdpSocketWin32( const Uint16 p_Port );
 
         ////////////////////////////////////////////////////////////////
         /// \brief Destructor
         ///
         ////////////////////////////////////////////////////////////////
-        ~UdpSocketLinux( );
+        ~UdpSocketWin32( );
 
         ////////////////////////////////////////////////////////////////
         /// \brief Open the socket

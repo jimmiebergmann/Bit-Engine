@@ -5,16 +5,25 @@
     <ClCompile Include="..\..\source\Bit\Network\Win32\SocketWin32.cpp">
       <Filter>Win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\TcpListener.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\TcpSocket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Packet.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\UdpSocket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Ntp.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Socket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\NtpTimestamp.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Http.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Torrent.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Url.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Private\SocketBase.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Win32\TcpSocketWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Win32\UdpSocketWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Win32\TcpListenerWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -32,10 +41,34 @@
     <ClInclude Include="..\..\include\Bit\Network\Http.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Torrent.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Url.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Private\SocketBase.hpp">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Private\TcpListenerBase.hpp">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Private\TcpSocketBase.hpp">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Private\UdpSocketBase.hpp">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Win32\TcpListenerWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Win32\TcpSocketWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Win32\UdpSocketWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">
       <UniqueIdentifier>{94f863b8-5b8a-4e6d-9b42-68ba19d6414a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private">
+      <UniqueIdentifier>{3bcf4a58-1e95-4c70-9d45-56e03733cb4e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

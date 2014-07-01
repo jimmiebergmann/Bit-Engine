@@ -20,6 +20,5 @@
       <Filter>Win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Window\VideoMode.cpp" />
-    <ClCompile Include="..\..\source\Bit\Window\Window.cpp" />
   </ItemGroup>
 </Project>

@@ -30,23 +30,22 @@ namespace Bit
 {
 
 	SocketWin32::SocketWin32( ) :
-		m_Handle( 0 ),
-		m_Blocking( true )
+		SocketBase( )
 	{
 	}
 
-	SocketWin32::SocketWin32( const SocketHandle & m_SocketHandle ) :
-		m_Blocking( true )
+	SocketWin32::SocketWin32( const SocketHandle & p_SocketHandle ) :
+		SocketBase( p_SocketHandle )
 	{
-		m_Handle = m_SocketHandle;
+		m_Handle = p_SocketHandle;
 	}
 
 	SocketWin32::~SocketWin32( )
 	{
-		CloseSocket( );
+		CloseHandle( );
 	}
 
-	void SocketWin32::SetBlocking( Bool p_Blocking )
+	void SocketWin32::SetBlocking( const Bool p_Blocking )
 	{
 		// The blocking status is already set.
 		if( m_Blocking == p_Blocking )
@@ -76,29 +75,7 @@ namespace Bit
 		return m_Blocking;
 	}
 
-	Address SocketWin32::GetHostByName( const std::string & p_Hostname )
-	{
-		struct hostent *he;
-		if( ( he = gethostbyname( p_Hostname.c_str() ) ) == NULL )
-		{
-			return Address::NoAddress;
-		}
-
-		// Get the hostname in string form
-		char * hostname =  inet_ntoa (*( (struct in_addr *) he->h_addr_list[0] ) );
-
-		// Convert it to a string.
-		Uint32 address = inet_addr( hostname );
-		if( address == INADDR_NONE )
-		{
-			return Address::NoAddress;
-		}
-
-		// Convert the address to a network side number
-		return Address( htonl( address ) );
-	}
-
-	void SocketWin32::CloseSocket( )
+	void SocketWin32::CloseHandle( )
 	{
         if( m_Handle )
 		{
@@ -111,7 +88,7 @@ namespace Bit
 		m_Handle = m_SocketHandle;
 	}
 
-	SocketHandle SocketWin32::GetHandle( ) const
+	const SocketHandle SocketWin32::GetHandle( ) const
 	{
 		return m_Handle;
 	}

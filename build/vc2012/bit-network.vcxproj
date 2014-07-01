@@ -165,13 +165,14 @@
     <ClCompile Include="..\..\source\Bit\Network\Ntp.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\NtpTimestamp.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Packet.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Private\SocketBase.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Socket.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\TcpListener.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\TcpSocket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Torrent.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\UdpSocket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Url.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Win32\SocketWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Win32\TcpListenerWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Win32\TcpSocketWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Win32\UdpSocketWin32.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -179,6 +180,10 @@
     <ClInclude Include="..\..\include\Bit\Network\Ntp.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\NtpTimestamp.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Packet.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Private\SocketBase.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Private\TcpListenerBase.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Private\TcpSocketBase.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Private\UdpSocketBase.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Socket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\SocketHandle.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\TcpListener.hpp" />
@@ -187,6 +192,9 @@
     <ClInclude Include="..\..\include\Bit\Network\UdpSocket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Url.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Win32\SocketWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Win32\TcpListenerWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Win32\TcpSocketWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Win32\UdpSocketWin32.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="bit-system.vcxproj">
