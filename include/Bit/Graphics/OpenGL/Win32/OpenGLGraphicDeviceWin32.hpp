@@ -309,17 +309,19 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual const Framebuffer & GetDefaultFramebuffer( ) const;
 
-		/*////////////////////////////////////////////////////////////////
-		/// \brief Get the default model renderer.
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the default framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual const ModelRenderer & GetDefaultModelRenderer( ) ;*/
+		virtual ShaderProgram * GetDefaultShaderProgram( const eDefaultShaders p_DefaultShader ) const;
 
 	private:
 
 		// Private functions
-		bool OpenVersion( const RenderWindow & p_RenderOutput, const Version & p_Version );
-		bool OpenBestVersion( const RenderWindow & p_RenderOutput, Version & p_Version );
+		Bool OpenVersion( const RenderWindow & p_RenderOutput, const Version & p_Version );
+		Bool OpenBestVersion( const RenderWindow & p_RenderOutput, Version & p_Version );
+		Bool LoadDefaultShaders( );
+		Bool UnloadDefaultShaders( );
 
 		// Private variables
 		Bool m_Open;									///< Is the GD open.
@@ -327,8 +329,9 @@ namespace Bit
 		HDC m_DeviceContextHandle;						///< Device context handle from the render output.
 		HGLRC m_Context;								///< The OpenGL context.
 		static OpenGLFramebuffer s_DefaultFramebuffer;	///< Default framebuffer(static).
-		//ModelRenderer * m_pDefaultModelRenderer;		///< Default model renderer.
-
+		ShaderProgram * m_pDefaultShaderPrograms[ 3 ];	///< Default shader programs, for example model shaders.
+		Shader * m_pDefaultModelFragmentShader;			///< Default model fragment shader.
+		Shader * m_pDefaultModelVertexShaders[ 3 ];		///< Defaukt model vertex shaders.
 	};
 
 }

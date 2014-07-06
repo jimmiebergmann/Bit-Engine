@@ -65,6 +65,18 @@ namespace Bit
 		};
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Enumerator for default shader program.s
+		///
+		////////////////////////////////////////////////////////////////
+		enum eDefaultShaders
+		{
+			InitialPoseShader = 0,
+			SkeletalAnimationShader = 1,
+			VertexAnimationShader = 2
+		};
+		
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Virtual destructor.
 		///
 		////////////////////////////////////////////////////////////////
@@ -300,10 +312,10 @@ namespace Bit
 		virtual const Framebuffer & GetDefaultFramebuffer( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the default model renderer.
+		/// \brief Get the default framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		//virtual const ModelRenderer & GetDefaultModelRenderer( ) = 0;
+		virtual ShaderProgram * GetDefaultShaderProgram( const eDefaultShaders p_DefaultShader ) const = 0;
 
 	};
 

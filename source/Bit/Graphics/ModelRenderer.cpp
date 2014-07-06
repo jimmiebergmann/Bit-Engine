@@ -24,27 +24,85 @@
 
 #include <Bit/Graphics/ModelRenderer.hpp>
 #include <Bit/Graphics/Model.hpp>
+#include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/Graphics/VertexArray.hpp>
+#include <Bit/Graphics/ShaderProgram.hpp>
+#include <Bit/System/MatrixManager.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-
-	ModelRenderer::~ModelRenderer( )
+	ModelRenderer::ModelRenderer( const GraphicDevice & p_GraphicDevice ) :
+		m_GraphicDevice( p_GraphicDevice )
 	{
 	}
 
-
-	void ModelRenderer::RenderVertices( Model & p_Model )
+	ModelRenderer::~ModelRenderer( )
 	{
+		Unload( );
+	}
+
+	Bool ModelRenderer::Load( )
+	{
+		return true;
+	}
+		
+	void ModelRenderer::Unload( )
+	{
+	}
+
+	void ModelRenderer::Render( Model & p_Model )
+	{
+		// For now, render the initial pose only.
+		RenderInitialPose( p_Model );
+
+
+		// Check the animation state.
+
+		// Error check the animation state, to make sure there's any animations.
+
+	}
+
+	void ModelRenderer::RenderVertexAnimation( Model & p_Model )
+	{
+	}
+
+	void ModelRenderer::RenderSkeletalAnimation( Model & p_Model )
+	{
+	}
+
+	void ModelRenderer::RenderInitialPose( Model & p_Model )
+	{
+		// Get the default shader program.
+		ShaderProgram * pShaderProgram = m_GraphicDevice.GetDefaultShaderProgram( GraphicDevice::InitialPoseShader );
+
+		// Error check the shader program.
+		if( pShaderProgram == NULL )
+		{
+			return;
+		}
+
 		// Error check the vertex data.
 		if( p_Model.GetVertexData( ).GetVertexArray( ) == NULL )
 		{
 			return;
 		}
 
+		// Bind the shader program.
+		pShaderProgram->Bind( );
+		
+		// Set uniform data.
+		pShaderProgram->SetUniformMatrix4x4f( "uProjectionMatrix", MatrixManager::GetProjectionMatrix( ) );
+		pShaderProgram->SetUniformMatrix4x4f( "uModelViewMatrix", MatrixManager::GetModelViewMatrix( ) );
+		pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
+
 		// Render the model.
 		p_Model.GetVertexData( ).GetVertexArray( )->Render( PrimitiveMode::Triangles );
+
+		// Unbind the shader program.
+		pShaderProgram->Unbind( );
 	}
+
+
 }

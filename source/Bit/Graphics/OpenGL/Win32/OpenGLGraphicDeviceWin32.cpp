@@ -32,6 +32,7 @@
 #include <Bit/Graphics/OpenGL/OpenGLShaderProgram.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLTexture.hpp>
 #include <Bit/Graphics/Model.hpp>
+#include <Bit/Graphics/ModelRenderer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLModelRenderer.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -70,20 +71,30 @@ namespace Bit
 		m_Open( false ),
 		m_Version( 0, 0 ),
 		m_DeviceContextHandle( NULL ),
-		m_Context( NULL )/*,
-		m_pDefaultModelRenderer( NULL )*/
+		m_Context( NULL )
 	{
+		for( SizeType i = 0; i < 3; i++ )
+		{
+			m_pDefaultShaderPrograms[ i ] = NULL;
+			m_pDefaultModelVertexShaders[ i ] = NULL;
+		}
+		m_pDefaultModelFragmentShader = NULL;
 	}
 
-	
 	OpenGLGraphicDeviceWin32::OpenGLGraphicDeviceWin32( const RenderWindow & p_RenderOutput,
 														const Version & p_Version ) :
 		m_Open( false ),
 		m_Version( 0, 0 ),
 		m_DeviceContextHandle( NULL ),
-		m_Context( NULL )/*,
-		m_pDefaultModelRenderer( NULL )*/
+		m_Context( NULL )
 	{
+		for( SizeType i = 0; i < 3; i++ )
+		{
+			m_pDefaultShaderPrograms[ i ] = NULL;
+			m_pDefaultModelVertexShaders[ i ] = NULL;
+		}
+		m_pDefaultModelFragmentShader = NULL;
+
 		Open( p_RenderOutput, p_Version );
 	}
 
@@ -136,9 +147,14 @@ namespace Bit
 		// Bind the OpenGL extensions
 		if( OpenGL::BindOpenGLExtensions( contextVersion.GetMajor( ), contextVersion.GetMinor( ) ) != true )
 		{
-			//bitTrace( "[GraphicDeviceWin32::Open] Can not bind the OpenGL extensions.\n" );
-			std::cout << "[OpenGL::BindOpenGLExtensions] Binding opengl extensions failed.\n";
+			std::cout << "[OpenGLGraphicDeviceWin32::Open] Binding opengl extensions failed.\n";
 			return false;
+		}
+
+		// Load default shaders
+		if( LoadDefaultShaders( ) == false )
+		{
+			std::cout << "[OpenGLGraphicDeviceWin32::Open] Warning: Failed to load default shaders.\n";
 		}
 
 		// Set the default viewport to the window's size
@@ -161,15 +177,12 @@ namespace Bit
 
 	void OpenGLGraphicDeviceWin32::Close( )
 	{
+		// Unload default shaders.
+		UnloadDefaultShaders( );
+
+		// Delete the context
 		if( m_Context )
 		{
-			/*// Destory the default model renderer.
-			if( m_pDefaultModelRenderer )
-			{
-				delete m_pDefaultModelRenderer;
-				m_pDefaultModelRenderer = NULL;
-			}*/
-
 			// Release the context from the current thread
 			if( !wglMakeCurrent( NULL, NULL ) )
 			{
@@ -304,7 +317,7 @@ namespace Bit
 
 	ModelRenderer * OpenGLGraphicDeviceWin32::CreateModelRenderer( ) const
 	{
-		return NULL;
+		return new ModelRenderer( *this );
 	}
 	
 	void OpenGLGraphicDeviceWin32::SetViewport( const Vector2u32 & p_Position, const Vector2u32 & p_Size )
@@ -336,17 +349,12 @@ namespace Bit
 		return s_DefaultFramebuffer;
 	}
 
-	/*const ModelRenderer & OpenGLGraphicDeviceWin32::GetDefaultModelRenderer( )
+	ShaderProgram * OpenGLGraphicDeviceWin32::GetDefaultShaderProgram( const eDefaultShaders p_DefaultShader ) const
 	{
-		if( m_pDefaultModelRenderer == NULL )
-		{
-			m_pDefaultModelRenderer = new OpenGLModelRenderer( *this );
-		}
+		return m_pDefaultShaderPrograms[ static_cast<SizeType>( p_DefaultShader ) ];
+	}
 
-		return *m_pDefaultModelRenderer;
-	}*/
-
-	bool OpenGLGraphicDeviceWin32::OpenVersion( const RenderWindow & p_RenderOutput,
+	Bool OpenGLGraphicDeviceWin32::OpenVersion( const RenderWindow & p_RenderOutput,
 												const Version & p_Version )
 	{
 		// Filling the pixel fromat structure.
@@ -430,7 +438,7 @@ namespace Bit
 		return true;
 	}
 
-	bool OpenGLGraphicDeviceWin32::OpenBestVersion( const RenderWindow & p_RenderOutput,
+	Bool OpenGLGraphicDeviceWin32::OpenBestVersion( const RenderWindow & p_RenderOutput,
 													Version & p_Version  )
 	{
 		// Loop backwards( the highest version first )
@@ -446,6 +454,111 @@ namespace Bit
 
 		// Failed to load any of the versions.
 		return false;
+	}
+
+	Bool OpenGLGraphicDeviceWin32::LoadDefaultShaders( )
+	{
+		m_pDefaultModelVertexShaders[ InitialPoseShader ] = CreateShader( Bit::ShaderType::Vertex );
+		m_pDefaultModelFragmentShader = CreateShader( Bit::ShaderType::Fragment );
+		m_pDefaultShaderPrograms[ InitialPoseShader ] = CreateShaderProgram( );
+
+		static const std::string vertexSource =
+			"#version 330\n"
+
+			"uniform mat4 uProjectionMatrix;\n"
+			"uniform mat4 uModelViewMatrix;\n"
+			"uniform int uUseTexture;\n"
+			"uniform int uUseNormals;\n"
+
+			"in vec3 position;\n"
+			"in vec3 normal;\n"
+			"in vec2 textureCoord;\n"
+
+			"out vec2 vTextureCoord;\n"
+			"out vec3 vNormal;\n"
+
+			"void main( )\n"
+			"{\n"
+			"	gl_Position = uProjectionMatrix * uModelViewMatrix * vec4( position, 1.0 );\n"
+			"	vTextureCoord = textureCoord;\n"
+			"	vNormal = normal;\n"
+			"}\n";
+
+		if( m_pDefaultModelVertexShaders[ InitialPoseShader ]->CompileFromMemory( vertexSource ) == false )
+		{
+			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile InitialPoseShader vertex shader.\n"; 
+			return false;
+		}
+
+		static const std::string fragmentSource =
+			"#version 330\n"
+
+			"uniform vec4 uColor;\n"
+			"uniform int uUseTexture;\n"
+			"uniform int uUseNormals;\n"
+			"uniform sampler2D colorTexture;\n"
+
+			"in vec2 vTextureCoord;\n"
+			"in vec3 vNormal;\n"
+
+			"out vec4 outColor;\n"
+
+			"void main( )\n"
+			"{ \n"
+			"	vec4 finalColor = uColor;\n"
+			"	if( uUseTexture == 1 ) {\n"
+			"		finalColor *= texture2D( colorTexture, vTextureCoord );\n"
+			"	}\n"
+			"if( uUseNormals == 1 ) {\n"
+			"		finalColor *= max( min( dot( vNormal, vec3( 1.0, 0.0, 0.0 ) ) , 1.0 ), 0.0 );\n"
+			"	}\n"
+			"	outColor = finalColor;\n"
+			"}\n";
+		
+		if( m_pDefaultModelFragmentShader->CompileFromMemory( fragmentSource ) == false )
+		{
+			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile model fragnebt shader.\n"; 
+			return false;
+		}
+
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->AttachShader( *m_pDefaultModelVertexShaders[ InitialPoseShader ] );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->AttachShader( *m_pDefaultModelFragmentShader );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform4f( "uColor", 0.0f, 1.0f, 0.0f, 1.0f );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform1i( "uUseTexture", 0 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform1i( "uUseNormals", 0 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "position", 0 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "normal", 1 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "textureCoord", 2 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->Link( );
+
+		return true;
+	}
+
+	Bool OpenGLGraphicDeviceWin32::UnloadDefaultShaders( )
+	{
+		for( SizeType i = 0; i < 3; i++ )
+		{
+			if( m_pDefaultShaderPrograms[ i ] )
+			{
+				delete m_pDefaultShaderPrograms[ i ];
+				m_pDefaultShaderPrograms[ i ] = NULL;
+			}
+
+			if( m_pDefaultModelVertexShaders[ i ] )
+			{
+				delete m_pDefaultModelVertexShaders[ i ];
+				m_pDefaultModelVertexShaders[ i ] = NULL;
+			}
+		}
+
+		if( m_pDefaultModelFragmentShader )
+		{
+			delete m_pDefaultModelFragmentShader;
+			m_pDefaultModelFragmentShader = NULL;
+		}
+
+
+		return true;
 	}
 
 }

@@ -32,19 +32,31 @@ namespace Bit
 	// Forward declaractions
 	class Model;
 	class GraphicDevice;
+	class Shader;
+	class ShaderProgram;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
 	/// \brief 3D model renderer base class.
 	///
+	/// A great way for creating your own model renderer with your own custom
+	/// shader(maybe with custom light sources?) is to inherit this class
+	/// and overload any virtual function you would like to replace
+	/// and keep the other ones that does the job for you.
+	///
 	/// \see Model
-	/// \see OpenGLModelRenderer
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API ModelRenderer
 	{
 
 	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Constructor
+		///
+		////////////////////////////////////////////////////////////////
+		ModelRenderer( const GraphicDevice & p_GraphicDevice );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Virtual destructor.
@@ -56,29 +68,47 @@ namespace Bit
 		/// \brief Load model renderer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Load( const GraphicDevice & p_GraphicDevice ) = 0;
+		virtual Bool Load( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Unload model renderer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Unload( ) = 0;
+		virtual void Unload( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Function for rendering a model.
+		/// \brief Function for rendering a model with any animation type.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Render( Model & p_Model ) = 0;
+		virtual void Render( Model & p_Model );
 
 	protected:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Function for rendering the vertices.
-		///	This is a help function for making the rendering procedure easier.
-		/// Bind textures and shaders, then use this function.
+		/// \brief	Render vertex animation. Uses the AnimationState class from
+		///			the model in order to render the right pose.
+		///			Interpolates between key frames.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void RenderVertices( Model & p_Model );
+		virtual void RenderVertexAnimation( Model & p_Model );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief	Render skeletal animation. Uses the AnimationState class from
+		///			the model in order to render the right pose.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void RenderSkeletalAnimation( Model & p_Model );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Render the initial pose, or "static" model.
+		///
+		/// This function could be used for static model rendering, such as props.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void RenderInitialPose( Model & p_Model );
+
+		// Protected variables
+		const GraphicDevice & m_GraphicDevice;
 
 	};
 
