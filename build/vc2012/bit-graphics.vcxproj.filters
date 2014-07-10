@@ -150,4 +150,7 @@
       <Filter>OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\Bit\Graphics\ObjFile.inl" />
+  </ItemGroup>
 </Project>

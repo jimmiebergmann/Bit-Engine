@@ -105,7 +105,7 @@ namespace Bit
 		{
 			return false;
 		}
-
+/*
 		// Get the first object
 		if( obj.GetObjectCount( ) == 0 )
 		{
@@ -131,8 +131,7 @@ namespace Bit
 		ObjFile::MaterialGroup & materialGroup = objectGroup.GetMaterialGroup( 0 );
 
 		// Calculate the buffer size
-		SizeType bufferSize =	( materialGroup.GetFlatFaceCount( )		* 3 * 3 )/* +
-								( materialGroup.GetSmoothFaceCount( )	* 3 * 3 )*/;
+		SizeType bufferSize =	( materialGroup.GetFlatFaceCount( )		* 3 * 3 );
 
 		// Create a vertex buffer
 		VertexBuffer * pVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
@@ -180,9 +179,22 @@ namespace Bit
 			}
 		}
 
+*/
 
-		// Load the vertex buffer
-		if( pVertexBuffer->Load( bufferSize * 4, pBufferData ) == false )
+		// Create the position buffer from the obj file.
+		SizeType bufferSize = 0;
+		Float32 * pBufferData = obj.CreatePositionBuffer<Float32>( bufferSize );
+
+		// Error check the position buffer data
+		if( pBufferData == NULL )
+		{
+			std::cout << "[Model::LoadFromObjFile] No postiion data were found in the obj file." << std::endl;
+			return false;
+		}
+
+		// Load the position vertex buffer
+		VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+		if( pPositionVertexBuffer->Load( bufferSize * 4, pBufferData ) == false )
 		{
 			std::cout << "[Model::LoadFromObjFile] Can not load the vertex buffer" << std::endl;
 			return false;
@@ -190,15 +202,17 @@ namespace Bit
 
 		// Delete the allocated data
 		delete [ ] pBufferData;
-
+		
 		// Create the vertex array
 		VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray( );
 
 		// Add the vertex buffer to the vertex array.
-		pVertexArray->AddVertexBuffer( *pVertexBuffer );
+		pVertexArray->AddVertexBuffer( *pPositionVertexBuffer );
+
+		// Add texture and normal buffers if possible.
 
 		// Add the vertex buffer to the vertex data class.
-		m_VertexData.AddVertexBuffer( pVertexBuffer );
+		m_VertexData.AddVertexBuffer( pPositionVertexBuffer );
 
 		// Set the vertex buffer for the vertex data class.
 		m_VertexData.SetVertexArray( pVertexArray );

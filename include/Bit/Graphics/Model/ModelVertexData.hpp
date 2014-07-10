@@ -65,7 +65,7 @@ namespace Bit
 		///		which means that ModelVertexData will take over
 		///		the responsibility of the vertex buffer.
 		///
-		/// \return false i the pointer is NULL or if the vertex buffer
+		/// \return false if the pointer is NULL or if the vertex buffer
 		///		isn't loaded, else true.
 		///
 		////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ namespace Bit
 
 		// Private varaibles.
 		VertexBufferVector m_VertexBuffers; ///< Vector of vertex buffers.
-		VertexArray * m_pVertexArray;
+		VertexArray * m_pVertexArray;		///< Vertex array with the vertex buffers bound to it.
 
 	};
 

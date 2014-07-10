@@ -233,6 +233,9 @@
     <ClCompile Include="..\..\source\Bit\Graphics\PngFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\TgaFile.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\Bit\Graphics\ObjFile.inl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

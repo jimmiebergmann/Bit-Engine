@@ -391,6 +391,27 @@ namespace Bit
 		void Clear( );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief	Help function for creating a postion buffer
+		///			from the current stored data.
+		///
+		/// Make sure to delete the buffer when you are done with it.
+		///
+		/// \param p_BufferSize Size of the return buffer in bytes / size of data type(T).
+		///		0 if the buffer is invalid(NULL).
+		/// \param p_UseFlatFaces If flat faces should be used.
+		/// \param p_UseSmoothFaces If smooth faces should be used.
+		///
+		/// \return NULL if it's not possible to create a buffer,
+		///			else a pointer to the buffer or if p_UseFlatFaces and
+		///			p_UseSmoothFaces is false.
+		///
+		////////////////////////////////////////////////////////////////
+		template <typename T>
+		T * CreatePositionBuffer(	SizeType & p_BufferSize,
+									const Bool p_UseFlatFaces = true,
+									const Bool p_UseSmoothFaces = true );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Get material filename.
 		///
 		////////////////////////////////////////////////////////////////
@@ -418,6 +439,11 @@ namespace Bit
 		ObjectVector m_Objects;
 
 	};
+
+	////////////////////////////////////////////////////////////////
+	// Include the inline file.
+	////////////////////////////////////////////////////////////////
+	#include <Bit/Graphics/ObjFile.inl>
 
 }
 
