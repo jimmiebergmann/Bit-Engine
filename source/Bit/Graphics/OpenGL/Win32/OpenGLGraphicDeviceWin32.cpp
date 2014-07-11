@@ -510,7 +510,7 @@ namespace Bit
 			"		finalColor *= texture2D( colorTexture, vTextureCoord );\n"
 			"	}\n"
 			"if( uUseNormals == 1 ) {\n"
-			"		finalColor *= max( min( dot( vNormal, vec3( 1.0, 0.0, 0.0 ) ) , 1.0 ), 0.0 );\n"
+			"		finalColor *= max( min( dot( vNormal, vec3( 1.0, 0.0, 0.0 ) ) , 1.0 ), 0.1 );\n"
 			"	}\n"
 			"	outColor = finalColor;\n"
 			"}\n";

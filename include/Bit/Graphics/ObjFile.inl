@@ -86,6 +86,7 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 
 	// Find the size by going through all the elements of the obj structure.
 	SizeType currentIndex = 0;
+	SizeType totalVertices = 0; // Indicate how many vertices we've gone through
 	for( SizeType o = 0; o < m_Objects.size( ); o++ )
 	{
 		ObjFile::Object & object = *m_Objects[ o ];
@@ -123,7 +124,7 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 							FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
 
 							// Get the vertex index.
-							Int32 vertexIndex = faceCorner.VertexIndex - 1;
+							Int32 vertexIndex = faceCorner.VertexIndex - 1 - totalVertices;
 
 							// Error check the corner
 							if( vertexIndex < 0 || vertexIndex >= object.m_Vertices.size( ) )
@@ -170,7 +171,7 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 							FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
 
 							// Get the vertex index.
-							Int32 vertexIndex = faceCorner.VertexIndex - 1;
+							Int32 vertexIndex = faceCorner.VertexIndex - 1 - totalVertices;
 
 							// Error check the corner
 							if( vertexIndex < 0 || vertexIndex >= object.m_Vertices.size( ) )
@@ -198,6 +199,10 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 			}
 			
 		}
+
+		// Increase the total vertices.
+		totalVertices += object.m_Vertices.size( );
+
 	}
 
 	// return the buffer
@@ -269,6 +274,7 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 
 	// Find the size by going through all the elements of the obj structure.
 	SizeType currentIndex = 0;
+	SizeType totalVertices = 0; // Indicate how many vertices we've gone through
 	for( SizeType o = 0; o < m_Objects.size( ); o++ )
 	{
 		ObjFile::Object & object = *m_Objects[ o ];
@@ -306,7 +312,7 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 							FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
 
 							// Get the vertex index.
-							Int32 textureCoordIndex = faceCorner.TextureCoordIndex - 1;
+							Int32 textureCoordIndex = faceCorner.TextureCoordIndex - 1 - totalVertices;
 
 							// Error check the corner
 							if( textureCoordIndex < 0 || textureCoordIndex >= object.m_TextureCoords.size( ) )
@@ -352,7 +358,7 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 							FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
 
 							// Get the vertex index.
-							Int32 textureCoordIndex = faceCorner.TextureCoordIndex - 1;
+							Int32 textureCoordIndex = faceCorner.TextureCoordIndex - 1 - totalVertices;
 
 							// Error check the corner
 							if( textureCoordIndex < 0 || textureCoordIndex >= object.m_TextureCoords.size( ) )
@@ -379,6 +385,10 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 			}
 			
 		}
+
+		// Increase the total vertices.
+		totalVertices += object.m_TextureCoords.size( );
+
 	}
 
 	// return the buffer
@@ -450,6 +460,7 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 
 	// Find the size by going through all the elements of the obj structure.
 	SizeType currentIndex = 0;
+	SizeType totalVertices = 0; // Indicate how many vertices we've gone through
 	for( SizeType o = 0; o < m_Objects.size( ); o++ )
 	{
 		ObjFile::Object & object = *m_Objects[ o ];
@@ -487,7 +498,7 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 							FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
 
 							// Get the vertex index.
-							Int32 normalIndex = faceCorner.NormalIndex - 1;
+							Int32 normalIndex = faceCorner.NormalIndex - 1 - totalVertices;
 
 							// Error check the corner
 							if( normalIndex < 0 || normalIndex >= object.m_Normals.size( ) )
@@ -534,7 +545,7 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 							FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
 
 							// Get the vertex index.
-							Int32 normalIndex = faceCorner.NormalIndex - 1;
+							Int32 normalIndex = faceCorner.NormalIndex - 1 - totalVertices;
 
 							// Error check the corner
 							if( normalIndex < 0 || normalIndex >= object.m_Normals.size( ) )
@@ -562,6 +573,10 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 			}
 			
 		}
+
+		// Increase the total vertices.
+		totalVertices += object.m_Normals.size( );
+
 	}
 
 	// return the buffer
