@@ -59,11 +59,13 @@ namespace Bit
 		/// \param p_ComponentCount Number of vertex components,
 		///		must be 1, 2, 3 or 4.
 		///	\param p_DataType The type of the vertex data.
+		/// \param p_VertexIndex Incremental order if negative(by default).
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Bool AddVertexBuffer(	VertexBuffer & p_VertexBuffer,
 										const SizeType p_ComponentCount = 3, 
-										const DataType::eType p_DataType = DataType::Float32 ) = 0;
+										const DataType::eType p_DataType = DataType::Float32,
+										const Int32 p_VertexIndex = -1 ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Render the vertex array object

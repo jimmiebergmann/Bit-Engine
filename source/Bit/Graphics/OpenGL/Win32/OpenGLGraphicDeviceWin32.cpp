@@ -521,15 +521,18 @@ namespace Bit
 			return false;
 		}
 
+		
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->AttachShader( *m_pDefaultModelVertexShaders[ InitialPoseShader ] );
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->AttachShader( *m_pDefaultModelFragmentShader );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "position", 0 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "textureCoord", 1 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "normal", 2 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->Link( );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->Bind( );
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform4f( "uColor", 0.0f, 1.0f, 0.0f, 1.0f );
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform1i( "uUseTexture", 0 );
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform1i( "uUseNormals", 0 );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "position", 0 );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "normal", 1 );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "textureCoord", 2 );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->Link( );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->Unbind( );
 
 		return true;
 	}

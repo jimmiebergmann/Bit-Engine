@@ -43,9 +43,9 @@ namespace Bit
 	/// \brief 3D model class.
 	///
 	/// The vertex data is stored by default in the following order:
-	///		- Position
-	///		- Texture coordinate
-	///		- Normal
+	///		- 0: Position
+	///		- 1: Texture coordinate
+	///		- 2: Normal
 	/// You can add your own model funcion and loading your own format
 	/// and store the vertex data in any order, but then you have to
 	/// create your own model renderer(which is recommened anyway).

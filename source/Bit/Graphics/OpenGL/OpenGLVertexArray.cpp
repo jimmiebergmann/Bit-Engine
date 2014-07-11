@@ -91,7 +91,8 @@ namespace Bit
 
 	Bool OpenGLVertexArray::AddVertexBuffer(	VertexBuffer & p_VertexBufferObject,
 												const SizeType p_ComponentCount, 
-												const DataType::eType p_DataType )
+												const DataType::eType p_DataType,
+												const Int32 p_VertexIndex )
 	{
 		// Make sure the component count is a value between 1 and 4
 		if( p_ComponentCount < 1 || p_ComponentCount > 4 )
@@ -117,10 +118,17 @@ namespace Bit
 
 		// Add the VBO(bind it)
 		p_VertexBufferObject.Bind( );
+
+		// Compute the vertex index.
+		GLuint vertexIndex = m_BufferCount;
+		if( p_VertexIndex >= 0 )
+		{
+			vertexIndex = static_cast<GLuint>( p_VertexIndex );
+		}
 		
 		// Set the vertex attribute pointer at the current buffer index.
-		glVertexAttribPointer( m_BufferCount, p_ComponentCount, type, GL_FALSE, 0, 0 );
-		glEnableVertexAttribArray( m_BufferCount );
+		glVertexAttribPointer( vertexIndex, p_ComponentCount, type, GL_FALSE, 0, 0 );
+		glEnableVertexAttribArray( vertexIndex );
 
 		// Unbind the VAO
 		glBindVertexArray( 0 );

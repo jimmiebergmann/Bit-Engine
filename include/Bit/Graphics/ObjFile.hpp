@@ -24,6 +24,7 @@
 #include <Bit/Build.hpp>
 #include <Bit/NonCopyable.hpp>
 #include <Bit/System/Vector3.hpp>
+#include <Bit/System/Vector2.hpp>
 #include <string>
 #include <vector>
 
@@ -259,7 +260,7 @@ namespace Bit
 			/// \brief Get texture coordinate.
 			///
 			////////////////////////////////////////////////////////////////
-			const Vector3f32 & GetTextureCoord( const SizeType p_Index ) const;
+			const Vector2f32 & GetTextureCoord( const SizeType p_Index ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get normal.
@@ -301,7 +302,7 @@ namespace Bit
 
 			// Private typedefs
 			typedef std::vector<Vector3f32> Vertices;
-			typedef std::vector<Vector3f32> TextureCoords;
+			typedef std::vector<Vector2f32> TextureCoords;
 			typedef std::vector<Vector3f32> Normals;
 			typedef std::vector<ObjectGroup *> ObjectGroupVector;
 
@@ -391,7 +392,7 @@ namespace Bit
 		void Clear( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief	Help function for creating a postion buffer
+		/// \brief Help function for creating a postion buffer
 		///			from the current stored data.
 		///
 		/// Make sure to delete the buffer when you are done with it.
@@ -410,6 +411,48 @@ namespace Bit
 		T * CreatePositionBuffer(	SizeType & p_BufferSize,
 									const Bool p_UseFlatFaces = true,
 									const Bool p_UseSmoothFaces = true );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Help function for creating a texture coordinate buffer
+		///			from the current stored data.
+		///
+		/// Make sure to delete the buffer when you are done with it.
+		///
+		/// \param p_BufferSize Size of the return buffer in bytes / size of data type(T).
+		///		0 if the buffer is invalid(NULL).
+		/// \param p_UseFlatFaces If flat faces should be used.
+		/// \param p_UseSmoothFaces If smooth faces should be used.
+		///
+		/// \return NULL if it's not possible to create a buffer,
+		///			else a pointer to the buffer or if p_UseFlatFaces and
+		///			p_UseSmoothFaces is false.
+		///
+		////////////////////////////////////////////////////////////////
+		template <typename T>
+		T * CreateTextureCoordBuffer(	SizeType & p_BufferSize,
+										const Bool p_UseFlatFaces = true,
+										const Bool p_UseSmoothFaces = true );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Help function for creating a normal buffer
+		///			from the current stored data.
+		///
+		/// Make sure to delete the buffer when you are done with it.
+		///
+		/// \param p_BufferSize Size of the return buffer in bytes / size of data type(T).
+		///		0 if the buffer is invalid(NULL).
+		/// \param p_UseFlatFaces If flat faces should be used.
+		/// \param p_UseSmoothFaces If smooth faces should be used.
+		///
+		/// \return NULL if it's not possible to create a buffer,
+		///			else a pointer to the buffer or if p_UseFlatFaces and
+		///			p_UseSmoothFaces is false.
+		///
+		////////////////////////////////////////////////////////////////
+		template <typename T>
+		T * CreateNormalBuffer(	SizeType & p_BufferSize,
+								const Bool p_UseFlatFaces = true,
+								const Bool p_UseSmoothFaces = true );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get material filename.

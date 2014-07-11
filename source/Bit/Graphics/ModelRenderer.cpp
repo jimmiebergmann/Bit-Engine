@@ -96,6 +96,23 @@ namespace Bit
 		pShaderProgram->SetUniformMatrix4x4f( "uProjectionMatrix", MatrixManager::GetProjectionMatrix( ) );
 		pShaderProgram->SetUniformMatrix4x4f( "uModelViewMatrix", MatrixManager::GetModelViewMatrix( ) );
 		pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
+		if( p_Model.GetVertexData( ).GetBitmask( ) & 0x02 )
+		{
+			pShaderProgram->SetUniform1i( "uUseTexture", 1 );
+		}
+		else
+		{
+			pShaderProgram->SetUniform1i( "uUseTexture", 0 );
+		}
+
+		if( p_Model.GetVertexData( ).GetBitmask( ) & 0x04 )
+		{
+			pShaderProgram->SetUniform1i( "uUseNormals", 1 );
+		}
+		else
+		{
+			pShaderProgram->SetUniform1i( "uUseNormals", 0 );
+		}
 
 		// Render the model.
 		p_Model.GetVertexData( ).GetVertexArray( )->Render( PrimitiveMode::Triangles );

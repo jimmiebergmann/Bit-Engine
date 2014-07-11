@@ -143,7 +143,7 @@ namespace Bit
 		return m_Vertices[ p_Index ];
 	}
 
-	const Vector3f32 & ObjFile::Object::GetTextureCoord( const SizeType p_Index ) const
+	const Vector2f32 & ObjFile::Object::GetTextureCoord( const SizeType p_Index ) const
 	{
 		return m_TextureCoords[ p_Index ];
 	}
@@ -215,7 +215,8 @@ namespace Bit
 		pre.reserve( 32 );
 		std::string faceGroup;
 		faceGroup.reserve( 32 );
-		Vector3f32 coord;
+		Vector2f32 coord2;
+		Vector3f32 coord3;
 		Uint32 commonFaceCount = 0;
 
 		// Variables for checking if we've found different groups
@@ -356,9 +357,9 @@ namespace Bit
 					if( pre.size( ) < 2 )
 					{
 						if( sscanf( line, "%f %f %f",
-							&coord.x, &coord.y, &coord.z ) == 3 )
+							&coord3.x, &coord3.y, &coord3.z ) == 3 )
 						{
-							pCurrentObject->m_Vertices.push_back( coord );
+							pCurrentObject->m_Vertices.push_back( coord3 );
 						}
 					}
 					else
@@ -367,19 +368,19 @@ namespace Bit
 						{
 							case 't':
 							{
-								if( sscanf( line, "%f %f %f",
-									&coord.x, &coord.y, &coord.z ) == 3 )
+								if( sscanf( line, "%f %f",
+									&coord2.x, &coord2.y ) == 2 )
 								{
-									pCurrentObject->m_TextureCoords.push_back( coord );
+									pCurrentObject->m_TextureCoords.push_back( coord2 );
 								}
 							}
 							break;
 							case 'n':
 							{
 								if( sscanf( line, "%f %f %f",
-									&coord.x, &coord.y, &coord.z ) == 3 )
+									&coord3.x, &coord3.y, &coord3.z ) == 3 )
 								{
-									pCurrentObject->m_Normals.push_back( coord );
+									pCurrentObject->m_Normals.push_back( coord3 );
 								}
 							}
 							break;
@@ -551,16 +552,15 @@ namespace Bit
 			// Write all the texture coords
 			for( Object::Vertices::size_type j = 0; j < pObject->m_TextureCoords.size( ); j++ )
 			{
-				p_Stream << "v ";
+				p_Stream << "vt ";
 				p_Stream << pObject->m_TextureCoords[ j ].x << " ";
-				p_Stream << pObject->m_TextureCoords[ j ].y << " ";
-				p_Stream << pObject->m_TextureCoords[ j ].z << "\n";
+				p_Stream << pObject->m_TextureCoords[ j ].y << "\n";
 			}
 
 			// Write all the normals
 			for( Object::Vertices::size_type j = 0; j < pObject->m_Normals.size( ); j++ )
 			{
-				p_Stream << "v ";
+				p_Stream << "vn ";
 				p_Stream << pObject->m_Normals[ j ].x << " ";
 				p_Stream << pObject->m_Normals[ j ].y << " ";
 				p_Stream << pObject->m_Normals[ j ].z << "\n";

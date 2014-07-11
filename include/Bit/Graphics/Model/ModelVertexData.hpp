@@ -40,6 +40,12 @@ namespace Bit
 	/// \ingroup Graphics
 	/// \brief 3D model vertex data class.
 	///
+	/// Supporting up to 16 vertex buffers for the bitmask.
+	/// The following indices are the default values of the bitmask:
+	///		- 0: Position
+	///		- 1: Texture coordinate
+	///		- 2: Normal
+	///
 	/// \see Model
 	///
 	////////////////////////////////////////////////////////////////
@@ -65,11 +71,14 @@ namespace Bit
 		///		which means that ModelVertexData will take over
 		///		the responsibility of the vertex buffer.
 		///
+		///	\param p_pVertexBuffer Pointer of the vertex buffer.
+		/// \param p_Bitmask Value to OR together with the bitmask. 
+		///
 		/// \return false if the pointer is NULL or if the vertex buffer
 		///		isn't loaded, else true.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool AddVertexBuffer( VertexBuffer * p_pVertexBuffer );
+		Bool AddVertexBuffer( VertexBuffer * p_pVertexBuffer, const Uint16 p_Bitmask );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the vertex array. Only the pointer will be copied,
@@ -81,6 +90,12 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		Bool SetVertexArray( VertexArray * p_pVertexArray );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the bitmask
+		///
+		////////////////////////////////////////////////////////////////
+		void SetBitmask( const Uint16 p_Bitmask );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the number of vertex buffers. 
@@ -100,6 +115,12 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		const VertexArray * GetVertexArray(  ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the bitmask
+		///
+		////////////////////////////////////////////////////////////////
+		Uint16 GetBitmask(  ) const;
+
 	private:
 
 		// Private typedefs.
@@ -108,6 +129,8 @@ namespace Bit
 		// Private varaibles.
 		VertexBufferVector m_VertexBuffers; ///< Vector of vertex buffers.
 		VertexArray * m_pVertexArray;		///< Vertex array with the vertex buffers bound to it.
+		Uint16 m_Bitmask;					///< Bitmask of all the buffers that are bound to the vertex array.
+
 
 	};
 

@@ -105,82 +105,8 @@ namespace Bit
 		{
 			return false;
 		}
-/*
-		// Get the first object
-		if( obj.GetObjectCount( ) == 0 )
-		{
-			std::cout << "[Model::LoadFromObjFile] No objects were found." << std::endl;
-			return false;
-		}
-		ObjFile::Object & object = obj.GetObject( 0 );
 
-		// Error check the object group
-		if( object.GetObjectGroupCount( ) == 0 )
-		{
-			std::cout << "[Model::LoadFromObjFile] No object groups were found." << std::endl;
-			return false;
-		}
-		ObjFile::ObjectGroup & objectGroup = object.GetObjectGroup( 0 );
-		
-		// Error check the material group
-		if( objectGroup.GetMaterialGroupCount( ) == 0 )
-		{
-			std::cout << "[Model::LoadFromObjFile] No material groups were found." << std::endl;
-			return false;
-		}
-		ObjFile::MaterialGroup & materialGroup = objectGroup.GetMaterialGroup( 0 );
-
-		// Calculate the buffer size
-		SizeType bufferSize =	( materialGroup.GetFlatFaceCount( )		* 3 * 3 );
-
-		// Create a vertex buffer
-		VertexBuffer * pVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
-		Float32 * pBufferData = new Float32[ bufferSize ];
-
-		// Go throguh the flat faces and add the data to the buffer
-		for( SizeType i = 0; i < materialGroup.GetFlatFaceCount( ); i++ )
-		{
-			// Get the current face
-			ObjFile::Face & face = materialGroup.GetFlatFace( i );
-			if( face.GetFaceCornerCount( ) != 3 )
-			{
-				std::cout << "[Model::LoadFromObjFile] Face corner counter error:" << face.GetFaceCornerCount( ) << std::endl;
-				
-				// Delete the allocated data
-				delete [ ] pBufferData;
-				return false;
-			}
-
-			// Go throguh the face corners
-			for( SizeType j = 0; j < 3; j++ )
-			{
-				// Get the current corner
-				ObjFile::FaceCorner & faceCorner = face.GetFaceCorner( j );
-
-				// Get the vertex index.
-				Int32 vertexIndex = faceCorner.VertexIndex - 1;
-
-				if( vertexIndex < 0 || vertexIndex >= object.GetVertexCount( ) )
-				{
-					std::cout << "[Model::LoadFromObjFile] Vertex index error:" << vertexIndex << std::endl;
-				
-					// Delete the allocated data
-					delete [ ] pBufferData;
-					return false;
-				}
-
-				// Get the vertex coordinate.
-				const Vector3f32 position = object.GetVertex( vertexIndex );
-
-				// Set the buffer data
-				pBufferData[ ( i * 9 ) + ( j * 3 ) ] = position.x;
-				pBufferData[ ( i * 9 ) + ( j * 3 ) + 1 ] = position.y;
-				pBufferData[ ( i * 9 ) + ( j * 3 ) + 2 ] = position.z;
-			}
-		}
-
-*/
-
+		// //////////////////////////////////////////////////////////////////////////////////////
 		// Create the position buffer from the obj file.
 		SizeType bufferSize = 0;
 		Float32 * pBufferData = obj.CreatePositionBuffer<Float32>( bufferSize );
@@ -207,12 +133,58 @@ namespace Bit
 		VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray( );
 
 		// Add the vertex buffer to the vertex array.
-		pVertexArray->AddVertexBuffer( *pPositionVertexBuffer );
+		pVertexArray->AddVertexBuffer( *pPositionVertexBuffer, 3, DataType::Float32, 0 );
 
 		// Add texture and normal buffers if possible.
 
 		// Add the vertex buffer to the vertex data class.
-		m_VertexData.AddVertexBuffer( pPositionVertexBuffer );
+		m_VertexData.AddVertexBuffer( pPositionVertexBuffer, 0x01 );
+
+		
+		// //////////////////////////////////////////////////////////////////////////////////////
+		// Try to add texture coordinate and normal buffers as well.
+		// Create the texture coordinate buffer from the obj file.
+		pBufferData = obj.CreateTextureCoordBuffer<Float32>( bufferSize );
+
+		// Error check the position buffer data
+		if( pBufferData != NULL )
+		{
+			// Load the position vertex buffer
+			VertexBuffer * pTextureVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+			if( pTextureVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
+			{
+				// Add the vertex buffer to the vertex array.
+				pVertexArray->AddVertexBuffer( *pTextureVertexBuffer, 2, DataType::Float32, 1 );
+
+				// Add the vertex buffer to the vertex data class.
+				m_VertexData.AddVertexBuffer( pTextureVertexBuffer, 0x02 );
+			}
+
+			// Delete the allocated data
+			delete [ ] pBufferData;
+		}
+
+		// Create the normal buffer from the obj file.
+		pBufferData = obj.CreateNormalBuffer<Float32>( bufferSize );
+
+		// Error check the position buffer data
+		if( pBufferData != NULL )
+		{
+			// Load the position vertex buffer
+			VertexBuffer * pNormalVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+			if( pNormalVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
+			{
+				// Add the vertex buffer to the vertex array.
+				pVertexArray->AddVertexBuffer( *pNormalVertexBuffer, 3, DataType::Float32, 2 );
+
+				// Add the vertex buffer to the vertex data class.
+				m_VertexData.AddVertexBuffer( pNormalVertexBuffer, 0x04 );
+			}
+
+			// Delete the allocated data
+			delete [ ] pBufferData;
+		}
+
 
 		// Set the vertex buffer for the vertex data class.
 		m_VertexData.SetVertexArray( pVertexArray );

@@ -31,7 +31,8 @@
 namespace Bit
 {
 	ModelVertexData::ModelVertexData( ) :
-		m_pVertexArray( NULL )
+		m_pVertexArray( NULL ),
+		m_Bitmask( 0 )
 	{
 	}
 
@@ -49,7 +50,7 @@ namespace Bit
 		}
 	}
 
-	Bool ModelVertexData::AddVertexBuffer( VertexBuffer * p_pVertexBuffer )
+	Bool ModelVertexData::AddVertexBuffer( VertexBuffer * p_pVertexBuffer, const Uint16 p_Bitmask )
 	{
 		// Error check the parameter.
 		if( p_pVertexBuffer == NULL || p_pVertexBuffer->IsLoaded( ) == false )
@@ -59,6 +60,9 @@ namespace Bit
 
 		// Add the vertex buffer to the vector.
 		m_VertexBuffers.push_back( p_pVertexBuffer );
+
+		// Apply the bitmask value
+		m_Bitmask |= p_Bitmask;
 
 		// Succeeded
 		return true;
@@ -85,6 +89,11 @@ namespace Bit
 		return true;
 	}
 
+	void ModelVertexData::SetBitmask( const Uint16 p_Bitmask )
+	{
+		m_Bitmask = p_Bitmask;
+	}
+
 	SizeType ModelVertexData::GetVertexBufferCount( ) const
 	{
 		return static_cast<SizeType>( m_VertexBuffers.size( ) );
@@ -98,6 +107,11 @@ namespace Bit
 	const VertexArray * ModelVertexData::GetVertexArray(  ) const
 	{
 		return m_pVertexArray;
+	}
+
+	Uint16 ModelVertexData::GetBitmask(  ) const
+	{
+		return m_Bitmask;
 	}
 
 }
