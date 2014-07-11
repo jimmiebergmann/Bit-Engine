@@ -43,76 +43,57 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Single material class.
 		///
+		/// Resource:	- http://cgkit.sourceforge.net/doc2/objmaterial.html
+		///				- http://paulbourke.net/dataformats/mtl/				
+		///
 		////////////////////////////////////////////////////////////////
 		class BIT_API Material
 		{
 
 		public:
 
-			////////////////////////////////////////////////////////////////
-			/// \brief Material element structure.
-			///
-			////////////////////////////////////////////////////////////////
-			struct Property
-			{
-
-				////////////////////////////////////////////////////////////////
-				/// \brief Default constructor.
-				///
-				////////////////////////////////////////////////////////////////
-				Property( );
-
-				// Public variables
-				std::string Name;	///< Name of the property.
-				Int32 Integer;
-				Float32 Float;
-				Vector3f32 Vector;
-				std::string String;
-			};
+			// Friend classes
+			friend class ObjMaterialFile;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Default constructor.
+			/// \brief Constructor.
 			///
 			////////////////////////////////////////////////////////////////
-			Material( );
+			Material(	const std::string p_Name = "default",
+						const Uint8 p_Illum = 2,
+						const Vector3f32 p_AmbientColor = Vector3f32( 0.2f, 0.2f, 0.2f ),
+						const Vector3f32 p_DiffuseColor = Vector3f32( 0.8f, 0.8f, 0.8f ),
+						const Vector3f32 p_SpecularColor = Vector3f32( 0.0f, 0.0f, 0.0f ),
+						const Vector3f32 p_EmissiveColor = Vector3f32( 0.0f, 0.0f, 0.0f ),
+						const Float32 p_Shininess = 0.0f,
+						const Float32 p_OpticalDensity = 1.0f,
+						const std::string p_AmbienTexture = "",
+						const std::string p_DiffuseTexture = "",
+						const std::string p_SpecularTexture = "",
+						const std::string p_ShininessTexture = "",
+						const std::string p_EmissiveTexture = "",
+						const std::string p_DisplacementTexture = "",
+						const std::string p_BumpTexture = "" );
 
-			////////////////////////////////////////////////////////////////
-			/// \brief Add property.
-			///
-			/// \param p_Property Property to be copied to the material file class.
-			///
-			////////////////////////////////////////////////////////////////
-			void AddProperty( const Property & p_Property );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Delete property. Nothing happends if the index is invalid.
-			///
-			/// \param p_Index Index of the property.
-			///
-			////////////////////////////////////////////////////////////////
-			void DeletedProperty( const SizeType p_Index );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Get property.
-			///
-			////////////////////////////////////////////////////////////////
-			const Property & GetProperty( const SizeType p_Index ) const;
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Get property count.
-			///
-			////////////////////////////////////////////////////////////////
-			SizeType GetPropertyCount( ) const;
 
 		private:
 
-			// Private typedefs
-			typedef std::vector<Property> PropertyVector;
-
 			// Private variables
-			std::string m_Name;				///< Name of the material.
-			PropertyVector m_Properties;	///< Vector of the materials properties.
-			static const Material::Property s_DefaulPropery;
+			std::string m_Name;					///< Name of the material.
+			Uint8 m_Illum;						///< "illum", render mode, 2 by default.
+			Vector3f32 m_AmbientColor;			///< "Ka".
+			Vector3f32 m_DiffuseColor;			///< "Kd".
+			Vector3f32 m_SpecularColor;			///< "Ks".
+			Vector3f32 m_EmissiveColor;			///< "Ke".
+			Float32 m_Shininess;				///< "Ns", specular exponent.
+			Float32 m_OpticalDensity;			///< "Ni", 0.001 to 10. 1 by default, 1.5 if glass.
+			std::string m_AmbienTexture;		///< "map_Ka".
+			std::string m_DiffuseTexture;		///< "map_Kd", color texture.
+			std::string m_SpecularTexture;		///< "map_Ks". Specular color.
+			std::string m_ShininessTexture;		///< "map_Ns" Specular exponent.
+			std::string m_EmissiveTexture;		///< "map_Ke".
+			std::string m_DisplacementTexture;	///< "disp" / "map_disp", displacement map.
+			std::string m_BumpTexture;			///< "bump" / "map_bump", normal map.
 
 		};
 
