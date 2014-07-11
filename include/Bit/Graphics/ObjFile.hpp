@@ -18,8 +18,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_PNG_FILE_HPP
-#define BIT_GRAPHICS_PNG_FILE_HPP
+#ifndef BIT_GRAPHICS_OBJ_FILE_HPP
+#define BIT_GRAPHICS_OBJ_FILE_HPP
 
 #include <Bit/Build.hpp>
 #include <Bit/NonCopyable.hpp>
@@ -29,8 +29,10 @@
 #include <vector>
 
 // Win32 fix
+#if defined( BIT_PLATFORM_WINDOWS )
 #ifdef GetObject
 #undef GetObject
+#endif
 #endif
 
 namespace Bit
@@ -40,7 +42,7 @@ namespace Bit
 	/// \ingroup Graphics
 	/// \brief Obj model file class.
 	///
-	/// Contains the material data as well.
+	/// The internal structure is pretty much like the file format itself.
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API ObjFile : public NonCopyable

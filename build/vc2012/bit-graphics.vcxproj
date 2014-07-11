@@ -175,6 +175,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Image.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ModelMaterial.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ModelRenderer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\Animation.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationTrack.hpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimationTrack.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexKeyFrame.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ObjFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ObjMaterialFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLFramebuffer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLGraphicDevice.hpp" />
@@ -213,6 +215,7 @@
     <ClCompile Include="..\..\source\Bit\Graphics\Image.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\LodePng\lodepng.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ModelMaterial.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\ModelRenderer.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model\ModelVertexData.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model\Skeleton.cpp" />
@@ -220,6 +223,7 @@
     <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimationTrack.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexKeyFrame.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\ObjFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ObjMaterialFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLModelRenderer.cpp" />

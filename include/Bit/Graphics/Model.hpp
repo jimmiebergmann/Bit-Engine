@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/NonCopyable.hpp>
+#include <Bit/Graphics/ModelMaterial.hpp>
 #include <Bit/Graphics/Model/ModelVertexData.hpp>
 #include <Bit/Graphics/Model/Skeleton.hpp>
 #include <string>
@@ -109,10 +110,16 @@ namespace Bit
 
 	private:
 
+		// Private typedefs
+		typedef std::vector<ModelMaterial*> ModelMaterialVector;
+
+		// Private functions
+
 		// Private variables
-		const GraphicDevice & m_GraphicDevice; ///< Reference of the parent graphic device.
-		Skeleton m_Skeleton;
-		ModelVertexData m_VertexData;
+		const GraphicDevice & m_GraphicDevice;	///< Reference of the parent graphic device.
+		Skeleton m_Skeleton;					///< Skeleton, contains animations of any kind.
+		ModelMaterialVector m_Materials;		///< Materials used by this model.
+		ModelVertexData m_VertexData;			///< Idle static pose.
 
 
 		/*

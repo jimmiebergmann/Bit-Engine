@@ -1,0 +1,228 @@
+// implied warranty. In no event will the authors be held
+// liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute
+// it freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but
+//    is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any
+//    source distribution.
+// ///////////////////////////////////////////////////////////////////////////
+
+#ifndef BIT_GRAPHICS_OBJ_MATERIAL_FILE_HPP
+#define BIT_GRAPHICS_OBJ_MATERIAL_FILE_HPP
+
+#include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
+#include <Bit/System/Vector3.hpp>
+#include <string>
+#include <vector>
+
+namespace Bit
+{
+
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Graphics
+	/// \brief Obj model material file class.
+	///
+	////////////////////////////////////////////////////////////////
+	class BIT_API ObjMaterialFile
+	{
+
+	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Single material class.
+		///
+		////////////////////////////////////////////////////////////////
+		class BIT_API Material
+		{
+
+		public:
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Material element structure.
+			///
+			////////////////////////////////////////////////////////////////
+			struct Property
+			{
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Default constructor.
+				///
+				////////////////////////////////////////////////////////////////
+				Property( );
+
+				// Public variables
+				std::string Name;	///< Name of the property.
+				Int32 Integer;
+				Float32 Float;
+				Vector3f32 Vector;
+				std::string String;
+			};
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor.
+			///
+			////////////////////////////////////////////////////////////////
+			Material( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Add property.
+			///
+			/// \param p_Property Property to be copied to the material file class.
+			///
+			////////////////////////////////////////////////////////////////
+			void AddProperty( const Property & p_Property );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Delete property. Nothing happends if the index is invalid.
+			///
+			/// \param p_Index Index of the property.
+			///
+			////////////////////////////////////////////////////////////////
+			void DeletedProperty( const SizeType p_Index );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get property.
+			///
+			////////////////////////////////////////////////////////////////
+			const Property & GetProperty( const SizeType p_Index ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get property count.
+			///
+			////////////////////////////////////////////////////////////////
+			SizeType GetPropertyCount( ) const;
+
+		private:
+
+			// Private typedefs
+			typedef std::vector<Property> PropertyVector;
+
+			// Private variables
+			std::string m_Name;				///< Name of the material.
+			PropertyVector m_Properties;	///< Vector of the materials properties.
+			static const Material::Property s_DefaulPropery;
+
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Default constructor.
+		///
+		////////////////////////////////////////////////////////////////
+		ObjMaterialFile( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Load OBJ MTL from memory.
+		///
+		/// \param p_pMemory Pointer to the memory.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromMemory( const std::string & p_Memory );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Load OBJ MTL file from stream.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromStream( std::istream & p_Stream );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Load OBJ MTL from file.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromFile( const std::string & p_Filename );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save OBJ MTL to memory.
+		///
+		/// \param p_pMemory Reference to the memory.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToMemory( std::string & p_Memory );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save OBJ MTL to stream.
+		///
+		/// \param p_Stream Output stream.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToStream( std::ostream & p_Stream );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Save OBJ MTL to file.
+		///
+		/// \param p_Filename Output file.
+		///
+		/// \return True if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool SaveToFile( const std::string & p_Filename );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Clear the OBJ data.
+		///
+		////////////////////////////////////////////////////////////////
+		void Clear( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Add material.
+		///
+		/// \param p_Material Material to be copied to the material file class.
+		///
+		////////////////////////////////////////////////////////////////
+		void AddMaterial( const Material & p_Material );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Delete material. Nothing happends if the index is invalid.
+		///
+		/// \param p_Index Index of the material.
+		///
+		////////////////////////////////////////////////////////////////
+		void DeletedMaterial( const SizeType p_Index );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get material.
+		///
+		////////////////////////////////////////////////////////////////
+		const Material & GetMaterial( const SizeType p_Index ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get material count.
+		///
+		////////////////////////////////////////////////////////////////
+		SizeType GetMaterialCount( ) const;		
+
+	private:
+
+		// Private typedefs
+		typedef std::vector<Material *> MaterialVector;
+
+		// Private varaibles
+		MaterialVector m_Materials;		///< Vector of all the materials in the file.
+		static const Material s_DefaultMaterial;
+
+	};
+
+}
+
+#endif

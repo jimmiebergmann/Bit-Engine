@@ -114,7 +114,7 @@ namespace Bit
 
 		// Private typedefs
 		typedef std::vector<Animation *> AnimationVector;
-		typedef std::vector<Bone *> BoneVector;
+		//typedef std::vector<Bone *> BoneVector;
 
 		// Private variables
 		AnimationVector m_Animations; ///< Animations of for this skeleton.

@@ -92,6 +92,8 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLModelRenderer.hpp">
       <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\ModelMaterial.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ObjMaterialFile.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp">
@@ -149,6 +151,8 @@
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLModelRenderer.cpp">
       <Filter>OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\ModelMaterial.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ObjMaterialFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\Graphics\ObjFile.inl" />
