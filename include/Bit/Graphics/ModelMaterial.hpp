@@ -40,6 +40,14 @@ namespace Bit
 	/// \ingroup Graphics
 	/// \brief 3D model material class.
 	///
+	/// Default properties:
+	///		- Color			( RGB : 0.0f - 1.0f each channel )
+	///		- Opacity		( 0.0f - 1.0f )
+	///		- Shininess		( 0.0f - 1.0f )
+	///		- ColorMap		( Color texture )
+	///		- NormalMap		( Normal Texture )
+	///		- SpecularMap	( Specular Texture );
+	///
 	/// \see Model
 	///
 	////////////////////////////////////////////////////////////////
@@ -52,10 +60,10 @@ namespace Bit
 		/// \brief Default properties enumerator.
 		///
 		////////////////////////////////////////////////////////////////
-		enum eDefaultProperties
+		/*enum eDefaultProperties
 		{
 			Color
-		};
+		};*/
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor.

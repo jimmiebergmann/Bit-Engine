@@ -91,6 +91,10 @@ namespace Bit
 	{
 		std::string keyword;
 		std::string string;
+		Vector3f32 vector3;
+		Int32 integer;
+		const SizeType maxLineLength = 128;
+		char line[ maxLineLength ];
 		keyword.reserve( 32 );
 		string.reserve( 64 );
 		Material * pMaterial = NULL;
@@ -101,9 +105,21 @@ namespace Bit
 			// Read the keyword
 			p_Stream >> keyword;
 
-			// Error check the keyword and ignore comments.
-			if( keyword.size( ) == 0 || keyword[ 0 ] == '#' )
+			if( p_Stream.eof( ) == true )
 			{
+				break;
+			}
+
+			// Error check the keyword and ignore comments.
+			if( keyword.size( ) == 0 )
+			{
+				continue;
+			}
+
+			// ignore comments
+			else if( keyword[ 0 ] == '#' )
+			{
+				std::getline( p_Stream, string );
 				continue;
 			}
 
@@ -132,15 +148,133 @@ namespace Bit
 				continue;
 			}
 
+			// Check all the other possible keywords.
+			if( keyword == "illium" )
+			{
+				// Get the line and scan the data
+				p_Stream.getline( line, maxLineLength );
+				if( sscanf( line, "%i", &integer ) != 1 )
+				{
+					continue;
+				}
 
+				// Set the value
+				pMaterial->m_Illum = integer;
+			}
+			else if( keyword == "ka" )
+			{
+				// Get the line and scan the data
+				p_Stream.getline( line, maxLineLength );
+				if( sscanf( line, "%f %f %f", &vector3.x, &vector3.y, &vector3.z ) != 3 )
+				{
+					continue;
+				}
 
+				// Set the value
+				pMaterial->m_AmbientColor = vector3;
+
+			}
+			else if( keyword == "kd" )
+			{
+				// Get the line and scan the data
+				p_Stream.getline( line, maxLineLength );
+				if( sscanf( line, "%f %f %f", &vector3.x, &vector3.y, &vector3.z ) != 3 )
+				{
+					continue;
+				}
+
+				// Set the value
+				pMaterial->m_DiffuseColor = vector3;
+			}
+			else if( keyword == "ks" )
+			{
+				// Get the line and scan the data
+				p_Stream.getline( line, maxLineLength );
+				if( sscanf( line, "%f %f %f", &vector3.x, &vector3.y, &vector3.z ) != 3 )
+				{
+					continue;
+				}
+
+				// Set the value
+				pMaterial->m_SpecularColor = vector3;
+			}
+			else if( keyword == "ke" )
+			{
+				// Get the line and scan the data
+				p_Stream.getline( line, maxLineLength );
+				if( sscanf( line, "%f %f %f", &vector3.x, &vector3.y, &vector3.z ) != 3 )
+				{
+					continue;
+				}
+
+				// Set the value
+				pMaterial->m_EmissiveColor = vector3;
+			}
+			else if( keyword == "ns" )
+			{
+				// Get the line and scan the data
+				p_Stream.getline( line, maxLineLength );
+				if( sscanf( line, "%f", &vector3.x ) != 1 )
+				{
+					continue;
+				}
+
+				// Set the value
+				pMaterial->m_Shininess = vector3.x;
+			}
+			else if( keyword == "ni" )
+			{
+				// Get the line and scan the data
+				p_Stream.getline( line, maxLineLength );
+				if( sscanf( line, "%f", &vector3.x ) != 1 )
+				{
+					continue;
+				}
+
+				// Set the value
+				pMaterial->m_OpticalDensity = vector3.x;
+			}
+			// Texture maps
+			else if( keyword == "map_ka" )
+			{
+				p_Stream >> string;
+				pMaterial->m_AmbienTexture = string;
+			}
+			else if( keyword == "map_kd" )
+			{
+				p_Stream >> string;
+				pMaterial->m_DiffuseTexture = string;
+			}
+			else if( keyword == "map_ks" )
+			{
+				p_Stream >> string;
+				pMaterial->m_SpecularTexture = string;
+			}
+			else if( keyword == "map_ns" )
+			{
+				p_Stream >> string;
+				pMaterial->m_ShininessTexture = string;
+			}
+			else if( keyword == "map_ke" )
+			{
+				p_Stream >> string;
+				pMaterial->m_EmissiveTexture = string;
+			}
+			else if( keyword == "disp" || keyword == "map_disp" )
+			{
+				p_Stream >> string;
+				pMaterial->m_DisplacementTexture = string;
+			}
+			else if( keyword == "bump" || keyword == "map_bump" )
+			{
+				p_Stream >> string;
+				pMaterial->m_BumpTexture = string;
+			}
 
 		}
 
-
-
-
-		return false;
+		// Everything is fine
+		return true;
 	}
 
 	Bool ObjMaterialFile::LoadFromFile( const std::string & p_Filename )

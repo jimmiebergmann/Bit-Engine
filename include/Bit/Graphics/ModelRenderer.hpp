@@ -45,6 +45,7 @@ namespace Bit
 	/// and keep the other ones that does the job for you.
 	///
 	/// \see Model
+	/// \see ModelMaterial
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API ModelRenderer

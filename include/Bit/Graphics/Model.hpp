@@ -121,7 +121,6 @@ namespace Bit
 		ModelMaterialVector m_Materials;		///< Materials used by this model.
 		ModelVertexData m_VertexData;			///< Idle static pose.
 
-
 		/*
 		// Public enum
 		enum eModelType

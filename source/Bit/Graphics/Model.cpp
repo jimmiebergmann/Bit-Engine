@@ -27,6 +27,7 @@
 #include <Bit/Graphics/VertexBuffer.hpp>
 #include <Bit/Graphics/VertexArray.hpp>
 #include <Bit/Graphics/ObjFile.hpp>
+#include <Bit/Graphics/ObjMaterialFile.hpp>
 #include <iostream>
 #include <algorithm>
 #include <Bit/System/MemoryLeak.hpp>
@@ -103,6 +104,7 @@ namespace Bit
 		ObjFile obj;
 		if( obj.LoadFromFile( p_Filename ) == false )
 		{
+			std::cout << "[Model::LoadFromObjFile] Failed to open OBJ file." << std::endl;
 			return false;
 		}
 
@@ -188,6 +190,24 @@ namespace Bit
 
 		// Set the vertex buffer for the vertex data class.
 		m_VertexData.SetVertexArray( pVertexArray );
+
+
+		// Load the materials of the obj file
+		ObjMaterialFile objMaterial;
+		if( objMaterial.LoadFromFile( "input/" + obj.GetMaterialFilename( ) ) == false )
+		{
+			std::cout << "[Model::LoadFromObjFile] Failed to open OBJ material file." << std::endl;
+			return false;
+		}
+
+		// Get the materials from the OBJ material file
+		for( SizeType i = 0; i < objMaterial.GetMaterialCount( ); i++ )
+		{
+			const ObjMaterialFile::Material & material = objMaterial.GetMaterial( i );
+
+			// Add default properties.
+
+		}
 
 		// Succeeded
 		return true;
