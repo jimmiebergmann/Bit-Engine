@@ -30,6 +30,10 @@ namespace Bit
 	/// \ingroup Base
 	/// \brief Obj model file class.
 	///
+	/// Publicly inherit by any class in order to make it non copyable.
+	/// Example:
+	///		class ClassA : public NonCopyable { };
+	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API NonCopyable
 	{

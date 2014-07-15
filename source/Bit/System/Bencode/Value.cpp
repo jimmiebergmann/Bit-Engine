@@ -331,7 +331,7 @@ namespace Bit
 			{
 				case Nil:
 				{
-					return g_DictionaryString;
+					return g_NilString;
 				}
 				break;
 				case String:

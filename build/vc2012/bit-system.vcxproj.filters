@@ -48,6 +48,17 @@
     <ClInclude Include="..\..\include\Bit\System\Version.hpp" />
     <ClInclude Include="..\..\include\Bit\NonCopyable.hpp" />
     <ClInclude Include="..\..\include\Bit\System\MatrixManager.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Json\Reader.hpp">
+      <Filter>Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Json\Value.hpp">
+      <Filter>Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Json\Writer.hpp">
+      <Filter>Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Json.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Bencode.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -88,6 +99,15 @@
     <ClCompile Include="..\..\source\Bit\System\Version.cpp" />
     <ClCompile Include="..\..\source\Bit\System\MatrixManager.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Angle.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Json\Reader.cpp">
+      <Filter>Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Json\Value.cpp">
+      <Filter>Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Json\Writer.cpp">
+      <Filter>Json</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">
@@ -95,6 +115,9 @@
     </Filter>
     <Filter Include="Bencode">
       <UniqueIdentifier>{d582f370-ce4b-4ae4-a245-8c332c60a29f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Json">
+      <UniqueIdentifier>{71a6f1aa-caeb-410e-98ba-15db6da6db83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

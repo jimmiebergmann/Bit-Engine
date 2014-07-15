@@ -22,11 +22,16 @@
     <ClInclude Include="..\..\include\Bit\Build.hpp" />
     <ClInclude Include="..\..\include\Bit\NonCopyable.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Angle.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Bencode.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Bencode.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Reader.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Value.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Writer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Hash.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Json.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Json\Reader.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Json\Value.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Json\Writer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Keyboard.hpp" />
     <ClInclude Include="..\..\include\Bit\System\KeyboardBase.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
@@ -63,6 +68,9 @@
     <ClCompile Include="..\..\source\Bit\System\Bencode\Value.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Bencode\Writer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Hash.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Json\Reader.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Json\Value.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Json\Writer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\MatrixManager.cpp" />
     <ClCompile Include="..\..\source\Bit\System\MemoryLeak.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
