@@ -122,8 +122,6 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Bool ReadList( Value & p_Value, const std::string & p_Input, SizeType & p_Position );
 
-
-
 		};
 
 	}

@@ -82,6 +82,42 @@ namespace Bit
 
 		private:
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Find valid character.
+			///
+			/// \param p_Input Input string.
+			/// \param p_Position Start position.
+			///
+			/// \return SizeType Position of valid character.
+			///
+			////////////////////////////////////////////////////////////////
+			SizeType FindValidCharacter( const std::string & p_Input, const SizeType & p_Position ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Read word
+			///
+			/// \param p_Input Input string.
+			/// \param p_Output Output string, the key.
+			/// \param p_Position String position.
+			///
+			/// \return true if succeeded, else false.
+			///
+			////////////////////////////////////////////////////////////////
+			std::string ReadKey( const std::string & p_Input, SizeType & p_Position ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Read object
+			///
+			////////////////////////////////////////////////////////////////
+			Bool ReadObject( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Read string
+			///
+			////////////////////////////////////////////////////////////////
+			Bool ReadString( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const;
+
+			
 		};
 
 	}

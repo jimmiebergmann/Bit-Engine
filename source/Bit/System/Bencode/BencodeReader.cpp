@@ -47,7 +47,7 @@ namespace Bit
 			// Store the index of the current position in the input string
 			SizeType position = 0;
 
-			// Remove spacings from the input string
+			// Remove spacings in the beginning of the input string
 			for( position = 0; position < p_Input.size( ) - 1; position++ )
 			{
 				if( p_Input[ position ] != ' ' &&
