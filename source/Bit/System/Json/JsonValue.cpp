@@ -485,7 +485,7 @@ namespace Bit
 
 					// Load the string into a string stream.
 					std::stringstream ss;
-					ss << m_Value.String;
+					ss << *(m_Value.String);
 
 					// Get the number
 					Float64 number = 0.0f;
@@ -548,7 +548,7 @@ namespace Bit
 
 					// Load the string into a string stream.
 					std::stringstream ss;
-					ss << m_Value.String;
+					ss << *(m_Value.String);
 
 					// Get the number
 					Int32 number = 0;
