@@ -182,7 +182,7 @@ namespace Bit
 				// Is this the end of this object?
 				if( p_Input[ p_Position ] == '}' )
 				{
-					// The object is not complete.
+					// The object is not complete. We are expecting more values.
 					if( expectValue == true )
 					{
 						return false;
@@ -241,6 +241,17 @@ namespace Bit
 				// Object value.
 				if( p_Input[ p_Position ] == '{' )
 				{
+					// Create a object value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadObject( *value, p_Input, ++p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the dictionary
+					(*p_Value.m_Value.Object)[ key ] = value;
 				}
 				// Array value.
 				else if( p_Input[ p_Position ] == '[' )
@@ -249,14 +260,11 @@ namespace Bit
 				// String value.
 				else if( p_Input[ p_Position ] == '\"' )
 				{
-					// Increment the position( get rid of the 'i' character )
-					p_Position++;
-
 					// Create a string value
 					Value * value = new Value( );
 						
 					// Read the integer
-					if( ReadString( *value, p_Input, p_Position ) == false )
+					if( ReadString( *value, p_Input, ++p_Position ) == false )
 					{
 						return false;
 					}
@@ -267,6 +275,17 @@ namespace Bit
 				// Boolean value.
 				else if( p_Input[ p_Position ] == 't' || p_Input[ p_Position ] == 'f' )
 				{
+					// Create a string value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadBoolean( *value, p_Input, p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the dictionary
+					(*p_Value.m_Value.Object)[ key ] = value;
 				}
 				// Number value(that's last possible value ).
 				else
@@ -308,6 +327,65 @@ namespace Bit
 			p_Value.m_Type = Value::String;
 			p_Value.m_Value.String = new std::string( string );
 			return true;
+		}
+
+		Bool Reader::ReadBoolean( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const		
+		{
+			// Set the value type
+			p_Value.m_Type = Value::Boolean;
+
+			// Check if this is a "true" keyword
+			if( p_Input[ p_Position ] == 't' )
+			{
+				// Check if there's enought space for the "true" keyword.
+				if( p_Position + 3 >= p_Input.size( ) )
+				{
+					return false;
+				}
+
+				// Check the rest of the characters
+				if( p_Input[ p_Position + 1 ] == 'r' &&
+					p_Input[ p_Position + 2 ] == 'u' &&
+					p_Input[ p_Position + 3 ] == 'e' )
+				{
+					// Set the boolean
+					p_Value.m_Value.Boolean = true;
+
+					// Increment the position by 4
+					p_Position += 4;
+
+					// Succeeded.
+					return true;
+				}
+			}
+			// Check if this is a "false" keyword
+			else if( p_Input[ p_Position ] == 'f' )
+			{
+				// Check if there's enought space for the "false" keyword.
+				if( p_Position + 4 >= p_Input.size( ) )
+				{
+					return false;
+				}
+
+				// Check the rest of the characters
+				if( p_Input[ p_Position + 1 ] == 'a' &&
+					p_Input[ p_Position + 2 ] == 'l' &&
+					p_Input[ p_Position + 3 ] == 's' &&
+					p_Input[ p_Position + 4 ] == 'e' )
+				{
+					// Set the boolean
+					p_Value.m_Value.Boolean = false;
+
+					// Increment the position by 5
+					p_Position += 5;
+
+					// Succeeded.
+					return true;
+				}
+			}
+
+			// Something failed.
+			return false;
 		}
 	}
 

@@ -117,6 +117,12 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Bool ReadString( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const;
 
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Read boolean
+			///
+			////////////////////////////////////////////////////////////////
+			Bool ReadBoolean( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const;			
 			
 		};
 
