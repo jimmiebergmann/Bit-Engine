@@ -485,6 +485,11 @@ namespace Bit
 			// Return this value.
 			return *const_cast<Value *>( this );
 		}
+
+		Value & Value::operator = ( const char * p_Characters )
+		{
+			return Value::operator=( std::string( p_Characters ) );
+		}
 		
 		Value & Value::operator = ( const std::string & p_String )
 		{

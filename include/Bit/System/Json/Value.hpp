@@ -36,6 +36,13 @@ namespace Bit
 	/// \ingroup System
 	/// \brief Json(pronounced "Jason") namespace
 	///
+	/// The following data types are possible:
+	///		- String:	Any length.
+	///		- Number:	64 bit floating- point number, or 32 bit signed integer.
+	///		- Boolean:	True or false.
+	///		- Object:	Table of values.
+	///		- Array:	Array of any value.
+	///
 	////////////////////////////////////////////////////////////////
 	namespace Json
 	{
@@ -64,9 +71,9 @@ namespace Bit
 				Null,		///< NULL type / invalid type.
 				String,		///< String type.
 				Number,		///< Double -precision floating -point typ.
-				Object,		///< Object type.
+				Boolean,	///< Boolean type.
 				Array,		///< Array type.
-				Boolean		///< Boolean type.
+				Object		///< Object type.				
 			};
 
 			////////////////////////////////////////////////////////////////
@@ -100,6 +107,69 @@ namespace Bit
 			void Clear( );
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Append value to array
+			/// 
+			/// This function will turn the value into an array.
+			/// This will internally make a copy of the input value
+			/// and all it's content.
+			/// This can cause assignments of root values to be slow.
+			///
+			////////////////////////////////////////////////////////////////
+			void Append( const Value & p_Value );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Append number to array
+			/// 
+			/// This function will turn the value into an array.
+			///
+			////////////////////////////////////////////////////////////////
+			void Append( const Float64 & p_Number );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Append integer to array
+			/// 
+			/// This function will turn the value into an array.
+			///
+			////////////////////////////////////////////////////////////////
+			void Append( const Int32 & p_Integer );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Append string to array
+			/// 
+			/// This function will turn the value into an array.
+			///
+			////////////////////////////////////////////////////////////////
+			void Append( const std::string & p_String );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Append characters(string) to array
+			/// 
+			/// This function will turn the value into an array.
+			///
+			////////////////////////////////////////////////////////////////
+			void Append( const char * p_Characters );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Append boolean to array
+			/// 
+			/// This function will turn the value into an array.
+			///
+			////////////////////////////////////////////////////////////////
+			void Append( const Bool p_Boolean );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Erase item from array
+			///
+			////////////////////////////////////////////////////////////////
+			void Erase( const SizeType & p_Index );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Erase field from object.
+			///
+			////////////////////////////////////////////////////////////////
+			void Erase( const std::string & p_Key );
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Gets the type
 			///
 			////////////////////////////////////////////////////////////////
@@ -112,16 +182,109 @@ namespace Bit
 			Bool IsNull( ) const;
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Get value from object
+			///
+			/// This function will return the requested value.
+			/// A new value will be created with the default value,
+			///	but not stored in the current value,
+			/// if the value with the given key can't be found.
+			///
+			/// \param p_Key Key for requested value..
+			/// \param p_DefaultValue Default value returned if
+			///		the value can't be found.
+			///
+			////////////////////////////////////////////////////////////////
+			Value & Get( const std::string & p_Key, const Value & p_DefaultValue ) const; 
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value from object
+			///
+			/// This function will return the requested value.
+			/// A new value will be created with the default value,
+			///	but not stored in the current value,
+			/// if the value with the given key can't be found.
+			///
+			/// \param p_Key Key for requested value..
+			/// \param p_DefaultValue Default value returned if
+			///		the value can't be found.
+			///
+			////////////////////////////////////////////////////////////////
+			Value & Get( const std::string & p_Key, const Float64 & p_DefaultValue ) const; 
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value from object
+			///
+			/// This function will return the requested value.
+			/// A new value will be created with the default value,
+			///	but not stored in the current value,
+			/// if the value with the given key can't be found.
+			///
+			/// \param p_Key Key for requested value..
+			/// \param p_DefaultValue Default value returned if
+			///		the value can't be found.
+			///
+			////////////////////////////////////////////////////////////////
+			Value & Get( const std::string & p_Key, const Int32 & p_DefaultValue ) const; 
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value from object
+			///
+			/// This function will return the requested value.
+			/// A new value will be created with the default value,
+			///	but not stored in the current value,
+			/// if the value with the given key can't be found.
+			///
+			/// \param p_Key Key for requested value..
+			/// \param p_DefaultValue Default value returned if
+			///		the value can't be found.
+			///
+			////////////////////////////////////////////////////////////////
+			Value & Get( const std::string & p_Key, const std::string & p_DefaultValue ) const; 
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value from object
+			///
+			/// This function will return the requested value.
+			/// A new value will be created with the default value,
+			///	but not stored in the current value,
+			/// if the value with the given key can't be found.
+			///
+			/// \param p_Key Key for requested value..
+			/// \param p_DefaultValue Default value returned if
+			///		the value can't be found.
+			///
+			////////////////////////////////////////////////////////////////
+			Value & Get( const std::string & p_Key, const Bool & p_DefaultValue ) const; 
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get size of array
+			///
+			////////////////////////////////////////////////////////////////
+			SizeType GetSize( ) const; 
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Get value as string
 			///
 			////////////////////////////////////////////////////////////////
-			const std::string &  AsString( ) const;
+			const std::string & AsString( ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get value as number
 			///
 			////////////////////////////////////////////////////////////////
 			Float64 AsNumber( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value as integer(number).
+			///
+			////////////////////////////////////////////////////////////////
+			Int32 AsInteger( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value as bool
+			///
+			////////////////////////////////////////////////////////////////
+			Bool AsBoolean( ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get value from object.
@@ -134,6 +297,12 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Value & operator [ ] ( const std::string & p_Key );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value from array
+			///
+			////////////////////////////////////////////////////////////////
+			Value & operator [ ] ( const SizeType & p_Index );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Assign the value antother value
@@ -150,6 +319,18 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Value & operator = ( const Float64 & p_Number );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Assign the value an integer(number).
+			///
+			////////////////////////////////////////////////////////////////
+			Value & operator = ( const Int32 & p_Integer );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Assign the value a character array. (string)
+			///
+			////////////////////////////////////////////////////////////////
+			Value & operator = ( const char * p_Characters );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Assign the value a string
@@ -192,11 +373,12 @@ namespace Bit
 			// Private unions
 			union ValueHolder
 			{
-				std::string * String;
-				Float64 Number;
-				Bool Boolean;
-				ValueVector * Array;
-				ValueMap * Object;
+				std::string * String;	///< String.
+				Float64 FloatingPoint;	///< Number.
+				Int32 Integer;			///< Number.
+				Bool Boolean;			///< Boolean.
+				ValueVector * Array;	///< Array.
+				ValueMap * Object;		///< Object.
 
 			};
 
@@ -226,8 +408,9 @@ namespace Bit
 			void CopyValue( const Value & p_From, Value & p_To ) const;
 
 			// Private varaibles
-			eType m_Type;
-			ValueHolder m_Value;
+			eType m_Type;			///< The data type of the value.
+			ValueHolder m_Value;	///< The value.
+			Bool m_IntegerFag;		///< Indicates if the number data type is an integer of floating point.
 			
 		};
 

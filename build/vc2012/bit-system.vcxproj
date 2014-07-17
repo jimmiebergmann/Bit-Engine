@@ -23,7 +23,6 @@
     <ClInclude Include="..\..\include\Bit\NonCopyable.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Angle.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Bencode\Bencode.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Reader.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Value.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode\Writer.hpp" />
@@ -64,13 +63,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\System\Angle.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Bencode\Reader.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Bencode\Value.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Bencode\Writer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Bencode\BencodeReader.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Bencode\BencodeValue.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Bencode\BencodeWriter.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Hash.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Json\Reader.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Json\Value.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Json\Writer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Json\JsonReader.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Json\JsonValue.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Json\JsonWriter.cpp" />
     <ClCompile Include="..\..\source\Bit\System\MatrixManager.cpp" />
     <ClCompile Include="..\..\source\Bit\System\MemoryLeak.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />

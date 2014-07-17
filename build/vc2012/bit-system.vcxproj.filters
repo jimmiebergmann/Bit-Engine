@@ -19,9 +19,6 @@
     <ClInclude Include="..\..\include\Bit\System\Win32\MutexWin32.hpp">
       <Filter>Win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\System\Bencode\Bencode.hpp">
-      <Filter>Bencode</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\Bit\System\Bencode\Reader.hpp">
       <Filter>Bencode</Filter>
     </ClInclude>
@@ -77,15 +74,6 @@
     <ClCompile Include="..\..\source\Bit\System\Win32\ThreadWin32.cpp">
       <Filter>Win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\System\Bencode\Reader.cpp">
-      <Filter>Bencode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\System\Bencode\Value.cpp">
-      <Filter>Bencode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\System\Bencode\Writer.cpp">
-      <Filter>Bencode</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\Bit\System\MemoryLeak.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp">
       <Filter>Win32</Filter>
@@ -99,14 +87,23 @@
     <ClCompile Include="..\..\source\Bit\System\Version.cpp" />
     <ClCompile Include="..\..\source\Bit\System\MatrixManager.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Angle.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Json\Reader.cpp">
+    <ClCompile Include="..\..\source\Bit\System\Json\JsonReader.cpp">
       <Filter>Json</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\System\Json\Value.cpp">
+    <ClCompile Include="..\..\source\Bit\System\Json\JsonValue.cpp">
       <Filter>Json</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\System\Json\Writer.cpp">
+    <ClCompile Include="..\..\source\Bit\System\Json\JsonWriter.cpp">
       <Filter>Json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Bencode\BencodeReader.cpp">
+      <Filter>Bencode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Bencode\BencodeValue.cpp">
+      <Filter>Bencode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Bencode\BencodeWriter.cpp">
+      <Filter>Bencode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
