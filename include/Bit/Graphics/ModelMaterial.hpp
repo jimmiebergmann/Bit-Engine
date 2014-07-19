@@ -21,12 +21,13 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-
+/*
 #ifndef BIT_GRAPHICS_MODEL_MATERIAL_HPP
 #define BIT_GRAPHICS_MODEL_MATERIAL_HPP
 
 #include <Bit/Build.hpp>
 #include <Bit/NonCopyable.hpp>
+#include <Bit/System/Json/Value.hpp>
 #include <string>
 
 namespace Bit
@@ -40,7 +41,7 @@ namespace Bit
 	/// \ingroup Graphics
 	/// \brief 3D model material class.
 	///
-	/// Default properties:
+	/// Default property names:
 	///		- Color			( RGB : 0.0f - 1.0f each channel )
 	///		- Opacity		( 0.0f - 1.0f )
 	///		- Shininess		( 0.0f - 1.0f )
@@ -51,19 +52,10 @@ namespace Bit
 	/// \see Model
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API ModelMaterial/* : public NonCopyable*/
+	class BIT_API ModelMaterial
 	{
 
 	public:
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Default properties enumerator.
-		///
-		////////////////////////////////////////////////////////////////
-		/*enum eDefaultProperties
-		{
-			Color
-		};*/
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor.
@@ -82,10 +74,11 @@ namespace Bit
 	private:
 
 		// Private variables
-		//Uint8
+		Json::Value m_Properties;
 
 	};
 
 }
 
 #endif
+*/

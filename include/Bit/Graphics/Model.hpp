@@ -30,6 +30,7 @@
 #include <Bit/Graphics/ModelMaterial.hpp>
 #include <Bit/Graphics/Model/ModelVertexData.hpp>
 #include <Bit/Graphics/Model/Skeleton.hpp>
+#include <Bit/System/Json/Value.hpp>
 #include <string>
 
 namespace Bit
@@ -53,6 +54,13 @@ namespace Bit
 	///
 	/// Current model formats supported:
 	///		- OBJ
+	///
+	/// Default material property names:
+	///		- Color			( RGBA : 0.0f - 1.0f each channel )
+	///		- Shininess		( 0.0f - 1.0f )
+	///		- ColorMap		( Color texture path )
+	///		- NormalMap		( Normal texture path )
+	///		- SpecularMap	( Specular texture path );
 	///
 	/// \see ModelRenderer
 	/// \see ModelVertexData
@@ -111,7 +119,7 @@ namespace Bit
 	private:
 
 		// Private typedefs
-		typedef std::vector<ModelMaterial*> ModelMaterialVector;
+		typedef std::vector<Json::Value *> ModelMaterialVector;
 
 		// Private functions
 

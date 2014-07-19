@@ -44,7 +44,7 @@ namespace Bit
 											const Vector3f32 p_EmissiveColor,
 											const Float32 p_Shininess,
 											const Float32 p_OpticalDensity,
-											const std::string p_AmbienTexture,
+											const std::string p_AmbientTexture,
 											const std::string p_DiffuseTexture,
 											const std::string p_SpecularTexture,
 											const std::string p_ShininessTexture,
@@ -59,7 +59,7 @@ namespace Bit
 		m_EmissiveColor( p_EmissiveColor ),
 		m_Shininess( p_Shininess ),
 		m_OpticalDensity( p_OpticalDensity ),
-		m_AmbienTexture( p_AmbienTexture ),
+		m_AmbientTexture( p_AmbientTexture ),
 		m_DiffuseTexture( p_DiffuseTexture ),
 		m_SpecularTexture( p_SpecularTexture ),
 		m_ShininessTexture( p_ShininessTexture ),
@@ -69,9 +69,165 @@ namespace Bit
 	{
 	}
 
+	void ObjMaterialFile::Material::SetName( const std::string & p_Name )
+	{
+		m_Name = p_Name;
+	}
+
+	void ObjMaterialFile::Material::SetIllum( const Uint8 p_Illum )
+	{
+		m_Illum = p_Illum;
+	}
+
+	void ObjMaterialFile::Material::SetAmbientColor( const Vector3f32 & p_AmbientColor )
+	{
+		m_AmbientColor = p_AmbientColor;
+	}
+
+	void ObjMaterialFile::Material::SetDiffuseColor( const Vector3f32 & p_DiffuseColor )
+	{
+		m_DiffuseColor = p_DiffuseColor;
+	}
+
+	void ObjMaterialFile::Material::SetSpecularColor( const Vector3f32 & p_SpecularColor )
+	{
+		m_SpecularColor = p_SpecularColor;
+	}
+
+	void ObjMaterialFile::Material::SetEmissiveColor( const Vector3f32 & p_EmissiveColor )
+	{
+		m_EmissiveColor = p_EmissiveColor;
+	}
+	
+	void ObjMaterialFile::Material::SetShininess( const Float32 p_Shininess )
+	{
+		m_Shininess = p_Shininess;
+	}
+
+	void ObjMaterialFile::Material::SetOpticalDensity( const Float32 p_OpticalDensity )
+	{
+		m_OpticalDensity = p_OpticalDensity;
+	}
+
+	void ObjMaterialFile::Material::SetAmbientTexture( const std::string & p_AmbientTexture )
+	{
+		m_AmbientTexture = p_AmbientTexture;
+	}
+
+	void ObjMaterialFile::Material::SetDiffuseTexture( const std::string & p_DiffuseTexture )
+	{
+		m_DiffuseTexture = p_DiffuseTexture;
+	}
+
+	void ObjMaterialFile::Material::SetSpecularTexture( const std::string & p_SpecularTexture )
+	{
+		m_SpecularTexture = p_SpecularTexture;
+	}
+
+	void ObjMaterialFile::Material::SetShininessTexture( const std::string & p_ShininessTexture )
+	{
+		m_ShininessTexture = p_ShininessTexture;
+	}
+
+	void ObjMaterialFile::Material::SetEmissiveTexture( const std::string & p_EmissiveTexture )
+	{
+		m_EmissiveTexture = p_EmissiveTexture;
+	}
+
+	void ObjMaterialFile::Material::SetDisplacementTexture( const std::string & p_DisplacementTexture )
+	{
+		m_DisplacementTexture = p_DisplacementTexture;
+	}
+
+	void ObjMaterialFile::Material::SetBumpTexture( const std::string & p_BumpTexture )
+	{
+		m_BumpTexture = p_BumpTexture;
+	}
+
+	const std::string & ObjMaterialFile::Material::GetName( ) const
+	{
+		return m_Name;
+	}
+
+	Uint8 ObjMaterialFile::Material::GetIllum( const Uint8 ) const
+	{
+		return m_Illum;
+	}
+
+	const Vector3f32 & ObjMaterialFile::Material::GetAmbientColor( ) const
+	{
+		return m_AmbientColor;
+	}
+
+	const Vector3f32 & ObjMaterialFile::Material::GetDiffuseColor( ) const
+	{
+		return m_DiffuseColor;
+	}
+
+	const Vector3f32 & ObjMaterialFile::Material::GetSpecularColor( ) const
+	{
+		return m_SpecularColor;
+	}
+
+	const Vector3f32 & ObjMaterialFile::Material::GetEmissiveColor( ) const
+	{
+		return m_EmissiveColor;
+	}
+
+	Float32 ObjMaterialFile::Material::GetShininess( ) const
+	{
+		return m_Shininess;
+	}
+
+	Float32 ObjMaterialFile::Material::GetOpticalDensity( ) const
+	{
+		return m_OpticalDensity;
+	}
+
+	const std::string & ObjMaterialFile::Material::GetAmbientTexture( ) const
+	{
+		return m_AmbientTexture;
+	}
+
+	const std::string & ObjMaterialFile::Material::GetDiffuseTexture( ) const
+	{
+		return m_DiffuseTexture;
+	}
+
+	const std::string & ObjMaterialFile::Material::GetSpecularTexture( ) const
+	{
+		return m_SpecularTexture;
+	}
+
+	const std::string & ObjMaterialFile::Material::GetShininessTexture( ) const
+	{
+		return m_ShininessTexture;
+	}
+
+	const std::string & ObjMaterialFile::Material::GetEmissiveTexture( ) const
+	{
+		return m_EmissiveTexture;
+	}
+
+	const std::string & ObjMaterialFile::Material::GetDisplacementTexture( ) const
+	{
+		return m_DisplacementTexture;
+	}
+
+	const std::string & ObjMaterialFile::Material::GetBumpTexture( ) const
+	{
+		return m_BumpTexture;
+	}
+
+
 	// Material file class
 	ObjMaterialFile::ObjMaterialFile( )
 	{
+	}
+
+	ObjMaterialFile::~ObjMaterialFile( )
+	{
+		Clear( );
 	}
 
 	Bool ObjMaterialFile::LoadFromMemory( const std::string & p_Memory )
@@ -238,7 +394,7 @@ namespace Bit
 			else if( keyword == "map_ka" )
 			{
 				p_Stream >> string;
-				pMaterial->m_AmbienTexture = string;
+				pMaterial->m_AmbientTexture = string;
 			}
 			else if( keyword == "map_kd" )
 			{

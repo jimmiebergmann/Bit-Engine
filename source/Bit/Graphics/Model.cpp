@@ -32,6 +32,10 @@
 #include <algorithm>
 #include <Bit/System/MemoryLeak.hpp>
 
+#if defined( BIT_PLATFORM_WINDOWS )
+#undef min
+#endif
+
 namespace Bit
 {
 	Model::Model( const GraphicDevice & p_GraphicDevice ) :
@@ -41,6 +45,10 @@ namespace Bit
 
 	Model::~Model( )
 	{
+		for( ModelMaterialVector::size_type i = 0; i < m_Materials.size( ); i++ )
+		{
+			delete m_Materials[ i ];
+		}
 	}
 
 	Bool  Model::LoadFromFile( const std::string & p_Filename )
@@ -203,10 +211,40 @@ namespace Bit
 		// Get the materials from the OBJ material file
 		for( SizeType i = 0; i < objMaterial.GetMaterialCount( ); i++ )
 		{
+			// Get the obj material
 			const ObjMaterialFile::Material & material = objMaterial.GetMaterial( i );
 
-			// Add default properties.
+			// Create a new json material value
+			Json::Value * pValue = new Json::Value;
 
+			// Add default properties.
+			
+			// Add color
+			(*pValue)[ "Color" ][ "r" ] = material.GetDiffuseColor( ).x;
+			(*pValue)[ "Color" ][ "g" ] = material.GetDiffuseColor( ).y;
+			(*pValue)[ "Color" ][ "b" ] = material.GetDiffuseColor( ).z;
+			(*pValue)[ "Color" ][ "a" ] = material.GetOpticalDensity( );
+
+			// Add shininess
+			if( material.GetShininess( ) > 0.0f )
+			{
+				(*pValue)[ "Shininess" ] = std::min( material.GetShininess( ), 1.0f );
+			}
+
+			// Add color map
+			if( material.GetAmbientTexture( ).size( ) )
+			{
+				(*pValue)[ "ColorMap" ] = material.GetAmbientTexture( );
+			}
+
+			// Add normal map
+			if( material.GetBumpTexture( ).size( ) )
+			{
+				(*pValue)[ "NormalMap" ] = material.GetBumpTexture( );
+			}
+
+			// Add the material to the vector.
+			m_Materials.push_back( pValue );
 		}
 
 		// Succeeded
