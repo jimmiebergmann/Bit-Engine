@@ -523,7 +523,7 @@ namespace Bit
 		{
 			// Set the value type
 			p_Value.m_Type = Value::Number;
-			p_Value.m_IntegerFag = true;
+			p_Value.m_IntegerFlag = true;
 
 			// Usefil varaibles.
 			std::string digits = "";
@@ -557,7 +557,7 @@ namespace Bit
 
 						// Set the floating point flags to true.
 						floatingPointFlag = true;
-						p_Value.m_IntegerFag = false;
+						p_Value.m_IntegerFlag = false;
 					}
 
 					// Add the character to the digit string.
@@ -651,7 +651,7 @@ namespace Bit
 			// Add the exponent to the number
 			if( exponentPositive )
 			{
-				if( p_Value.m_IntegerFag )
+				if( p_Value.m_IntegerFlag )
 				{
 					for( Int32 i = 0; i < exponent; i++ )
 					{
@@ -668,7 +668,7 @@ namespace Bit
 			}
 			else
 			{
-				if( p_Value.m_IntegerFag )
+				if( p_Value.m_IntegerFlag )
 				{
 					for( Int32 i = 0; i < exponent; i++ )
 					{

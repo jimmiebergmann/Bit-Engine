@@ -416,7 +416,7 @@ namespace Bit
 			// Private varaibles
 			eType m_Type;			///< The data type of the value.
 			ValueHolder m_Value;	///< The value.
-			Bool m_IntegerFag;		///< Indicates if the number data type is an integer of floating point.
+			Bool m_IntegerFlag;		///< Indicates if the number data type is an integer of floating point.
 			
 		};
 

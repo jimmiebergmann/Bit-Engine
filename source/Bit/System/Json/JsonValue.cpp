@@ -159,7 +159,7 @@ namespace Bit
 			// Create a value and push it to the vector
 			Value * pValue = new Value( Number );
 			pValue->m_Value.FloatingPoint = p_Number;
-			pValue->m_IntegerFag = false;
+			pValue->m_IntegerFlag = false;
 			m_Value.Array->push_back( pValue );
 		}
 
@@ -178,7 +178,7 @@ namespace Bit
 			// Create a value and push it to the vector
 			Value * pValue = new Value( Number );
 			pValue->m_Value.Integer = p_Integer;
-			pValue->m_IntegerFag = true;
+			pValue->m_IntegerFlag = true;
 			m_Value.Array->push_back( pValue );
 		}
 
@@ -412,7 +412,7 @@ namespace Bit
 
 		Bool Value::GetIntegerFlag( ) const
 		{
-			return m_IntegerFag;
+			return m_IntegerFlag;
 		}
 
 		const std::string & Value::AsString( ) const
@@ -435,7 +435,7 @@ namespace Bit
 				case Number:
 				{
 					std::stringstream ss;
-					if( m_IntegerFag )
+					if( m_IntegerFlag )
 					{
 						ss << m_Value.Integer;
 					}
@@ -502,7 +502,7 @@ namespace Bit
 				break;
 				case Number:
 				{
-					if( m_IntegerFag )
+					if( m_IntegerFlag )
 					{
 						return static_cast<Float64>( m_Value.Integer );
 					}
@@ -565,7 +565,7 @@ namespace Bit
 				break;
 				case Number:
 				{
-					if( m_IntegerFag )
+					if( m_IntegerFlag )
 					{
 						return m_Value.Integer;
 					}
@@ -614,7 +614,7 @@ namespace Bit
 				break;
 				case Number:
 				{
-					if( m_IntegerFag )
+					if( m_IntegerFlag )
 					{
 						return m_Value.Integer >= 1 ? true : false;
 					}
@@ -719,7 +719,7 @@ namespace Bit
 			}
 
 			// Set the integer flag
-			m_IntegerFag = false;
+			m_IntegerFlag = false;
 
 			// Set the string data.
 			m_Value.FloatingPoint = p_Number;
@@ -738,7 +738,7 @@ namespace Bit
 			}
 
 			// Set the integer flag
-			m_IntegerFag = true;
+			m_IntegerFlag = true;
 
 			// Set the string data.
 			m_Value.Integer = p_Integer;
@@ -808,9 +808,9 @@ namespace Bit
 				case Number:
 				{
 					p_To.m_Type = Number;
-					p_To.m_IntegerFag = p_From.m_IntegerFag;
+					p_To.m_IntegerFlag = p_From.m_IntegerFlag;
 
-					if( p_From.m_IntegerFag )
+					if( p_From.m_IntegerFlag )
 					{
 						p_To.m_Value.Integer = p_From.m_Value.Integer;
 					}

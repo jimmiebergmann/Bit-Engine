@@ -249,7 +249,7 @@ namespace Bit
 		void Writer::SetNumberString( const Value & p_Value, std::string & p_Output ) const
 		{
 			// Check if this is an integer or floating point number
-			if( p_Value.m_IntegerFag )
+			if( p_Value.m_IntegerFlag )
 			{
 				// Turn the integer into a string via a string stream.
 				std::stringstream ss;
@@ -538,7 +538,7 @@ namespace Bit
 		void StyledWriter::SetNumberString( const Value & p_Value, std::string & p_Output ) const
 		{
 			// Check if this is an integer or floating point number
-			if( p_Value.m_IntegerFag )
+			if( p_Value.m_IntegerFlag )
 			{
 				// Turn the integer into a string via a string stream.
 				std::stringstream ss;
