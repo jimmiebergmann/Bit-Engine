@@ -189,6 +189,9 @@ namespace Bit
 						return false;
 					}
 
+					// Increment the position
+					p_Position++;
+
 					// The object is complete
 					return true;
 				}
@@ -251,12 +254,23 @@ namespace Bit
 						return false;
 					}
 
-					// Add the integer to the dictionary
+					// Add the integer to the object
 					(*p_Value.m_Value.Object)[ key ] = value;
 				}
 				// Array value.
 				else if( p_Input[ p_Position ] == '[' )
 				{
+					// Create a value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadArray( *value, p_Input, ++p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the object
+					(*p_Value.m_Value.Object)[ key ] = value;
 				}
 				// String value.
 				else if( p_Input[ p_Position ] == '\"' )
@@ -270,7 +284,7 @@ namespace Bit
 						return false;
 					}
 
-					// Add the integer to the dictionary
+					// Add the integer to the object
 					(*p_Value.m_Value.Object)[ key ] = value;
 				}
 				// Boolean value.
@@ -285,7 +299,7 @@ namespace Bit
 						return false;
 					}
 
-					// Add the integer to the dictionary
+					// Add the integer to the object
 					(*p_Value.m_Value.Object)[ key ] = value;
 				}
 				// Number value(that's last possible value ).
@@ -300,8 +314,142 @@ namespace Bit
 						return false;
 					}
 
-					// Add the integer to the dictionary
+					// Add the integer to the object
 					(*p_Value.m_Value.Object)[ key ] = value;
+				}
+
+				// Check for a ','. More values are expected if we find one.
+				tempPosition = FindValidCharacter( p_Input, p_Position );
+
+				// Make sure that the position isn't out of bound.
+				if( tempPosition >= p_Input.size( ) )
+				{
+					return false;
+				}
+
+				// Check if the current character is a ':'
+				if( p_Input[ tempPosition ] == ',' )
+				{
+					p_Position = tempPosition + 1;
+					expectValue = true;
+				}
+
+			}
+
+			// Something went wrong.
+			return false;
+		}
+
+		Bool Reader::ReadArray( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const
+		{
+			// Set the value data
+			p_Value.m_Type = Value::Array;
+			p_Value.m_Value.Array = new Value::ValueVector;
+
+			// Keep on reading values
+			Bool expectValue = false;
+			SizeType tempPosition = 0;
+			while( p_Position < p_Input.size( ) )
+			{
+				// Find the next valid character
+				p_Position = FindValidCharacter( p_Input, p_Position );
+
+				// Is this the end of this array?
+				if( p_Input[ p_Position ] == ']' )
+				{
+					// The object is not complete. We are expecting more values.
+					if( expectValue == true )
+					{
+						return false;
+					}
+					
+					// Increment the position
+					p_Position++;
+
+					// The object is complete
+					return true;
+				}
+
+				// Reset the expect value flag
+				expectValue = false;
+
+				// Now when we have the key word, read the value followed by the key.
+				// Find the right value type by checking the current value
+				
+				// Object value.
+				if( p_Input[ p_Position ] == '{' )
+				{
+					// Create a value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadObject( *value, p_Input, ++p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the array
+					(*p_Value.m_Value.Array).push_back( value );
+				}
+				// Array value.
+				else if( p_Input[ p_Position ] == '[' )
+				{
+					// Create a value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadArray( *value, p_Input, ++p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the array
+					(*p_Value.m_Value.Array).push_back( value );
+				}
+				// String value.
+				else if( p_Input[ p_Position ] == '\"' )
+				{
+					// Create a value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadString( *value, p_Input, ++p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the array
+					(*p_Value.m_Value.Array).push_back( value );
+				}
+				// Boolean value.
+				else if( p_Input[ p_Position ] == 't' || p_Input[ p_Position ] == 'f' )
+				{
+					// Create a value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadBoolean( *value, p_Input, p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the array
+					(*p_Value.m_Value.Array).push_back( value );
+				}
+				// Number value(that's last possible value ).
+				else
+				{
+					// Create a value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadNumber( *value, p_Input, p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the dictionary
+					(*p_Value.m_Value.Array).push_back( value );
 				}
 
 				// Check for a ','. More values are expected if we find one.
