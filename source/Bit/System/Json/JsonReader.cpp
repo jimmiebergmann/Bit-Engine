@@ -302,6 +302,21 @@ namespace Bit
 					// Add the integer to the object
 					(*p_Value.m_Value.Object)[ key ] = value;
 				}
+				// NULL value
+				else if( p_Input[ p_Position ] == 'n' )
+				{
+					// Create a value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadNull( *value, p_Input, p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the array
+					(*p_Value.m_Value.Object)[ key ] = value;
+				}
 				// Number value(that's last possible value ).
 				else
 				{
@@ -429,6 +444,21 @@ namespace Bit
 						
 					// Read the integer
 					if( ReadBoolean( *value, p_Input, p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the array
+					(*p_Value.m_Value.Array).push_back( value );
+				}
+				// NULL value
+				else if( p_Input[ p_Position ] == 'n' )
+				{
+					// Create a value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadNull( *value, p_Input, p_Position ) == false )
 					{
 						return false;
 					}
@@ -711,6 +741,28 @@ namespace Bit
 					// Succeeded.
 					return true;
 				}
+			}
+
+			// Something failed.
+			return false;
+		}
+
+		Bool Reader::ReadNull( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const		
+		{
+			// Error check the size
+			if( p_Position >= p_Input.size( ) + 3 )
+			{
+				return false;
+			}
+
+			// Check if this a null value.
+			if( p_Input[ p_Position ] == 'n' &&
+				p_Input[ p_Position + 1 ] == 'u' &&
+				p_Input[ p_Position + 2] == 'l' &&
+				p_Input[ p_Position + 3] == 'l' )
+			{
+				p_Position += 4;
+				return true;
 			}
 
 			// Something failed.

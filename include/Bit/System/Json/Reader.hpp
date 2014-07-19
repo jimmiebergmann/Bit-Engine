@@ -135,6 +135,12 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Bool ReadBoolean( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const;			
 			
+			////////////////////////////////////////////////////////////////
+			/// \brief Read NULL
+			///
+			////////////////////////////////////////////////////////////////
+			Bool ReadNull( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const;			
+			
 		};
 
 	}
