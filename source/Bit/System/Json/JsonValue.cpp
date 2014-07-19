@@ -410,6 +410,11 @@ namespace Bit
 			return static_cast<SizeType>( m_Value.Array->size( ) );
 		}
 
+		Bool Value::GetIntegerFlag( ) const
+		{
+			return m_IntegerFag;
+		}
+
 		const std::string & Value::AsString( ) const
 		{
 			// Switch the type in order to know which method you

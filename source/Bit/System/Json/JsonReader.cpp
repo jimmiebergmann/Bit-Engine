@@ -23,6 +23,7 @@
 
 #include <Bit/System/Json/Reader.hpp>
 #include <fstream>
+#include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -241,7 +242,7 @@ namespace Bit
 				// Object value.
 				if( p_Input[ p_Position ] == '{' )
 				{
-					// Create a object value
+					// Create a value
 					Value * value = new Value( );
 						
 					// Read the integer
@@ -260,7 +261,7 @@ namespace Bit
 				// String value.
 				else if( p_Input[ p_Position ] == '\"' )
 				{
-					// Create a string value
+					// Create a value
 					Value * value = new Value( );
 						
 					// Read the integer
@@ -275,7 +276,7 @@ namespace Bit
 				// Boolean value.
 				else if( p_Input[ p_Position ] == 't' || p_Input[ p_Position ] == 'f' )
 				{
-					// Create a string value
+					// Create a value
 					Value * value = new Value( );
 						
 					// Read the integer
@@ -290,6 +291,17 @@ namespace Bit
 				// Number value(that's last possible value ).
 				else
 				{
+					// Create a value
+					Value * value = new Value( );
+						
+					// Read the integer
+					if( ReadNumber( *value, p_Input, p_Position ) == false )
+					{
+						return false;
+					}
+
+					// Add the integer to the dictionary
+					(*p_Value.m_Value.Object)[ key ] = value;
 				}
 
 				// Check for a ','. More values are expected if we find one.
@@ -326,6 +338,175 @@ namespace Bit
 			// Set the value data
 			p_Value.m_Type = Value::String;
 			p_Value.m_Value.String = new std::string( string );
+			return true;
+		}
+
+		Bool Reader::ReadNumber( Value & p_Value, const std::string & p_Input, SizeType & p_Position ) const
+		{
+			// Set the value type
+			p_Value.m_Type = Value::Number;
+			p_Value.m_IntegerFag = true;
+
+			// Usefil varaibles.
+			std::string digits = "";
+			Bool floatingPointFlag = false;
+
+			// Check if the number is negative
+			if( p_Input[ p_Position ] == '-' )
+			{
+				// Increment the position
+				p_Position++;
+
+				// Add a '-' sign to the digit string
+				digits += "-";
+			}
+
+			// Read digits
+			for( ; p_Position < p_Input.size( ); p_Position++ )
+			{
+				if( (	p_Input[ p_Position ] >= '0' &&
+						p_Input[ p_Position ] <= '9' ) ||
+					p_Input[ p_Position ] == '.' )
+				{
+					// Check if this is a dot.
+					if( p_Input[ p_Position ] == '.' )
+					{
+						// Make sure that this is the first time we read a dot
+						if( floatingPointFlag )
+						{
+							return false;
+						}
+
+						// Set the floating point flags to true.
+						floatingPointFlag = true;
+						p_Value.m_IntegerFag = false;
+					}
+
+					// Add the character to the digit string.
+					digits += p_Input[ p_Position ];
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			// Check if we got any digits at all.
+			if( digits.size( ) == 0 )
+			{
+				return false;
+			}
+			else if(	digits.size( ) == 1 &&
+						digits[ 0 ] == '-' )
+			{
+				return false;
+			}
+
+			// Get the number from the digit string
+			std::stringstream digitSs;
+			digitSs << digits;
+
+			if( floatingPointFlag )
+			{
+				digitSs >> p_Value.m_Value.FloatingPoint;
+			}
+			else
+			{
+				digitSs >> p_Value.m_Value.Integer;
+			}
+
+			// Check if we're done, or if we have an exponent as well.
+			if( p_Position + 1 <= p_Input.size( ) &&
+				::tolower( p_Input[ p_Position ] ) != 'e' )
+			{
+				return true;
+			}
+
+			// We have an exponent we need to handle...
+			Bool exponentPositive = true;
+			std::string expDigit = "";
+
+			// Increment the position( we've already read the 'e' character )
+			p_Position++;
+
+			// Check if there's a '+' or '-' sign
+			if( p_Input[ p_Position ] == '+' )
+			{
+				// Increment the position, ignore the sign, the exponent is already positive.
+				p_Position++;
+			}
+			else if( p_Input[ p_Position ] == '-' )
+			{
+				// Set the positive flag
+				exponentPositive = false;
+
+				// Increment the position, ignore the sign, the exponent is already positive.
+				p_Position++;
+			}
+
+			// Read the exponent digit
+			for( ; p_Position < p_Input.size( ); p_Position++ )
+			{
+				if(	p_Input[ p_Position ] >= '0' &&
+					p_Input[ p_Position ] <= '9' )
+				{
+					expDigit = p_Input[ p_Position ];
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			// Error check the exponent
+			if( expDigit.size( ) == 0 )
+			{
+				return false;
+			}
+
+			// Get the exponent digit as an integer
+			Int32 exponent = 0;
+			std::stringstream expSs;
+			expSs << expDigit;
+			expSs >> exponent;
+
+			// Add the exponent to the number
+			if( exponentPositive )
+			{
+				if( p_Value.m_IntegerFag )
+				{
+					for( Int32 i = 0; i < exponent; i++ )
+					{
+						p_Value.m_Value.Integer *= 10;
+					}
+				}
+				else
+				{
+					for( Int32 i = 0; i < exponent; i++ )
+					{
+						p_Value.m_Value.FloatingPoint *= 10.0f;
+					}
+				}
+			}
+			else
+			{
+				if( p_Value.m_IntegerFag )
+				{
+					for( Int32 i = 0; i < exponent; i++ )
+					{
+						p_Value.m_Value.Integer /= 10;
+					}
+				}
+				else
+				{
+					for( Int32 i = 0; i < exponent; i++ )
+					{
+						p_Value.m_Value.FloatingPoint /= 10.0f;
+					}
+				}
+			}
+
+			// Succeeded
 			return true;
 		}
 
