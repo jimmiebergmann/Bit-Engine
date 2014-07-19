@@ -35,11 +35,177 @@ namespace Bit
 		// Global varaibles
 		static std::string g_EmptyString		= "";
 		static std::string g_TemporaryString	= "";
-		static std::string g_BooleanTrueString	= "True";
-		static std::string g_BooleanFalseString	= "False";
+		static std::string g_BooleanTrueString	= "true";
+		static std::string g_BooleanFalseString	= "false";
 		static std::string g_NullString			= "[Null]";
 		static std::string g_ObjectString		= "[Object]";
 		static std::string g_ArrayString		= "[Array]";
+
+		// ///////////////////////////////////////////////////////////////
+		// Iterator class
+
+		Value::Iterator::Iterator( ) :
+			m_pVectorIterator( NULL ),
+			m_pMapIterator( NULL )
+		{
+		}
+			
+		Value::Iterator::Iterator( ValueVector::iterator p_VectorIterator ) :
+			m_pVectorIterator( new ValueVector::iterator ),
+			m_pMapIterator( NULL )
+		{
+			*m_pVectorIterator = p_VectorIterator;
+		}
+				
+		Value::Iterator::Iterator( ValueMap::iterator p_MapIterator ) :
+			m_pVectorIterator( NULL ),
+			m_pMapIterator( new ValueMap::iterator )
+		{
+			*m_pMapIterator = p_MapIterator;
+		}
+
+		Value::Iterator::Iterator( const Iterator & p_Iterator ) :
+			m_pVectorIterator( NULL ),
+			m_pMapIterator( NULL )
+		{
+			AssignIterator( p_Iterator );
+		}
+
+		Value::Iterator::~Iterator( )
+		{
+			if( m_pVectorIterator )
+			{
+				delete m_pVectorIterator;
+			}
+
+			if( m_pMapIterator )
+			{
+				delete m_pMapIterator;
+			}
+		}
+				
+		Value & Value::Iterator::GetValue( ) const
+		{
+			if( m_pVectorIterator )
+			{
+				return *(*(*m_pVectorIterator) );
+			}
+			else if( m_pMapIterator )
+			{
+				return *(*m_pMapIterator)->second;
+			}
+
+			// Something failed.
+			s_DefaultValue = Value::NullValue;
+			return s_DefaultValue;
+		}
+				
+		const std::string & Value::Iterator::GetKey( ) const
+		{
+			if( m_pVectorIterator )
+			{
+				return g_EmptyString;
+			}
+			else if( m_pMapIterator )
+			{
+				return (*m_pMapIterator)->first;
+			}
+
+			// Something failed.
+			return g_EmptyString;
+		}
+			
+		Bool Value::Iterator::operator == ( const Iterator & p_Iterator ) const
+		{
+			if( m_pVectorIterator && p_Iterator.m_pVectorIterator )
+			{
+				return (*m_pVectorIterator) == (*p_Iterator.m_pVectorIterator);
+			}
+			else if( m_pMapIterator && p_Iterator.m_pMapIterator )
+			{
+				return (*m_pMapIterator) == (*p_Iterator.m_pMapIterator);
+			}
+
+			// Something failed.
+			return false;
+		}
+			
+		Bool Value::Iterator::operator != ( const Iterator & p_Iterator ) const
+		{
+			if( m_pVectorIterator && p_Iterator.m_pVectorIterator )
+			{
+				return (*m_pVectorIterator) != (*p_Iterator.m_pVectorIterator);
+			}
+			else if( m_pMapIterator && p_Iterator.m_pMapIterator )
+			{
+				return (*m_pMapIterator) != (*p_Iterator.m_pMapIterator);
+			}
+
+			// Something failed.
+			return false;
+		}
+
+		Value::Iterator & Value::Iterator::operator = ( const Iterator & p_Iterator )
+		{
+			return AssignIterator( p_Iterator );
+		}
+
+		Value::Iterator & Value::Iterator::operator ++ ( int p_Dummy )
+		{
+			if( m_pVectorIterator )
+			{
+				(*m_pVectorIterator)++;
+			}
+			else if( m_pMapIterator )
+			{
+				(*m_pMapIterator)++;
+			}
+
+			// Return the reference of this iterator.
+			return const_cast<Iterator &>( *this );
+		}
+
+		Value::Iterator & Value::Iterator::AssignIterator( const Iterator & p_Iterator )
+		{
+			if( p_Iterator.m_pVectorIterator )
+			{
+				// Delete old pointers
+				if( m_pVectorIterator )
+				{
+					delete m_pVectorIterator;
+				}
+				if( m_pMapIterator )
+				{
+					delete m_pMapIterator;
+				}
+
+				// Allocate and set the new value.
+				m_pVectorIterator = new ValueVector::iterator;
+				*m_pVectorIterator = *p_Iterator.m_pVectorIterator;
+			}
+			else if( p_Iterator.m_pMapIterator )
+			{
+				// Delete old pointers
+				if( m_pVectorIterator )
+				{
+					delete m_pVectorIterator;
+				}
+				if( m_pMapIterator )
+				{
+					delete m_pMapIterator;
+				}
+
+				// Allocate and set the new value.
+				m_pMapIterator = new ValueMap::iterator;
+				*m_pMapIterator = *p_Iterator.m_pMapIterator;
+			}
+
+			// Return the reference of this iterator.
+			return const_cast<Iterator &>( *this );
+		}
+
+		// ///////////////////////////////////////////////////////////////
+		// Value class
 
 		// Static variable members
 		const Value Value::NullValue( Null );
@@ -71,6 +237,87 @@ namespace Bit
 		Value::~Value( )
 		{
 			Clear( );
+		}
+
+		Value::Iterator Value::IteratorBegin( ) const
+		{
+			Iterator itNullDefault;
+
+			switch ( m_Type)
+			{
+				case Object:
+				{
+					// Error check the pointer
+					if( m_Value.Object == NULL )
+					{
+						// Return default iterator.
+						return itNullDefault;
+					}
+
+					Iterator itObject( m_Value.Object->begin( ) );
+					return itObject;
+				}
+				break;
+				case Array:
+				{
+					// Error check the pointer
+					if( m_Value.Array == NULL )
+					{
+						// Return default iterator.
+						return itNullDefault;
+					}
+
+					Iterator itArray( m_Value.Array->begin( ) );
+					return itArray;
+				}
+				break;
+				default:
+					break;
+			}
+
+			// Return default iterator.
+			return itNullDefault;
+		}
+
+		Value::Iterator Value::IteratorEnd( ) const
+		{
+			switch ( m_Type)
+			{
+				case Object:
+				{
+					// Error check the pointer
+					if( m_Value.Array == NULL )
+					{
+						// Return default iterator.
+						Iterator it;
+						return it;
+					}
+
+					Iterator it( m_Value.Object->end( ) );
+					return it;
+				}
+				break;
+				case Array:
+				{
+					// Error check the pointer
+					if( m_Value.Array == NULL )
+					{
+						// Return default iterator.
+						Iterator it;
+						return it;
+					}
+
+					Iterator it( m_Value.Array->end( ) );
+					return it;
+				}
+				break;
+				default:
+					break;
+			}
+
+			// Return default iterator.
+			Iterator it;
+			return it;
 		}
 
 		void Value::Clear( )
@@ -402,12 +649,16 @@ namespace Bit
 
 		SizeType Value::GetSize( ) const
 		{
-			if( m_Type != Array )
+			if( m_Type == Object && m_Value.Object )
 			{
-				return 0;
+				return static_cast<SizeType>( m_Value.Object->size( ) );
+			}
+			else if( m_Type == Array && m_Value.Array )
+			{
+				return static_cast<SizeType>( m_Value.Array->size( ) );
 			}
 
-			return static_cast<SizeType>( m_Value.Array->size( ) );
+			return 0;
 		}
 
 		Bool Value::GetIntegerFlag( ) const

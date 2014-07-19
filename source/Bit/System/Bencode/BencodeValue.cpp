@@ -315,12 +315,16 @@ namespace Bit
 
 		SizeType Value::GetSize( ) const
 		{
-			if( m_Type != List )
+			if( m_Type == Dictionary && m_Value.Dictionary )
 			{
-				return 0;
+				return static_cast<SizeType>( m_Value.Dictionary->size( ) );
+			}
+			else if( m_Type == List && m_Value.List )
+			{
+				return static_cast<SizeType>( m_Value.List->size( ) );
 			}
 
-			return static_cast<SizeType>( m_Value.List->size( ) );
+			return 0;
 		}
 		
 		const std::string & Value::AsString( ) const
