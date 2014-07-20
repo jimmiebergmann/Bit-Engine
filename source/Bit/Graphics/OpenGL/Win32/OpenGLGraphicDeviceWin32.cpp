@@ -35,6 +35,7 @@
 #include <Bit/Graphics/ModelRenderer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLModelRenderer.hpp>
 #include <iostream>
+#include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -151,6 +152,9 @@ namespace Bit
 			return false;
 		}
 
+		// Load default model settings
+		LoadDefaultModelSettings( );
+
 		// Load default shaders
 		if( LoadDefaultShaders( ) == false )
 		{
@@ -235,6 +239,12 @@ namespace Bit
 
 	void OpenGLGraphicDeviceWin32::EnableTexture( )
 	{
+		// Ignore this function call if the version is 3.x.y or newer.
+		if( m_Version.GetMajor( ) >= 3 )
+		{
+			return;
+		}
+
 		glEnable( GL_TEXTURE_2D );
 	}
 
@@ -352,6 +362,11 @@ namespace Bit
 	ShaderProgram * OpenGLGraphicDeviceWin32::GetDefaultShaderProgram( const eDefaultShaders p_DefaultShader ) const
 	{
 		return m_pDefaultShaderPrograms[ static_cast<SizeType>( p_DefaultShader ) ];
+	}
+
+	OpenGLGraphicDeviceWin32::DefaultModelSettings & OpenGLGraphicDeviceWin32::GetDefaultModelSettings( )
+	{
+		return m_DefaultModelSettings;
 	}
 
 	Bool OpenGLGraphicDeviceWin32::OpenVersion( const RenderWindow & p_RenderOutput,
@@ -490,13 +505,25 @@ namespace Bit
 			return false;
 		}
 
+		std::string maxLightCountString;
+		std::stringstream ss;
+		ss << m_DefaultModelSettings.GetMaxLightCount( );
+		ss >> maxLightCountString;
+
 		static const std::string fragmentSource =
 			"#version 330\n"
 
 			"uniform vec4 uColor;\n"
+			"uniform sampler2D colorTexture;\n"
+
+			// Light uniforms
+			"uniform int uLightCount;\n"
+			"uniform vec4 uLightPositions[" + maxLightCountString + "];\n"
+			"uniform vec3 uLightColors[" + maxLightCountString + "];\n"
+			
+			// Use flags
 			"uniform int uUseTexture;\n"
 			"uniform int uUseNormals;\n"
-			"uniform sampler2D colorTexture;\n"
 
 			"in vec2 vTextureCoord;\n"
 			"in vec3 vNormal;\n"
@@ -505,14 +532,15 @@ namespace Bit
 
 			"void main( )\n"
 			"{ \n"
-			"	vec4 finalColor = uColor;\n"
+			"	outColor = vec4( 1.0, 1.0, 1.0, 1.0 );\n"
+			/*"	vec4 finalColor = uColor;\n"
 			"	if( uUseTexture == 1 ) {\n"
 			"		finalColor *= texture2D( colorTexture, vTextureCoord );\n"
 			"	}\n"
 			"if( uUseNormals == 1 ) {\n"
 			"		finalColor *= max( min( dot( vNormal, vec3( 1.0, 0.0, 0.0 ) ) , 1.0 ), 0.1 );\n"
 			"	}\n"
-			"	outColor = finalColor;\n"
+			"	outColor = finalColor;\n"*/
 			"}\n";
 		
 		if( m_pDefaultModelFragmentShader->CompileFromMemory( fragmentSource ) == false )
@@ -562,6 +590,18 @@ namespace Bit
 
 
 		return true;
+	}
+
+
+	void OpenGLGraphicDeviceWin32::LoadDefaultModelSettings( )
+	{
+		// Set ambient color
+		m_DefaultModelSettings.SetAmbientColor( Vector3f32( 1.0f, 1.0f, 1.0f ) );
+
+		// Activate 1 light source
+		m_DefaultModelSettings.SetActiveLightCount( 1 );
+		m_DefaultModelSettings.SetLightPosition( 0, Vector3f32( 1.0f, 0.0f, 0.0f ) );
+		m_DefaultModelSettings.SetLightColor( 0, Vector3f32( 1.0f, 1.0f, 1.0f ) );
 	}
 
 }

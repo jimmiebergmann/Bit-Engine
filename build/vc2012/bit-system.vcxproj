@@ -49,6 +49,7 @@
     <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Vector4.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Version.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\KeyboardWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\MouseWin32.hpp" />
@@ -60,6 +61,7 @@
     <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
     <None Include="..\..\include\Bit\System\Vector2.inl" />
     <None Include="..\..\include\Bit\System\Vector3.inl" />
+    <None Include="..\..\include\Bit\System\Vector4.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\System\Angle.cpp" />

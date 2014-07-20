@@ -261,4 +261,21 @@ namespace Bit
 		return m_VertexData;
 	}
 
+	SizeType Model::GetMaterialCount( ) const
+	{
+		return static_cast<SizeType>( m_Materials.size( ) );
+	}
+
+	const Json::Value & Model::GetMaterial( const SizeType p_Index ) const
+	{
+		// Error check the index.
+		if( p_Index >= static_cast<SizeType>( m_Materials.size( ) ) )
+		{
+			return Json::Value::NullValue;
+		}
+
+		// Get the json material value
+		return *m_Materials[ p_Index ];
+	}
+
 }

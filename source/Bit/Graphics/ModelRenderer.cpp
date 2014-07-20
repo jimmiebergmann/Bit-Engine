@@ -92,6 +92,10 @@ namespace Bit
 		// Bind the shader program.
 		pShaderProgram->Bind( );
 		
+		// Get material data
+
+
+
 		// Set uniform data.
 		pShaderProgram->SetUniformMatrix4x4f( "uProjectionMatrix", MatrixManager::GetProjectionMatrix( ) );
 		pShaderProgram->SetUniformMatrix4x4f( "uModelViewMatrix", MatrixManager::GetModelViewMatrix( ) );

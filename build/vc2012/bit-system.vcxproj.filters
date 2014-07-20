@@ -56,12 +56,14 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\System\Json.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Bencode.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Vector4.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
     <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
     <None Include="..\..\include\Bit\System\Vector2.inl" />
     <None Include="..\..\include\Bit\System\Vector3.inl" />
+    <None Include="..\..\include\Bit\System\Vector4.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />

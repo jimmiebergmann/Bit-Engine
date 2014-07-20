@@ -153,6 +153,7 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Graphics\ModelMaterial.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\ObjMaterialFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\Graphics\ObjFile.inl" />

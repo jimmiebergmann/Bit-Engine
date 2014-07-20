@@ -28,7 +28,7 @@ inline Vector3<T>::Vector3( )
 }
 
 template <typename T>
-inline Vector3<T>::Vector3( T p_A ) :
+inline Vector3<T>::Vector3( const T p_A ) :
 	x( p_A ),
 	y( p_A ),
 	z( p_A )
@@ -36,7 +36,7 @@ inline Vector3<T>::Vector3( T p_A ) :
 }
 
 template <typename T>
-inline Vector3<T>::Vector3( T p_X, T p_Y, T p_Z ) :
+inline Vector3<T>::Vector3( const T p_X, const T p_Y, const T p_Z ) :
 	x( p_X ),
 	y( p_Y ),
 	z( p_Z )
@@ -45,7 +45,7 @@ inline Vector3<T>::Vector3( T p_X, T p_Y, T p_Z ) :
 
 template <typename T>
 template <typename U>
-inline Vector3<T>::Vector3( U p_X, U p_Y, U p_Z ) :
+inline Vector3<T>::Vector3( const U p_X, const U p_Y, const U p_Z ) :
 	x( static_cast<T>( p_X ) ),
 	y( static_cast<T>( p_Y ) ),
 	z(static_cast<T>(  p_Z ) )
@@ -184,9 +184,9 @@ inline Vector3<T> Vector3<T>::Normal( ) const
 								static_cast< T >( 0 ), static_cast< T >( 0 ) );
 	}
 
-	return Vector3<T>(	static_cast<Float64>( x ) / length,
-						static_cast<Float64>( y ) / length,
-						static_cast<Float64>( z ) / length );
+	return Vector3<T>(	static_cast<T>(	static_cast<Float64>( x ) / length ),
+						static_cast<T>( static_cast<Float64>( y ) / length ),
+						static_cast<T>( static_cast<Float64>( z ) / length ) );
 }
 
 template <typename T>
@@ -209,7 +209,7 @@ inline Vector3<T> & Vector3<T>::Normalize( )
 template <typename T>
 inline Vector3<T> Vector3<T>::Absolute( ) const
 {
-	return Vector3<T>( (T)std::abs((T)x),
+	return Vector3<T>(	(T)std::abs((T)x),
                         (T)std::abs((T)y),
                         (T)std::abs((T)z));
 }

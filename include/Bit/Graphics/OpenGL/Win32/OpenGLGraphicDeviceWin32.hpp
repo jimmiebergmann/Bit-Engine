@@ -315,6 +315,12 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual ShaderProgram * GetDefaultShaderProgram( const eDefaultShaders p_DefaultShader ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the default model properties.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual DefaultModelSettings & GetDefaultModelSettings( );
+
 	private:
 
 		// Private functions
@@ -322,6 +328,7 @@ namespace Bit
 		Bool OpenBestVersion( const RenderWindow & p_RenderOutput, Version & p_Version );
 		Bool LoadDefaultShaders( );
 		Bool UnloadDefaultShaders( );
+		void LoadDefaultModelSettings( );
 
 		// Private variables
 		Bool m_Open;									///< Is the GD open.
@@ -332,6 +339,7 @@ namespace Bit
 		ShaderProgram * m_pDefaultShaderPrograms[ 3 ];	///< Default shader programs, for example model shaders.
 		Shader * m_pDefaultModelFragmentShader;			///< Default model fragment shader.
 		Shader * m_pDefaultModelVertexShaders[ 3 ];		///< Defaukt model vertex shaders.
+		DefaultModelSettings m_DefaultModelSettings;	///< Default model settings.
 	};
 
 }

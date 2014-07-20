@@ -176,10 +176,11 @@ inline Vector2<T> Vector2<T>::Normal( ) const
 	if( bitIsNan( length ) )
 	{
 		return Vector2<T>(	static_cast< T >( 0 ),
-								static_cast< T >( 0 ) );
+							static_cast< T >( 0 ) );
 	}
 
-	return Vector2<T>( ( x / length ),( y / length ) );
+	return Vector2<T>(	static_cast<T>(	static_cast<Float64>( x ) / length ),
+						static_cast<T>( static_cast<Float64>( y ) / length ) );
 }
 
 template <typename T>
