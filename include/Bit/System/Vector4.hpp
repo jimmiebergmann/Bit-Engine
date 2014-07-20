@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Math.hpp>
+#include <Bit/System/Vector3.hpp>
 #include <cmath>
 
 // Include isnan and make make it cross-platform.
@@ -86,7 +87,17 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		template <typename U>
-		Vector4( const U p_X, const U p_Y, const U p_Z, const T p_W );
+		Vector4( const U p_X, const U p_Y, const U p_Z, const U p_W );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Constructor.
+		///
+		/// \param p_Vector xyz vector.
+		/// \param p_W w value.
+		///
+		////////////////////////////////////////////////////////////////
+		template <typename U>
+		Vector4( const Vector3< U > & p_Vector, const U p_W );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Copy constructor.

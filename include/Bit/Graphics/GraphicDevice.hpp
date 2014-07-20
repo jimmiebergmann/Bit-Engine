@@ -30,6 +30,7 @@
 #include <Bit/Window/RenderWindow.hpp>
 #include <Bit/Graphics/ShaderType.hpp>
 #include <Bit/System/Vector3.hpp>
+#include <Bit/System/Vector4.hpp>
 
 namespace Bit
 {
@@ -82,8 +83,11 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief Set light source position
 			///
+			///	If the w component of the position is 0.0f, the light is treated as a directional source.
+			/// Otherwise, calculations are based on the actual location of the light in eye coordinates
+			///
 			////////////////////////////////////////////////////////////////
-			void SetLightPosition( const SizeType p_Index, const Vector3f32 & p_Position );
+			void SetLightPosition( const SizeType p_Index, const Vector4f32 & p_Position );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Set light source color
@@ -112,8 +116,11 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief Get light source position
 			///
+			///	If the w component of the position is 0.0f, the light is treated as a directional source.
+			/// Otherwise, calculations are based on the actual location of the light in eye coordinates
+			///
 			////////////////////////////////////////////////////////////////
-			Vector3f32 GetLightPosition( const SizeType p_Index ) const;
+			Vector4f32 GetLightPosition( const SizeType p_Index ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get light source color
@@ -130,7 +137,7 @@ namespace Bit
 		private:
 
 			// Private typedefs
-			typedef std::pair<Vector3f32, Vector3f32> Vector3f32Pair; ///< First = position, second = color.
+			typedef std::pair<Vector4f32, Vector3f32> Vector3f32Pair; ///< First = position, second = color.
 
 			// Private variables
 			static const SizeType s_MaxLightCount = 8;

@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/System/MatrixManager.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -45,14 +46,14 @@ namespace Bit
 		}
 	}
 
-	void GraphicDevice::DefaultModelSettings::SetLightPosition( const SizeType p_Index, const Vector3f32 & p_Position )
+	void GraphicDevice::DefaultModelSettings::SetLightPosition( const SizeType p_Index, const Vector4f32 & p_Position )
 	{
 		if( p_Index >= s_MaxLightCount )
 		{
 			return;
 		}
 
-		m_LightSources[ p_Index ].first = p_Position;
+		m_LightSources[ p_Index ].first = MatrixManager::GetModelViewMatrix( ) * p_Position;
 	}
 
 	void GraphicDevice::DefaultModelSettings::SetLightColor( const SizeType p_Index, const Vector3f32 & p_Color )
@@ -80,11 +81,11 @@ namespace Bit
 		return m_ActiveLightCount;
 	}
 
-	Vector3f32 GraphicDevice::DefaultModelSettings::GetLightPosition( const SizeType p_Index ) const
+	Vector4f32 GraphicDevice::DefaultModelSettings::GetLightPosition( const SizeType p_Index ) const
 	{
 		if( p_Index >= s_MaxLightCount )
 		{
-			return Vector3f32( 0.0f, 0.0f, 0.0f );
+			return Vector4f32( 0.0f, 0.0f, 0.0f, 0.0f );
 		}
 
 		return m_LightSources[ p_Index ].first;

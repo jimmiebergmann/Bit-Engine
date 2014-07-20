@@ -477,26 +477,59 @@ namespace Bit
 		m_pDefaultModelFragmentShader = CreateShader( Bit::ShaderType::Fragment );
 		m_pDefaultShaderPrograms[ InitialPoseShader ] = CreateShaderProgram( );
 
+		std::string maxLightCountString;
+		std::stringstream ss;
+		ss << m_DefaultModelSettings.GetMaxLightCount( );
+		ss >> maxLightCountString;
+
 		static const std::string vertexSource =
 			"#version 330\n"
 
+			// Matrix uniforms
 			"uniform mat4 uProjectionMatrix;\n"
 			"uniform mat4 uModelViewMatrix;\n"
-			"uniform int uUseTexture;\n"
+
+			// Light uniforms
+			"uniform int uLightCount;\n"
+			"uniform vec4 uLightPositions[" + maxLightCountString + "];\n"
+
+			// Use flags
+			/*uniform int uUseTexture;\n"*/
 			"uniform int uUseNormals;\n"
 
+			// In values
 			"in vec3 position;\n"
 			"in vec3 normal;\n"
 			"in vec2 textureCoord;\n"
 
+			// Out values
 			"out vec2 vTextureCoord;\n"
 			"out vec3 vNormal;\n"
+			"out vec4 vLightPositions[" + maxLightCountString + "];\n"
 
+			// Main function
 			"void main( )\n"
 			"{\n"
-			"	gl_Position = uProjectionMatrix * uModelViewMatrix * vec4( position, 1.0 );\n"
+
+			// Calculate the transformed position
+			"vec4 transformedPosition = uModelViewMatrix * vec4( position, 1.0 );\n"
+
+			// Set the vertex position
+			"	gl_Position = uProjectionMatrix * transformedPosition;\n"
+
+			// Set the out values
 			"	vTextureCoord = textureCoord;\n"
-			"	vNormal = normal;\n"
+			"	vNormal = normalize( vec3( uModelViewMatrix * vec4( normal, 0.0 ) ) );\n"
+			
+			// Set the out light source positions
+			"	if( uUseNormals == 1 )\n"
+			"	{\n"
+			"		for( int i = 0; i < uLightCount; i++ )\n"
+			"		{\n"
+			"			vLightPositions[ i ] = uLightPositions[ i ] - ( transformedPosition * uLightPositions[ i ].w );\n"
+			"		}\n"
+			"	}\n"
+
 			"}\n";
 
 		if( m_pDefaultModelVertexShaders[ InitialPoseShader ]->CompileFromMemory( vertexSource ) == false )
@@ -505,47 +538,77 @@ namespace Bit
 			return false;
 		}
 
-		std::string maxLightCountString;
-		std::stringstream ss;
-		ss << m_DefaultModelSettings.GetMaxLightCount( );
-		ss >> maxLightCountString;
-
 		static const std::string fragmentSource =
 			"#version 330\n"
 
-			"uniform vec4 uColor;\n"
+			// Texture uniforms
 			"uniform sampler2D colorTexture;\n"
 
 			// Light uniforms
 			"uniform int uLightCount;\n"
-			"uniform vec4 uLightPositions[" + maxLightCountString + "];\n"
 			"uniform vec3 uLightColors[" + maxLightCountString + "];\n"
+			"uniform vec3 uAmbientColor;\n"
+
+			"uniform mat4 uModelViewMatrix;\n"
 			
 			// Use flags
 			"uniform int uUseTexture;\n"
 			"uniform int uUseNormals;\n"
 
+			// In values
 			"in vec2 vTextureCoord;\n"
 			"in vec3 vNormal;\n"
+			"in vec4 vLightPositions[" + maxLightCountString + "];\n"
 
+			// Out values
 			"out vec4 outColor;\n"
 
+			// Main function
 			"void main( )\n"
 			"{ \n"
-			"	outColor = vec4( 1.0, 1.0, 1.0, 1.0 );\n"
-			/*"	vec4 finalColor = uColor;\n"
+
+			// Create ambient color
+			"	vec4 ambient = vec4( uAmbientColor, 1.0 );\n"
+
+			// Apply texture to ambient color
 			"	if( uUseTexture == 1 ) {\n"
-			"		finalColor *= texture2D( colorTexture, vTextureCoord );\n"
+			"		ambient *= texture2D( colorTexture, vTextureCoord );\n"
 			"	}\n"
-			"if( uUseNormals == 1 ) {\n"
-			"		finalColor *= max( min( dot( vNormal, vec3( 1.0, 0.0, 0.0 ) ) , 1.0 ), 0.1 );\n"
+	
+			// Create diffuse color
+			"	vec3 diffuse = vec3( 0.0, 0.0f, 0.0f );\n"
+
+			// Go throguh all the light sources
+			"	if( uUseNormals == 1 )\n"
+			"	{\n"
+			"		for( int i = 0; i < uLightCount; i++ )\n"
+			"		{\n"
+			//	This is a directional light spot(sun)
+			//"			if( uLightPositions[ i ].w == 0.0 )\n"
+			//"			{\n"
+			//"				vec4 newLightPos = uModelViewMatrix * uLightPositions[ i ];\n" // vec4 tempLight1Pos = gl_ModelViewMatrix * vec4( uLight1Position, 1.0 );
+			"				float light = max( min( dot( vNormal, normalize( vLightPositions[ i ].xyz ) ), 1.0 ), 0.0 );\n"
+			"				diffuse += light * uLightColors[ i ];\n"
+			/*"			}\n"
+			// This is a positioned light spot(bulb)
+			"			else\n"
+			"			{\n"
+			"				\n"
+			"			}\n"*/
+			"		}\n"
 			"	}\n"
-			"	outColor = finalColor;\n"*/
+
+			// Create final color
+			"	vec4 finalColor = ambient + vec4( diffuse, 0.0 );\n"
+
+			// Set the final color
+			"	outColor = finalColor;\n"
+
 			"}\n";
 		
 		if( m_pDefaultModelFragmentShader->CompileFromMemory( fragmentSource ) == false )
 		{
-			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile model fragnebt shader.\n"; 
+			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile model fragment shader.\n"; 
 			return false;
 		}
 
@@ -557,9 +620,9 @@ namespace Bit
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "normal", 2 );
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->Link( );
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->Bind( );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform4f( "uColor", 0.0f, 1.0f, 0.0f, 1.0f );
+		/*m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform4f( "uColor", 0.0f, 1.0f, 0.0f, 1.0f );
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform1i( "uUseTexture", 0 );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform1i( "uUseNormals", 0 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform1i( "uUseNormals", 0 );*/
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->Unbind( );
 
 		return true;
@@ -600,7 +663,7 @@ namespace Bit
 
 		// Activate 1 light source
 		m_DefaultModelSettings.SetActiveLightCount( 1 );
-		m_DefaultModelSettings.SetLightPosition( 0, Vector3f32( 1.0f, 0.0f, 0.0f ) );
+		m_DefaultModelSettings.SetLightPosition( 0, Vector4f32( 1.0f, 0.0f, 0.0f, 1.0f ) );
 		m_DefaultModelSettings.SetLightColor( 0, Vector3f32( 1.0f, 1.0f, 1.0f ) );
 	}
 

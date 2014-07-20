@@ -47,11 +47,21 @@ inline Vector4<T>::Vector4( const T p_X, const T p_Y, const T p_Z, const T p_W )
 
 template <typename T>
 template <typename U>
-inline Vector4<T>::Vector4( const U p_X, const U p_Y, const U p_Z, const T p_W ) :
+inline Vector4<T>::Vector4( const U p_X, const U p_Y, const U p_Z, const U p_W ) :
 	x( static_cast<T>( p_X ) ),
 	y( static_cast<T>( p_Y ) ),
 	z(static_cast<T>( p_Z ) ),
 	w(static_cast<T>( p_W ) )
+{
+}
+
+template <typename T>
+template <typename U>
+inline Vector4<T>::Vector4( const Vector3< U > & p_Vector, const U p_W )  :
+	x( static_cast< T >( p_Vector.x ) ),
+	y( static_cast< T >( p_Vector.y ) ),
+	z( static_cast< T >( p_Vector.z ) ),
+	w( static_cast< T >( p_W ) )
 {
 }
 

@@ -28,6 +28,7 @@
 #include <Bit/Graphics/VertexArray.hpp>
 #include <Bit/Graphics/ShaderProgram.hpp>
 #include <Bit/System/MatrixManager.hpp>
+#include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -74,6 +75,9 @@ namespace Bit
 
 	void ModelRenderer::RenderInitialPose( Model & p_Model )
 	{
+		// Get const free graphic device
+		GraphicDevice & graphicDevice = const_cast<GraphicDevice &>( m_GraphicDevice );
+
 		// Get the default shader program.
 		ShaderProgram * pShaderProgram = m_GraphicDevice.GetDefaultShaderProgram( GraphicDevice::InitialPoseShader );
 
@@ -99,7 +103,33 @@ namespace Bit
 		// Set uniform data.
 		pShaderProgram->SetUniformMatrix4x4f( "uProjectionMatrix", MatrixManager::GetProjectionMatrix( ) );
 		pShaderProgram->SetUniformMatrix4x4f( "uModelViewMatrix", MatrixManager::GetModelViewMatrix( ) );
-		pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
+
+		// Set light uniforms
+		GraphicDevice::DefaultModelSettings & modelSettings =  graphicDevice.GetDefaultModelSettings( );
+
+		// Set light count
+		pShaderProgram->SetUniform1i( "uLightCount", modelSettings.GetActiveLightCount( ) );
+
+		// Set ambient color
+		const Vector3f32 & ambColor = modelSettings.GetAmbientLight( );
+		pShaderProgram->SetUniform3f( "uAmbientColor", ambColor.x, ambColor.y, ambColor.z );
+
+		// Go throguh all the lights
+		for( SizeType i = 0; i < modelSettings.GetActiveLightCount( ); i++ )
+		{
+			std::stringstream positionStream;
+			positionStream << "uLightPositions[" << i << "]";
+			std::stringstream colorStream;
+			colorStream << "uLightColors[" << i << "]";
+
+			const Vector4f32 & pos = modelSettings.GetLightPosition( i );
+			const Vector3f32 & color = modelSettings.GetLightColor( i );
+			pShaderProgram->SetUniform4f( positionStream.str( ).c_str( ), pos.x, pos.y, pos.z, pos.w );
+			pShaderProgram->SetUniform3f( colorStream.str( ).c_str( ), color.x, color.y, color.z );
+		}
+
+
+		//pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
 		if( p_Model.GetVertexData( ).GetBitmask( ) & 0x02 )
 		{
 			pShaderProgram->SetUniform1i( "uUseTexture", 1 );
