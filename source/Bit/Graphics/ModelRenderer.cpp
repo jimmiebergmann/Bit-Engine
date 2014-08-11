@@ -122,8 +122,8 @@ namespace Bit
 			std::stringstream colorStream;
 			colorStream << "uLightColors[" << i << "]";
 
-			const Vector4f32 & pos = modelSettings.GetLightPosition( i );
-			const Vector3f32 & color = modelSettings.GetLightColor( i );
+			const Vector4f32 & pos = modelSettings.GetLight( i ).GetPosition( );
+			const Vector3f32 & color = modelSettings.GetLight( i ).GetColor( );
 			pShaderProgram->SetUniform4f( positionStream.str( ).c_str( ), pos.x, pos.y, pos.z, pos.w );
 			pShaderProgram->SetUniform3f( colorStream.str( ).c_str( ), color.x, color.y, color.z );
 		}

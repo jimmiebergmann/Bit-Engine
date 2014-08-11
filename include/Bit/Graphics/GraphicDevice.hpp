@@ -69,6 +69,64 @@ namespace Bit
 		public:
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Light source for the default model settings class.
+			///
+			/// \see DefaultModelSettings
+			///
+			////////////////////////////////////////////////////////////////
+			class Light
+			{
+
+			public:
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Default constructor
+				///
+				////////////////////////////////////////////////////////////////
+				Light( );
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Set light source position
+				///
+				///	If the w component of the position is 0.0f, the light is treated as a directional source.
+				/// Otherwise, calculations are based on the actual location of the light in eye coordinates.
+				/// The position is being multiplied with the model view matrix via the MatrixManager class.
+				///
+				/// \see MatrixManager
+				///
+				////////////////////////////////////////////////////////////////
+				void SetPosition( const Vector4f32 & p_Position );
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Set light source color
+				///
+				////////////////////////////////////////////////////////////////
+				void SetColor( const Vector3f32 & p_Color );
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Get light source position
+				///
+				///	If the w component of the position is 0.0f, the light is treated as a directional source.
+				/// Otherwise, calculations are based on the actual location of the light in eye coordinates.
+				///
+				////////////////////////////////////////////////////////////////
+				const Vector4f32 & GetPosition( ) const;
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Get light source color
+				///
+				////////////////////////////////////////////////////////////////
+				const Vector3f32 & GetColor( ) const;
+
+			private:
+
+				// Private variables
+				Vector4f32 m_Position;	///< Light position.
+				Vector3f32 m_Color;		///< Light color.
+
+			};
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor
 			///
 			////////////////////////////////////////////////////////////////
@@ -79,21 +137,6 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			void SetActiveLightCount( const SizeType p_Count );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Set light source position
-			///
-			///	If the w component of the position is 0.0f, the light is treated as a directional source.
-			/// Otherwise, calculations are based on the actual location of the light in eye coordinates
-			///
-			////////////////////////////////////////////////////////////////
-			void SetLightPosition( const SizeType p_Index, const Vector4f32 & p_Position );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Set light source color
-			///
-			////////////////////////////////////////////////////////////////
-			void SetLightColor( const SizeType p_Index, const Vector3f32 & p_Color );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Set ambient light color
@@ -114,19 +157,10 @@ namespace Bit
 			SizeType GetActiveLightCount( ) const;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Get light source position
-			///
-			///	If the w component of the position is 0.0f, the light is treated as a directional source.
-			/// Otherwise, calculations are based on the actual location of the light in eye coordinates
+			/// \brief Get light source
 			///
 			////////////////////////////////////////////////////////////////
-			Vector4f32 GetLightPosition( const SizeType p_Index ) const;
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Get light source color
-			///
-			////////////////////////////////////////////////////////////////
-			Vector3f32 GetLightColor( const SizeType p_Index ) const;
+			Light & GetLight( const SizeType p_Index );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get ambient light color
@@ -137,12 +171,12 @@ namespace Bit
 		private:
 
 			// Private typedefs
-			typedef std::pair<Vector4f32, Vector3f32> Vector3f32Pair; ///< First = position, second = color.
+			//typedef std::pair<Vector4f32, Vector3f32> Vector3f32Pair; ///< First = position, second = color.
 
 			// Private variables
 			static const SizeType s_MaxLightCount = 8;
 			Vector3f32 m_AmbientColor;
-			Vector3f32Pair m_LightSources[ s_MaxLightCount ];
+			Light m_LightSources[ s_MaxLightCount ];
 			SizeType m_ActiveLightCount;
 
 		};

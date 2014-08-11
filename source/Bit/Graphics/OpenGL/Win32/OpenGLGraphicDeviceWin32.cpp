@@ -494,7 +494,6 @@ namespace Bit
 			"uniform vec4 uLightPositions[" + maxLightCountString + "];\n"
 
 			// Use flags
-			/*uniform int uUseTexture;\n"*/
 			"uniform int uUseNormals;\n"
 
 			// In values
@@ -567,42 +566,35 @@ namespace Bit
 			"void main( )\n"
 			"{ \n"
 
-			// Create ambient color
-			"	vec4 ambient = vec4( uAmbientColor, 1.0 );\n"
-
-			// Apply texture to ambient color
+			// Get the base color
+			"	vec4 baseColor = vec4( 1.0, 1.0f, 1.0f, 1.0 );\n"
 			"	if( uUseTexture == 1 ) {\n"
-			"		ambient *= texture2D( colorTexture, vTextureCoord );\n"
+			"		baseColor *= texture2D( colorTexture, vTextureCoord );\n"
 			"	}\n"
+
+			// Create ambient color
+			"	vec4 ambient = vec4( uAmbientColor, 1.0 ) * baseColor;\n"
 	
 			// Create diffuse color
-			"	vec3 diffuse = vec3( 0.0, 0.0f, 0.0f );\n"
+			"	vec4 diffuse = vec4( 0.0, 0.0f, 0.0f, 1.0 );\n"
 
 			// Go throguh all the light sources
 			"	if( uUseNormals == 1 )\n"
 			"	{\n"
 			"		for( int i = 0; i < uLightCount; i++ )\n"
 			"		{\n"
-			//	This is a directional light spot(sun)
-			//"			if( uLightPositions[ i ].w == 0.0 )\n"
-			//"			{\n"
-			//"				vec4 newLightPos = uModelViewMatrix * uLightPositions[ i ];\n" // vec4 tempLight1Pos = gl_ModelViewMatrix * vec4( uLight1Position, 1.0 );
-			"				float light = max( min( dot( vNormal, normalize( vLightPositions[ i ].xyz ) ), 1.0 ), 0.0 );\n"
-			"				diffuse += light * uLightColors[ i ];\n"
-			/*"			}\n"
-			// This is a positioned light spot(bulb)
-			"			else\n"
-			"			{\n"
-			"				\n"
-			"			}\n"*/
+			// Get the light shader
+			"			float light = max( min( dot( vNormal, normalize( vLightPositions[ i ].xyz ) ), 1.0 ), 0.0 );\n"
+			// Add the light shader + the light source's color to the diffuse color.
+			"			diffuse.xyz += light * uLightColors[ i ];\n"
 			"		}\n"
 			"	}\n"
+			
+			// Apply base color to the diffuse color
+			"	diffuse *= baseColor; \n"
 
 			// Create final color
-			"	vec4 finalColor = ambient + vec4( diffuse, 0.0 );\n"
-
-			// Set the final color
-			"	outColor = finalColor;\n"
+			"	outColor = ambient + diffuse;\n"
 
 			"}\n";
 		
@@ -662,9 +654,9 @@ namespace Bit
 		m_DefaultModelSettings.SetAmbientColor( Vector3f32( 1.0f, 1.0f, 1.0f ) );
 
 		// Activate 1 light source
-		m_DefaultModelSettings.SetActiveLightCount( 1 );
-		m_DefaultModelSettings.SetLightPosition( 0, Vector4f32( 1.0f, 0.0f, 0.0f, 1.0f ) );
-		m_DefaultModelSettings.SetLightColor( 0, Vector3f32( 1.0f, 1.0f, 1.0f ) );
+		m_DefaultModelSettings.SetActiveLightCount(	1 );
+		m_DefaultModelSettings.GetLight( 0 ).SetPosition( Vector4f32( 1.0f, 0.0f, 0.0f, 1.0f ) );
+		m_DefaultModelSettings.GetLight( 0 ).SetColor( Vector3f32( 1.0f, 1.0f, 1.0f ) );
 	}
 
 }

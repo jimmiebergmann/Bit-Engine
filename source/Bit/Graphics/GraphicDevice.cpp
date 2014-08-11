@@ -29,6 +29,36 @@
 namespace Bit
 {
 
+
+	// Default model settings light class.
+	// Static variables.
+	static GraphicDevice::DefaultModelSettings::Light g_DefaultLight;
+
+	GraphicDevice::DefaultModelSettings::Light::Light( )
+	{
+	}
+
+	void GraphicDevice::DefaultModelSettings::Light::SetPosition( const Vector4f32 & p_Position )
+	{
+		m_Position = MatrixManager::GetModelViewMatrix( ) * p_Position;
+	}
+
+	void GraphicDevice::DefaultModelSettings::Light::SetColor(const Vector3f32 & p_Color )
+	{
+		m_Color = p_Color;
+	}
+
+	const Vector4f32 & GraphicDevice::DefaultModelSettings::Light::GetPosition( ) const
+	{
+		return m_Position;
+	}
+
+	const Vector3f32 & GraphicDevice::DefaultModelSettings::Light::GetColor( ) const
+	{
+		return m_Color;
+	}
+
+	// Default model settings class
 	GraphicDevice::DefaultModelSettings::DefaultModelSettings( ) :
 		m_ActiveLightCount( 0 )
 	{
@@ -46,26 +76,6 @@ namespace Bit
 		}
 	}
 
-	void GraphicDevice::DefaultModelSettings::SetLightPosition( const SizeType p_Index, const Vector4f32 & p_Position )
-	{
-		if( p_Index >= s_MaxLightCount )
-		{
-			return;
-		}
-
-		m_LightSources[ p_Index ].first = MatrixManager::GetModelViewMatrix( ) * p_Position;
-	}
-
-	void GraphicDevice::DefaultModelSettings::SetLightColor( const SizeType p_Index, const Vector3f32 & p_Color )
-	{
-		if( p_Index >= s_MaxLightCount )
-		{
-			return;
-		}
-
-		m_LightSources[ p_Index ].second = p_Color;
-	}
-
 	void GraphicDevice::DefaultModelSettings::SetAmbientColor( const Vector3f32 & p_Color )
 	{
 		m_AmbientColor = p_Color;
@@ -81,24 +91,14 @@ namespace Bit
 		return m_ActiveLightCount;
 	}
 
-	Vector4f32 GraphicDevice::DefaultModelSettings::GetLightPosition( const SizeType p_Index ) const
+	GraphicDevice::DefaultModelSettings::Light & GraphicDevice::DefaultModelSettings::GetLight( const SizeType p_Index )
 	{
 		if( p_Index >= s_MaxLightCount )
 		{
-			return Vector4f32( 0.0f, 0.0f, 0.0f, 0.0f );
+			return g_DefaultLight;
 		}
 
-		return m_LightSources[ p_Index ].first;
-	}
-
-	Vector3f32 GraphicDevice::DefaultModelSettings::GetLightColor( const SizeType p_Index ) const
-	{
-		if( p_Index >= s_MaxLightCount )
-		{
-			return Vector3f32( 0.0f, 0.0f, 0.0f );
-		}
-
-		return m_LightSources[ p_Index ].second;
+		return m_LightSources[ p_Index ];
 	}
 
 	Vector3f32 GraphicDevice::DefaultModelSettings::GetAmbientLight( ) const
