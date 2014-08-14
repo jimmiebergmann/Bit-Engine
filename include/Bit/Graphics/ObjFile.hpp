@@ -43,6 +43,7 @@ namespace Bit
 	/// \brief Obj model file class.
 	///
 	/// The internal structure is pretty much like the file format itself.
+	/// NOTE: Should the ObjectGroup class be called VertexGroup instead...?
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API ObjFile : public NonCopyable
@@ -401,6 +402,9 @@ namespace Bit
 		///
 		/// \param p_BufferSize Size of the return buffer in bytes / size of data type(T).
 		///		0 if the buffer is invalid(NULL).
+		/// \param p_Object Index of the object to obtain data from.
+		/// \param p_ObjectGroup Index of the object group to obtain data from.
+		/// \param p_MaterialGroup Index of the material group to obtain data from.
 		/// \param p_UseFlatFaces If flat faces should be used.
 		/// \param p_UseSmoothFaces If smooth faces should be used.
 		///
@@ -411,6 +415,9 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		template <typename T>
 		T * CreatePositionBuffer(	SizeType & p_BufferSize,
+									const SizeType p_Object = 0,
+									const SizeType p_ObjectGroup = 0,
+									const SizeType p_MaterialGroup = 0,
 									const Bool p_UseFlatFaces = true,
 									const Bool p_UseSmoothFaces = true );
 

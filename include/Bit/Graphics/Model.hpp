@@ -39,6 +39,7 @@ namespace Bit
 	// Forward declaractions
 	class GraphicDevice;
 	class VertexArray;
+	class ObjFile;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
@@ -114,7 +115,7 @@ namespace Bit
 		/// \brief Get vertex data.
 		///
 		////////////////////////////////////////////////////////////////
-		ModelVertexData & GetVertexData( );
+		ModelVertexGroup & GetVertexGroup( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get material count.
@@ -139,7 +140,7 @@ namespace Bit
 		const GraphicDevice & m_GraphicDevice;	///< Reference of the parent graphic device.
 		Skeleton m_Skeleton;					///< Skeleton, contains animations of any kind.
 		ModelMaterialVector m_Materials;		///< Materials used by this model.
-		ModelVertexData m_VertexData;			///< Idle static pose.
+		ModelVertexGroup m_VertexGroup;			///< Vertex group of idle static pose.
 
 		/*
 		// Public enum

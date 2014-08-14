@@ -45,6 +45,7 @@ namespace Bit
 	///		- 0: Position
 	///		- 1: Texture coordinate
 	///		- 2: Normal
+	///		- 3: Bone
 	///
 	/// \see Model
 	///
@@ -131,6 +132,75 @@ namespace Bit
 		VertexArray * m_pVertexArray;		///< Vertex array with the vertex buffers bound to it.
 		Uint16 m_Bitmask;					///< Bitmask of all the buffers that are bound to the vertex array.
 
+
+	};
+
+
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Graphics
+	/// \brief 3D model vertex group class.
+	///
+	/// A vertex group contains multiple vertex data classes.
+	///
+	/// \see Model
+	///
+	////////////////////////////////////////////////////////////////
+	class BIT_API ModelVertexGroup : public NonCopyable
+	{
+
+	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Default constructor. 
+		///
+		////////////////////////////////////////////////////////////////
+		ModelVertexGroup( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor. 
+		///
+		////////////////////////////////////////////////////////////////
+		~ModelVertexGroup( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Add vertex data. 
+		///
+		/// \return Pointer to the newly added vertex data.
+		///
+		////////////////////////////////////////////////////////////////
+		ModelVertexData * AddVertexData( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Remove vertex data.
+		///
+		/// \param p_Index Index of the vertex data.
+		///
+		////////////////////////////////////////////////////////////////
+		void RemoveVertexData( const SizeType p_Index );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get vertex data. 
+		///
+		/// \param p_Index Index of the vertex data.
+		///
+		/// \return Pointer to the vertex data at the given index
+		///
+		////////////////////////////////////////////////////////////////
+		ModelVertexData * GetVertexData( const SizeType p_Index );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get vertex data count. 
+		///
+		////////////////////////////////////////////////////////////////
+		SizeType GetVertexDataCount( ) const;
+
+	private:
+
+		// Private typedefs
+		typedef std::vector<ModelVertexData *> VertexDataVector;
+
+		// Private variables
+		VertexDataVector m_VertexData;
 
 	};
 

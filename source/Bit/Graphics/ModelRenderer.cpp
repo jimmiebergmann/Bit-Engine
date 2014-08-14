@@ -88,7 +88,7 @@ namespace Bit
 		}
 
 		// Error check the vertex data.
-		if( p_Model.GetVertexData( ).GetVertexArray( ) == NULL )
+		if( p_Model.GetVertexGroup( ).GetVertexDataCount( ) == 0 )
 		{
 			return;
 		}
@@ -129,27 +129,41 @@ namespace Bit
 		}
 
 
-		//pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
-		if( p_Model.GetVertexData( ).GetBitmask( ) & 0x02 )
+		// Go throguh all the vertex data elements.
+		for( SizeType i = 0; i < p_Model.GetVertexGroup( ).GetVertexDataCount( ); i++ )
 		{
-			pShaderProgram->SetUniform1i( "uUseTexture", 1 );
-		}
-		else
-		{
-			pShaderProgram->SetUniform1i( "uUseTexture", 0 );
-		}
+			// Get the current vertex data.
+			ModelVertexData * vertexData = p_Model.GetVertexGroup( ).GetVertexData( i );
 
-		if( p_Model.GetVertexData( ).GetBitmask( ) & 0x04 )
-		{
-			pShaderProgram->SetUniform1i( "uUseNormals", 1 );
-		}
-		else
-		{
-			pShaderProgram->SetUniform1i( "uUseNormals", 0 );
-		}
+			// Error check the vertex data pointer.
+			if( vertexData == NULL || vertexData->GetVertexArray( ) == NULL )
+			{
+				continue;
+			}
 
-		// Render the model.
-		p_Model.GetVertexData( ).GetVertexArray( )->Render( PrimitiveMode::Triangles );
+			//pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
+			if( vertexData->GetBitmask( ) & 0x02 )
+			{
+				pShaderProgram->SetUniform1i( "uUseTexture", 1 );
+			}
+			else
+			{
+				pShaderProgram->SetUniform1i( "uUseTexture", 0 );
+			}
+
+			if( vertexData->GetBitmask( ) & 0x04 )
+			{
+				pShaderProgram->SetUniform1i( "uUseNormals", 1 );
+			}
+			else
+			{
+				pShaderProgram->SetUniform1i( "uUseNormals", 0 );
+			}
+
+			// Render the model.
+			vertexData->GetVertexArray( )->Render( PrimitiveMode::Triangles );
+
+		}
 
 		// Unbind the shader program.
 		pShaderProgram->Unbind( );

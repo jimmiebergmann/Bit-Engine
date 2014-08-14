@@ -114,4 +114,59 @@ namespace Bit
 		return m_Bitmask;
 	}
 
+
+
+	ModelVertexGroup::ModelVertexGroup( )
+	{
+	}
+
+	ModelVertexGroup::~ModelVertexGroup( )
+	{
+		for( VertexDataVector::iterator it = m_VertexData.begin( ) ; it != m_VertexData.end( ); it++ )
+		{
+			delete (*it);
+		}
+	}
+
+	ModelVertexData * ModelVertexGroup::AddVertexData( )
+	{
+		// Create the vertex data
+		ModelVertexData * pVertexData = new ModelVertexData;
+
+		// Add the vertex data to the vecor
+		m_VertexData.push_back( pVertexData );
+
+		// Return the pointer of the vertex data.
+		return pVertexData;
+	}
+
+	void ModelVertexGroup::RemoveVertexData( const SizeType p_Index )
+	{
+		// Error check the index.
+		if( p_Index >= static_cast<SizeType>( m_VertexData.size( ) ) )
+		{
+			return;
+		}
+
+		// Remove the data at the given index.
+		m_VertexData.erase( m_VertexData.begin( ) + p_Index );
+	}
+
+	ModelVertexData * ModelVertexGroup::GetVertexData( const SizeType p_Index )
+	{
+		// Error check the index.
+		if( p_Index >= static_cast<SizeType>( m_VertexData.size( ) ) )
+		{
+			return NULL;
+		}
+
+		// Return the data at the given index.
+		return m_VertexData[ p_Index ];
+	}
+
+	SizeType ModelVertexGroup::GetVertexDataCount( ) const
+	{
+		return static_cast<SizeType>( m_VertexData.size( ) );
+	}
+
 }

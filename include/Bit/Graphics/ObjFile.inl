@@ -24,6 +24,9 @@
 
 template <typename T>
 T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
+									const SizeType p_Object,
+									const SizeType p_ObjectGroup,
+									const SizeType p_MaterialGroup,
 									const Bool p_UseFlatFaces,
 									const Bool p_UseSmoothFaces )
 {

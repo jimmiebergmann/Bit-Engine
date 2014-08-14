@@ -119,38 +119,63 @@ namespace Bit
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// Create the position buffer from the obj file.
 		SizeType bufferSize = 0;
-		Float32 * pBufferData = obj.CreatePositionBuffer<Float32>( bufferSize );
 
-		// Error check the position buffer data
-		if( pBufferData == NULL )
+		// To through the object in the obj class
+		for( SizeType i = 0; i < obj.GetObjectCount( ); i++ )
 		{
-			std::cout << "[Model::LoadFromObjFile] No postiion data were found in the obj file." << std::endl;
-			return false;
+			ObjFile::Object & object = obj.GetObject( i );
+
+			// To through the object groups in the obj class
+			for( SizeType j = 0; j < object.GetObjectGroupCount( ); j++ )
+			{
+				ObjFile::ObjectGroup & objectGroup = object.GetObjectGroup( j );
+
+				// To through the material groups in the obj class
+				for( SizeType k = 0; k < objectGroup.GetMaterialGroupCount( ); k++ )
+				{
+					Float32 * pBufferData = obj.CreatePositionBuffer<Float32>( bufferSize, i, j, k );
+
+					// Error check the position buffer data
+					if( pBufferData == NULL )
+					{
+						std::cout << "[Model::LoadFromObjFile] No postiion data were found in the obj file." << std::endl;
+						return false;
+					}
+
+					// Load the position vertex buffer
+					VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+					if( pPositionVertexBuffer->Load( bufferSize * 4, pBufferData ) == false )
+					{
+						std::cout << "[Model::LoadFromObjFile] Can not load the vertex buffer" << std::endl;
+						return false;
+					}
+
+					// Delete the allocated data
+					delete [ ] pBufferData;
+
+					// Add new model vertex data to the vertex group
+					ModelVertexData * pModelVertexData = m_VertexGroup.AddVertexData( );
+
+					// Error check the vertex model vertex data
+					if( pModelVertexData == NULL )
+					{
+						std::cout << "[Model::LoadFromObjFile] Can not add vertex data to model vertex group." << std::endl;
+						return false;
+					}
+		
+					// Create the vertex array
+					VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray( );
+
+					// Add the vertex buffer to the vertex array.
+					pVertexArray->AddVertexBuffer( *pPositionVertexBuffer, 3, DataType::Float32, 0 );
+
+					// Add the vertex buffer to the model vertex data class.
+					pModelVertexData->AddVertexBuffer( pPositionVertexBuffer, 0x01 );
+				}
+			}
 		}
 
-		// Load the position vertex buffer
-		VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
-		if( pPositionVertexBuffer->Load( bufferSize * 4, pBufferData ) == false )
-		{
-			std::cout << "[Model::LoadFromObjFile] Can not load the vertex buffer" << std::endl;
-			return false;
-		}
-
-		// Delete the allocated data
-		delete [ ] pBufferData;
-		
-		// Create the vertex array
-		VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray( );
-
-		// Add the vertex buffer to the vertex array.
-		pVertexArray->AddVertexBuffer( *pPositionVertexBuffer, 3, DataType::Float32, 0 );
-
-		// Add texture and normal buffers if possible.
-
-		// Add the vertex buffer to the vertex data class.
-		m_VertexData.AddVertexBuffer( pPositionVertexBuffer, 0x01 );
-
-		
+/*		
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// Try to add texture coordinate and normal buffers as well.
 		// Create the texture coordinate buffer from the obj file.
@@ -198,7 +223,7 @@ namespace Bit
 
 		// Set the vertex buffer for the vertex data class.
 		m_VertexData.SetVertexArray( pVertexArray );
-
+*/
 
 		// Load the materials of the obj file
 		ObjMaterialFile objMaterial;
@@ -256,9 +281,9 @@ namespace Bit
 		return m_Skeleton;
 	}
 
-	ModelVertexData & Model::GetVertexData( )
+	ModelVertexGroup & Model::GetVertexGroup( )
 	{
-		return m_VertexData;
+		return m_VertexGroup;
 	}
 
 	SizeType Model::GetMaterialCount( ) const
