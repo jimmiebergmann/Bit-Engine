@@ -163,17 +163,61 @@ namespace Bit
 						return false;
 					}
 		
-					// Create the vertex array
+					// Create the vertex array and add it to the vertex data
 					VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray( );
+					pModelVertexData->SetVertexArray( pVertexArray );
 
 					// Add the vertex buffer to the vertex array.
 					pVertexArray->AddVertexBuffer( *pPositionVertexBuffer, 3, DataType::Float32, 0 );
 
 					// Add the vertex buffer to the model vertex data class.
 					pModelVertexData->AddVertexBuffer( pPositionVertexBuffer, 0x01 );
+					
+					// //////////////////////////////////////////////////////////////////////////////////////
+					// Try to add texture coordinate and normal buffers as well.
+					// Create the texture coordinate buffer from the obj file.
+					pBufferData = obj.CreateTextureCoordBuffer<Float32>( bufferSize, i, j, k );
 
-					// Set the vertex buffer for the vertex data class.
-					pModelVertexData->SetVertexArray( pVertexArray );
+					// Error check the position buffer data
+					if( pBufferData != NULL )
+					{
+						// Load the position vertex buffer
+						VertexBuffer * pTextureVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+						if( pTextureVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
+						{
+							// Add the vertex buffer to the vertex array.
+							pVertexArray->AddVertexBuffer( *pTextureVertexBuffer, 2, DataType::Float32, 1 );
+
+							// Add the vertex buffer to the vertex data class.
+							pModelVertexData->AddVertexBuffer( pTextureVertexBuffer, 0x02 );
+						}
+
+						// Delete the allocated data
+						delete [ ] pBufferData;
+					}
+
+					// Create the normal buffer from the obj file.
+					pBufferData = obj.CreateNormalBuffer<Float32>( bufferSize, i, j, k );
+
+					// Error check the position buffer data
+					if( pBufferData != NULL )
+					{
+						// Load the position vertex buffer
+						VertexBuffer * pNormalVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+						if( pNormalVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
+						{
+							// Add the vertex buffer to the vertex array.
+							pVertexArray->AddVertexBuffer( *pNormalVertexBuffer, 3, DataType::Float32, 2 );
+
+							// Add the vertex buffer to the vertex data class.
+							pModelVertexData->AddVertexBuffer( pNormalVertexBuffer, 0x04 );
+						}
+
+						// Delete the allocated data
+						delete [ ] pBufferData;
+					}
+
+
 				}
 			}
 		}

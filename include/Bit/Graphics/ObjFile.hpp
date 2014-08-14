@@ -395,6 +395,24 @@ namespace Bit
 		void Clear( );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Get material filename.
+		///
+		////////////////////////////////////////////////////////////////
+		const std::string & GetMaterialFilename( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get object.
+		///
+		////////////////////////////////////////////////////////////////
+		Object & GetObject( const SizeType p_Index );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get object count.
+		///
+		////////////////////////////////////////////////////////////////
+		SizeType GetObjectCount( ) const;
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Help function for creating a postion buffer
 		///			from the current stored data.
 		///
@@ -429,6 +447,9 @@ namespace Bit
 		///
 		/// \param p_BufferSize Size of the return buffer in bytes / size of data type(T).
 		///		0 if the buffer is invalid(NULL).
+		/// \param p_Object Index of the object to obtain data from.
+		/// \param p_ObjectGroup Index of the object group to obtain data from.
+		/// \param p_MaterialGroup Index of the material group to obtain data from.
 		/// \param p_UseFlatFaces If flat faces should be used.
 		/// \param p_UseSmoothFaces If smooth faces should be used.
 		///
@@ -439,6 +460,9 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		template <typename T>
 		T * CreateTextureCoordBuffer(	SizeType & p_BufferSize,
+										const SizeType p_Object = 0,
+										const SizeType p_ObjectGroup = 0,
+										const SizeType p_MaterialGroup = 0,
 										const Bool p_UseFlatFaces = true,
 										const Bool p_UseSmoothFaces = true );
 
@@ -450,6 +474,9 @@ namespace Bit
 		///
 		/// \param p_BufferSize Size of the return buffer in bytes / size of data type(T).
 		///		0 if the buffer is invalid(NULL).
+		/// \param p_Object Index of the object to obtain data from.
+		/// \param p_ObjectGroup Index of the object group to obtain data from.
+		/// \param p_MaterialGroup Index of the material group to obtain data from.
 		/// \param p_UseFlatFaces If flat faces should be used.
 		/// \param p_UseSmoothFaces If smooth faces should be used.
 		///
@@ -460,26 +487,11 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		template <typename T>
 		T * CreateNormalBuffer(	SizeType & p_BufferSize,
+								const SizeType p_Object = 0,
+								const SizeType p_ObjectGroup = 0,
+								const SizeType p_MaterialGroup = 0,
 								const Bool p_UseFlatFaces = true,
 								const Bool p_UseSmoothFaces = true );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get material filename.
-		///
-		////////////////////////////////////////////////////////////////
-		const std::string & GetMaterialFilename( ) const;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get object.
-		///
-		////////////////////////////////////////////////////////////////
-		Object & GetObject( const SizeType p_Index );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get object count.
-		///
-		////////////////////////////////////////////////////////////////
-		SizeType GetObjectCount( ) const;
 
 	private:
 
