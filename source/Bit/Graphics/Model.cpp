@@ -171,6 +171,9 @@ namespace Bit
 
 					// Add the vertex buffer to the model vertex data class.
 					pModelVertexData->AddVertexBuffer( pPositionVertexBuffer, 0x01 );
+
+					// Set the vertex buffer for the vertex data class.
+					pModelVertexData->SetVertexArray( pVertexArray );
 				}
 			}
 		}
@@ -220,9 +223,6 @@ namespace Bit
 			delete [ ] pBufferData;
 		}
 
-
-		// Set the vertex buffer for the vertex data class.
-		m_VertexData.SetVertexArray( pVertexArray );
 */
 
 		// Load the materials of the obj file

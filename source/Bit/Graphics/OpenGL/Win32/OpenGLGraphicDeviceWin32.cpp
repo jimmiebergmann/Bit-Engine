@@ -523,7 +523,7 @@ namespace Bit
 			// Set the out light source positions
 			"	if( uUseNormals == 1 )\n"
 			"	{\n"
-			"		for( int i = 0; i < uLightCount; i++ )\n"
+			"		for( int i = 0; i < " + maxLightCountString + "; i++ )\n"
 			"		{\n"
 			"			vLightPositions[ i ] = uLightPositions[ i ] - ( transformedPosition * uLightPositions[ i ].w );\n"
 			"		}\n"
@@ -595,7 +595,9 @@ namespace Bit
 
 			// Create final color
 			"	outColor = ambient + diffuse;\n"
+			
 
+			//"	outColor = vec4( 1.0, 1.0, 1.0, 1.0 );\n"
 			"}\n";
 		
 		if( m_pDefaultModelFragmentShader->CompileFromMemory( fragmentSource ) == false )

@@ -30,48 +30,61 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 									const Bool p_UseFlatFaces,
 									const Bool p_UseSmoothFaces )
 {
+	// Set the buffer size to 0 by default.
+	p_BufferSize = 0;
+
 	// Check if any faces were requested.
 	if( !p_UseFlatFaces && !p_UseFlatFaces )
 	{
-		p_BufferSize = 0;
 		return NULL;
 	}
 
-	// Calculate the size of the buffer
-	SizeType bufferSize = 0;
-
-	// Find the size by going through all the elements of the obj structure.
-	for( SizeType o = 0; o < m_Objects.size( ); o++ )
+	// Error check the object index
+	if( p_Object >= static_cast<SizeType>( m_Objects.size( ) ) )
 	{
-		ObjFile::Object & object = *m_Objects[ o ];
-
-		// Go through the object groups
-		for( SizeType og = 0; og < object.m_ObjectGroups.size( ); og++ )
-		{
-			ObjectGroup & objectGroup = *object.m_ObjectGroups[ og ];
-
-			// Go through the material groups
-			for( SizeType mg = 0; mg < objectGroup.m_MaterialGroups.size( ); mg++ )
-			{
-				MaterialGroup & materialGroup = *objectGroup.m_MaterialGroups[ mg ];
-
-				// Add the count of the faces
-				if( p_UseFlatFaces )
-				{
-					bufferSize += static_cast<SizeType>( materialGroup.m_FlatFaces.size( ) );
-				}
-
-				if( p_UseSmoothFaces )
-				{
-					bufferSize += static_cast<SizeType>( materialGroup.m_SmoothFaces.size( ) );
-				}
-
-			}
-			
-		}
+		return NULL;
 	}
 
-	// Error check the final computed buffer size.
+	// Find the start index of the vertex data.
+	SizeType startVertexIndex = 0;
+	for( SizeType o = 0; o < p_Object; o++ )
+	{
+		// Get the object and add the amount of vertices.
+		ObjFile::Object & object = *m_Objects[ o ];
+		startVertexIndex += object.m_Vertices.size( );
+	}
+
+	// Get the object(we've already error checked the index)
+	ObjFile::Object & object = *m_Objects[ p_Object ];
+
+	// Get the object group
+	if( p_ObjectGroup >= object.m_ObjectGroups.size( ) )
+	{
+		return NULL;
+	}
+	ObjectGroup & objectGroup = *object.m_ObjectGroups[ p_ObjectGroup ];
+
+	// Get the material group
+	if( p_MaterialGroup >= objectGroup.m_MaterialGroups.size( ) )
+	{
+		return NULL;
+	}
+	MaterialGroup & materialGroup = *objectGroup.m_MaterialGroups[ p_MaterialGroup ];
+
+	// Calculate the verex buffer size
+	SizeType bufferSize = 0;
+
+	if( p_UseFlatFaces )
+	{
+		bufferSize += static_cast<SizeType>( materialGroup.m_FlatFaces.size( ) );
+	}
+
+	if( p_UseSmoothFaces )
+	{
+		bufferSize += static_cast<SizeType>( materialGroup.m_SmoothFaces.size( ) );
+	}
+
+	// Error check the buffer size
 	if( bufferSize == 0 )
 	{
 		p_BufferSize = 0;
@@ -87,126 +100,101 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 	// Let's create the buffer.
 	T * pBuffer = new T[bufferSize];
 
-	// Find the size by going through all the elements of the obj structure.
+	// Go throgu the flat and smooth faces
 	SizeType currentIndex = 0;
-	SizeType totalVertices = 0; // Indicate how many vertices we've gone through
-	for( SizeType o = 0; o < m_Objects.size( ); o++ )
+	if( p_UseFlatFaces )
 	{
-		ObjFile::Object & object = *m_Objects[ o ];
-
-		// Go through the object groups
-		for( SizeType og = 0; og < object.m_ObjectGroups.size( ); og++ )
+		// Go through the flat faces.
+		for( SizeType f = 0; f < materialGroup.m_FlatFaces.size( ); f++ )
 		{
-			ObjectGroup & objectGroup = *object.m_ObjectGroups[ og ];
+			Face & face = *materialGroup.m_FlatFaces[ f ];
 
-			// Go through the material groups
-			for( SizeType mg = 0; mg < objectGroup.m_MaterialGroups.size( ); mg++ )
+			// Error check the face. Make sure it's triangular.
+			if( face.m_FaceCorners.size( ) != 3 )
 			{
-				MaterialGroup & materialGroup = *objectGroup.m_MaterialGroups[ mg ];
-
-				// Go throgu the flat and smooth faces
-				if( p_UseFlatFaces )
-				{
-					// Go through the flat faces.
-					for( SizeType f = 0; f < materialGroup.m_FlatFaces.size( ); f++ )
-					{
-						Face & face = *materialGroup.m_FlatFaces[ f ];
-
-						// Error check the face. Make sure it's triangular.
-						if( face.m_FaceCorners.size( ) != 3 )
-						{
-							delete [] pBuffer;
-							p_BufferSize = 0;
-							return NULL;
-						}
-
-						// Go throguh the face corners
-						for( SizeType fc = 0; fc < 3; fc++ )
-						{
-							// Get the current corner
-							FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
-
-							// Get the vertex index.
-							Int32 vertexIndex = faceCorner.VertexIndex - 1 - totalVertices;
-
-							// Error check the corner
-							if( vertexIndex < 0 || vertexIndex >= object.m_Vertices.size( ) )
-							{
-								std::cout << "[Model::CreatePositionBuffer] Vertex index error:" << vertexIndex << std::endl;
-				
-								// Error, return NULL.
-								delete [] pBuffer;
-								p_BufferSize = 0;
-								return NULL;
-							}
-
-							// Get the vertex coordinate.
-							const Vector3f32 position = object.GetVertex( vertexIndex );
-
-							// Set the buffer data
-							pBuffer[ currentIndex ]		= static_cast<T>( position.x );
-							pBuffer[ currentIndex + 1 ]	= static_cast<T>( position.y );
-							pBuffer[ currentIndex + 2 ]	= static_cast<T>( position.z );
-							currentIndex += 3;
-						}
-					}
-					
-				}
-				if( p_UseSmoothFaces )
-				{
-					// Go through the flat faces.
-					for( SizeType f = 0; f < materialGroup.m_SmoothFaces.size( ); f++ )
-					{
-						Face & face = *materialGroup.m_SmoothFaces[ f ];
-
-						// Error check the face. Make sure it's triangular.
-						if( face.m_FaceCorners.size( ) != 3 )
-						{
-							delete [] pBuffer;
-							p_BufferSize = 0;
-							return NULL;
-						}
-
-						// Go throguh the face corners
-						for( SizeType fc = 0; fc < 3; fc++ )
-						{
-							// Get the current corner
-							FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
-
-							// Get the vertex index.
-							Int32 vertexIndex = faceCorner.VertexIndex - 1 - totalVertices;
-
-							// Error check the corner
-							if( vertexIndex < 0 || vertexIndex >= object.m_Vertices.size( ) )
-							{
-								std::cout << "[Model::CreatePositionBuffer] Vertex index error:" << vertexIndex << std::endl;
-				
-								// Error, return NULL.
-								delete [] pBuffer;
-								p_BufferSize = 0;
-								return NULL;
-							}
-
-							// Get the vertex coordinate.
-							const Vector3f32 position = object.GetVertex( vertexIndex );
-
-							// Set the buffer data
-							pBuffer[ currentIndex ]		= static_cast<T>( position.x );
-							pBuffer[ currentIndex + 1 ]	= static_cast<T>( position.y );
-							pBuffer[ currentIndex + 2 ]	= static_cast<T>( position.z );
-							currentIndex += 3;
-						}
-					}
-				}
-
+				delete [] pBuffer;
+				p_BufferSize = 0;
+				return NULL;
 			}
-			
-		}
 
-		// Increase the total vertices.
-		totalVertices += object.m_Vertices.size( );
+			// Go throguh the face corners
+			for( SizeType fc = 0; fc < 3; fc++ )
+			{
+				// Get the current corner
+				FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
 
+				// Get the vertex index.
+				Int32 vertexIndex = faceCorner.VertexIndex - 1 - startVertexIndex;
+
+				// Error check the corner
+				if( vertexIndex < 0 || vertexIndex >= object.m_Vertices.size( ) )
+				{
+					std::cout << "[Model::CreatePositionBuffer] Flat vertex index error:" << vertexIndex << std::endl;
+				
+					// Error, return NULL.
+					delete [] pBuffer;
+					p_BufferSize = 0;
+					return NULL;
+				}
+
+				// Get the vertex coordinate.
+				const Vector3f32 position = object.GetVertex( vertexIndex );
+
+				// Set the buffer data
+				pBuffer[ currentIndex ]		= static_cast<T>( position.x );
+				pBuffer[ currentIndex + 1 ]	= static_cast<T>( position.y );
+				pBuffer[ currentIndex + 2 ]	= static_cast<T>( position.z );
+				currentIndex += 3;
+			}
+		}	
 	}
+	if( p_UseSmoothFaces )
+	{
+		// Go through the flat faces.
+		for( SizeType f = 0; f < materialGroup.m_SmoothFaces.size( ); f++ )
+		{
+			Face & face = *materialGroup.m_SmoothFaces[ f ];
+
+			// Error check the face. Make sure it's triangular.
+			if( face.m_FaceCorners.size( ) != 3 )
+			{
+				delete [] pBuffer;
+				p_BufferSize = 0;
+				return NULL;
+			}
+
+			// Go throguh the face corners
+			for( SizeType fc = 0; fc < 3; fc++ )
+			{
+				// Get the current corner
+				FaceCorner & faceCorner = face.m_FaceCorners[ fc ];
+
+				// Get the vertex index.
+				Int32 vertexIndex = faceCorner.VertexIndex - 1 - startVertexIndex;
+
+				// Error check the corner
+				if( vertexIndex < 0 || vertexIndex >= object.m_Vertices.size( ) )
+				{
+					std::cout << "[Model::CreatePositionBuffer] Smooth vertex index error:" << vertexIndex << std::endl;
+				
+					// Error, return NULL.
+					delete [] pBuffer;
+					p_BufferSize = 0;
+					return NULL;
+				}
+
+				// Get the vertex coordinate.
+				const Vector3f32 position = object.GetVertex( vertexIndex );
+
+				// Set the buffer data
+				pBuffer[ currentIndex ]		= static_cast<T>( position.x );
+				pBuffer[ currentIndex + 1 ]	= static_cast<T>( position.y );
+				pBuffer[ currentIndex + 2 ]	= static_cast<T>( position.z );
+				currentIndex += 3;
+			}
+		}	
+	}
+
 
 	// return the buffer
 	return pBuffer;
