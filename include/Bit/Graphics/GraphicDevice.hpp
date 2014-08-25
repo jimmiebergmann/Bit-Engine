@@ -63,7 +63,7 @@ namespace Bit
 		/// \see ModelRenderer
 		///
 		////////////////////////////////////////////////////////////////
-		class DefaultModelSettings
+		class BIT_API DefaultModelSettings
 		{
 
 		public:
@@ -74,7 +74,7 @@ namespace Bit
 			/// \see DefaultModelSettings
 			///
 			////////////////////////////////////////////////////////////////
-			class Light
+			class BIT_API Light
 			{
 
 			public:

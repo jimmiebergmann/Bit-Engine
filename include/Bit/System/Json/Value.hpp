@@ -65,7 +65,7 @@ namespace Bit
 			/// \brief Json iterator class
 			///
 			////////////////////////////////////////////////////////////////
-			class Iterator
+			class BIT_API Iterator
 			{
 
 			public:

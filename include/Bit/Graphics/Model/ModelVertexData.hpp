@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/NonCopyable.hpp>
+#include <Bit/Graphics/ModelMaterial.hpp>
 #include <vector>
 
 namespace Bit
@@ -99,6 +100,12 @@ namespace Bit
 		void SetBitmask( const Uint16 p_Bitmask );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Set material.
+		///
+		////////////////////////////////////////////////////////////////
+		void SetMaterial( ModelMaterial * p_pMaterial );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Get the number of vertex buffers. 
 		///
 		////////////////////////////////////////////////////////////////
@@ -122,6 +129,18 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		Uint16 GetBitmask(  ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Check if the model vertex data has any material.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool HasMaterial( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get material.
+		///
+		////////////////////////////////////////////////////////////////
+		const ModelMaterial & GetMaterial( ) const;
+
 	private:
 
 		// Private typedefs.
@@ -131,7 +150,7 @@ namespace Bit
 		VertexBufferVector m_VertexBuffers; ///< Vector of vertex buffers.
 		VertexArray * m_pVertexArray;		///< Vertex array with the vertex buffers bound to it.
 		Uint16 m_Bitmask;					///< Bitmask of all the buffers that are bound to the vertex array.
-
+		ModelMaterial * m_pMaterial;			///< Pointer to the material.
 
 	};
 

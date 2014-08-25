@@ -32,7 +32,8 @@ namespace Bit
 {
 	ModelVertexData::ModelVertexData( ) :
 		m_pVertexArray( NULL ),
-		m_Bitmask( 0 )
+		m_Bitmask( 0 ),
+		m_pMaterial( NULL )
 	{
 	}
 
@@ -94,6 +95,11 @@ namespace Bit
 		m_Bitmask = p_Bitmask;
 	}
 
+	void ModelVertexData::SetMaterial( ModelMaterial * p_pMaterial )
+	{
+		m_pMaterial = p_pMaterial;
+	}
+
 	SizeType ModelVertexData::GetVertexBufferCount( ) const
 	{
 		return static_cast<SizeType>( m_VertexBuffers.size( ) );
@@ -112,6 +118,23 @@ namespace Bit
 	Uint16 ModelVertexData::GetBitmask(  ) const
 	{
 		return m_Bitmask;
+	}
+
+	Bool ModelVertexData::HasMaterial( ) const
+	{
+		return m_pMaterial != NULL;
+	}
+
+	const ModelMaterial & ModelVertexData::GetMaterial( ) const
+	{
+		// Error check the index.
+		if( m_pMaterial == NULL )
+		{
+			return ModelMaterial::NullValue;
+		}
+
+		// Get the json material value
+		return *m_pMaterial;
 	}
 
 

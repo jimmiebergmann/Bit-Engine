@@ -128,12 +128,14 @@ namespace Bit
 			pShaderProgram->SetUniform3f( colorStream.str( ).c_str( ), color.x, color.y, color.z );
 		}
 
+		// Get the vertex group
+		ModelVertexGroup & vertexGroup = p_Model.GetVertexGroup( );
 
 		// Go throguh all the vertex data elements.
-		for( SizeType i = 0; i < p_Model.GetVertexGroup( ).GetVertexDataCount( ); i++ )
+		for( SizeType i = 0; i < vertexGroup.GetVertexDataCount( ); i++ )
 		{
 			// Get the current vertex data.
-			ModelVertexData * vertexData = p_Model.GetVertexGroup( ).GetVertexData( i );
+			ModelVertexData * vertexData = vertexGroup.GetVertexData( i );
 
 			// Error check the vertex data pointer.
 			if( vertexData == NULL || vertexData->GetVertexArray( ) == NULL )
@@ -158,6 +160,15 @@ namespace Bit
 			else
 			{
 				pShaderProgram->SetUniform1i( "uUseNormals", 0 );
+			}
+
+			// Get the model material
+			const ModelMaterial & pMaterial = vertexData->GetMaterial( );
+
+			// Bind the color map texture.
+			if( pMaterial.Get( "ColorMap", "" ).AsString( ).size( ) )
+			{
+				int a = 123;
 			}
 
 			// Render the model.

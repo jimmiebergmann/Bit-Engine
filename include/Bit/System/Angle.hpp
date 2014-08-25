@@ -36,7 +36,7 @@ namespace Bit
 	/// \brief Angle class
 	/// 
 	////////////////////////////////////////////////////////////////
-	class Angle
+	class BIT_API Angle
 	{
 
 	public:

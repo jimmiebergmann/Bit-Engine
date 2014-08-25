@@ -21,25 +21,19 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-/*
+
 #ifndef BIT_GRAPHICS_MODEL_MATERIAL_HPP
 #define BIT_GRAPHICS_MODEL_MATERIAL_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/NonCopyable.hpp>
 #include <Bit/System/Json/Value.hpp>
-#include <string>
 
 namespace Bit
 {
 
-	// Forward declaractions
-	class GraphicDevice;
-	class VertexArray;
-
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief 3D model material class.
+	/// \brief 3D model material typedef.
 	///
 	/// Default property names:
 	///		- Color			( RGB : 0.0f - 1.0f each channel )
@@ -52,33 +46,8 @@ namespace Bit
 	/// \see Model
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API ModelMaterial
-	{
-
-	public:
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor.
-		///
-		////////////////////////////////////////////////////////////////
-		ModelMaterial( );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Destructor.
-		///
-		////////////////////////////////////////////////////////////////
-		~ModelMaterial( );
-
-
-
-	private:
-
-		// Private variables
-		Json::Value m_Properties;
-
-	};
+	typedef Json::Value ModelMaterial;
 
 }
 
 #endif
-*/

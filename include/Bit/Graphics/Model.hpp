@@ -30,7 +30,6 @@
 #include <Bit/Graphics/ModelMaterial.hpp>
 #include <Bit/Graphics/Model/ModelVertexData.hpp>
 #include <Bit/Graphics/Model/Skeleton.hpp>
-#include <Bit/System/Json/Value.hpp>
 #include <string>
 
 namespace Bit
@@ -127,12 +126,12 @@ namespace Bit
 		/// \brief Get material.
 		///
 		////////////////////////////////////////////////////////////////
-		const Json::Value & GetMaterial( const SizeType p_Index ) const;
+		const ModelMaterial & GetMaterial( const SizeType p_Index ) const;
 
 	private:
 
 		// Private typedefs
-		typedef std::vector<Json::Value *> ModelMaterialVector;
+		typedef std::vector<ModelMaterial *> ModelMaterialVector;
 
 		// Private functions
 

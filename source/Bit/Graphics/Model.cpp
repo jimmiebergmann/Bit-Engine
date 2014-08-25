@@ -108,13 +108,65 @@ namespace Bit
 		// Currently just loading one object with one group, with one material and so on,
 		// not supporting any face shape other than triangles.
 
-		// Load a obj file.
+		// Load the obj file.
 		ObjFile obj;
 		if( obj.LoadFromFile( p_Filename ) == false )
 		{
 			std::cout << "[Model::LoadFromObjFile] Failed to open OBJ file." << std::endl;
 			return false;
 		}
+
+		// Load the materials of the obj file if possible
+		ObjMaterialFile objMaterial;
+		
+		if( obj.GetMaterialFilename( ).size( ) &&
+			objMaterial.LoadFromFile( "input/" + obj.GetMaterialFilename( ) ) == true )
+		{
+			// Get the materials from the OBJ material file
+			for( SizeType i = 0; i < objMaterial.GetMaterialCount( ); i++ )
+			{
+				// Get the obj material
+				const ObjMaterialFile::Material & material = objMaterial.GetMaterial( i );
+
+				// Create a new json material value
+				ModelMaterial * pValue = new ModelMaterial;
+
+				// Add default properties.
+				(*pValue)[ "MaterialName" ] = material.GetName( );
+			
+				// Add color
+				(*pValue)[ "Color" ][ "r" ] = material.GetDiffuseColor( ).x;
+				(*pValue)[ "Color" ][ "g" ] = material.GetDiffuseColor( ).y;
+				(*pValue)[ "Color" ][ "b" ] = material.GetDiffuseColor( ).z;
+				(*pValue)[ "Color" ][ "a" ] = material.GetOpticalDensity( );
+
+				// Add shininess
+				if( material.GetShininess( ) > 0.0f )
+				{
+					(*pValue)[ "Shininess" ] = std::min( material.GetShininess( ), 1.0f );
+				}
+
+				// Add color map
+				if( material.GetAmbientTexture( ).size( ) )
+				{
+					(*pValue)[ "ColorMap" ] = material.GetAmbientTexture( );
+				}
+
+				// Add normal map
+				if( material.GetBumpTexture( ).size( ) )
+				{
+					(*pValue)[ "NormalMap" ] = material.GetBumpTexture( );
+				}
+
+				// Add the material to the vector.
+				m_Materials.push_back( pValue );
+			}
+		}
+		else
+		{
+			std::cout << "[Model::LoadFromObjFile] Failed to open OBJ material file." << std::endl;
+		}
+
 
 		// //////////////////////////////////////////////////////////////////////////////////////
 		// Create the position buffer from the obj file.
@@ -133,6 +185,9 @@ namespace Bit
 				// To through the material groups in the obj class
 				for( SizeType k = 0; k < objectGroup.GetMaterialGroupCount( ); k++ )
 				{
+					ObjFile::MaterialGroup & materialGroup = objectGroup.GetMaterialGroup( j );
+
+					// Create the vertex buffer.
 					Float32 * pBufferData = obj.CreatePositionBuffer<Float32>( bufferSize, i, j, k );
 
 					// Error check the position buffer data
@@ -166,6 +221,16 @@ namespace Bit
 					// Create the vertex array and add it to the vertex data
 					VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray( );
 					pModelVertexData->SetVertexArray( pVertexArray );
+
+
+					// Find the material for the current vertex data
+					for( SizeType l = 0; l < m_Materials.size( ); l++ )
+					{
+						if( m_Materials[ l ]->Get( "MaterialName", "" ).AsString( ) == materialGroup.GetMaterialName( ) )
+						{
+							pModelVertexData->SetMaterial( m_Materials[ l ] );
+						}
+					}
 
 					// Add the vertex buffer to the vertex array.
 					pVertexArray->AddVertexBuffer( *pPositionVertexBuffer, 3, DataType::Float32, 0 );
@@ -222,100 +287,6 @@ namespace Bit
 			}
 		}
 
-/*		
-		// //////////////////////////////////////////////////////////////////////////////////////
-		// Try to add texture coordinate and normal buffers as well.
-		// Create the texture coordinate buffer from the obj file.
-		pBufferData = obj.CreateTextureCoordBuffer<Float32>( bufferSize );
-
-		// Error check the position buffer data
-		if( pBufferData != NULL )
-		{
-			// Load the position vertex buffer
-			VertexBuffer * pTextureVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
-			if( pTextureVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
-			{
-				// Add the vertex buffer to the vertex array.
-				pVertexArray->AddVertexBuffer( *pTextureVertexBuffer, 2, DataType::Float32, 1 );
-
-				// Add the vertex buffer to the vertex data class.
-				m_VertexData.AddVertexBuffer( pTextureVertexBuffer, 0x02 );
-			}
-
-			// Delete the allocated data
-			delete [ ] pBufferData;
-		}
-
-		// Create the normal buffer from the obj file.
-		pBufferData = obj.CreateNormalBuffer<Float32>( bufferSize );
-
-		// Error check the position buffer data
-		if( pBufferData != NULL )
-		{
-			// Load the position vertex buffer
-			VertexBuffer * pNormalVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
-			if( pNormalVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
-			{
-				// Add the vertex buffer to the vertex array.
-				pVertexArray->AddVertexBuffer( *pNormalVertexBuffer, 3, DataType::Float32, 2 );
-
-				// Add the vertex buffer to the vertex data class.
-				m_VertexData.AddVertexBuffer( pNormalVertexBuffer, 0x04 );
-			}
-
-			// Delete the allocated data
-			delete [ ] pBufferData;
-		}
-
-*/
-
-		// Load the materials of the obj file
-		ObjMaterialFile objMaterial;
-		if( objMaterial.LoadFromFile( "input/" + obj.GetMaterialFilename( ) ) == false )
-		{
-			std::cout << "[Model::LoadFromObjFile] Failed to open OBJ material file." << std::endl;
-			return false;
-		}
-
-		// Get the materials from the OBJ material file
-		for( SizeType i = 0; i < objMaterial.GetMaterialCount( ); i++ )
-		{
-			// Get the obj material
-			const ObjMaterialFile::Material & material = objMaterial.GetMaterial( i );
-
-			// Create a new json material value
-			Json::Value * pValue = new Json::Value;
-
-			// Add default properties.
-			
-			// Add color
-			(*pValue)[ "Color" ][ "r" ] = material.GetDiffuseColor( ).x;
-			(*pValue)[ "Color" ][ "g" ] = material.GetDiffuseColor( ).y;
-			(*pValue)[ "Color" ][ "b" ] = material.GetDiffuseColor( ).z;
-			(*pValue)[ "Color" ][ "a" ] = material.GetOpticalDensity( );
-
-			// Add shininess
-			if( material.GetShininess( ) > 0.0f )
-			{
-				(*pValue)[ "Shininess" ] = std::min( material.GetShininess( ), 1.0f );
-			}
-
-			// Add color map
-			if( material.GetAmbientTexture( ).size( ) )
-			{
-				(*pValue)[ "ColorMap" ] = material.GetAmbientTexture( );
-			}
-
-			// Add normal map
-			if( material.GetBumpTexture( ).size( ) )
-			{
-				(*pValue)[ "NormalMap" ] = material.GetBumpTexture( );
-			}
-
-			// Add the material to the vector.
-			m_Materials.push_back( pValue );
-		}
-
 		// Succeeded
 		return true;
 	}
@@ -335,12 +306,12 @@ namespace Bit
 		return static_cast<SizeType>( m_Materials.size( ) );
 	}
 
-	const Json::Value & Model::GetMaterial( const SizeType p_Index ) const
+	const ModelMaterial & Model::GetMaterial( const SizeType p_Index ) const
 	{
 		// Error check the index.
 		if( p_Index >= static_cast<SizeType>( m_Materials.size( ) ) )
 		{
-			return Json::Value::NullValue;
+			return ModelMaterial::NullValue;
 		}
 
 		// Get the json material value
