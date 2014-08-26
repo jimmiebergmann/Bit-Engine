@@ -136,7 +136,7 @@ namespace Bit
 		}
 		else if( fileExtension == "PNG" )
 		{
-			return LoadFromPngFile( p_Filename );
+			return LoadFromPngFile( p_Filename ); 
 		}
 		else if( fileExtension == "JPG" )
 		{

@@ -26,8 +26,8 @@
 #ifndef BIT_SYSTEM_RESOURCE_MANAGER_HPP
 #define BIT_SYSTEM_RESOURCE_MANAGER_HPP
 
-#include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Texture.hpp>
+#include <Bit/Build.hpp>
+//#include <Bit/Graphics/Texture.hpp>
 #include <string>
 #include <unordered_map>
 
@@ -36,13 +36,75 @@ namespace Bit
 
 	// Forward declarations
 	class GraphicDevice;
+	class Texture;
 
+	////////////////////////////////////////////////////////////////
+	/// \ingroup System
+	/// \brief Resource manager class.
+	///
+	/// Get the default resource manager by calling the function GetDefault.
+	/// You will have to manually set the audio/graphic device
+	/// for any resource manager(including the default one) in order
+	/// of being able to get audio and textures.
+	///
+	////////////////////////////////////////////////////////////////
 	class BIT_API ResourceManager
 	{
 
 	public:
 
-		// Public functions
+		////////////////////////////////////////////////////////////////
+		/// \brief Virtual destructor.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ~ResourceManager( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Release the entire resource manager,
+		///		including audio and textures.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Release( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Release all textures.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void ReleaseTextures( ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the graphic device.
+		///		This is required in order to get textures.
+		///
+		/// \param p_pGraphicDevice Pointer of the graphic device.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetGraphicDevice( GraphicDevice * p_pGraphicDevice ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get texture by file path.
+		///
+		/// \param p_FilePath Path of the the texture.
+		/// \param p_Mipmapping Generating mipmaps for the texture if true.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Texture * GetTexture(	const std::string & p_FilePath,
+										const Bool p_Mipmapping = false ) = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get default resource manager class.
+		///
+		////////////////////////////////////////////////////////////////
+		static ResourceManager * GetDefault( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the graphic device.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual GraphicDevice * GetGraphicDevice( ) const = 0;
+
+
+	/*	// Public functions
 		static BIT_UINT32 Initialize( GraphicDevice * p_pGraphicDevice,
 			Texture::eFilter * p_DefaultTextureFilters );
 		static void Release( );
@@ -70,7 +132,7 @@ namespace Bit
 		static TextureMap m_Textures;
 		static Texture::eFilter * m_DefaultTextureFilters;
 		static Texture * m_ErrorTexture;
-
+		*/
 	};
 
 }

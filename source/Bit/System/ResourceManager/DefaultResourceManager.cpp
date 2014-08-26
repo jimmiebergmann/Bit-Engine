@@ -22,24 +22,93 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/System/ResourceManager.hpp>
 #include <Bit/System/ResourceManager/DefaultResourceManager.hpp>
+#include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Graphics/Texture.hpp>
+#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	// Static variables
-	static Private::DefaultResourceManager g_DefaultResourceManager;
-
-	// Resource manager class
-	ResourceManager::~ResourceManager( )
+	namespace Private
 	{
-	}
 
-	ResourceManager * ResourceManager::GetDefault( )
-	{
-		return &g_DefaultResourceManager;
+		DefaultResourceManager::DefaultResourceManager( ) :
+			m_pGraphicDevice( NULL )
+		{
+		}
+
+		DefaultResourceManager::~DefaultResourceManager( )
+		{
+			Release( );
+		}
+		
+		void DefaultResourceManager::Release( )
+		{
+			ReleaseTextures( );
+		}
+			
+		void DefaultResourceManager::ReleaseTextures( )
+		{
+			// Go through and delete all the textures.
+			for( TextureIterator it = m_Textures.begin( ); it != m_Textures.end( ); it++ )
+			{
+				delete it->second;
+			}
+			m_Textures.clear( );
+		}
+
+		void DefaultResourceManager::SetGraphicDevice( GraphicDevice * p_pGraphicDevice )
+		{
+			m_pGraphicDevice = p_pGraphicDevice;
+		}
+
+		Texture * DefaultResourceManager::GetTexture(	const std::string & p_FilePath,
+														const Bool p_Mipmapping )
+		{
+			// Find the texture
+			TextureIterator it = m_Textures.find( p_FilePath );
+
+			// Check if we've already found the texture
+			if( it == m_Textures.end( ) )
+			{
+				if( m_pGraphicDevice == NULL )
+				{
+					std::cout << "[DefaultResourceManager::GetTexture] No attached graphic device." << std::endl;
+					return NULL;
+				}
+
+				// Create the texture
+				Texture * pTexture = m_pGraphicDevice->CreateTexture( );
+				if( pTexture == NULL )
+				{
+					return NULL;
+				}
+
+				// Load the texture
+				if( pTexture->LoadFromFile( p_FilePath.c_str( ), p_Mipmapping ) == false )
+				{
+					// Could not load the texture
+					return NULL;
+				}
+
+				// Add the texture to the texture map
+				m_Textures[ p_FilePath ] = pTexture;
+
+				// return the texture
+				return pTexture;
+			}
+
+			// Return the texture pointer
+			return it->second;
+		}
+
+		GraphicDevice * DefaultResourceManager::GetGraphicDevice( ) const
+		{
+			return m_pGraphicDevice;
+		}
+
 	}
 
 	/*

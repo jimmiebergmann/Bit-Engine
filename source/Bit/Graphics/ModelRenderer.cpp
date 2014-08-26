@@ -27,7 +27,9 @@
 #include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/Graphics/VertexArray.hpp>
 #include <Bit/Graphics/ShaderProgram.hpp>
+#include <Bit/Graphics/Texture.hpp>
 #include <Bit/System/MatrixManager.hpp>
+#include <Bit/System/ResourceManager.hpp>
 #include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -166,9 +168,17 @@ namespace Bit
 			const ModelMaterial & pMaterial = vertexData->GetMaterial( );
 
 			// Bind the color map texture.
-			if( pMaterial.Get( "ColorMap", "" ).AsString( ).size( ) )
+			const std::string & colorMapPath = pMaterial.Get( "ColorMap", "" ).AsString( );
+			if( colorMapPath.size( ) )
 			{
-				int a = 123;
+				// Get the material.
+				Texture * pTexture = ResourceManager::GetDefault( )->GetTexture( colorMapPath, true );
+
+				// Bind the texture
+				if( pTexture )
+				{
+					pTexture->Bind( );
+				}
 			}
 
 			// Render the model.
