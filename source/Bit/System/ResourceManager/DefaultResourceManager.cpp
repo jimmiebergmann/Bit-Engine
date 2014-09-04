@@ -65,6 +65,7 @@ namespace Bit
 		}
 
 		Texture * DefaultResourceManager::GetTexture(	const std::string & p_FilePath,
+														const Bool p_PropertyInitializing,
 														const Bool p_Mipmapping )
 		{
 			// Find the texture
@@ -86,11 +87,41 @@ namespace Bit
 					return NULL;
 				}
 
+				// Get the mipmapping status
+				bool mipmapping = false;
+				if( p_PropertyInitializing )
+				{
+					// Get the default mipmapping property from the graphic device.
+					mipmapping = m_pGraphicDevice->GetDefaultTextureProperties( ).GetMipmapping( );
+				}
+				else
+				{
+					mipmapping = p_Mipmapping;
+				}
+
 				// Load the texture
-				if( pTexture->LoadFromFile( p_FilePath.c_str( ), p_Mipmapping ) == false )
+				if( pTexture->LoadFromFile( p_FilePath.c_str( ), mipmapping ) == false )
 				{
 					// Could not load the texture
 					return NULL;
+				}
+
+				// Initialize the properties
+				if( p_PropertyInitializing )
+				{
+					// Get the property reference.
+					TextureProperties & properties = m_pGraphicDevice->GetDefaultTextureProperties( );
+
+					// Set all the properties
+					pTexture->GetProperties( ).SetMagnificationFilter( properties.GetMagnificationFilter( ) );
+					pTexture->GetProperties( ).SetMinificationFilter( properties.GetMinificationFilter( ) );
+					pTexture->GetProperties( ).SetWrappingX( properties.GetWrappingX( ) );
+					pTexture->GetProperties( ).SetWrappingY( properties.GetWrappingY( ) );
+					pTexture->GetProperties( ).SetMipmapping( properties.GetMipmapping( ) );
+					pTexture->GetProperties( ).SetAnisotropic( properties.GetAnisotropic( ) );
+
+					// Apply the properties
+					pTexture->ApplyProperties( );
 				}
 
 				// Add the texture to the texture map

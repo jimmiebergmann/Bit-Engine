@@ -90,10 +90,13 @@ namespace Bit
 			/// \brief Get texture by file path.
 			///
 			/// \param p_FilePath Path of the the texture.
+			/// \param p_PropertyInitializing Initialize any new texture with default properties
+			///								and ignores the p_Mipmapping param if true.
 			/// \param p_Mipmapping Generating mipmaps for the texture if true.
 			///
 			////////////////////////////////////////////////////////////////
 			virtual Texture * GetTexture(	const std::string & p_FilePath,
+											const Bool p_PropertyInitializing = true,
 											const Bool p_Mipmapping = false );
 
 			////////////////////////////////////////////////////////////////

@@ -27,9 +27,7 @@
 #define BIT_SYSTEM_RESOURCE_MANAGER_HPP
 
 #include <Bit/Build.hpp>
-//#include <Bit/Graphics/Texture.hpp>
 #include <string>
-#include <unordered_map>
 
 namespace Bit
 {
@@ -37,6 +35,7 @@ namespace Bit
 	// Forward declarations
 	class GraphicDevice;
 	class Texture;
+	class TextureProperties;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup System
@@ -58,6 +57,12 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual ~ResourceManager( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get default resource manager class.
+		///
+		////////////////////////////////////////////////////////////////
+		static ResourceManager * GetDefault( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Release the entire resource manager,
@@ -85,17 +90,14 @@ namespace Bit
 		/// \brief Get texture by file path.
 		///
 		/// \param p_FilePath Path of the the texture.
+		/// \param p_PropertyInitializing Initialize any new texture with default properties
+		///								and ignores the p_Mipmapping param if true.
 		/// \param p_Mipmapping Generating mipmaps for the texture if true.
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Texture * GetTexture(	const std::string & p_FilePath,
+										const Bool p_PropertyInitializing = true,
 										const Bool p_Mipmapping = false ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get default resource manager class.
-		///
-		////////////////////////////////////////////////////////////////
-		static ResourceManager * GetDefault( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the graphic device.
@@ -103,36 +105,6 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual GraphicDevice * GetGraphicDevice( ) const = 0;
 
-
-	/*	// Public functions
-		static BIT_UINT32 Initialize( GraphicDevice * p_pGraphicDevice,
-			Texture::eFilter * p_DefaultTextureFilters );
-		static void Release( );
-
-		// Get functions
-		static GraphicDevice * GetGraphicDevice( );
-		static Texture * GetTexture( const std::string p_FilePath );
-		static Texture * GetTexture( const std::string p_FilePath, const Texture::eFilter * p_pTextureFilters );
-		static Texture * GetTexture( const std::string p_FilePath, const BIT_BOOL p_Mipmapping );
-		static Texture * GetTexture( const std::string p_FilePath, const Texture::eFilter * p_pTextureFilters, const BIT_BOOL p_Mipmapping );
-		static Texture * GetErrorTexture( );
-
-	private:
-
-		// Private functions
-		static BIT_UINT32 LoadErrorTexture( );
-
-		// Private typedefs
-		typedef std::unordered_map <std::string, Bit::Texture *> TextureMap;
-		typedef TextureMap::iterator TextureIterator;
-
-		// Private variables
-		static BIT_BOOL m_Initialized;
-		static GraphicDevice * m_pGraphicDevice;
-		static TextureMap m_Textures;
-		static Texture::eFilter * m_DefaultTextureFilters;
-		static Texture * m_ErrorTexture;
-		*/
 	};
 
 }

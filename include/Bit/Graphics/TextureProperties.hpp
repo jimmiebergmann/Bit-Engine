@@ -22,141 +22,166 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_OPENGL_TEXTURE_HPP
-#define BIT_GRAPHICS_OPENGL_TEXTURE_HPP
+#ifndef BIT_GRAPHICS_TEXTURE_PROPERTIES_HPP
+#define BIT_GRAPHICS_TEXTURE_PROPERTIES_HPP
 
-#include <Bit/Graphics/Texture.hpp>
-#include <Bit/Graphics/OpenGL/OpenGL.hpp>
+#include <Bit/Build.hpp>
+#include <Bit/NonCopyable.hpp>
 
 namespace Bit
 {
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief OpenGL texture class
+	/// \brief Texture properties class.
+	///
+	/// Flag bits:
+	/// - 0x01 Magnification filter.
+	/// - 0x02 Minification filter.
+	/// - 0x04 Wrapping X.
+	/// - 0x08 Wrapping Y.
+	/// - 0x10 Anisotrpical level.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API OpenGLTexture : public Texture
+	class BIT_API TextureProperties : public NonCopyable
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor
+		/// \brief Filter enumerator
+		///
+		/// Do not use mipmap filters for magnification.
 		///
 		////////////////////////////////////////////////////////////////
-		OpenGLTexture( );
+		enum eFilter
+		{
+			Nearest,				///< Nearest neighbor blending.
+			NearestMipmapNearest,	///< Not linear within mip-level.
+			NearestMipmapLinear,	///< Same as previous, but linear between mip-levels.
+			Linear,					///< Linear blend between texels.
+			LinearMipmapNearest,	///< Linear within mip-level.
+			LinearMipmapLinear		///< Same as previous, but linear between mip-levels.
+		};
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Destructor
+		/// \brief Wrapping enumerator
 		///
 		////////////////////////////////////////////////////////////////
-		~OpenGLTexture( );
+		enum eWarpping
+		{
+			Repeat,
+			Clamp
+		};
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Load texture from memory.
-		///
-		/// \param p_pData Pointer to the pixel data.
-		/// \param p_Size The size of the texture(width and height).
-		/// \param p_BytesPerPixel Number of bytes per pixel.
-		///		Must be one of the following: 1/2/3/4.
-		/// \param p_Format The format for representing the color components.
-		/// \param p_Datatype The data type as the components are stored as.
-		/// \param p_Mipmapping Generating mipmaps for the texture if true.
+		/// \brief Default constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromMemory(	const void * p_pData,
-										const Vector2u32 p_Size,
-										const SizeType p_BytesPerPixel = 4,
-										const ePixelFormat p_Format = Rgba,
-										const DataType::eType p_Datatype = DataType::Uint8,
-										const Bool p_Mipmapping = false );
+		TextureProperties( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Load texture data from a file.
-		///
-		///	This function is a combination of Bit::Image
-		///	and the "LoadFromImage" function.
-		///
-		/// \param p_Filename File path.
-		/// \param p_Mipmapping Generating mipmaps for the texture if true.
-		///
-		/// \return true if succeeded, else false.
-		///
-		/// \see LoadFromImage
+		/// \brief Set magnification filter
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromFile( const std::string & p_Filename, const Bool p_Mipmapping = false );
+		void SetMagnificationFilter( const eFilter p_Filter );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Load texture from an image.
-		///
-		/// \param p_Image The image to load pixel data from.
-		/// \param p_Mipmapping Generating mipmaps for the texture if true.
+		/// \brief Set minification filter
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool LoadFromImage( const Image & p_Image, const Bool p_Mipmapping = false );
+		void SetMinificationFilter( const eFilter p_Filter );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Bind the texture to the given index(0 by default).
+		/// \brief Set wrapping for
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Bind( const Uint32 p_Index = 0 );
+		void SetWrapping( const eWarpping p_WrapX, const eWarpping p_WrapY );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Unbind the texture.
+		/// \brief Set wrapping for X axis.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Unbind( );
+		void SetWrappingX( const eWarpping p_WrapX );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Apply the current properties to the texture.
-		///
-		/// \return False if the anisotropic lever is invalid, else true.
+		/// \brief Set wrapping for Y axis.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool ApplyProperties( );
+		void SetWrappingY( const eWarpping p_WrapY );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the texture properties.
+		/// \brief Set mipmapping status.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual TextureProperties & GetProperties( );
+		void SetMipmapping( Bool p_Status );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the texture size(width and height)
+		/// \brief Set anisotropic level.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Vector2u32 GetSize( ) const;
+		void SetAnisotropic( const Uint32 p_Level );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the texture's pixel format.
+		/// \brief Set update flags. For advanced users only.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ePixelFormat GetPixelFormat( ) const;
+		void SetFlags( const Uint8 p_Flags );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Check if the texture is successfully loaded.
+		/// \brief Get magnification filter
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool IsLoaded( ) const;
+		eFilter GetMagnificationFilter( ) const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the ID of the OpenGL Texture.
+		/// \brief Get minification filter
 		///
 		////////////////////////////////////////////////////////////////
-		GLuint GetId( ) const;
+		eFilter GetMinificationFilter( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get wrapping for X axis.
+		///
+		////////////////////////////////////////////////////////////////
+		eWarpping GetWrappingX( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get wrapping for Y axis.
+		///
+		////////////////////////////////////////////////////////////////
+		eWarpping GetWrappingY( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get mipmapping status.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool GetMipmapping( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get anisotropic level.
+		///
+		////////////////////////////////////////////////////////////////
+		Uint32 GetAnisotropic( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get update flags. For advanced users only.
+		///
+		////////////////////////////////////////////////////////////////
+		Uint8 GetFlags( ) const;
 
 	private:
 
-		// Private variables
-		GLuint m_Id;					///< OpenGL texture id.
-		Bool m_Loaded;					///< Indicates if the texture is loaded.
-		Vector2u32 m_Size;				///< Texture size.
-		ePixelFormat m_PixelFormat;		///< Pixel format.
-		TextureProperties m_Properties;	///< Texture properties, such as filters.
-
+		eFilter m_MagnificationFilter;	
+		eFilter m_MinificationFilter;
+		eWarpping m_WrappingX;
+		eWarpping m_WrappingY;
+		Bool m_Mipmapping;
+		Uint32 m_AnisotropicLevel;
+		Uint8 m_Flags;					///< Update flag.
+									
 	};
+
 }
 
 #endif

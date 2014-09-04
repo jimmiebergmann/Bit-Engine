@@ -43,6 +43,7 @@ namespace Bit
 	class Shader;
 	class ShaderProgram;
 	class Texture;
+	class TextureProperties;
 	class Model;
 	class ModelRenderer;
 
@@ -445,12 +446,16 @@ namespace Bit
 		virtual ShaderProgram * GetDefaultShaderProgram( const eDefaultShaders p_DefaultShader ) const = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the default model properties.
+		/// \brief Get the default model settings.
 		///
 		////////////////////////////////////////////////////////////////
 		virtual DefaultModelSettings & GetDefaultModelSettings( ) = 0;
 
-		
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the default texture properties.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual TextureProperties & GetDefaultTextureProperties( ) = 0;
 
 	};
 

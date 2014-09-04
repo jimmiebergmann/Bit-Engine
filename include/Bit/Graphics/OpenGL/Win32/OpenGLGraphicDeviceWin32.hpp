@@ -321,6 +321,12 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual DefaultModelSettings & GetDefaultModelSettings( );
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the default texture properties.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual TextureProperties & GetDefaultTextureProperties( );
+
 	private:
 
 		// Private functions
@@ -338,8 +344,10 @@ namespace Bit
 		static OpenGLFramebuffer s_DefaultFramebuffer;	///< Default framebuffer(static).
 		ShaderProgram * m_pDefaultShaderPrograms[ 3 ];	///< Default shader programs, for example model shaders.
 		Shader * m_pDefaultModelFragmentShader;			///< Default model fragment shader.
-		Shader * m_pDefaultModelVertexShaders[ 3 ];		///< Defaukt model vertex shaders.
+		Shader * m_pDefaultModelVertexShaders[ 3 ];		///< Default model vertex shaders.
 		DefaultModelSettings m_DefaultModelSettings;	///< Default model settings.
+		TextureProperties m_DefaultTextureProperties;	///< Default texture properties.
+
 	};
 
 }

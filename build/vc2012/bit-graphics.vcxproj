@@ -205,6 +205,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Texture.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\TextureProperties.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\TgaFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\VertexArray.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\VertexBuffer.hpp" />
@@ -236,6 +237,7 @@
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBuffer.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\PngFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\TextureProperties.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\TgaFile.cpp" />
   </ItemGroup>
   <ItemGroup>

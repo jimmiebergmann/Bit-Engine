@@ -26,6 +26,7 @@
 #define BIT_GRAPHICS_TEXTURE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Graphics/TextureProperties.hpp>
 #include <Bit/Graphics/Image.hpp>
 
 namespace Bit
@@ -34,6 +35,10 @@ namespace Bit
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
 	/// \brief Texture class
+	///
+	/// Modify the properties via the TextureProperties object
+	/// and call the function ApplyProperties in order to actually
+	/// apply the modified properties to the texture object.
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API Texture
@@ -51,33 +56,6 @@ namespace Bit
 			DepthStencil,	///< Depth and stencil component format.
 			Rgb,			///< Red, green and blue component format.
 			Rgba			///< Red, green, blue and alpha component format.
-		};
-
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Filter enumerator
-		///
-		/// Do not use mipmap filters for magnification.
-		///
-		////////////////////////////////////////////////////////////////
-		enum eFilter
-		{
-			Nearest,				/// Nearest neighbor blending.
-			NearestMipmapNearest,	///< Not linear within mip-level.
-			NearestMipmapLinear,	///< Same as previous, but linear between mip-levels.
-			Linear,					///< Linear blend between texels.
-			LinearMipmapNearest,	///< Linear within mip-level.
-			LinearMipmapLinear,		///< Same as previous, but linear between mip-levels.
-		};
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Wrapping enumerator
-		///
-		////////////////////////////////////////////////////////////////
-		enum eWarpping
-		{
-			Repeat,
-			Clamp
 		};
 
 		////////////////////////////////////////////////////////////////
@@ -143,40 +121,18 @@ namespace Bit
 		virtual void Unbind( ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Set magnification filter
+		/// \brief Apply the current properties to the texture.
+		///
+		/// \return False if the anisotropic lever is invalid, else true.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetMagnificationFilter( const eFilter p_Filter ) = 0;
+		virtual Bool ApplyProperties( ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Set minification filter
+		/// \brief Get the texture properties.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool SetMinificationFilter( const eFilter p_Filter ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Set wrapping for
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrapping( const eWarpping p_WrapX, const eWarpping p_WrapY ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Set wrapping for X axis.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrappingX( const eWarpping p_WrapX ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Set wrapping for Y axis.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool SetWrappingY( const eWarpping p_WrapY ) = 0;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Set anisotropic level.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual Bool SetAnisotropic( const Uint32 p_Level ) = 0;
+		virtual TextureProperties & GetProperties( ) = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the texture size(width and height)

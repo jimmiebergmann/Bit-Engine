@@ -175,6 +175,14 @@ namespace Bit
 		DisableFaceCulling( );
 		DisableSmoothLines( );
 
+		// Set the default values for the texture properties.
+		m_DefaultTextureProperties.SetMagnificationFilter( TextureProperties::Nearest );
+		m_DefaultTextureProperties.SetMinificationFilter( TextureProperties::Nearest );
+		m_DefaultTextureProperties.SetWrapping( TextureProperties::Repeat, TextureProperties::Repeat );
+		m_DefaultTextureProperties.SetMipmapping( false );
+		m_DefaultTextureProperties.SetAnisotropic( 0 );
+		m_DefaultTextureProperties.SetFlags( 0 ); // Make sure to refresh the flags
+
 		// Return true at success.
 		return true;
 	}
@@ -367,6 +375,11 @@ namespace Bit
 	OpenGLGraphicDeviceWin32::DefaultModelSettings & OpenGLGraphicDeviceWin32::GetDefaultModelSettings( )
 	{
 		return m_DefaultModelSettings;
+	}
+
+	TextureProperties & OpenGLGraphicDeviceWin32::GetDefaultTextureProperties( )
+	{
+		return m_DefaultTextureProperties;
 	}
 
 	Bool OpenGLGraphicDeviceWin32::OpenVersion( const RenderWindow & p_RenderOutput,

@@ -148,6 +148,9 @@ namespace Bit
 			glGenerateMipmap( GL_TEXTURE_2D );
 		}
 
+		// Set the texture mipmap property
+		m_Properties.SetMipmapping( p_Mipmapping );
+
 		// Unbind the texture
 		glBindTexture( GL_TEXTURE_2D, 0 );
 
@@ -211,6 +214,9 @@ namespace Bit
 			glGenerateMipmap( GL_TEXTURE_2D );
 		}
 
+		// Set the texture mipmap property
+		m_Properties.SetMipmapping( p_Mipmapping );
+
 		// Unbind the texture
 		glBindTexture( GL_TEXTURE_2D, 0 );
 		
@@ -229,63 +235,72 @@ namespace Bit
 		glBindTexture( GL_TEXTURE_2D, 0 );
 	}
 
-	Bool OpenGLTexture::SetMagnificationFilter( const eFilter p_Filter )
+	Bool OpenGLTexture::ApplyProperties( )
 	{
-		glBindTexture( GL_TEXTURE_2D, m_Id );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, g_OpenGLTextureFilters[ p_Filter ] );
-		glBindTexture( GL_TEXTURE_2D, 0 );
-		return true;
-	}
+		// Get the property flags
+		const Uint8 flags = m_Properties.GetFlags( );
 
-	Bool OpenGLTexture::SetMinificationFilter( const eFilter p_Filter )
-	{
-		glBindTexture( GL_TEXTURE_2D, m_Id );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, g_OpenGLTextureFilters[ p_Filter ] );
-		glBindTexture( GL_TEXTURE_2D, 0 );
-		return true;
-	}
-
-	Bool OpenGLTexture::SetWrapping( const eWarpping p_WrapX, const eWarpping p_WrapY )
-	{
-		glBindTexture( GL_TEXTURE_2D, m_Id );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, g_OpenGLTextureWrapping[ p_WrapX ] );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, g_OpenGLTextureWrapping[ p_WrapY ] );
-		glBindTexture( GL_TEXTURE_2D, 0 );
-		return true;
-	}
-
-	Bool OpenGLTexture::SetWrappingX( const eWarpping p_WrapX )
-	{
-		glBindTexture( GL_TEXTURE_2D, m_Id );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, g_OpenGLTextureWrapping[ p_WrapX ] );
-		glBindTexture( GL_TEXTURE_2D, 0 );
-		return true;
-	}
-
-	Bool OpenGLTexture::SetWrappingY( const eWarpping p_WrapY )
-	{
-		glBindTexture( GL_TEXTURE_2D, m_Id );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, g_OpenGLTextureWrapping[ p_WrapY ] );
-		glBindTexture( GL_TEXTURE_2D, 0 );
-		return true;
-	}
-
-	Bool OpenGLTexture::SetAnisotropic( const Uint32 p_Level )
-	{
-		// Error check.
-		if( OpenGL::IsAnisotropicFilterAvailable( ) == false ||
-			p_Level > OpenGL::GetAnisotropicMaxLevel( ) )
+		// Make sure there's anything to update.
+		if( flags == 0 )
 		{
-			return false;
+			return true;
 		}
 
-		// Set the anisotropy level.
+		// Reset the flags(set it to 0)
+		m_Properties.SetFlags( 0 );
+
+		// Bind the texture
 		glBindTexture( GL_TEXTURE_2D, m_Id );
-		glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, static_cast<GLfloat>( p_Level ) );
+
+		// Magnification filter
+		if( flags & 0x01 )
+		{
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, g_OpenGLTextureFilters[ m_Properties.GetMagnificationFilter( ) ] );
+		}
+
+		// Minification filter
+		if( flags & 0x02 )
+		{
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, g_OpenGLTextureFilters[ m_Properties.GetMinificationFilter( ) ] );
+		}
+
+		// Wrapping X
+		if( flags & 0x04 )
+		{
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, g_OpenGLTextureWrapping[ m_Properties.GetWrappingX( ) ] );
+		}
+
+		// Wrapping Y
+		if( flags & 0x08 )
+		{
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, g_OpenGLTextureWrapping[ m_Properties.GetWrappingY( ) ] );
+		}
+
+		// Anisotropic filter
+		if( flags & 0x10 )
+		{
+			const Uint32 level = m_Properties.GetAnisotropic( );
+
+			if( OpenGL::IsAnisotropicFilterAvailable( ) == false ||
+				level > OpenGL::GetAnisotropicMaxLevel( ) )
+			{
+				return false;
+			}
+
+			// Set the anisotropy level.
+			glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, static_cast<GLfloat>( level ) );
+		}
+
+		// Unbind the texture
 		glBindTexture( GL_TEXTURE_2D, 0 );
 
 		// Succeeded
 		return true;
+	}
+		
+	TextureProperties & OpenGLTexture::GetProperties( )
+	{
+		return m_Properties;
 	}
 
 	Vector2u32 OpenGLTexture::GetSize( ) const
