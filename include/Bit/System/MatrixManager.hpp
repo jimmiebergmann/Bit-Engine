@@ -31,6 +31,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Matrix4x4.hpp>
+#include <Bit/System/Angle.hpp>
 #include <vector>
 #include <stack>
 
@@ -149,7 +150,7 @@ namespace Bit
 		/// \param p_Angle The angle in degrees to rotate the matrix.
 		///
 		////////////////////////////////////////////////////////////////
-		static void RotateX( const Float32 p_Angle );
+		static void RotateX( const Angle p_Angle );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Rotate the matrix by the Y axis.
@@ -157,7 +158,7 @@ namespace Bit
 		/// \param p_Angle The angle in degrees to rotate the matrix.
 		///
 		////////////////////////////////////////////////////////////////
-		static void RotateY( const Float32 p_Angle );
+		static void RotateY( const Angle p_Angle );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Rotate the matrix by the Z axis.
@@ -165,7 +166,7 @@ namespace Bit
 		/// \param p_Angle The angle in degrees to rotate the matrix.
 		///
 		////////////////////////////////////////////////////////////////
-		static void RotateZ( const Float32 p_Angle );
+		static void RotateZ( const Angle p_Angle );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Scale the current matrix.

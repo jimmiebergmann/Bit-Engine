@@ -29,19 +29,9 @@
 namespace Bit
 {
 
-
-
 	// Dummy matrix variable used for the stack initialization
 	Matrix4x4f32 dummyMatrix;
 	std::deque< Matrix4x4f32 > dummyDeque( 1, dummyMatrix );
-
-	// Set the private static variables
-	/*SizeType MatrixManager::s_CurrentStackIndex = 0;
-	// Intialize the stacks
-	MatrixManager::MatrixStackVector MatrixManager::s_MatrixStacks( 2, std::stack< Matrix4x4f32 >( dummyDeque ) );
-	// Intiialize the reference to the current stack.
-	MatrixManager::MatrixStack & MatrixManager::s_CurrentStack = MatrixManager::s_MatrixStacks[ 0 ];
-	*/
 
 	// Global typedefs
 	typedef std::stack<Matrix4x4f32> MatrixStack;
@@ -153,11 +143,11 @@ namespace Bit
 		g_pCurrentStack->top( ).Perspective( p_Fov, p_Aspect, p_ZNear, p_ZFar );
 	}
 
-	void MatrixManager::RotateX( const Float32 p_Angle )
+	void MatrixManager::RotateX( const Angle p_Angle )
 	{
 		// Calculate the rotation matrix
-		const Float32 AngleSin = Math::SinDegrees<Float32>( p_Angle );
-		const Float32 AngleCos = Math::CosDegrees<Float32>( p_Angle );
+		const Float32 AngleSin = Math::Sin<Float32>( static_cast<Float32>( p_Angle.AsRadians( ) ) );
+		const Float32 AngleCos = Math::Cos<Float32>( static_cast<Float32>( p_Angle.AsRadians( ) ) );
 
 		Matrix4x4f32 rotation (	1.0f, 0.0,			0.0,		0.0f,
 								0.0f, AngleCos,		-AngleSin,	0.0f,
@@ -168,11 +158,11 @@ namespace Bit
 		g_pCurrentStack->top( ) = g_pCurrentStack->top( ) * rotation;
 	}
 
-	void MatrixManager::RotateY( const Float32 p_Angle )
+	void MatrixManager::RotateY( const Angle p_Angle )
 	{
 		// Calculate the rotation matrix
-		const Float32 AngleSin = Math::SinDegrees<Float32>( p_Angle );
-		const Float32 AngleCos = Math::CosDegrees<Float32>( p_Angle );
+		const Float32 AngleSin = Math::Sin<Float32>( static_cast<Float32>( p_Angle.AsRadians( ) ) );
+		const Float32 AngleCos = Math::Cos<Float32>( static_cast<Float32>( p_Angle.AsRadians( ) ) );
 
 		Matrix4x4f32 rotation (	AngleCos,	0.0, AngleSin,	0.0,
 								0.0f,		1.0, 0.0,		0.0,
@@ -183,11 +173,11 @@ namespace Bit
 		g_pCurrentStack->top( ) = g_pCurrentStack->top( ) * rotation;
 	}
 
-	void MatrixManager::RotateZ( const Float32 p_Angle )
+	void MatrixManager::RotateZ( const Angle p_Angle )
 	{
 		// Calculate the rotation matrix
-		const Float32 AngleSin = Math::SinDegrees<Float32>( p_Angle );
-		const Float32 AngleCos = Math::CosDegrees<Float32>( p_Angle );
+		const Float32 AngleSin = Math::Sin<Float32>( static_cast<Float32>( p_Angle.AsRadians( ) ) );
+		const Float32 AngleCos = Math::Cos<Float32>( static_cast<Float32>( p_Angle.AsRadians( ) ) );
 
 		Matrix4x4f32 rotation (	AngleCos,	-AngleSin,	0.0, 0.0f,
 								AngleSin,	AngleCos,	0.0, 0.0f,
