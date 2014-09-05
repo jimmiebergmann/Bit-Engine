@@ -130,7 +130,7 @@ namespace Bit
 		// Error check the index.
 		if( m_pMaterial == NULL )
 		{
-			return ModelMaterial::NullValue;
+			return ModelMaterial::ErrorMaterial;
 		}
 
 		// Get the json material value

@@ -31,6 +31,9 @@
 namespace Bit
 {
 
+	// Forward declarations
+	class Texture;
+
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
 	/// \brief 3D model material typedef.
@@ -39,14 +42,77 @@ namespace Bit
 	///		- Color			( RGB : 0.0f - 1.0f each channel )
 	///		- Opacity		( 0.0f - 1.0f )
 	///		- Shininess		( 0.0f - 1.0f )
-	///		- ColorMap		( Color texture )
-	///		- NormalMap		( Normal Texture )
-	///		- SpecularMap	( Specular Texture );
+	///		- ColorMap		( Color texture path )
+	///		- NormalMap		( Normal Texture path)
+	///		- SpecularMap	( Specular Texture path);
+	///
+	/// Supporting up to 16 textures for the bitmask.
+	/// The following indices are the default values of the bitmask:
+	///		- 0: Color
+	///		- 1: Normal
+	///		- 2: Specular
 	///
 	/// \see Model
 	///
 	////////////////////////////////////////////////////////////////
-	typedef Json::Value ModelMaterial;
+	class ModelMaterial : public Json::Value
+	{
+
+	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Default .
+		///
+		////////////////////////////////////////////////////////////////
+		ModelMaterial( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Add texture to material.
+		///
+		/// \param p_pTexture Pointer of the texture to add.
+		/// \param p_FlagIndex Index of the flag. This is an index and not a bitmask.
+		///
+		/// \return False if the material is full of textures(max 16),
+		///			or if the flag index already exists, else true.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool AddTexture( Texture * p_pTexture, const SizeType p_FlagIndex );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get number of textures.
+		///
+		////////////////////////////////////////////////////////////////
+		SizeType GetTextureCount( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get textures by index.
+		///
+		////////////////////////////////////////////////////////////////
+		Texture * GetTexture( const SizeType p_Index ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get texture flags
+		///
+		////////////////////////////////////////////////////////////////
+		Uint16 GetTextureFlags( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Default error material.
+		///
+		////////////////////////////////////////////////////////////////
+		static const ModelMaterial ErrorMaterial;
+
+	private:
+
+		// Private typedefs
+		typedef std::vector<Texture *> TextureVector;
+
+		// Private variables
+		TextureVector m_Textures;
+		Uint16 m_Flags;
+
+
+	};
 
 }
 

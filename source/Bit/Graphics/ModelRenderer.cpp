@@ -165,20 +165,27 @@ namespace Bit
 			}
 
 			// Get the model material
-			const ModelMaterial & pMaterial = vertexData->GetMaterial( );
+			const ModelMaterial & material = vertexData->GetMaterial( );
 
-			// Bind the color map texture.
-			const std::string & colorMapPath = pMaterial.Get( "ColorMap", "" ).AsString( );
-			if( colorMapPath.size( ) )
+			// Get the texture flags and count
+			const Uint16 textureFlags = material.GetTextureFlags( );
+			const SizeType textureCount = material.GetTextureCount( );
+			SizeType currentTextureIndex = 0;
+
+			// Does material contain any color texture?
+			if( textureCount > currentTextureIndex && textureFlags & 0x01 )
 			{
-				// Get the material.
-				Texture * pTexture = ResourceManager::GetDefault( )->GetTexture( colorMapPath, true );
+				// Get the texture.
+				Texture * pTexture = material.GetTexture( currentTextureIndex );
 
-				// Bind the texture
+				// Bind the texture.
 				if( pTexture )
 				{
-					pTexture->Bind( );
+					pTexture->Bind( currentTextureIndex );
 				}
+
+				// Increment the texture index
+				currentTextureIndex++;
 			}
 
 			// Render the model.

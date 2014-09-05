@@ -30,6 +30,7 @@
 #include <Bit/Graphics/ObjMaterialFile.hpp>
 #include <iostream>
 #include <algorithm>
+#include <Bit/System/ResourceManager.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 #if defined( BIT_PLATFORM_WINDOWS )
@@ -129,37 +130,51 @@ namespace Bit
 				const ObjMaterialFile::Material & material = objMaterial.GetMaterial( i );
 
 				// Create a new json material value
-				ModelMaterial * pValue = new ModelMaterial;
+				ModelMaterial * pMaterial = new ModelMaterial;
 
 				// Add default properties.
-				(*pValue)[ "MaterialName" ] = material.GetName( );
+				(*pMaterial)[ "MaterialName" ] = material.GetName( );
 			
 				// Add color
-				(*pValue)[ "Color" ][ "r" ] = material.GetDiffuseColor( ).x;
-				(*pValue)[ "Color" ][ "g" ] = material.GetDiffuseColor( ).y;
-				(*pValue)[ "Color" ][ "b" ] = material.GetDiffuseColor( ).z;
-				(*pValue)[ "Color" ][ "a" ] = material.GetOpticalDensity( );
+				(*pMaterial)[ "Color" ][ "r" ] = material.GetDiffuseColor( ).x;
+				(*pMaterial)[ "Color" ][ "g" ] = material.GetDiffuseColor( ).y;
+				(*pMaterial)[ "Color" ][ "b" ] = material.GetDiffuseColor( ).z;
+				(*pMaterial)[ "Color" ][ "a" ] = material.GetOpticalDensity( );
 
 				// Add shininess
 				if( material.GetShininess( ) > 0.0f )
 				{
-					(*pValue)[ "Shininess" ] = std::min( material.GetShininess( ), 1.0f );
+					(*pMaterial)[ "Shininess" ] = std::min( material.GetShininess( ), 1.0f );
 				}
 
 				// Add color map
 				if( material.GetAmbientTexture( ).size( ) )
 				{
-					(*pValue)[ "ColorMap" ] = material.GetAmbientTexture( );
+					(*pMaterial)[ "ColorMap" ] = material.GetAmbientTexture( );
+					
+					// add the texture to the material
+					Texture * pTexture = ResourceManager::GetDefault( )->GetTexture( material.GetAmbientTexture( ) );
+					if( pTexture )
+					{
+						pMaterial->AddTexture( pTexture, 0 );
+					}
 				}
 
 				// Add normal map
 				if( material.GetBumpTexture( ).size( ) )
 				{
-					(*pValue)[ "NormalMap" ] = material.GetBumpTexture( );
+					(*pMaterial)[ "NormalMap" ] = material.GetBumpTexture( );
+
+					// add the texture to the material
+					Texture * pTexture = ResourceManager::GetDefault( )->GetTexture( material.GetBumpTexture( ) );
+					if( pTexture )
+					{
+						pMaterial->AddTexture( pTexture, 1 );
+					}
 				}
 
 				// Add the material to the vector.
-				m_Materials.push_back( pValue );
+				m_Materials.push_back( pMaterial );
 			}
 		}
 		else
@@ -311,7 +326,7 @@ namespace Bit
 		// Error check the index.
 		if( p_Index >= static_cast<SizeType>( m_Materials.size( ) ) )
 		{
-			return ModelMaterial::NullValue;
+			return ModelMaterial::ErrorMaterial;
 		}
 
 		// Get the json material value
