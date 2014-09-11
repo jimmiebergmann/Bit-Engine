@@ -55,13 +55,13 @@ namespace Bit
 		}
 	}
 
-	void OpenGLFramebuffer::Bind( )
+	void OpenGLFramebuffer::Bind( ) const
 	{
 		// Bind the framebuffer
 		glBindFramebuffer( GL_FRAMEBUFFER, m_FramebufferObject );
 	}
 
-	void OpenGLFramebuffer::Unbind( )
+	void OpenGLFramebuffer::Unbind( ) const
 	{
 		// Unbind the framebuffer
 		glBindFramebuffer( GL_FRAMEBUFFER, 0 );

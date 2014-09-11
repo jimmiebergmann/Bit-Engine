@@ -28,6 +28,7 @@
 #include <Bit/Graphics/VertexArray.hpp>
 #include <Bit/Graphics/ObjFile.hpp>
 #include <Bit/Graphics/ObjMaterialFile.hpp>
+#include <Bit/Graphics/Md2File.hpp>
 #include <iostream>
 #include <algorithm>
 #include <Bit/System/ResourceManager.hpp>
@@ -52,7 +53,11 @@ namespace Bit
 		}
 	}
 
-	Bool  Model::LoadFromFile( const std::string & p_Filename )
+	Bool  Model::LoadFromFile(	const std::string & p_Filename,
+								const Bool p_LoadTextureCoords,
+								const Bool p_LoadNormals,
+								const Bool p_LoadTangents,
+								const Bool p_LoadBinormals )
 	{
 		// Get the file's extension
 		std::string fileExtension = "";
@@ -72,12 +77,11 @@ namespace Bit
 		// Load the right format.
 		if( fileExtension == "OBJ" )
 		{
-			return LoadFromObjFile( p_Filename );
+			return LoadFromObjFile( p_Filename, p_LoadTextureCoords, p_LoadNormals, p_LoadTangents, p_LoadBinormals );
 		}
 		else if( fileExtension == "MD2" )
 		{
-			std::cout << "[Model::LoadFromFile] Not supporting MD2 models yet.\n";
-			return false;
+			return LoadFromMd2File( p_Filename, p_LoadTextureCoords, p_LoadNormals, p_LoadTangents, p_LoadBinormals );
 		}
 		else if( fileExtension == "MD3" )
 		{
@@ -102,18 +106,19 @@ namespace Bit
 
 	Bool Model::LoadFromObjFile(	const std::string & p_Filename,
 									const Bool p_LoadTextureCoords,
-									const Bool p_LoadNormalCoords )
+									const Bool p_LoadNormals,
+									const Bool p_LoadTangents,
+									const Bool p_LoadBinormals )
 	{
 		// Obj files does not support animations
 		// Should we use an index buffer for faces???
-		// Currently just loading one object with one group, with one material and so on,
 		// not supporting any face shape other than triangles.
 
 		// Load the obj file.
 		ObjFile obj;
 		if( obj.LoadFromFile( p_Filename ) == false )
 		{
-			std::cout << "[Model::LoadFromObjFile] Failed to open OBJ file." << std::endl;
+			std::cout << "[Model::LoadFromObjFile] Failed to load OBJ file." << std::endl;
 			return false;
 		}
 
@@ -305,6 +310,123 @@ namespace Bit
 		// Succeeded
 		return true;
 	}
+
+
+	Bool Model::LoadFromMd2File(	const std::string & p_Filename,
+									const Bool p_LoadTextureCoords,
+									const Bool p_LoadNormals,
+									const Bool p_LoadTangents,
+									const Bool p_LoadBinormals )
+	{
+		// Load the obj file.
+		Md2File md2;
+		if( md2.LoadFromFile( p_Filename ) == false )
+		{
+			std::cout << "[Model::LoadFromMd2File] Failed to load MD2 file." << std::endl;
+			return false;
+		}
+
+		// Load material if there's any skin
+		// Create and add a new material value
+		ModelMaterial * pMaterial = new ModelMaterial;
+		m_Materials.push_back( pMaterial );
+
+		// Add default properties.
+		(*pMaterial)[ "MaterialName" ] = "Default";
+			
+		// Add color map
+		if( md2.GetSkinCount( ) > 0 && strlen( md2.GetSkin( 0 )->Name ) )
+		{
+			(*pMaterial)[ "ColorMap" ] = md2.GetSkin( 0 )->Name;
+					
+			// add the texture to the material
+			Texture * pTexture = ResourceManager::GetDefault( )->GetTexture( md2.GetSkin( 0 )->Name );
+			if( pTexture )
+			{
+				pMaterial->AddTexture( pTexture, 0 );
+			}
+		}
+
+
+		// Create the vertex buffer.
+		SizeType bufferSize = 0;
+
+		// Get the first frame
+		if( md2.GetFrameCount( ) == 0 )
+		{
+			std::cout << "[Model::LoadFromMd2File] No frames were found." << std::endl;
+			return false;
+		}
+
+		Float32 * pBufferData = md2.CreatePositionBuffer<Float32>( bufferSize, 0 );
+
+		// Error check the position buffer data
+		if( pBufferData == NULL )
+		{
+			std::cout << "[Model::LoadFromMd2File] No postiion data were found in the obj file." << std::endl;
+			return false;
+		}
+
+		// Load the position vertex buffer
+		VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+		if( pPositionVertexBuffer->Load( bufferSize * 4, pBufferData ) == false )
+		{
+			std::cout << "[Model::LoadFromMd2File] Can not load the vertex buffer" << std::endl;
+			return false;
+		}
+
+		// Delete the allocated data
+		delete [ ] pBufferData;
+
+		// Add new model vertex data to the vertex group
+		ModelVertexData * pModelVertexData = m_VertexGroup.AddVertexData( );
+
+		// Error check the vertex model vertex data
+		if( pModelVertexData == NULL )
+		{
+			std::cout << "[Model::LoadFromMd2File] Can not add vertex data to model vertex group." << std::endl;
+			return false;
+		}
+		
+		// Create the vertex array and add it to the vertex data
+		VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray( );
+		pModelVertexData->SetVertexArray( pVertexArray );
+
+		// Set the default(the only material for the model vertex data
+		pModelVertexData->SetMaterial( m_Materials[ 0 ] );
+	
+		// Add the vertex buffer to the vertex array.
+		pVertexArray->AddVertexBuffer( *pPositionVertexBuffer, 3, DataType::Float32, 0 );
+
+		// Add the vertex buffer to the model vertex data class.
+		pModelVertexData->AddVertexBuffer( pPositionVertexBuffer, 0x01 );
+
+
+		// Create the normal buffer from the obj file.
+		pBufferData = md2.CreateNormalBuffer<Float32>( bufferSize, 0 );
+
+		// Error check the position buffer data
+		if( pBufferData != NULL )
+		{
+			// Load the position vertex buffer
+			VertexBuffer * pNormalVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+			if( pNormalVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
+			{
+				// Add the vertex buffer to the vertex array.
+				pVertexArray->AddVertexBuffer( *pNormalVertexBuffer, 3, DataType::Float32, 2 );
+
+				// Add the vertex buffer to the vertex data class.
+				pModelVertexData->AddVertexBuffer( pNormalVertexBuffer, 0x04 );
+			}
+
+			// Delete the allocated data
+			delete [ ] pBufferData;
+		}
+
+		// Succeeded
+		return true;
+	}
+
 
 	Skeleton & Model::GetSkeleton( )
 	{

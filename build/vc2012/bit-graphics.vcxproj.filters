@@ -95,6 +95,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\ModelMaterial.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ObjMaterialFile.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\TextureProperties.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Md2File.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp">
@@ -156,8 +157,10 @@
     <ClCompile Include="..\..\source\Bit\Graphics\ObjMaterialFile.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\TextureProperties.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Md2File.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\Graphics\ObjFile.inl" />
+    <None Include="..\..\include\Bit\Graphics\Md2File.inl" />
   </ItemGroup>
 </Project>

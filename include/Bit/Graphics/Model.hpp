@@ -48,6 +48,8 @@ namespace Bit
 	///		- 0: Position
 	///		- 1: Texture coordinate
 	///		- 2: Normal
+	///		- 3: Tangnet
+	///		- 4: Binormal
 	/// You can add your own model funcion and loading your own format
 	/// and store the vertex data in any order, but then you have to
 	/// create your own model renderer(which is recommened anyway).
@@ -89,20 +91,53 @@ namespace Bit
 		/// The filename must contain a file suffix in order to let the function
 		/// know what kind of model format you are trying to load.
 		///
+		/// \param p_LoadTextureCoords Try to load texture coordinates if true.
+		/// \param p_LoadNormals Try to load normals if true.
+		/// \param p_LoadTangents Try to load tangents if true. Ignored if p_LoadNormals is false.
+		/// \param p_LoadBinormals Try to load binormals if true. Ignored if p_LoadNormals is false.
+		///
 		/// \return true if succeeded, else false.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool LoadFromFile( const std::string & p_Filename );
+		Bool LoadFromFile(	const std::string & p_Filename,
+							const Bool p_LoadTextureCoords = true,
+							const Bool p_LoadNormals = true,
+							const Bool p_LoadTangents = true,
+							const Bool p_LoadBinormals = true );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load 3D model from a OBJ file.
+		///
+		/// \param p_LoadTextureCoords Try to load texture coordinates if true.
+		/// \param p_LoadNormals Try to load normals if true.
+		/// \param p_LoadTangents Try to load tangents if true. Ignored if p_LoadNormals is false.
+		/// \param p_LoadBinormals Try to load binormals if true. Ignored if p_LoadNormals is false.
 		///
 		/// \return true if succeeded, else false.
 		///
 		////////////////////////////////////////////////////////////////
 		Bool LoadFromObjFile(	const std::string & p_Filename,
 								const Bool p_LoadTextureCoords = true,
-								const Bool p_LoadNormalCoords = true );
+								const Bool p_LoadNormals = true,
+								const Bool p_LoadTangents = true,
+								const Bool p_LoadBinormals = true );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Load 3D model from a MD2 file.
+		///
+		/// \param p_LoadTextureCoords Try to load texture coordinates if true.
+		/// \param p_LoadNormals Try to load normals if true.
+		/// \param p_LoadTangents Try to load tangents if true. Ignored if p_LoadNormals is false.
+		/// \param p_LoadBinormals Try to load binormals if true. Ignored if p_LoadNormals is false.
+		///
+		/// \return true if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool LoadFromMd2File(	const std::string & p_Filename,
+								const Bool p_LoadTextureCoords = true,
+								const Bool p_LoadNormals = true,
+								const Bool p_LoadTangents = true,
+								const Bool p_LoadBinormals = true );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get animation type.

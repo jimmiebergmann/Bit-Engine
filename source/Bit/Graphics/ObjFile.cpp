@@ -466,34 +466,9 @@ namespace Bit
 			std::cout << "[BmpFile::LoadFromFile] Can not open the file. " << std::endl;
 			return false;
 		}
-/*
-		// Check the filesize
-		fin.seekg( 0, std::ifstream::end );
-		SizeType fileSize = static_cast<SizeType>( fin.tellg( ) );
-		fin.seekg( 0, std::ifstream::beg );
-
-		// Create a buffer
-		char * pBuffer = new char[ fileSize + 1 ];
-		fin.read( pBuffer, fileSize );
-		pBuffer[ fileSize ] = 0;
-
-		// Close the file
-		fin.close( );
-
-		// Create a stream
-		std::stringstream       ss;
-		ss.write( pBuffer, fileSize );
-
-		// Delete buffer
-		delete [ ] pBuffer;
-
-		// Read the stream
-		Bool status = LoadFromStream( ss );
-*/
 
 		Bool status = LoadFromStream( fin );
 		fin.close( );
-
 
 		// Return the status
 		return status;
