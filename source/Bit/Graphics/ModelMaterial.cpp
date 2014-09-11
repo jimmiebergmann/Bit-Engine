@@ -34,14 +34,47 @@ namespace Bit
 
 	// Model material class.
 	ModelMaterial::ModelMaterial( ) :
+		m_pColorTexture( NULL ),
+		m_pNormalTexture( NULL ),
+		m_pSpecularTexture( NULL ),
 		m_Flags( 0 )
 	{
 	}
 
-	Bool ModelMaterial::AddTexture( Texture * p_pTexture, const SizeType p_FlagIndex )
+	void ModelMaterial::SetColorTexture( Texture * p_pTexture )
+	{
+		m_pColorTexture = p_pTexture;
+	}
+
+	void ModelMaterial::SetNormalTexture( Texture * p_pTexture )
+	{
+		m_pNormalTexture = p_pTexture;
+	}
+
+	void ModelMaterial::SetSpecularTexture( Texture * p_pTexture )
+	{
+		m_pSpecularTexture = p_pTexture;
+	}
+
+	Texture * ModelMaterial::GetColorTexture( ) const
+	{
+		return m_pColorTexture;
+	}
+
+	Texture * ModelMaterial::GetNormalTexture( ) const
+	{
+		return m_pNormalTexture;
+	}
+	
+	Texture * ModelMaterial::GetSpecularTexture( ) const
+	{
+		return m_pSpecularTexture;
+	}
+
+	Bool ModelMaterial::AddExtendedTexture( Texture * p_pTexture, const SizeType p_FlagIndex )
 	{
 		// Make sure that we don't have too many textures.
-		if( m_Textures.size( ) == 16 )
+		if( m_ExtendedTextures.size( ) == 16 )
 		{
 			return false;
 		}
@@ -63,27 +96,27 @@ namespace Bit
 		}
 
 		// Now, everything is fine, so let's add the texture and apply the bitmask.
-		m_Textures.push_back( p_pTexture );
+		m_ExtendedTextures.push_back( p_pTexture );
 		m_Flags |= bitmask;
 
 		return true;
 	}
 
-	SizeType ModelMaterial::GetTextureCount( ) const
+	SizeType ModelMaterial::GetExtendedTextureCount( ) const
 	{
-		return static_cast<SizeType>( m_Textures.size( ) );
+		return static_cast<SizeType>( m_ExtendedTextures.size( ) );
 	}
 
-	Texture * ModelMaterial::GetTexture( const SizeType p_Index ) const
+	Texture * ModelMaterial::GetExtendedTexture( const SizeType p_Index ) const
 	{
 		// Error check the index.
-		if( p_Index >= static_cast<SizeType>( m_Textures.size( ) ) )
+		if( p_Index >= static_cast<SizeType>( m_ExtendedTextures.size( ) ) )
 		{
 			return NULL;
 		}
 
 		// Return the texture pointer
-		return m_Textures[ p_Index ];
+		return m_ExtendedTextures[ p_Index ];
 	}
 
 	Uint16 ModelMaterial::GetTextureFlags( ) const

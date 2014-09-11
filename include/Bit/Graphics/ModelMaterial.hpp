@@ -46,11 +46,13 @@ namespace Bit
 	///		- NormalMap		( Normal Texture path)
 	///		- SpecularMap	( Specular Texture path);
 	///
-	/// Supporting up to 16 textures for the bitmask.
-	/// The following indices are the default values of the bitmask:
-	///		- 0: Color
-	///		- 1: Normal
-	///		- 2: Specular
+	/// Supporting 3 default textures:
+	///		- Color
+	///		- Normal
+	///		- Specular
+	/// Use the extension function for up to 16 extra textures.
+	/// The extension area uses a bitmask to let the user keep track
+	/// of what kind of extended textures the material contain.
 	///
 	/// \see Model
 	///
@@ -67,7 +69,43 @@ namespace Bit
 		ModelMaterial( );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Add texture to material.
+		/// \brief Set color texture.
+		///
+		////////////////////////////////////////////////////////////////
+		void SetColorTexture( Texture * p_pTexture );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set normal texture.
+		///
+		////////////////////////////////////////////////////////////////
+		void SetNormalTexture( Texture * p_pTexture );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set specular texture.
+		///
+		////////////////////////////////////////////////////////////////
+		void SetSpecularTexture( Texture * p_pTexture );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get color texture.
+		///
+		////////////////////////////////////////////////////////////////
+		Texture * GetColorTexture( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get normal texture.
+		///
+		////////////////////////////////////////////////////////////////
+		Texture * GetNormalTexture( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief GSet specular texture.
+		///
+		////////////////////////////////////////////////////////////////
+		Texture * GetSpecularTexture( ) const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Add extended texture to material.
 		///
 		/// \param p_pTexture Pointer of the texture to add.
 		/// \param p_FlagIndex Index of the flag. This is an index and not a bitmask.
@@ -76,19 +114,19 @@ namespace Bit
 		///			or if the flag index already exists, else true.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool AddTexture( Texture * p_pTexture, const SizeType p_FlagIndex );
+		Bool AddExtendedTexture( Texture * p_pTexture, const SizeType p_FlagIndex );
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get number of textures.
+		/// \brief Get number of extended textures.
 		///
 		////////////////////////////////////////////////////////////////
-		SizeType GetTextureCount( ) const;
+		SizeType GetExtendedTextureCount( ) const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get textures by index.
+		/// \brief Get extended textures by index.
 		///
 		////////////////////////////////////////////////////////////////
-		Texture * GetTexture( const SizeType p_Index ) const;
+		Texture * GetExtendedTexture( const SizeType p_Index ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get texture flags
@@ -108,7 +146,10 @@ namespace Bit
 		typedef std::vector<Texture *> TextureVector;
 
 		// Private variables
-		TextureVector m_Textures;
+		Texture * m_pColorTexture;
+		Texture * m_pNormalTexture;
+		Texture * m_pSpecularTexture;
+		TextureVector m_ExtendedTextures;
 		Uint16 m_Flags;
 
 

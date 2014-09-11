@@ -161,7 +161,7 @@ namespace Bit
 					Texture * pTexture = ResourceManager::GetDefault( )->GetTexture( material.GetAmbientTexture( ) );
 					if( pTexture )
 					{
-						pMaterial->AddTexture( pTexture, 0 );
+						pMaterial->SetColorTexture( pTexture );
 					}
 				}
 
@@ -174,7 +174,7 @@ namespace Bit
 					Texture * pTexture = ResourceManager::GetDefault( )->GetTexture( material.GetBumpTexture( ) );
 					if( pTexture )
 					{
-						pMaterial->AddTexture( pTexture, 1 );
+						pMaterial->SetNormalTexture( pTexture );
 					}
 				}
 
@@ -343,7 +343,7 @@ namespace Bit
 			Texture * pTexture = ResourceManager::GetDefault( )->GetTexture( md2.GetSkin( 0 )->Name );
 			if( pTexture )
 			{
-				pMaterial->AddTexture( pTexture, 0 );
+				pMaterial->SetColorTexture( pTexture );
 			}
 		}
 

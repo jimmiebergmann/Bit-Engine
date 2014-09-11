@@ -97,10 +97,6 @@ namespace Bit
 
 		// Bind the shader program.
 		pShaderProgram->Bind( );
-		
-		// Get material data
-
-
 
 		// Set uniform data.
 		pShaderProgram->SetUniformMatrix4x4f( "uProjectionMatrix", MatrixManager::GetProjectionMatrix( ) );
@@ -168,30 +164,17 @@ namespace Bit
 			// Get the model material
 			const ModelMaterial & material = vertexData->GetMaterial( );
 
-			// Get the texture flags and count
-			const Uint16 textureFlags = material.GetTextureFlags( );
-			const SizeType textureCount = material.GetTextureCount( );
-			SizeType currentTextureIndex = 0;
+			// Bind the color texture if any
+			Texture * pTexture = material.GetColorTexture( );
 
-			// Does material contain any color texture?
-			if( textureCount > currentTextureIndex && textureFlags & 0x01 )
+			// Bind the texture.
+			if( pTexture )
 			{
-				// Get the texture.
-				Texture * pTexture = material.GetTexture( currentTextureIndex );
-
-				// Bind the texture.
-				if( pTexture )
-				{
-					pTexture->Bind( currentTextureIndex );
-				}
-
-				// Increment the texture index
-				currentTextureIndex++;
+				pTexture->Bind( 0 );
 			}
 
 			// Render the model.
 			vertexData->GetVertexArray( )->Render( PrimitiveMode::Triangles );
-
 		}
 
 		// Unbind the shader program.
