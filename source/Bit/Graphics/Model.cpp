@@ -401,6 +401,28 @@ namespace Bit
 		// Add the vertex buffer to the model vertex data class.
 		pModelVertexData->AddVertexBuffer( pPositionVertexBuffer, 0x01 );
 
+		// //////////////////////////////////////////////////////////////////////////////////////
+		// Try to add texture coordinate and normal buffers as well.
+		// Create the texture coordinate buffer from the obj file.
+		pBufferData = md2.CreateTextureCoordBuffer<Float32>( bufferSize );
+
+		// Error check the position buffer data
+		if( pBufferData != NULL )
+		{
+			// Load the position vertex buffer
+			VertexBuffer * pTextureVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
+			if( pTextureVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
+			{
+				// Add the vertex buffer to the vertex array.
+				pVertexArray->AddVertexBuffer( *pTextureVertexBuffer, 2, DataType::Float32, 1 );
+
+				// Add the vertex buffer to the vertex data class.
+				pModelVertexData->AddVertexBuffer( pTextureVertexBuffer, 0x02 );
+			}
+
+			// Delete the allocated data
+			delete [ ] pBufferData;
+		}
 
 		// Create the normal buffer from the obj file.
 		pBufferData = md2.CreateNormalBuffer<Float32>( bufferSize, 0 );
@@ -427,7 +449,6 @@ namespace Bit
 		return true;
 	}
 
-
 	Skeleton & Model::GetSkeleton( )
 	{
 		return m_Skeleton;
@@ -443,12 +464,12 @@ namespace Bit
 		return static_cast<SizeType>( m_Materials.size( ) );
 	}
 
-	const ModelMaterial & Model::GetMaterial( const SizeType p_Index ) const
+	ModelMaterial & Model::GetMaterial( const SizeType p_Index )
 	{
 		// Error check the index.
 		if( p_Index >= static_cast<SizeType>( m_Materials.size( ) ) )
 		{
-			return ModelMaterial::ErrorMaterial;
+			return const_cast<ModelMaterial &>( ModelMaterial::ErrorMaterial );
 		}
 
 		// Get the json material value

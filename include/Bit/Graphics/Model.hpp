@@ -161,7 +161,7 @@ namespace Bit
 		/// \brief Get material.
 		///
 		////////////////////////////////////////////////////////////////
-		const ModelMaterial & GetMaterial( const SizeType p_Index ) const;
+		ModelMaterial & GetMaterial( const SizeType p_Index );
 
 	private:
 

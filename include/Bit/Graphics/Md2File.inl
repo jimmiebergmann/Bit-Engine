@@ -71,6 +71,43 @@ T * Md2File::CreatePositionBuffer(	SizeType & p_BufferSize,
 }
 
 template <typename T>
+T * Md2File::CreateTextureCoordBuffer(	SizeType & p_BufferSize )
+{
+	// Set the buffer size paramter to 0, if anything fail.
+	p_BufferSize = 0;
+
+	// Calculate the buffer size
+	SizeType bufferSize = static_cast<SizeType>( m_Triangles.size( ) ) * 6;
+
+	// Error check the buffer size
+	if( bufferSize == 0 )
+	{
+		return NULL;
+	}
+
+	// Create the buffer
+	T * pBuffer = new T[ bufferSize ];
+
+	// Go throguh the triangles and calculate the right vertex coordinate
+	SizeType currentPos = 0;
+	for( TriangleVector::size_type t = 0; t < m_Triangles.size( ); t++ )
+	{
+		for( SizeType v = 0; v < 3; v++ )
+		{
+			pBuffer[ currentPos++ ] = static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ v ] ]->s ) / static_cast<Float32>( m_Header.SkinWidth ) );
+			pBuffer[ currentPos++ ] = 1.0f - static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ v ] ]->t ) / static_cast<Float32>( m_Header.SkinHeight ) );
+		}
+
+	}
+
+	 // Set the buffer size parameter p_BufferSize
+	p_BufferSize = bufferSize;
+
+	// Return the buffer
+	return pBuffer;
+}
+
+template <typename T>
 T * Md2File::CreateNormalBuffer(	SizeType & p_BufferSize,
 										const SizeType p_FrameIndex )
 {

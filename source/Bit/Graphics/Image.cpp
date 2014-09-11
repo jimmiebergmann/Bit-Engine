@@ -171,7 +171,7 @@ namespace Bit
 
 		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			std::cout << "[Bit::Image::LoadFromTgaFile] Wrong pixel depth format: " << m_PixelDepth << " bytes.\n";
+			std::cout << "[Bit::Image::LoadFromTgaFile] Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes.\n";
 			delete tga.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -225,7 +225,7 @@ namespace Bit
 
 		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			std::cout << "[Bit::Image::LoadFromTgaFile] Wrong pixel depth format: " << m_PixelDepth << " bytes.\n";
+			std::cout << "[Bit::Image::LoadFromBmpFile] Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes.\n";
 			delete bmp.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -270,7 +270,7 @@ namespace Bit
 
 		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			std::cout << "[Bit::Image::LoadFromTgaFile] Wrong pixel depth format: " << m_PixelDepth << " bytes.\n";
+			std::cout << "[Bit::Image::LoadFromPngFile] Wrong pixel depth format: " << m_PixelDepth << " bytes.\n";
 			delete png.GetData( ); // Delete the data by hand
 			return false;
 		}

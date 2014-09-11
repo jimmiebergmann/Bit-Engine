@@ -155,6 +155,7 @@ namespace Bit
 				pShaderProgram->SetUniform1i( "uUseTexture", 0 );
 			}
 
+			// Set use normals flag.
 			if( vertexData->GetBitmask( ) & 0x04 )
 			{
 				pShaderProgram->SetUniform1i( "uUseNormals", 1 );

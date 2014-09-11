@@ -304,6 +304,23 @@ namespace Bit
 									const SizeType p_FrameIndex = 0 );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Help function for creating a texture coordinate buffer
+		///			from the current stored data.
+		///
+		/// Make sure to delete the buffer when you are done with it.
+		///
+		/// \param p_BufferSize Size of the return buffer in bytes / size of data type(T).
+		///		0 if the buffer is invalid(NULL).
+		/// \param p_FrameIndex Index of the frame to obtain data from.
+		///
+		/// \return NULL if it's not possible to create a buffer,
+		///			else a pointer to the buffer.
+		///
+		////////////////////////////////////////////////////////////////
+		template <typename T>
+		T * CreateTextureCoordBuffer(	SizeType & p_BufferSize );
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Help function for creating a normal buffer
 		///			from the current stored data.
 		///
