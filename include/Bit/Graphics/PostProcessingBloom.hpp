@@ -22,35 +22,65 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __BIT_GRAPHICS_POST_PROCESSING_BLOOM_HPP__
-#define __BIT_GRAPHICS_POST_PROCESSING_BLOOM_HPP__
+#ifndef BIT_GRAPHICS_POST_PROCESSING_BLOOM_HPP
+#define BIT_GRAPHICS_POST_PROCESSING_BLOOM_HPP
 
-#include <Bit/DataTypes.hpp>
-#include <Bit/Graphics/Texture.hpp>
+#include <Bit/Build.hpp>
+#include <Bit/graphics/PostProcessing.hpp>
 
 namespace Bit
 {
 
-	class BIT_API PostProcessingBloom
+	// Forward declaractions
+	class Framebuffer;
+
+	////////////////////////////////////////////////////////////////
+	/// \ingroup Graphics
+	/// \brief Bloom post-processing base class.
+	///
+	/// \see PostProcessing
+	///
+	////////////////////////////////////////////////////////////////
+	class BIT_API PostProcessingBloom : public PostProcessing
 	{
 
 	public:
 
-		// Destructor
+		///////////////////////////////////////////////////////////////
+		/// \brief Virtual destructor.
+		///
+		////////////////////////////////////////////////////////////////
 		virtual ~PostProcessingBloom( ) { }
 
-		// Public general functions
-		virtual BIT_UINT32 Load( BIT_FLOAT32 p_Power, BIT_UINT32 p_BlurSize, BIT_FLOAT32 p_PixelSize ) = 0;
-		virtual void Process( ) = 0;
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the source framebuffer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetSource( Framebuffer * p_pSource ) = 0;
 
-		// Public set functions
-		virtual void SetTexture( Texture * p_pTexture ) = 0;
+		////////////////////////////////////////////////////////////////
+		/// \brief Set the target framebuffer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void SetTarget( Framebuffer * p_pTarget ) = 0;
 
-		// Public get functions
-		virtual Texture * GetTexture( ) const = 0;
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the source framebuffer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Framebuffer * GetSource( ) const = 0;
 
-	protected:
+		////////////////////////////////////////////////////////////////
+		/// \brief Get the target framebuffer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Framebuffer * GetTarget( ) const = 0;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Render the post processed effect to the target frame buffer.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Render(  ) const = 0;
 
 	};
 

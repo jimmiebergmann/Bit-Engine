@@ -46,6 +46,7 @@ namespace Bit
 	class TextureProperties;
 	class Model;
 	class ModelRenderer;
+	class PostProcessingBloom;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
@@ -193,7 +194,7 @@ namespace Bit
 		};
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Enumerator for default shader program.s
+		/// \brief Enumerator for default shader programs.
 		///
 		////////////////////////////////////////////////////////////////
 		enum eDefaultShaders
@@ -201,6 +202,16 @@ namespace Bit
 			InitialPoseShader = 0,
 			SkeletalAnimationShader = 1,
 			VertexAnimationShader = 2
+		};
+
+		enum ePostProcessingEffects
+		{
+			Bloom = 0,
+			/*
+			GaussianBlur,
+			MotionBlur,
+			DepthOfField
+			*/
 		};
 		
 
@@ -397,6 +408,14 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual ModelRenderer * CreateModelRenderer( ) const = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a bloom post-processing effect.
+		///
+		/// \return A pointer to the new post-process.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual PostProcessingBloom * CreatePostProcessingBloom( ) const = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.

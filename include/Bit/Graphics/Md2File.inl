@@ -54,13 +54,15 @@ T * Md2File::CreatePositionBuffer(	SizeType & p_BufferSize,
 	SizeType currentPos = 0;
 	for( TriangleVector::size_type t = 0; t < m_Triangles.size( ); t++ )
 	{
-		for( SizeType v = 0; v < 3; v++ )
-		{
-			pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ v ] ]->Position.x );
-			pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ v ] ]->Position.y );
-			pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ v ] ]->Position.z );
-		}
-
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 2 ] ]->Position.x );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 2 ] ]->Position.y );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 2 ] ]->Position.z );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 1 ] ]->Position.x );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 1 ] ]->Position.y );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 1 ] ]->Position.z );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 0 ] ]->Position.x );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 0 ] ]->Position.y );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 0 ] ]->Position.z );
 	}
 
 	 // Set the buffer size parameter p_BufferSize
@@ -92,12 +94,12 @@ T * Md2File::CreateTextureCoordBuffer(	SizeType & p_BufferSize )
 	SizeType currentPos = 0;
 	for( TriangleVector::size_type t = 0; t < m_Triangles.size( ); t++ )
 	{
-		for( SizeType v = 0; v < 3; v++ )
-		{
-			pBuffer[ currentPos++ ] = static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ v ] ]->s ) / static_cast<Float32>( m_Header.SkinWidth ) );
-			pBuffer[ currentPos++ ] = 1.0f - static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ v ] ]->t ) / static_cast<Float32>( m_Header.SkinHeight ) );
-		}
-
+		pBuffer[ currentPos++ ] =		 static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ 2 ] ]->s ) / static_cast<Float32>( m_Header.SkinWidth ) );
+		pBuffer[ currentPos++ ] = 1.0f - static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ 2 ] ]->t ) / static_cast<Float32>( m_Header.SkinHeight ) );
+		pBuffer[ currentPos++ ] =		 static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ 1 ] ]->s ) / static_cast<Float32>( m_Header.SkinWidth ) );
+		pBuffer[ currentPos++ ] = 1.0f - static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ 1 ] ]->t ) / static_cast<Float32>( m_Header.SkinHeight ) );
+		pBuffer[ currentPos++ ] =		 static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ 0 ] ]->s ) / static_cast<Float32>( m_Header.SkinWidth ) );
+		pBuffer[ currentPos++ ] = 1.0f - static_cast<T>( static_cast<Float32>( m_TextureCoords[ m_Triangles[ t ]->TextureCoordIndex[ 0 ] ]->t ) / static_cast<Float32>( m_Header.SkinHeight ) );
 	}
 
 	 // Set the buffer size parameter p_BufferSize
@@ -139,13 +141,15 @@ T * Md2File::CreateNormalBuffer(	SizeType & p_BufferSize,
 	SizeType currentPos = 0;
 	for( TriangleVector::size_type t = 0; t < m_Triangles.size( ); t++ )
 	{
-		for( SizeType v = 0; v < 3; v++ )
-		{
-			pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ v ] ]->Normal.x );
-			pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ v ] ]->Normal.y );
-			pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ v ] ]->Normal.z );
-		}
-
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 2 ] ]->Normal.x );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 2 ] ]->Normal.y );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 2 ] ]->Normal.z );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 1 ] ]->Normal.x );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 1 ] ]->Normal.y );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 1 ] ]->Normal.z );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 0 ] ]->Normal.x );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 0 ] ]->Normal.y );
+		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 0 ] ]->Normal.z );
 	}
 
 	 // Set the buffer size parameter p_BufferSize

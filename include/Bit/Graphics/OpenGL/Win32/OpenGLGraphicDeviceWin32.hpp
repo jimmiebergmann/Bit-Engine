@@ -269,6 +269,14 @@ namespace Bit
 		virtual ModelRenderer * CreateModelRenderer( ) const;
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Create a bloom post-processing effect.
+		///
+		/// \return A pointer to the new post-process.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual PostProcessingBloom * CreatePostProcessingBloom( ) const;
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Setting the viewport area.
 		///
 		/// \param p_Position The position of the viewport.

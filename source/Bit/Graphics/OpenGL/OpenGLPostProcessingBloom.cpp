@@ -22,13 +22,46 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Graphics/OpenGL/PostProcessingBloomOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLPostProcessingBloom.hpp>
 #include <Bit/System/Debugger.hpp>
+#include <Bit/Graphics/GraphicDevice.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
+	OpenGLPostProcessingBloom::OpenGLPostProcessingBloom( const GraphicDevice & p_GraphicDevice  )
+	{
+	}
+		
+	OpenGLPostProcessingBloom::~OpenGLPostProcessingBloom( )
+	{
+	}
+
+	void OpenGLPostProcessingBloom::SetSource( Framebuffer * p_pSource )
+	{
+	}
+
+	void OpenGLPostProcessingBloom::SetTarget( Framebuffer * p_pTarget )
+	{
+	}
+
+	Framebuffer * OpenGLPostProcessingBloom::GetSource( ) const
+	{
+		return NULL;
+	}
+
+	Framebuffer * OpenGLPostProcessingBloom::GetTarget( ) const
+	{
+		return NULL;
+	}
+
+	void OpenGLPostProcessingBloom::Render(  ) const
+	{
+	}
+
+	/*
+	
 	// Constructor/destructor
 	PostProcessingBloomOpenGL::PostProcessingBloomOpenGL( ShaderProgram * p_pShaderProgram, Shader * p_pVertexShader, Shader * p_pFragmentShader,
 			VertexObject * p_pVertexObject, Texture * p_pTexture ) :
@@ -222,5 +255,5 @@ namespace Bit
 	{
 		return m_pTexture;
 	}
-
+	*/
 }

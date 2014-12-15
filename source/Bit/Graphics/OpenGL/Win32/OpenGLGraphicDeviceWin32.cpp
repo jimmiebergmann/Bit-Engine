@@ -31,6 +31,7 @@
 #include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShaderProgram.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLTexture.hpp>
+#include <Bit/Graphics/OpenGL/OpenGLPostProcessingBloom.hpp>
 #include <Bit/Graphics/Model.hpp>
 #include <Bit/Graphics/ModelRenderer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLModelRenderer.hpp>
@@ -336,6 +337,10 @@ namespace Bit
 	ModelRenderer * OpenGLGraphicDeviceWin32::CreateModelRenderer( ) const
 	{
 		return new ModelRenderer( *this );
+	}
+	PostProcessingBloom * OpenGLGraphicDeviceWin32::CreatePostProcessingBloom( ) const
+	{
+		return new OpenGLPostProcessingBloom( *this );
 	}
 	
 	void OpenGLGraphicDeviceWin32::SetViewport( const Vector2u32 & p_Position, const Vector2u32 & p_Size )

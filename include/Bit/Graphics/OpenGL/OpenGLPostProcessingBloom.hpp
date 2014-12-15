@@ -1,86 +1,101 @@
 // ///////////////////////////////////////////////////////////////////////////
 // Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-//
+// 
 // This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
-//
+// 
 // Permission is granted to anyone to use this software for any purpose,
 // including commercial applications, and to alter it and redistribute
 // it freely, subject to the following restrictions:
-//
+// 
 // 1. The origin of this software must not be misrepresented;
 //    you must not claim that you wrote the original software.
 //    If you use this software in a product, an acknowledgment
 //    in the product documentation would be appreciated but
 //    is not required.
-//
+// 
 // 2. Altered source versions must be plainly marked as such,
 //    and must not be misrepresented as being the original software.
-//
+// 
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_POST_PROCESSING_HPP
-#define BIT_GRAPHICS_POST_PROCESSING_HPP
+#ifndef BIT_GRAPHICS_OPENGL_POST_PROCESSING_BLOOM_HPP
+#define BIT_GRAPHICS_OPENGL_POST_PROCESSING_BLOOM_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/System/Vector2.hpp>
+#include <Bit/Graphics/PostProcessingBloom.hpp>
+/*#include <Bit/Graphics/VertexObject.hpp>
+#include <Bit/Graphics/OpenGL/ShaderProgramOpenGL.hpp>
+#include <Bit/Graphics/OpenGL/ShaderOpenGL.hpp>*/
 
 namespace Bit
 {
 
 	// Forward declaractions
-	class Framebuffer;
+	class GraphicDevice;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Post-processing base class.
+	/// \brief Post processing class.
+	///
+	/// \see PostProcessingBloom
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API PostProcessing
+	class BIT_API OpenGLPostProcessingBloom : public PostProcessingBloom
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virtual destructor.
+		/// \brief Default constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual ~PostProcessing( ) { }
+		OpenGLPostProcessingBloom( const GraphicDevice & p_GraphicDevice );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Destructor.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ~OpenGLPostProcessingBloom( );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the source framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void SetSource( Framebuffer * p_pSource ) = 0;
+		virtual void SetSource( Framebuffer * p_pSource );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set the target framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void SetTarget( Framebuffer * p_pTarget ) = 0;
+		virtual void SetTarget( Framebuffer * p_pTarget );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the source framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Framebuffer * GetSource( ) const = 0;
+		virtual Framebuffer * GetSource( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the target framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Framebuffer * GetTarget( ) const = 0;
+		virtual Framebuffer * GetTarget( ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Render the post processed effect to the target frame buffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Render(  ) const = 0;
+		virtual void Render(  ) const;
+
+	private:
+
 
 	};
+
 
 }
 
