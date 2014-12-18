@@ -61,6 +61,10 @@
     <ClInclude Include="..\..\include\Bit\System\ResourceManager\DefaultResourceManager.hpp">
       <Filter>ResourceManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Semaphore.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Win32\SemaphoreWin32.hpp">
+      <Filter>Win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -114,6 +118,9 @@
     <ClCompile Include="..\..\source\Bit\System\ResourceManager.cpp" />
     <ClCompile Include="..\..\source\Bit\System\ResourceManager\DefaultResourceManager.cpp">
       <Filter>ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Win32\SemaphoreWin32.cpp">
+      <Filter>Win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

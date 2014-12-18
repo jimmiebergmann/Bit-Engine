@@ -43,6 +43,7 @@
     <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\ResourceManager.hpp" />
     <ClInclude Include="..\..\include\Bit\System\ResourceManager\DefaultResourceManager.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Semaphore.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Sha1.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Sleep.hpp" />
     <ClInclude Include="..\..\include\Bit\System\SmartMutex.hpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="..\..\include\Bit\System\Win32\KeyboardWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\MouseWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\MutexWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Win32\SemaphoreWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Win32\ThreadWin32.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +90,7 @@
     <ClCompile Include="..\..\source\Bit\System\Win32\KeyboardWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\MutexWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Win32\SemaphoreWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\ThreadWin32.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

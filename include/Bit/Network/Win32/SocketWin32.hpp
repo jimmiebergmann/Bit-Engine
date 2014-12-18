@@ -43,6 +43,7 @@ namespace Bit
 
         // Friend classes
 		friend class TcpListenerWin32;
+		friend class SocketSelector;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor

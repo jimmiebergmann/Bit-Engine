@@ -167,6 +167,7 @@
     <ClCompile Include="..\..\source\Bit\Network\Packet.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Private\SocketBase.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Socket.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\SocketSelector.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Torrent.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Url.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Win32\SocketWin32.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="..\..\include\Bit\Network\Private\UdpSocketBase.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Socket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\SocketHandle.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\SocketSelector.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\TcpListener.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\TcpSocket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Torrent.hpp" />

@@ -21,8 +21,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_TCP_LISTENER_HPP
-#define BIT_NETWORK_TCP_LISTENER_HPP
+#ifndef BIT_NETWORK_UDP_SOCKET_HPP
+#define BIT_NETWORK_UDP_SOCKET_HPP
 
 #include <Bit/Build.hpp>
 #if defined( BIT_PLATFORM_WINDOWS )
