@@ -82,6 +82,11 @@ namespace Bit
 		return m_Microseconds <= p_Time.m_Microseconds;
 	}
 
+	Time Time::operator + ( const Time & p_Time ) const
+	{
+		return Time( m_Microseconds + p_Time.m_Microseconds );
+	}
+
 	// Private functions
 	Time::Time( const Uint64 & p_Microseconds ) :
 		m_Microseconds( p_Microseconds )
