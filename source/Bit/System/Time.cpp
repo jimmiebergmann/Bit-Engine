@@ -87,6 +87,21 @@ namespace Bit
 		return Time( m_Microseconds + p_Time.m_Microseconds );
 	}
 
+	Time Time::operator - ( const Time & p_Time ) const
+	{
+		return Time( m_Microseconds - p_Time.m_Microseconds );
+	}
+
+	Time Time::operator * ( const Uint64 & p_Value ) const
+	{
+		return Time( m_Microseconds * p_Value );
+	}
+
+	Time Time::operator / ( const Uint64 & p_Value ) const
+	{
+		return Time( m_Microseconds / p_Value );
+	}
+
 	// Private functions
 	Time::Time( const Uint64 & p_Microseconds ) :
 		m_Microseconds( p_Microseconds )
