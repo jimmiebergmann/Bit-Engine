@@ -65,6 +65,7 @@
     <ClInclude Include="..\..\include\Bit\System\Win32\SemaphoreWin32.hpp">
       <Filter>Win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\ThreadVariable.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -72,6 +73,7 @@
     <None Include="..\..\include\Bit\System\Vector2.inl" />
     <None Include="..\..\include\Bit\System\Vector3.inl" />
     <None Include="..\..\include\Bit\System\Vector4.inl" />
+    <None Include="..\..\include\Bit\System\ThreadVariable.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
