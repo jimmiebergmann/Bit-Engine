@@ -48,7 +48,7 @@
     <ClInclude Include="..\..\include\Bit\System\Sleep.hpp" />
     <ClInclude Include="..\..\include\Bit\System\SmartMutex.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Thread.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\ThreadVariable.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\ThreadValue.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Time.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
@@ -64,7 +64,7 @@
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
     <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
-    <None Include="..\..\include\Bit\System\ThreadVariable.inl" />
+    <None Include="..\..\include\Bit\System\ThreadValue.inl" />
     <None Include="..\..\include\Bit\System\Vector2.inl" />
     <None Include="..\..\include\Bit\System\Vector3.inl" />
     <None Include="..\..\include\Bit\System\Vector4.inl" />
