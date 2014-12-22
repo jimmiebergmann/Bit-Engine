@@ -25,6 +25,15 @@
       <Filter>Win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Network\SocketSelector.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Udp\Server.cpp">
+      <Filter>Udp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Udp\Connection.cpp">
+      <Filter>Udp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Udp\Client.cpp">
+      <Filter>Udp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -64,6 +73,21 @@
       <Filter>Win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\SocketSelector.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Server.hpp">
+      <Filter>Udp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Packet.hpp">
+      <Filter>Udp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Event.hpp">
+      <Filter>Udp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Connection.hpp">
+      <Filter>Udp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Client.hpp">
+      <Filter>Udp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">
@@ -71,6 +95,9 @@
     </Filter>
     <Filter Include="Private">
       <UniqueIdentifier>{3bcf4a58-1e95-4c70-9d45-56e03733cb4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Udp">
+      <UniqueIdentifier>{863a8fee-79d9-47b6-aa09-70b8986a5173}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

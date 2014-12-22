@@ -169,6 +169,9 @@
     <ClCompile Include="..\..\source\Bit\Network\Socket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\SocketSelector.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Torrent.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Udp\Client.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Udp\Connection.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Udp\Server.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Url.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Win32\SocketWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Win32\TcpListenerWin32.cpp" />
@@ -192,6 +195,11 @@
     <ClInclude Include="..\..\include\Bit\Network\TcpSocket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Torrent.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\UdpSocket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Client.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Connection.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Event.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Packet.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Udp\Server.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Url.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Win32\SocketWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Win32\TcpListenerWin32.hpp" />
