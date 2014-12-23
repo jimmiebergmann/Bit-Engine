@@ -34,6 +34,21 @@
     <ClCompile Include="..\..\source\Bit\Network\Udp\Client.cpp">
       <Filter>Udp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\Client.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\Variable.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\ClientEntityManager.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityManager.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -88,6 +103,24 @@
     <ClInclude Include="..\..\include\Bit\Network\Udp\Client.hpp">
       <Filter>Udp</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\Variable.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\Server.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\Entity.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\Client.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\ClientEntityManager.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\ServerEntityManager.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">
@@ -99,5 +132,19 @@
     <Filter Include="Udp">
       <UniqueIdentifier>{863a8fee-79d9-47b6-aa09-70b8986a5173}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{8d4a7ead-f59e-4291-8553-2978dc2fedea}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\Bit\Network\Net\Variable.inl">
+      <Filter>Net</Filter>
+    </None>
+    <None Include="..\..\include\Bit\Network\Net\ClientEntityManager.inl">
+      <Filter>Net</Filter>
+    </None>
+    <None Include="..\..\include\Bit\Network\Net\ServerEntityManager.inl">
+      <Filter>Net</Filter>
+    </None>
   </ItemGroup>
 </Project>

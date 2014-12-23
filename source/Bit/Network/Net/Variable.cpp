@@ -20,44 +20,27 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-
-#ifndef BIT_NETWORK_UDP_EVENT_HPP
-#define BIT_NETWORK_UDP_EVENT_HPP
-
-#include <Bit/Build.hpp>
+/*
+#include <Bit/Network/Net/Variable.hpp>
 
 namespace Bit
 {
-	
-	namespace Udp
+
+	namespace Net
 	{
 
-		// Forward declarations
-		class Connection;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Udp event type enumerator
-		///
-		////////////////////////////////////////////////////////////////
-		enum eEventType
+		template <typename T>
+		Variable::Variable( ) :
+			m_Value( static_cast<T>( 0 ) )
 		{
-			Connect,
-			Disconnect,
-			Receive
-		};
+		}
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Udp event structure.
-		///
-		////////////////////////////////////////////////////////////////
-		struct Event
+		template <typename T>
+		Variable::Variable( const T & p_Value ) :
+			m_Value( static_cast<T>( p_Value ) )
 		{
-			eEventType Type;			///< Event type.
-			Connection * pConnection;	///< Pointer to the event's connection.
-		};
+		}
 
 	}
 
-}
-
-#endif
+}*/

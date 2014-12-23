@@ -21,39 +21,25 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_UDP_EVENT_HPP
-#define BIT_NETWORK_UDP_EVENT_HPP
+#ifndef BIT_NETWORK_NET_ENTITY_HPP
+#define BIT_NETWORK_NET_ENTITY_HPP
 
 #include <Bit/Build.hpp>
 
 namespace Bit
 {
 	
-	namespace Udp
+	namespace Net
 	{
 
-		// Forward declarations
-		class Connection;
-
 		////////////////////////////////////////////////////////////////
-		/// \brief Udp event type enumerator
+		/// \ingroup Network
+		/// \brief Network entity base class.
 		///
 		////////////////////////////////////////////////////////////////
-		enum eEventType
+		class Entity
 		{
-			Connect,
-			Disconnect,
-			Receive
-		};
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Udp event structure.
-		///
-		////////////////////////////////////////////////////////////////
-		struct Event
-		{
-			eEventType Type;			///< Event type.
-			Connection * pConnection;	///< Pointer to the event's connection.
 		};
 
 	}

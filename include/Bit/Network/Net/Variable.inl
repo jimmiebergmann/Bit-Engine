@@ -21,43 +21,27 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_UDP_EVENT_HPP
-#define BIT_NETWORK_UDP_EVENT_HPP
-
-#include <Bit/Build.hpp>
-
-namespace Bit
+template<typename T>
+Variable<T>::Variable( ) :
+	m_Value( static_cast<T>( 0 ) )
 {
-	
-	namespace Udp
-	{
-
-		// Forward declarations
-		class Connection;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Udp event type enumerator
-		///
-		////////////////////////////////////////////////////////////////
-		enum eEventType
-		{
-			Connect,
-			Disconnect,
-			Receive
-		};
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Udp event structure.
-		///
-		////////////////////////////////////////////////////////////////
-		struct Event
-		{
-			eEventType Type;			///< Event type.
-			Connection * pConnection;	///< Pointer to the event's connection.
-		};
-
-	}
-
 }
 
-#endif
+template<typename T>
+Variable<T>::Variable( const T & p_Value ) :
+	m_Value( p_Value )
+{
+}
+
+
+template<typename T>
+void Variable<T>::Set( const T & p_Value )
+{
+	m_Value = static_cast<T>( p_Value );
+};
+
+template<typename T>
+T Variable<T>::Get( ) const
+{
+	return static_cast<T>( m_Value );
+};
