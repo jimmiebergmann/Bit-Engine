@@ -36,13 +36,13 @@ bool ClientEntityManager::LinkEntity( const std::string & p_Key )
 	EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Key );
 	if( it != m_EntityMetaDataMap.end( ) )
 	{
-		false;
+		return false;
 	}
 	
 	// Add to the entity meta data map
 	EntityMetaData * pMetaData = new EntityMetaData;
 	pMetaData->CreationPointer = &CreateEntityT<T>;
-	m_EntityMetaDataMap[p_Key] = pMetaData;
+	m_EntityMetaDataMap.insert( it, std::pair<std::string, EntityMetaData*>( p_Key, pMetaData ) );
 
 	// Succeeded.
 	return true;
@@ -55,11 +55,11 @@ bool ClientEntityManager::RegisterVariable( const std::string & p_Class,
 											const std::string & p_Variable,
 											Variable<Type> Class::* p_Pointer )
 {
-	// Find the meta data
+	// Find the meta data and make sure it's doesn't already exists.
 	EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Class );
 	if( it == m_EntityMetaDataMap.end( ) )
 	{
-		false;
+		return false;
 	}
 
 	// Get the pointer to the meta data
@@ -76,7 +76,7 @@ bool ClientEntityManager::RegisterVariable( const std::string & p_Class,
 	VariableBase Entity::*pVariable = reinterpret_cast<VariableBase Entity::*>( p_Pointer);
 
 	// Add the variable
-	pMetadata->EntityVariables[ p_Variable ] = pVariable;
+	pMetadata->EntityVariables.insert( it2, std::pair<std::string, VariableBase Entity::*>( p_Variable, pVariable ) );
 
 	// Succeeded
 	return true;
