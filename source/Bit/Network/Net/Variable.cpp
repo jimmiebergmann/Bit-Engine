@@ -20,7 +20,7 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-/*
+
 #include <Bit/Network/Net/Variable.hpp>
 
 namespace Bit
@@ -29,18 +29,11 @@ namespace Bit
 	namespace Net
 	{
 
-		template <typename T>
-		Variable::Variable( ) :
-			m_Value( static_cast<T>( 0 ) )
-		{
-		}
-
-		template <typename T>
-		Variable::Variable( const T & p_Value ) :
-			m_Value( static_cast<T>( p_Value ) )
+		VariableBase::VariableBase( SizeType p_Size ) :
+			Size( p_Size )
 		{
 		}
 
 	}
 
-}*/
+}

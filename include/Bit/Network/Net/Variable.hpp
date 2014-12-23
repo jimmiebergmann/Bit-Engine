@@ -47,6 +47,15 @@ namespace Bit
 			friend class ClientNetworkManager;
 			friend class ServerNetworkManager;
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Constructor.
+			///
+			////////////////////////////////////////////////////////////////
+			VariableBase( SizeType p_Size );
+
+			// Public variables
+			const SizeType Size;
+
 		private:
 
 			// Private variables.

@@ -23,16 +23,17 @@
 
 template<typename T>
 Variable<T>::Variable( ) :
+	VariableBase( sizeof( T ) ),
 	m_Value( static_cast<T>( 0 ) )
 {
 }
 
 template<typename T>
 Variable<T>::Variable( const T & p_Value ) :
+	VariableBase( sizeof( T ) ),
 	m_Value( p_Value )
 {
 }
-
 
 template<typename T>
 void Variable<T>::Set( const T & p_Value )
