@@ -22,7 +22,6 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/ClientEntityManager.hpp>
-#include <Bit/Network/Socket.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -235,6 +234,7 @@ namespace Bit
 						EntityMap::iterator entityIt = m_Entities.find( entityId );
 						if( entityIt == m_Entities.end( ) )
 						{
+							std::cout << "Entity manager: Unknown id: \"" << entityId << "\"\n";
 							return false;
 						}
 

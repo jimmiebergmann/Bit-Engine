@@ -122,3 +122,80 @@ bool ClientEntityManager::SetVariable( const Uint16 p_EntityId, const std::strin
 	// Succeeded
 	return true;
 }
+
+template<typename T>
+void * ClientEntityManager::CreateSingleEntityMessage(	const std::string & p_Class,
+														const std::string & p_Variable,
+														const Uint16 p_Id,
+														const T & p_Data,
+														SizeType & p_MessageSize )
+{
+	// Error check the parameters
+	if( p_Class.size( ) == 0 || p_Variable.size( ) == 0 )
+	{
+		p_MessageSize = 0;
+		return NULL;
+	}
+
+	// Create the message.
+	SizeType messageSize =	15 + static_cast<SizeType>( p_Class.size( ) ) +
+							static_cast<SizeType>( p_Variable.size( ) ) + sizeof( p_Data );
+	Uint8 * pData = new Uint8[ messageSize ];
+	SizeType dataPos = 0;
+
+	// Pre calculated variables
+	Uint16 entityCount = Hton16( 1 );
+	Uint16 variableCount = Hton16( 1 );
+	Uint16 IdCount = Hton16( 1 );
+	Uint16 entityBlockSize = Hton16( 11 + p_Class.size( ) + p_Variable.size( ) + sizeof( p_Data ) );
+	Uint16 variableBlockSize = Hton16( 6 + p_Variable.size( ) + sizeof( p_Data ) );
+	
+	
+	// Entity count
+	pData[ dataPos++ ] = 0;
+	pData[ dataPos++ ] = 1;
+	// Entity block size
+	pData[ dataPos++ ] = static_cast<Uint8>( entityBlockSize );
+	pData[ dataPos++ ] = static_cast<Uint8>( entityBlockSize >> 8 );
+
+	// Entity name length
+	pData[ dataPos++ ] = static_cast<Uint8>( p_Class.size( ) );
+
+	// Entity name
+	memcpy( &(pData[ dataPos ]), p_Class.data( ), p_Class.size( ) );
+	dataPos += static_cast<SizeType>( p_Class.size( ) );
+
+	// Varaible count
+	pData[ dataPos++ ] = 0;
+	pData[ dataPos++ ] = 1;
+
+	// Variable block size
+	pData[ dataPos++ ] = static_cast<Uint8>( variableBlockSize );
+	pData[ dataPos++ ] = static_cast<Uint8>( variableBlockSize >> 8 );
+
+	// Variable name length
+	pData[ dataPos++ ] = static_cast<Uint8>( p_Variable.size( ) );
+
+	// Entity name
+	memcpy( &(pData[ dataPos ]), p_Variable.data( ), p_Variable.size( ) );
+	dataPos += static_cast<SizeType>( p_Variable.size( ) );
+
+	// Id count
+	pData[ dataPos++ ] = 0;
+	pData[ dataPos++ ] = 1;
+
+	// Data size
+	pData[ dataPos++ ] = sizeof( p_Data );
+
+	// Id
+	const Uint16 nId = Hton16( p_Id );
+	pData[ dataPos++ ] = static_cast<Uint8>( nId );
+	pData[ dataPos++ ] = static_cast<Uint8>( nId >> 8 );
+
+	// Data
+	memcpy( &(pData[ dataPos ] ), &p_Data, sizeof( p_Data ) );
+
+	// Return the message pointer and set the message size
+	p_MessageSize = messageSize;
+	return reinterpret_cast<void *>( pData );
+}

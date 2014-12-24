@@ -25,8 +25,9 @@
 #define BIT_NETWORK_NET_CLIENT_NETWORK_MANAGER_HPP
 
 #include <Bit/Build.hpp>
-#include "Bit/Network/Net/Variable.hpp"
-#include "Bit/Network/Net/Entity.hpp"
+#include <Bit/Network/Net/Variable.hpp>
+#include <Bit/Network/Net/Entity.hpp>
+#include <Bit/Network/Socket.hpp>
 #include <string>
 #include <map>
 #include <vector>
@@ -129,6 +130,19 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			bool ParseEntityMessage( void * p_pMessage, const SizeType p_MessageSize );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief	Create a entity message for a single entity, varaible and Id.
+			///
+			/// \return Pointer to the message data.
+			///
+			////////////////////////////////////////////////////////////////
+			template<typename T>
+			void * CreateSingleEntityMessage(	const std::string & p_Class,
+												const std::string & p_Variable,
+												const Uint16 p_Id,
+												const T & p_Data,
+												SizeType & p_MessageSize );
 
 		private:
 
