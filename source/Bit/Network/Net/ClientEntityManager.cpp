@@ -53,7 +53,7 @@ namespace Bit
 			m_EntityMetaDataMap.clear( );
 		}
 
-		Entity * ClientEntityManager::CreateEntityByName( const std::string & p_Key, Uint16 & p_EntityId )
+		Entity * ClientEntityManager::CreateEntityByName( const std::string & p_Key )
 		{
 			// Check if we have any creating function for the key value.
 			EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Key );
@@ -64,6 +64,7 @@ namespace Bit
 
 			// Create the entity
 			Entity * pEntity = it->second->CreationPointer( );
+			pEntity->m_Id = m_CurrentId;
 
 			// Create entity link
 			EntityLink * pEntityLink = new EntityLink;
@@ -71,7 +72,6 @@ namespace Bit
 			pEntityLink->pEntity = pEntity;
 	
 			// Add the entity to the map
-			p_EntityId = m_CurrentId;
 			m_Entities[ m_CurrentId ] = pEntityLink;
 			m_CurrentId++;
 			return pEntity;
@@ -276,11 +276,12 @@ namespace Bit
 						void * pValuePointer = reinterpret_cast<void *>( &((pEntity->*pVariable).m_Value) );
 
 						// Copy the data to the value
+						(pEntity->*pVariable).m_Mutex.Lock( );
 						memcpy( pValuePointer, &(pData[dataPos]), valueSize );
+						(pEntity->*pVariable).m_Mutex.Unlock( );
 
 						// Move to the next Id
 						dataPos += dataSize;
-
 					}
 
 					// Delete the varaible name pointer
@@ -291,7 +292,6 @@ namespace Bit
 				delete [ ] pEntityName;
 
 			}
-
 
 			// Succeeded
 			return true;

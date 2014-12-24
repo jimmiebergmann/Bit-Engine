@@ -30,7 +30,7 @@
 #include <Bit/Network/Socket.hpp>
 #include <string>
 #include <map>
-#include <vector>
+#include <vector> 
 
 namespace Bit
 {
@@ -105,12 +105,11 @@ namespace Bit
 			/// \brief Create a new entity.
 			///
 			/// \param p_Key Name of the entity, or key value.
-			/// \param p_EntityId Reference to the entity id.
 			///
 			/// \return Pointer to the created entity, NULL if error.
 			///
 			////////////////////////////////////////////////////////////////
-			Entity * CreateEntityByName( const std::string & p_Key, Uint16 & p_EntityId );
+			Entity * CreateEntityByName( const std::string & p_Key );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get entity.

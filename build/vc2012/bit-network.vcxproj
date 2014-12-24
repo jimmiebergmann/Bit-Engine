@@ -164,6 +164,7 @@
     <ClCompile Include="..\..\source\Bit\Network\Http.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Client.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\ClientEntityManager.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Entity.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityManager.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Variable.cpp" />

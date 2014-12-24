@@ -44,8 +44,8 @@ namespace Bit
 		public:
 
 			// Friend classes
-			friend class ClientNetworkManager;
-			friend class ServerNetworkManager;
+			friend class ClientEntityManager;
+			friend class ServerEntityManager;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor.

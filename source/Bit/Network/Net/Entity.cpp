@@ -21,46 +21,20 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_ENTITY_HPP
-#define BIT_NETWORK_NET_ENTITY_HPP
-
-#include <Bit/Build.hpp>
+#include <Bit/Network/Net/Entity.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-	
+
 	namespace Net
 	{
 
-		////////////////////////////////////////////////////////////////
-		/// \ingroup Network
-		/// \brief Network entity base class.
-		///
-		////////////////////////////////////////////////////////////////
-		class Entity
+		Uint16 Entity::GetId( ) const
 		{
-
-		public:
-
-			// Friend classes
-			friend class ClientEntityManager;
-			friend class ServerEntityManager;
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Get entity id.
-			///
-			////////////////////////////////////////////////////////////////
-			Uint16 GetId( ) const;
-
-		private:
-
-			// Private variables
-			Uint16	m_Id;	///< Entity id.
-
-		};
+			return m_Id;
+		}
 
 	}
 
 }
-
-#endif

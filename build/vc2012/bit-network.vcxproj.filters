@@ -49,6 +49,9 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityManager.cpp">
       <Filter>Net</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\Entity.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
