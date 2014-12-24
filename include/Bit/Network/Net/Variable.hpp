@@ -56,7 +56,7 @@ namespace Bit
 			// Public variables
 			const SizeType Size;
 
-		private:
+		protected:
 
 			// Private variables.
 			Bit::Mutex m_Mutex;
@@ -96,7 +96,7 @@ namespace Bit
 			/// \brief Get value.
 			///
 			////////////////////////////////////////////////////////////////
-			T Get( ) const;
+			T Get( );
 
 			// Public variables
 			T m_Value;	///< Value of the network variable.

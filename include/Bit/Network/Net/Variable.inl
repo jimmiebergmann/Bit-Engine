@@ -38,11 +38,16 @@ Variable<T>::Variable( const T & p_Value ) :
 template<typename T>
 void Variable<T>::Set( const T & p_Value )
 {
+	m_Mutex.Lock( );
 	m_Value = static_cast<T>( p_Value );
+	m_Mutex.Unlock( );
 };
 
 template<typename T>
-T Variable<T>::Get( ) const
+T Variable<T>::Get( ) 
 {
-	return static_cast<T>( m_Value );
+	m_Mutex.Lock( );
+	T value = m_Value;
+	m_Mutex.Unlock( );
+	return value;
 };

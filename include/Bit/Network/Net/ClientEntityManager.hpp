@@ -88,7 +88,7 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief Set entity variable by variable name.
 			///
-			/// \param p_EntityIndex Index of the entitiy to update.
+			/// \param p_EntityId ID of the entitiy to update.
 			/// \param p_Variable Key of the entity variable.
 			/// \param p_Value The value to set.
 			///
@@ -96,7 +96,7 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			template<typename T>
-			bool SetVariable(	unsigned int p_EntityIndex,
+			bool SetVariable(	const Uint16 p_EntityId,
 								const std::string & p_Variable,
 								const T & p_Value );
 
@@ -104,21 +104,31 @@ namespace Bit
 			/// \brief Create a new entity.
 			///
 			/// \param p_Key Name of the entity, or key value.
+			/// \param p_EntityId Reference to the entity id.
 			///
 			/// \return Pointer to the created entity, NULL if error.
 			///
 			////////////////////////////////////////////////////////////////
-			Entity * CreateEntityByName( const std::string & p_Key );
+			Entity * CreateEntityByName( const std::string & p_Key, Uint16 & p_EntityId );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get entity.
 			///
-			/// \param p_EntityIndex Index of the entity.(SHOULD BE ENTITY ID?!?!)
+			/// \param p_EntityId ID of the entity.
 			///
 			/// \return Pointer to the entity, NULL if error.
 			///
 			////////////////////////////////////////////////////////////////
-			Entity * GetEntity( unsigned int p_EntityIndex );
+			Entity * GetEntity( const Uint16 p_EntityId );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief	Parse a entity message from the server.
+			///			Applying all necessary changes and create/delete entiies if needed.
+			///
+			/// \return True if succeeded, else false.
+			///
+			////////////////////////////////////////////////////////////////
+			bool ParseEntityMessage( void * p_pMessage, const SizeType p_MessageSize );
 
 		private:
 
@@ -127,9 +137,9 @@ namespace Bit
 			struct EntityLink;
 			
 			// Private typedefs
-			typedef std::map<std::string, VariableBase Entity::*>	EntityVariableMap;	///< Map of entity varibles
-			typedef std::map<std::string, EntityMetaData*>			EntityMetaDataMap;	///< Map of pointers for creating entities
-			typedef std::vector<EntityLink*>						EntityVector;		///< Vector of all entities
+			typedef std::map<std::string, VariableBase Entity::*>	EntityVariableMap;	///< Map of entity varibles, varaible name as key.
+			typedef std::map<std::string, EntityMetaData*>			EntityMetaDataMap;	///< Map of pointers for creating entities, entity name as key.
+			typedef std::map<Uint16, EntityLink*>					EntityMap;			///< Map of all entities
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Entity meta data structure. Holding the entity variables
@@ -154,7 +164,8 @@ namespace Bit
 		
 			// Private variable
 			EntityMetaDataMap m_EntityMetaDataMap;	///< Map of entity class meta data.
-			EntityVector m_Entities;				///< Vector of all entities.
+			EntityMap m_Entities;					///< Map of all entities.
+			Uint32 m_CurrentId;						///< Temporary solution for incremening the ID.
 
 		};
 

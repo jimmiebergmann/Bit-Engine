@@ -73,7 +73,7 @@ bool ClientEntityManager::RegisterVariable( const std::string & p_Class,
 	}
 
 	// Get the pointer to the varaible
-	VariableBase Entity::*pVariable = reinterpret_cast<VariableBase Entity::*>( p_Pointer);
+	VariableBase Entity::*pVariable = reinterpret_cast<VariableBase Entity::*>( p_Pointer );
 
 	// Add the variable
 	pMetadata->EntityVariables.insert( it2, std::pair<std::string, VariableBase Entity::*>( p_Variable, pVariable ) );
@@ -84,20 +84,22 @@ bool ClientEntityManager::RegisterVariable( const std::string & p_Class,
 
 // Function for setting entity variables
 template<typename T>
-bool ClientEntityManager::SetVariable( unsigned int p_EntityIndex, const std::string & p_Variable, const T & p_Value )
+bool ClientEntityManager::SetVariable( const Uint16 p_EntityId, const std::string & p_Variable, const T & p_Value )
 {
-	if( p_EntityIndex >= m_Entities.size( ) )
+	// Find the entity
+	EntityMap::iterator entityIt = m_Entities.find( p_EntityId );
+	if( entityIt == m_Entities.end( ) )
 	{
 		return false;
 	}
 
 	// Check if the vairable exists for the entitiy
-	EntityLink * pEntityLink = m_Entities[ p_EntityIndex ];
+	EntityLink * pEntityLink = entityIt->second;
 
 	EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( pEntityLink->Class );
 	if( it == m_EntityMetaDataMap.end( ) )
 	{
-		false;
+		return false;
 	}
 
 	// Find the entitiy variable

@@ -22,6 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/Variable.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
