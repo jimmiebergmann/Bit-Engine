@@ -25,8 +25,8 @@
 #define BIT_NETWORK_UDP_CONNECTION_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Udp/Event.hpp>
-#include <Bit/Network/Udp/Packet.hpp>
+#include <Bit/Network/UdpEvent.hpp>
+#include <Bit/Network/UdpPacket.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>

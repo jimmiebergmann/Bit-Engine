@@ -30,6 +30,11 @@ namespace Bit
 	namespace Net
 	{
 
+		Entity::Entity( ) :
+			m_pEntityChanger( NULL )
+		{
+		}
+
 		Uint16 Entity::GetId( ) const
 		{
 			return m_Id;

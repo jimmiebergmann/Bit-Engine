@@ -26,7 +26,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Network/Net/ClientEntityManager.hpp>
-#include <Bit/Network/Udp/Client.hpp>
+#include <Bit/Network/UdpClient.hpp>
 
 namespace Bit
 {
@@ -39,7 +39,7 @@ namespace Bit
 		/// \brief Client class.
 		///
 		////////////////////////////////////////////////////////////////
-		class Client
+		class BIT_API Client
 		{
 
 		public:

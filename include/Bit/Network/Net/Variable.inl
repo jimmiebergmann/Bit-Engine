@@ -41,6 +41,15 @@ void Variable<T>::Set( const T & p_Value )
 	m_Mutex.Lock( );
 	m_Value = static_cast<T>( p_Value );
 	m_Mutex.Unlock( );
+
+	// Call the on variable function for the entity changer
+	if( m_pParent )
+	{
+		if( m_pParent->m_pEntityChanger )
+		{
+			m_pParent->m_pEntityChanger->OnVariableChange( m_pParent, this );
+		}
+	}
 };
 
 template<typename T>

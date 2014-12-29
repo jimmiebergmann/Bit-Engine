@@ -21,10 +21,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_SERVER_ENTITY_MANAGER_HPP
-#define BIT_NETWORK_NET_SERVER_ENTITY_MANAGER_HPP
-
-#include <Bit/Network/Net/EntityManager.hpp>
+#include <Bit/Network/Net/ClientEntityChanger.hpp>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
@@ -32,26 +30,11 @@ namespace Bit
 	namespace Net
 	{
 
-		////////////////////////////////////////////////////////////////
-		/// \ingroup Network
-		/// \brief Client entity manager class.
-		///
-		////////////////////////////////////////////////////////////////
-		class BIT_API ServerEntityManager : public EntityManager
+		void ClientEntityChanger::OnVariableChange( Entity * p_pEntity, VariableBase * p_pVariableBase )
 		{
 
-		public:
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Constructor.
-			///
-			////////////////////////////////////////////////////////////////
-			ServerEntityManager( );
-
-		};
+		}
 
 	}
 
 }
-
-#endif

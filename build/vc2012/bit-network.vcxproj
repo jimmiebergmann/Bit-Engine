@@ -163,9 +163,12 @@
     <ClCompile Include="..\..\source\Bit\Network\Address.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Http.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Client.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\ClientEntityChanger.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\ClientEntityManager.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\EntityManager.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Entity.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityChanger.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityManager.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Variable.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Ntp.cpp" />
@@ -175,9 +178,9 @@
     <ClCompile Include="..\..\source\Bit\Network\Socket.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\SocketSelector.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Torrent.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\Udp\Client.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\Udp\Connection.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\Udp\Server.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\UdpClient.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\UdpConnection.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\UdpServer.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Url.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Win32\SocketWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Win32\TcpListenerWin32.cpp" />
@@ -188,9 +191,13 @@
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Http.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Client.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\ClientEntityChanger.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\ClientEntityManager.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\EntityChanger.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\EntityManager.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Entity.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Server.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\ServerEntityChanger.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\ServerEntityManager.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Variable.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Ntp.hpp" />
@@ -206,12 +213,12 @@
     <ClInclude Include="..\..\include\Bit\Network\TcpListener.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\TcpSocket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Torrent.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\UdpClient.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\UdpConnection.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\UdpEvent.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\UdpPacket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\UdpServer.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\UdpSocket.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Udp\Client.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Udp\Connection.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Udp\Event.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Udp\Packet.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Udp\Server.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Url.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Win32\SocketWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Win32\TcpListenerWin32.hpp" />
@@ -225,7 +232,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\include\Bit\Network\Net\ClientEntityManager.inl" />
+    <None Include="..\..\include\Bit\Network\Net\EntityManager.inl" />
     <None Include="..\..\include\Bit\Network\Net\ServerEntityManager.inl" />
     <None Include="..\..\include\Bit\Network\Net\Variable.inl" />
   </ItemGroup>

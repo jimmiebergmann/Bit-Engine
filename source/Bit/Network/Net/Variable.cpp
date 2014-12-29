@@ -22,6 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/Variable.hpp>
+#include <Bit/Network/Net/EntityChanger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -31,8 +32,19 @@ namespace Bit
 	{
 
 		VariableBase::VariableBase( SizeType p_Size ) :
-			Size( p_Size )
+			m_Size( p_Size ),
+			m_pParent( NULL )
 		{
+		}
+
+		SizeType VariableBase::GetSize( ) const
+		{
+			return m_Size;
+		}
+
+		const std::string & VariableBase::GetName( ) const
+		{
+			return m_Name;
 		}
 
 	}

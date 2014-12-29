@@ -25,12 +25,16 @@
 #define BIT_NETWORK_NET_ENTITY_HPP
 
 #include <Bit/Build.hpp>
+#include <string>
 
 namespace Bit
 {
 	
 	namespace Net
 	{
+
+		// Forward declaractions
+		class BIT_API EntityChanger;
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
@@ -43,8 +47,14 @@ namespace Bit
 		public:
 
 			// Friend classes
-			friend class ClientEntityManager;
-			friend class ServerEntityManager;
+			friend class EntityManager;
+			template <typename T> friend class Variable;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor.
+			///
+			////////////////////////////////////////////////////////////////
+			Entity( );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get entity id.
@@ -55,7 +65,9 @@ namespace Bit
 		private:
 
 			// Private variables
-			Uint16	m_Id;	///< Entity id.
+			Uint16			m_Id;				///< Entity id.
+			std::string		m_Name;				///< Entity name.
+			EntityChanger * m_pEntityChanger;	///< Entity changer class.
 
 		};
 

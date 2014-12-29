@@ -21,10 +21,10 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_SERVER_ENTITY_MANAGER_HPP
-#define BIT_NETWORK_NET_SERVER_ENTITY_MANAGER_HPP
+#ifndef BIT_NETWORK_NET_ENTITY_CHANGER_HPP
+#define BIT_NETWORK_NET_ENTITY_CHANGER_HPP
 
-#include <Bit/Network/Net/EntityManager.hpp>
+#include <Bit/Build.hpp>
 
 namespace Bit
 {
@@ -32,21 +32,25 @@ namespace Bit
 	namespace Net
 	{
 
+		// Forward declarations
+		class Entity;
+		class VariableBase;
+
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief Client entity manager class.
+		/// \brief Entity changer class.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API ServerEntityManager : public EntityManager
+		class BIT_API EntityChanger
 		{
 
 		public:
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Constructor.
+			/// \brief This function is being called when a network variable is changed.
 			///
 			////////////////////////////////////////////////////////////////
-			ServerEntityManager( );
+			virtual void OnVariableChange( Entity * p_pEntity, VariableBase * p_pVariableBase ) = 0;
 
 		};
 

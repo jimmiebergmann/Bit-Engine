@@ -26,6 +26,8 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Mutex.hpp>
+#include <Bit/Network/Net/EntityChanger.hpp>
+#include <string>
 
 namespace Bit
 {
@@ -33,19 +35,22 @@ namespace Bit
 	namespace Net
 	{
 
+		// Forward declarations
+		class Entity;
+
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
 		/// \brief Network variable base class.
 		///
 		////////////////////////////////////////////////////////////////
-		class VariableBase
+		class BIT_API VariableBase
 		{
 
 		public:
 
 			// Friend classes
-			friend class ClientEntityManager;
-			friend class ServerEntityManager;
+			template <typename T> friend class Variable;
+			friend class EntityManager;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor.
@@ -53,13 +58,25 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			VariableBase( SizeType p_Size );
 
-			// Public variables
-			const SizeType Size;
+			////////////////////////////////////////////////////////////////
+			/// \brief Get Size
+			///
+			////////////////////////////////////////////////////////////////
+			SizeType GetSize( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get name
+			///
+			////////////////////////////////////////////////////////////////
+			const std::string & GetName( ) const;
 
 		protected:
 
 			// Private variables.
-			Bit::Mutex m_Mutex;
+			const SizeType  m_Size;			///< Size of the varaible.
+			std::string		m_Name;			///< Variable name.
+			Entity *		m_pParent;		///< Parent entity.
+			Bit::Mutex		m_Mutex;		///< Mutex for set/get value.
 
 		};
 

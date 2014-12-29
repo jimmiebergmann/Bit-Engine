@@ -1,4 +1,4 @@
-#include <Bit/Network/Udp/Client.hpp>
+#include <Bit/Network/UdpClient.hpp>
 #include <Bit/System/Sleep.hpp>
 #include <Bit/System/Timer.hpp>
 #include <Bit/System/MemoryLeak.hpp>

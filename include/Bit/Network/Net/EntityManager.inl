@@ -30,7 +30,7 @@ Entity * CreateEntityT( )
 
 // Function for linking entities
 template<typename T>
-bool ClientEntityManager::LinkEntity( const std::string & p_Key )
+bool EntityManager::LinkEntity( const std::string & p_Key )
 {
 	// Make sure that it's not already added
 	EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Key );
@@ -51,7 +51,7 @@ bool ClientEntityManager::LinkEntity( const std::string & p_Key )
 
 // Function for registering entity variables.
 template < typename Type, typename Class>
-bool ClientEntityManager::RegisterVariable( const std::string & p_Class,
+bool EntityManager::RegisterVariable( const std::string & p_Class,
 											const std::string & p_Variable,
 											Variable<Type> Class::* p_Pointer )
 {
@@ -84,7 +84,7 @@ bool ClientEntityManager::RegisterVariable( const std::string & p_Class,
 
 // Function for setting entity variables
 template<typename T>
-bool ClientEntityManager::SetVariable( const Uint16 p_EntityId, const std::string & p_Variable, const T & p_Value )
+bool EntityManager::SetVariable( const Uint16 p_EntityId, const std::string & p_Variable, const T & p_Value )
 {
 	// Find the entity
 	EntityMap::iterator entityIt = m_Entities.find( p_EntityId );
@@ -124,11 +124,11 @@ bool ClientEntityManager::SetVariable( const Uint16 p_EntityId, const std::strin
 }
 
 template<typename T>
-void * ClientEntityManager::CreateSingleEntityMessage(	const std::string & p_Class,
-														const std::string & p_Variable,
-														const Uint16 p_Id,
-														const T & p_Data,
-														SizeType & p_MessageSize )
+void * EntityManager::CreateSingleEntityMessage(	const std::string & p_Class,
+													const std::string & p_Variable,
+													const Uint16 p_Id,
+													const T & p_Data,
+													SizeType & p_MessageSize )
 {
 	// Error check the parameters
 	if( p_Class.size( ) == 0 || p_Variable.size( ) == 0 )
