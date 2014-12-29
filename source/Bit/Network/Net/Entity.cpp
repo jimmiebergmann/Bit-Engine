@@ -40,6 +40,11 @@ namespace Bit
 			return m_Id;
 		}
 
+		const std::string & Entity::GetName( ) const
+		{
+			return m_Name;
+		}
+
 	}
 
 }

@@ -32,7 +32,7 @@ namespace Bit
 	{
 
 		ClientEntityManager::ClientEntityManager( ) :
-			EntityManager( new ClientEntityChanger  )
+			EntityManager( NULL )
 		{
 		}
 

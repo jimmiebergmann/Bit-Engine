@@ -169,14 +169,14 @@ namespace Bit
 			// Forward declarations
 			struct EntityMetaData;
 			struct EntityLink;
-			struct ChangedEntity;
 			
 			// Private typedefs
-			typedef std::map<std::string, VariableBase Entity::*>	EntityVariableMap;		///< Map of entity varibles, varaible name as key.
-			typedef std::map<std::string, EntityMetaData*>			EntityMetaDataMap;		///< Map of pointers for creating entities, entity name as key.
-			typedef std::map<Uint16, EntityLink*>					EntityMap;				///< Map of all entities
-			typedef std::set<VariableBase *>						ChangedVariablesSet;	///< Set of changed variables
-			typedef std::map<Entity *, ChangedVariablesSet *>		ChangedEntitiesMap;		///< Map of changed entities.
+			typedef std::map<std::string, VariableBase Entity::*>		EntityVariableMap;			///< Map of entity varibles, varaible name as key.
+			typedef std::map<std::string, EntityMetaData*>				EntityMetaDataMap;			///< Map of pointers for creating entities, entity name as key.
+			typedef std::map<Uint16, EntityLink*>						EntityMap;					///< Map of all entities
+			typedef std::map<Entity *, VariableBase *>					ChangedEntityVariableMap;	///< Mapping entities to variables
+			typedef std::map<std::string, ChangedEntityVariableMap *>	ChangedVariablesMap;		///< Set of changed variables
+			typedef std::map<std::string, ChangedVariablesMap *>		ChangedEntitiesMap;			///< Map of changed entities.
 			
 			////////////////////////////////////////////////////////////////
 			/// \brief	Entity meta data structure. Holding the entity variables
@@ -194,16 +194,6 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			struct EntityLink
-			{
-				std::string Class;	///< Name of the entity's class.
-				Entity * pEntity;	///< Pointer to the entity.
-			};
-
-			////////////////////////////////////////////////////////////////
-			/// \brief	Structure for storing changed variables.
-			///
-			////////////////////////////////////////////////////////////////
-			struct ChangedEntity
 			{
 				std::string Class;	///< Name of the entity's class.
 				Entity * pEntity;	///< Pointer to the entity.
