@@ -22,20 +22,153 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/Server.hpp>
+#include <Bit/Network/Net/Private/ServerEntityChanger.hpp>
+#include <Bit/System/Sleep.hpp>
+#include <Bit/System/Timer.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-	
+
 	namespace Net
 	{
 
-		Server::Server( )
+		Server::Server( ) :
+			m_EntityManager( new ServerEntityChanger( &m_EntityManager ) ),
+			m_MaxConnections( 0 )
 		{
+	
 		}
 
 		Server::~Server( )
 		{
+			Stop( );
+		}
+
+		Bool Server::Start( const Uint16 p_Port, Uint8 p_MaxConnections )
+		{
+			// Open the udp socket.
+			if( m_Socket.Open( p_Port ) == false )
+			{
+				return false;
+			}
+			m_Socket.SetBlocking( true );
+
+			// Set max connections.
+			m_MaxConnections = p_MaxConnections;
+
+			// Start the server thread.
+			m_Thread.Execute( [ this ] ( )
+			{
+					const SizeType bufferSize = 128;
+					char buffer[ bufferSize ];
+					Address address;
+					Uint16 port = 0;
+					Int16 recvSize = 0;
+
+					// Set the running flag to true.
+					m_Running.Mutex.Lock( );
+					m_Running.Value = true;
+					m_Running.Mutex.Unlock( );
+
+					// Receive packets as long as the server is running.
+					while( IsRunning( ) )
+					{
+						// Receive any packet.
+						recvSize = m_Socket.Receive( buffer, bufferSize, address, port, Time::Infinite );
+
+						// Ignore empty packets.
+						if( recvSize <= 0 )
+						{
+							continue;
+						}
+
+						// Check if the packet is from any known client
+						Uint64 clientId =	static_cast<Uint64>( address.GetAddress( ) ) * 
+											static_cast<Uint64>( port ) +
+											static_cast<Uint64>( port ) ;
+
+						m_Connections.Mutex.Lock( );
+						ConnectionMap::iterator it = m_Connections.Value.find( clientId );
+						if( it != m_Connections.Value.end( ) )
+						{
+							// Send the packet to the client thread.
+							it->second->AddRawPacket( buffer, recvSize );
+							m_Connections.Mutex.Unlock( );
+						}
+						else
+						{
+							// This is an unknown client, maybe it's trying to connect.
+							if( buffer[ 0 ] == ePacketType::Syn )
+							{
+								// Send Deny packet if the server is full.
+								if( m_Connections.Value.size( ) == m_MaxConnections )
+								{
+									buffer[ 0 ] = ePacketType::Close;
+									m_Socket.Send( buffer, 1, address, port );
+									continue;
+								}
+
+								// Add the client to the client map
+								Connection * pConnection = new Connection( address, port );
+								m_Connections.Value.insert( ConnectionMapPair( clientId, pConnection ) );
+								m_Connections.Mutex.Unlock( );
+						
+								// Start client thread.
+								pConnection->StartThreads( this );
+
+								// Answer the client with a SYNACK packet.
+								buffer[ 0 ] = ePacketType::SynAck;
+								m_Socket.Send( buffer, 1, address, port );
+
+								// Add connect event
+								//AddEvent( eEventType::Connect, pConnection );
+							}
+						}
+				
+					}
+				}
+			);
+
+			// Server is now running
+			return true;
+		}
+
+		void Server::Stop( )
+		{
+			if( IsRunning( ) )
+			{
+				// Set the running flag to false.
+				m_Running.Mutex.Lock( );
+				m_Running.Value = false;
+				m_Running.Mutex.Unlock( );
+
+				// Disconnect all the connections
+				m_Connections.Mutex.Lock( );
+				ConnectionMap::iterator it = m_Connections.Value.begin( );
+				while( it != m_Connections.Value.end( ) )
+				{
+					// Disconnect and delete the connection.
+					Connection * pConnection = it->second;
+					delete pConnection;
+
+					// Erase the connection
+					m_Connections.Value.erase( it );
+
+					// Get the beginning again.
+					it = m_Connections.Value.begin( );
+				}
+				m_Connections.Mutex.Unlock( );
+
+			}
+		}
+
+		Bool Server::IsRunning( )
+		{
+			m_Running.Mutex.Lock( );
+			Bool running = m_Running.Value;
+			m_Running.Mutex.Unlock( );
+			return running;
 		}
 
 	}

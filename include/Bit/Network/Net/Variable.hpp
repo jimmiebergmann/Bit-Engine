@@ -26,7 +26,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Mutex.hpp>
-#include <Bit/Network/Net/EntityChanger.hpp>
+#include <Bit/Network/Net/Private/EntityChanger.hpp>
 #include <string>
 
 namespace Bit

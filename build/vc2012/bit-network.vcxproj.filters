@@ -25,16 +25,7 @@
       <Filter>Win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Network\SocketSelector.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\Bit\Network\Net\Client.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\Variable.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityManager.cpp">
       <Filter>Net</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Network\Net\Entity.cpp">
@@ -43,23 +34,17 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\EntityManager.cpp">
       <Filter>Net</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityChanger.cpp">
+    <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp">
       <Filter>Net</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\ClientEntityChanger.cpp">
+    <ClCompile Include="..\..\source\Bit\Network\Net\Variable.cpp">
       <Filter>Net</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\ClientEntityManager.cpp">
-      <Filter>Net</Filter>
+    <ClCompile Include="..\..\source\Bit\Network\Net\Private\Connection.cpp">
+      <Filter>Net\Private</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\UdpServer.cpp">
-      <Filter>Udp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\UdpConnection.cpp">
-      <Filter>Udp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\UdpClient.cpp">
-      <Filter>Udp</Filter>
+    <ClCompile Include="..\..\source\Bit\Network\Net\Private\ServerEntityChanger.cpp">
+      <Filter>Net\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,50 +85,32 @@
       <Filter>Win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\SocketSelector.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Net\Variable.hpp">
-      <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\Server.hpp">
+    <ClInclude Include="..\..\include\Bit\Network\Net\Client.hpp">
       <Filter>Net</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\Entity.hpp">
       <Filter>Net</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\Client.hpp">
+    <ClInclude Include="..\..\include\Bit\Network\Net\Server.hpp">
       <Filter>Net</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\ServerEntityManager.hpp">
+    <ClInclude Include="..\..\include\Bit\Network\Net\Variable.hpp">
       <Filter>Net</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\EntityManager.hpp">
       <Filter>Net</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\ServerEntityChanger.hpp">
-      <Filter>Net</Filter>
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\Connection.hpp">
+      <Filter>Net\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\EntityChanger.hpp">
-      <Filter>Net</Filter>
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\EntityChanger.hpp">
+      <Filter>Net\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\ClientEntityChanger.hpp">
-      <Filter>Net</Filter>
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\ServerEntityChanger.hpp">
+      <Filter>Net\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\ClientEntityManager.hpp">
-      <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\UdpServer.hpp">
-      <Filter>Udp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\UdpPacket.hpp">
-      <Filter>Udp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\UdpEvent.hpp">
-      <Filter>Udp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\UdpConnection.hpp">
-      <Filter>Udp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\UdpClient.hpp">
-      <Filter>Udp</Filter>
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\NetPacket.hpp">
+      <Filter>Net\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -156,15 +123,12 @@
     <Filter Include="Net">
       <UniqueIdentifier>{8d4a7ead-f59e-4291-8553-2978dc2fedea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Udp">
-      <UniqueIdentifier>{de5ce779-d4f6-44d5-a595-cf3b192fc7c2}</UniqueIdentifier>
+    <Filter Include="Net\Private">
+      <UniqueIdentifier>{bb79a09c-fa0f-4f03-9cfd-3bead0ce5545}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\Network\Net\Variable.inl">
-      <Filter>Net</Filter>
-    </None>
-    <None Include="..\..\include\Bit\Network\Net\ServerEntityManager.inl">
       <Filter>Net</Filter>
     </None>
     <None Include="..\..\include\Bit\Network\Net\EntityManager.inl">

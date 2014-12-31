@@ -22,7 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/Variable.hpp>
-#include <Bit/Network/Net/EntityChanger.hpp>
+#include <Bit/Network/Net/Private/EntityChanger.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

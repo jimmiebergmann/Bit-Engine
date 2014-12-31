@@ -21,11 +21,12 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_CLIENT_ENTITY_CHANGER_HPP
-#define BIT_NETWORK_NET_CLIENT_ENTITY_CHANGER_HPP
+#ifndef BIT_NETWORK_NET_CLIENT_HPP
+#define BIT_NETWORK_NET_CLIENT_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Net/EntityChanger.hpp>
+#include <Bit/Network/Net/ClientEntityManager.hpp>
+#include <Bit/Network/UdpClient.hpp>
 
 namespace Bit
 {
@@ -35,19 +36,37 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief Client entity changer class.
+		/// \brief Client class.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API ClientEntityChanger : public EntityChanger
+		class BIT_API Client
 		{
 
 		public:
 
 			////////////////////////////////////////////////////////////////
-			/// \brief This function is being called when a network variable is changed.
+			/// \brief Default constructor.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void OnVariableChange( Entity * p_pEntity, VariableBase * p_pVariableBase );
+			Client( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Destructor.
+			///
+			////////////////////////////////////////////////////////////////
+			~Client( );
+
+		protected:
+
+			// Protected functions
+
+			// Protected variables
+			ClientEntityManager		m_EntityManager;
+			Udp::Client				m_Client;
+
+		private:
+
+
 
 		};
 

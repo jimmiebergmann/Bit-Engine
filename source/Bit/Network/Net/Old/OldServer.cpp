@@ -21,7 +21,7 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Network/Net/ClientEntityChanger.hpp>
+#include <Bit/Network/Net/Server.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -30,9 +30,12 @@ namespace Bit
 	namespace Net
 	{
 
-		void ClientEntityChanger::OnVariableChange( Entity * p_pEntity, VariableBase * p_pVariableBase )
+		Server::Server( )
 		{
+		}
 
+		Server::~Server( )
+		{
 		}
 
 	}

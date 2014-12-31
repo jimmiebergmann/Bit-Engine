@@ -21,9 +21,12 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Network/Net/ClientEntityManager.hpp>
-#include <Bit/Network/Net/ClientEntityChanger.hpp>
-#include <Bit/System/MemoryLeak.hpp>
+#ifndef BIT_NETWORK_NET_SERVER_HPP
+#define BIT_NETWORK_NET_SERVER_HPP
+
+#include <Bit/Build.hpp>
+#include <Bit/Network/Net/ServerEntityManager.hpp>
+#include <Bit/Network/UdpServer.hpp>
 
 namespace Bit
 {
@@ -31,11 +34,44 @@ namespace Bit
 	namespace Net
 	{
 
-		ClientEntityManager::ClientEntityManager( ) :
-			EntityManager( NULL )
+		////////////////////////////////////////////////////////////////
+		/// \ingroup Network
+		/// \brief Client class.
+		///
+		////////////////////////////////////////////////////////////////
+		class BIT_API Server
 		{
-		}
+
+		public:
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor.
+			///
+			////////////////////////////////////////////////////////////////
+			Server( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Destructor.
+			///
+			////////////////////////////////////////////////////////////////
+			~Server( );
+
+		protected:
+
+			// Protected functions
+
+			// Protected variables
+			ServerEntityManager		m_EntityManager;
+			Udp::Server				m_Server;
+
+		private:
+
+
+
+		};
 
 	}
 
 }
+
+#endif

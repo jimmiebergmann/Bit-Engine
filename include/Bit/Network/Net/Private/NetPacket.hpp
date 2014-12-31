@@ -21,39 +21,47 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_UDP_EVENT_HPP
-#define BIT_NETWORK_UDP_EVENT_HPP
+#ifndef BIT_NETWORK_NET_PACKET_HPP
+#define BIT_NETWORK_NET_PACKET_HPP
 
 #include <Bit/Build.hpp>
 
 namespace Bit
 {
-	
-	namespace Udp
+
+	namespace Net
 	{
 
-		// Forward declarations
-		class Connection;
-
 		////////////////////////////////////////////////////////////////
-		/// \brief Udp event type enumerator
+		/// \brief Size of the net packet header.
 		///
 		////////////////////////////////////////////////////////////////
-		enum eEventType
+		static const SizeType HeaderSize = 3;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Packet type enumerator
+		///
+		////////////////////////////////////////////////////////////////
+		enum ePacketType
 		{
-			Connect,
-			Disconnect,
-			Receive
+			Syn					= 1,
+			SynAck				= 2,
+			Ack					= 3,
+			Alive				= 4,
+			Close				= 5,
+			UnreliablePacket	= 6,
+			ReliablePacket		= 7
 		};
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Udp event structure.
+		/// \brief Packet structure
 		///
 		////////////////////////////////////////////////////////////////
-		struct Event
+		struct Packet
 		{
-			eEventType Type;			///< Event type.
-			Connection * pConnection;	///< Pointer to the event's connection.
+			Uint16		Sequence;	///< Packet sequence.
+			SizeType	DataSize;	///< Size of the data.
+			char *		pData;		///< Pointer to the data.
 		};
 
 	}
