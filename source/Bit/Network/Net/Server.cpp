@@ -45,6 +45,28 @@ namespace Bit
 			Stop( );
 		}
 
+		Event * Server::CreateEvent( const std::string & p_Name )
+		{
+			return new Event( p_Name, this );
+		}
+
+		UserMessage * Server::CreateUserMessage( const std::string & p_Name )
+		{
+			return new UserMessage( p_Name, this );
+		}
+			
+		void Server::DisconnectUser( const Uint16 p_UserId )
+		{
+		}
+
+		void Server::BanUser( const Uint16 p_UserId )
+		{
+		}
+
+		void Server::BanIp( const Address & p_Address )
+		{
+		}
+
 		Bool Server::Start( const Uint16 p_Port, Uint8 p_MaxConnections )
 		{
 			// Open the udp socket.
@@ -84,19 +106,19 @@ namespace Bit
 						}
 
 						// Check if the packet is from any known client
-						Uint64 clientId =	static_cast<Uint64>( address.GetAddress( ) ) * 
-											static_cast<Uint64>( port ) +
-											static_cast<Uint64>( port ) ;
+						Uint64 clientAddress =	static_cast<Uint64>( address.GetAddress( ) ) * 
+												static_cast<Uint64>( port ) +
+												static_cast<Uint64>( port ) ;
 
 						m_Connections.Mutex.Lock( );
-						ConnectionMap::iterator it = m_Connections.Value.find( clientId );
+						ConnectionMap::iterator it = m_Connections.Value.find( clientAddress );
 						if( it != m_Connections.Value.end( ) )
 						{
 							// Send the packet to the client thread.
 							it->second->AddRawPacket( buffer, recvSize );
 							m_Connections.Mutex.Unlock( );
 						}
-						else
+						/*else
 						{
 							// This is an unknown client, maybe it's trying to connect.
 							if( buffer[ 0 ] == ePacketType::Syn )
@@ -124,7 +146,7 @@ namespace Bit
 								// Add connect event
 								//AddEvent( eEventType::Connect, pConnection );
 							}
-						}
+						}*/
 				
 					}
 				}

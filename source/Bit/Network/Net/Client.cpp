@@ -426,7 +426,7 @@ namespace Bit
 			return time;
 		}
 
-		Bool Client::RegisterHostMessage( const std::string & p_MessageName, HostMessageFunction p_Function )
+		/*Bool Client::RegisterHostMessage( const std::string & p_MessageName, HostMessageFunction p_Function )
 		{
 			// Error check the paramters
 			if( p_MessageName.size( ) == 0 || p_Function == NULL )
@@ -444,7 +444,7 @@ namespace Bit
 			// Add the message
 			m_HostMessages[ p_MessageName ] = p_Function;
 			return true;
-		}
+		}*/
 
 /*
 		void Client::SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize )

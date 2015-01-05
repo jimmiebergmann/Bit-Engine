@@ -108,7 +108,7 @@ namespace Bit
 			/// \brief Register host message function
 			///
 			////////////////////////////////////////////////////////////////
-			Bool RegisterHostMessage( const std::string & p_MessageName, HostMessageFunction p_Function );
+			//Bool RegisterHostMessage( const std::string & p_MessageName, HostMessageFunction p_Function );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send unreliable packet to the server.
@@ -216,7 +216,7 @@ namespace Bit
 			typedef std::map<Uint16, ReliablePacket*> ReliablePacketMap;
 			typedef std::pair<Uint16, ReliablePacket*> ReliablePacketPair;
 			typedef std::list<Time> TimeList;
-			typedef std::map<std::string, HostMessageFunction> HostMessageMap;
+			//typedef std::map<std::string, HostMessageFunction> HostMessageMap;
 
 			// Private functions
 			////////////////////////////////////////////////////////////////
@@ -262,7 +262,7 @@ namespace Bit
 			ThreadValue<ReliablePacketMap>	m_ReliableMap;			///< Map of reliable packets.
 			ThreadValue<Time>				m_Ping;					///< Current network ping.
 			TimeList						m_PingList;				///< List of the last pings.
-			HostMessageMap					m_HostMessages;			///< Host message function map.
+			//HostMessageMap					m_HostMessages;			///< Host message function map.
 		};
 
 	}

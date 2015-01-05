@@ -165,9 +165,11 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\Client.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Entity.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\EntityManager.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Event.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\Connection.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\ServerEntityChanger.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessage.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Variable.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Ntp.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\NtpTimestamp.cpp" />
@@ -188,11 +190,13 @@
     <ClInclude Include="..\..\include\Bit\Network\Net\Client.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Entity.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\EntityManager.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Event.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\Connection.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\EntityChanger.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\NetPacket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\ServerEntityChanger.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Server.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessage.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Variable.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Ntp.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\NtpTimestamp.hpp" />

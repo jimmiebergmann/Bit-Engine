@@ -28,11 +28,17 @@
 #include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/Net/Private/Connection.hpp>
+#include <Bit/Network/Net/Event.hpp>
+#include <Bit/Network/Net/UserMessage.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
 #include <queue>
 #include <map>
+
+#ifdef BIT_PLATFORM_WINDOWS
+#undef CreateEvent
+#endif
 
 namespace Bit
 {
@@ -44,6 +50,11 @@ namespace Bit
 		/// \ingroup Network
 		/// \brief Server class.
 		///
+		/// The server system uses both TCP and
+		///	UDP( TCP for connecting and UDP for data).
+		/// This means that you have to open both
+		///	TCP and UDP ports for the port that you are hosting on.
+		///
 		////////////////////////////////////////////////////////////////
 		class BIT_API Server
 		{
@@ -52,6 +63,8 @@ namespace Bit
 
 			// friend classes
 			friend class Connection;
+			friend class Event;
+			friend class UserMessage;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
@@ -66,6 +79,66 @@ namespace Bit
 			~Server( );
 
 		protected:
+
+			// Protected typdefs
+			////////////////////////////////////////////////////////////////
+			/// \brief Pointer to user message function.
+			///	
+			/// Parameters:
+			///		- Server pointer.
+			///		- User id.
+			///		- Message pointer.
+			///		- Message size.
+			///
+			////////////////////////////////////////////////////////////////
+			typedef void (* UserMessageFunction)(Server *, Uint16, const void *, SizeType );
+
+			// Function to be overloaded.
+			////////////////////////////////////////////////////////////////
+			/// \brief Function to execute when a user connects.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void OnConnection( const Uint16 p_UserId ) = 0;
+			
+			////////////////////////////////////////////////////////////////
+			/// \brief Function to execute when a user disconnects.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void OnDisconnection( const Uint16 p_UserId ) = 0;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Create event.
+			///
+			/// \param p_Name Name of the event.
+			///
+			////////////////////////////////////////////////////////////////
+			Event * CreateEvent( const std::string & p_Name );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Create user message.
+			///
+			/// \param p_Name Name of the user message.
+			///
+			////////////////////////////////////////////////////////////////
+			UserMessage * CreateUserMessage( const std::string & p_Name );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Disconnect a user from the server.
+			///
+			////////////////////////////////////////////////////////////////
+			void DisconnectUser( const Uint16 p_UserId );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Ban a user from the server.
+			///
+			////////////////////////////////////////////////////////////////
+			void BanUser( const Uint16 p_UserId );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Ban an ip address from the server.
+			///
+			////////////////////////////////////////////////////////////////
+			void BanIp( const Address & p_Address );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Start the server.
