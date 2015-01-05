@@ -32,52 +32,13 @@ namespace Bit
 	namespace Net
 	{
 
-		UserMessage::UserMessage( const std::string & p_Name, Server * p_pServer, Int32 p_MessageSize ) :
+		UserMessage::UserMessage( const std::string & p_Name, Server * p_pServer ) :
 			m_Name( p_Name ),
 			m_pServer( p_pServer )
 		{
-			if( p_MessageSize > 0 )
-			{
-				m_Message.reserve( static_cast<MessageVector::size_type>( p_MessageSize ) );
-			}
 		}
 
-		void UserMessage::WriteByte( const Uint8 p_Byte )
-		{
-			m_Message.push_back( p_Byte );
-		}
-
-		void UserMessage::WriteInt( const Int32 p_Int )
-		{
-			Uint32 integer = Ntoh32( static_cast<Uint32>( p_Int ) );
-
-			m_Message.push_back( static_cast<Uint8>( integer ) );
-			m_Message.push_back( static_cast<Uint8>( integer >> 8 ) );
-			m_Message.push_back( static_cast<Uint8>( integer >> 16 ) );
-			m_Message.push_back( static_cast<Uint8>( integer >> 24 ) );
-		}
-
-		void UserMessage::WriteFloat( const Float32 p_Float )
-		{
-			// Get void pointer to float
-			const Uint8 * pPointer = reinterpret_cast<const Uint8 *>( &p_Float );
-
-			m_Message.push_back( pPointer[ 0 ] );
-			m_Message.push_back( pPointer[ 1 ] );
-			m_Message.push_back( pPointer[ 2 ] );
-			m_Message.push_back( pPointer[ 3 ] );
-		}
-
-		void UserMessage::WriteString( const std::string & p_String )
-		{
-			for( std::string::size_type i = 0; i < p_String.size( ); i++ )
-			{
-				m_Message.push_back( static_cast<Uint8>( p_String[ i ] ) );
-			}
-			m_Message.push_back( 0 );
-		}
-
-		Bool UserMessage::Send( const RecipientFilter & p_Filter )
+		Bool UserMessage::Send( const Uint16 p_User )
 		{
 			return true;
 		}

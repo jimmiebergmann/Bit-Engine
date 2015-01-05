@@ -21,8 +21,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_EVENT_HPP
-#define BIT_NETWORK_NET_EVENT_HPP
+#ifndef BIT_NETWORK_NET_USER_MESSAGE_HPP
+#define BIT_NETWORK_NET_USER_MESSAGE_HPP
 
 #include <Bit/Build.hpp>
 #include <string>
@@ -38,25 +38,28 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief Event class
+		/// \brief Entity manager class.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API Event
+		class BIT_API UserMessage
 		{
 
 		public:
+
+			// Friend classes
+			friend class ServerEntityChanger;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
 			///
 			////////////////////////////////////////////////////////////////
-			Event( const std::string & p_Name, Server * p_pServer );
+			UserMessage( const std::string & p_Name, Server * p_pServer );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Fire the event
+			/// \brief Send user message to user.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool FireEvent( );
+			Bool Send( const Uint16 p_User );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get event name
@@ -69,6 +72,7 @@ namespace Bit
 			// Private variables.
 			std::string		m_Name;		///< Event name
 			Server *		m_pServer;	///< Pointer to server class.
+
 		};
 
 	}

@@ -25,7 +25,9 @@
 #define BIT_NETWORK_NET_USER_MESSAGE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Network/Net/RecipientFilter.hpp>
 #include <string>
+#include <vector>
 
 namespace Bit
 {
@@ -38,7 +40,7 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief Entity manager class.
+		/// \brief User message class.
 		///
 		////////////////////////////////////////////////////////////////
 		class BIT_API UserMessage
@@ -52,14 +54,42 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
 			///
+			/// \param p_Name Name of the user message.
+			/// \param p_pServer Pointer to server.
+			/// \param p_MessageSize Message size. 0 < if dynamically allocated.
+			///
 			////////////////////////////////////////////////////////////////
-			UserMessage( const std::string & p_Name, Server * p_pServer );
+			UserMessage( const std::string & p_Name, Server * p_pServer, Int32 p_MessageSize );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Write byte to message.
+			///
+			////////////////////////////////////////////////////////////////
+			void WriteByte( const Uint8 p_Byte );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Write signed integer to message.
+			///
+			////////////////////////////////////////////////////////////////
+			void WriteInt( const Int32 p_Int );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Write floating point to message.
+			///
+			////////////////////////////////////////////////////////////////
+			void WriteFloat( const Float32 p_Float );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Write string to message.
+			///
+			////////////////////////////////////////////////////////////////
+			void WriteString( const std::string & p_String );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send user message to user.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool Send( const Uint16 p_User );
+			Bool Send( const RecipientFilter & p_Filter );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get event name
@@ -69,9 +99,13 @@ namespace Bit
 
 		private:
 
+			// Private typedefs
+			typedef std::vector<Uint8> MessageVector;
+
 			// Private variables.
-			std::string		m_Name;		///< Event name
-			Server *		m_pServer;	///< Pointer to server class.
+			std::string			m_Name;		///< Event name
+			Server *			m_pServer;	///< Pointer to server class.
+			MessageVector	m_Message;	///< Vector of message data.
 
 		};
 

@@ -52,6 +52,9 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\UserMessage.cpp">
       <Filter>Net</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\RecipientFilter.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -122,6 +125,9 @@
       <Filter>Net</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\UserMessage.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\RecipientFilter.hpp">
       <Filter>Net</Filter>
     </ClInclude>
   </ItemGroup>

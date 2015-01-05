@@ -33,12 +33,16 @@ namespace Bit
 	namespace Net
 	{
 
-		Connection::Connection( const Address & p_Address, const Uint16 & p_Port, const Time & p_InitialPing ) :
+		Connection::Connection( const Address & p_Address,
+								const Uint16 & p_Port,
+								const Uint16 & p_UserId,
+								const Time & p_InitialPing ) :
 			m_pServer( NULL ),
 			m_ConnectionTimeout( Seconds( 3.0f ) ),
 			m_Connected( false ),
 			m_Address( p_Address ),
 			m_Port( p_Port ),
+			m_UserId( p_UserId ),
 			m_Sequence( 0 ),
 			m_Ping( p_InitialPing )
 		{
@@ -64,6 +68,18 @@ namespace Bit
 			Time time = m_Ping.Value;
 			m_Ping.Mutex.Unlock( );
 			return time;
+		}
+
+		Uint16 Connection::GetUserId( ) const
+		{
+			return m_UserId;
+		}
+		
+		Uint64 Connection::GetPackedAddress( ) const
+		{
+			return	static_cast<Uint64>( m_Address.GetAddress( ) ) * 
+					static_cast<Uint64>( m_Port ) +
+					static_cast<Uint64>( m_Port ) ;
 		}
 /*
 		void Connection::SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize )
@@ -246,35 +262,24 @@ namespace Bit
 								// Disconnect packet from client.
 								case ePacketType::Close:
 								{
-									// Set connection flag to false.
+									// Set the connection flag to false
 									m_Connected.Mutex.Lock( );
-									m_Connected.Value = false; 
+									m_Connected.Value = false;
 									m_Connected.Mutex.Unlock( );
 
-									// Wait for the event thread to finish
-									m_EventThread.Finish( );
+									// Add the connection to the cleanup thread.
+									m_pServer->m_CleanupConnections.Mutex.Lock( );
+									m_pServer->m_CleanupConnections.Value.push( this );
+									m_pServer->m_CleanupConnections.Mutex.Unlock( );
 
-									// Remove connection from server's connection map,
-									// Calculate the client id.
-									Uint64 clientId =	static_cast<Uint64>( m_Address.GetAddress( ) ) * 
-														static_cast<Uint64>( m_Port ) +
-														static_cast<Uint64>( m_Port ) ;
-
-									// Find the connection in the map.
-									m_pServer->m_Connections.Mutex.Lock( );
-									Server::ConnectionMap::iterator it = m_pServer->m_Connections.Value.find( clientId );
-									if( it != m_pServer->m_Connections.Value.end( ) )
-									{
-										// remove the connection from the map
-										m_pServer->m_Connections.Value.erase( it );
-									}
-									m_pServer->m_Connections.Mutex.Unlock( );
-
+									// Increase the semaphore for cleanups
+									m_pServer->m_CleanupSemaphore.Release( );
+									
 									// Destroy the packet.
 									delete pPacket;
 
-									// Add the event
-									//m_pServer->AddEvent( eEventType::Disconnect, this );
+									// Call on disconnect function
+									m_pServer->OnDisconnection( m_UserId );
 
 									// Return, exit the thread
 									return;
@@ -418,7 +423,22 @@ namespace Bit
 						// Disconnect you've not heard anything from the server in a while.
 						if( TimeSinceLastRecvPacket( ) >= m_ConnectionTimeout )
 						{
-							InternalDisconnect( true, false, true );
+							// Set the connection flag to false
+							m_Connected.Mutex.Lock( );
+							m_Connected.Value = false;
+							m_Connected.Mutex.Unlock( );
+
+							// Add the connection to the cleanup thread.
+							m_pServer->m_CleanupConnections.Mutex.Lock( );
+							m_pServer->m_CleanupConnections.Value.push( this );
+							m_pServer->m_CleanupConnections.Mutex.Unlock( );
+
+							// Increase the semaphore for cleanups
+							m_pServer->m_CleanupSemaphore.Release( );
+
+							// Call on disconnect function
+							m_pServer->OnDisconnection( m_UserId );
+
 							return;
 						}
 

@@ -155,12 +155,6 @@ namespace Bit
 											m_Sequence.Value = 0;
 											m_Sequence.Mutex.Unlock( );
 
-										/*	// Add disconnect event
-											Event * pEvent = new Event;
-											pEvent->Type = eEventType::Disconnect;
-											m_Events.Mutex.Lock( );
-											m_Events.Value.push( pEvent );
-											m_Events.Mutex.Unlock( );*/
 										}
 										break;
 										// Alive packet from server.
@@ -581,48 +575,41 @@ namespace Bit
 
 			if( connected )
 			{
-				// Send connection packet.
+				// Send close packet.
 				char buffer = ePacketType::Close;
 				m_Socket.Send( &buffer, 1, m_ServerAddress, m_ServerPort );
-
-				// Wait for the threads to finish.
-				if( p_CloseMainThread )
-				{
- 					m_Thread.Finish( );
-				}
-				if( p_CloseEventThread )
-				{
-					m_EventThread.Finish( );
-				}
-				if( p_CloseReliableThread )
-				{
-					m_ReliableThread.Finish( );
-				}
-
-				// Reset the sequence.
-				m_Sequence.Mutex.Lock( );
-				m_Sequence.Value = 0;
-				m_Sequence.Mutex.Unlock( );
-
-				// Clear the reliable packets
-				m_ReliableMap.Mutex.Lock( );
-				for(	ReliablePacketMap::iterator it = m_ReliableMap.Value.begin( );
-						it != m_ReliableMap.Value.end( );
-						it ++ )
-				{
-					delete [ ] it->second->pData;
-					delete it->second;
-				}
-				m_ReliableMap.Value.clear( );
-				m_ReliableMap.Mutex.Unlock( );
-
-			/*	// Add disconnect event
-				Event * pEvent = new Event;
-				pEvent->Type = eEventType::Disconnect;
-				m_Events.Mutex.Lock( );
-				m_Events.Value.push( pEvent );
-				m_Events.Mutex.Unlock( );*/
 			}
+
+			// Wait for the threads to finish.
+			if( p_CloseMainThread )
+			{
+ 				m_Thread.Finish( );
+			}
+			if( p_CloseEventThread )
+			{
+				m_EventThread.Finish( );
+			}
+			if( p_CloseReliableThread )
+			{
+				m_ReliableThread.Finish( );
+			}
+
+			// Reset the sequence.
+			m_Sequence.Mutex.Lock( );
+			m_Sequence.Value = 0;
+			m_Sequence.Mutex.Unlock( );
+
+			// Clear the reliable packets
+			m_ReliableMap.Mutex.Lock( );
+			for(	ReliablePacketMap::iterator it = m_ReliableMap.Value.begin( );
+					it != m_ReliableMap.Value.end( );
+					it ++ )
+			{
+				delete [ ] it->second->pData;
+				delete it->second;
+			}
+			m_ReliableMap.Value.clear( );
+			m_ReliableMap.Mutex.Unlock( );
 
 			// Clear the ping list.
 			m_PingList.clear( );

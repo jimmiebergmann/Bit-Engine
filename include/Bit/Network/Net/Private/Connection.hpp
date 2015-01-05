@@ -59,6 +59,7 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Connection(	const Address & p_Address, 
 						const Uint16 & p_Port,
+						const Uint16 & p_UserId,
 						const Time & p_InitialPing = Microseconds( 200000 ) );
 		
 			////////////////////////////////////////////////////////////////
@@ -78,6 +79,18 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Time GetPing( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the user id
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetUserId( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the packed address (ip * port + port )
+			///
+			////////////////////////////////////////////////////////////////
+			Uint64 GetPackedAddress( ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send unreliable packet to the client.
@@ -246,21 +259,22 @@ namespace Bit
 			Thread							m_Thread;				///< Thread for handling raw packets.
 			Thread							m_EventThread;			///< Thread for creating specific events.
 			Thread							m_ReliableThread;		///< Thread for checking reliable packets for resend.
-			Server *							m_pServer;				///< Pointer to the server.
-			Address						m_Address;				///< The clients's address.
-			Uint16							m_Port;					///< The client's port.
+			Server *						m_pServer;				///< Pointer to the server.
+			const Address					m_Address;				///< The clients's address.
+			const Uint16					m_Port;					///< The client's port.
+			const Uint16					m_UserId;				///< The client's user id.
 			Time							m_ConnectionTimeout;	///< Ammount of time until the connection timeout.
 			Semaphore						m_EventSemaphore;		///< Semaphore for the events.
 			ThreadValue<ReceivedDataQueue>	m_ReceivedData;			///< Queue of data ready to get polled by the user.
-			ThreadValue<RawPacketQueue>	m_RawPacketQueue;		///< Queue of raw packets.
-			ThreadValue<Bool>			m_Connected;			///< Flag for checking if you are connected.
-			ThreadValue<Timer>		m_LastRecvTimer;		///< Time for checking when the last recv packet.
-			ThreadValue<Timer>		m_LastSendTimer;		///< Time for checking when the last sent packet.
-			ThreadValue<Uint16>		m_Sequence;				///< The sequence of the next packet being sent.
-			AcknowledgementData					m_AcknowledgementData;	///< Struct of the ack data.
+			ThreadValue<RawPacketQueue>		m_RawPacketQueue;		///< Queue of raw packets.
+			ThreadValue<Bool>				m_Connected;			///< Flag for checking if you are connected.
+			ThreadValue<Timer>				m_LastRecvTimer;		///< Time for checking when the last recv packet.
+			ThreadValue<Timer>				m_LastSendTimer;		///< Time for checking when the last sent packet.
+			ThreadValue<Uint16>				m_Sequence;				///< The sequence of the next packet being sent.
+			AcknowledgementData				m_AcknowledgementData;	///< Struct of the ack data.
 			ThreadValue<ReliablePacketMap>	m_ReliableMap;			///< Map of reliable packets.
-			ThreadValue<Time>			m_Ping;					///< Current network ping.
-			TimeList							m_PingList;				///< List of the last pings.
+			ThreadValue<Time>				m_Ping;					///< Current network ping.
+			TimeList						m_PingList;				///< List of the last pings.
 		};
 
 	}

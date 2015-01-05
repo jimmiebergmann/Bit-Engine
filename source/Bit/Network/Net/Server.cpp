@@ -23,8 +23,10 @@
 
 #include <Bit/Network/Net/Server.hpp>
 #include <Bit/Network/Net/Private/ServerEntityChanger.hpp>
+#include <Bit/Network/TcpSocket.hpp>
 #include <Bit/System/Sleep.hpp>
 #include <Bit/System/Timer.hpp>
+#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -45,22 +47,54 @@ namespace Bit
 			Stop( );
 		}
 
+		void Server::OnConnection( const Uint16 p_UserId )
+		{
+		}
+			
+		void Server::OnDisconnection( const Uint16 p_UserId )
+		{
+		}
+
 		Event * Server::CreateEvent( const std::string & p_Name )
 		{
 			return new Event( p_Name, this );
 		}
 
-		UserMessage * Server::CreateUserMessage( const std::string & p_Name )
+		UserMessage * Server::CreateUserMessage( const std::string & p_Name, const Int32 p_MessageSize )
 		{
-			return new UserMessage( p_Name, this );
+			return new UserMessage( p_Name, this, p_MessageSize );
 		}
 			
-		void Server::DisconnectUser( const Uint16 p_UserId )
+		Bool Server::DisconnectUser( const Uint16 p_UserId )
 		{
+			// Find the connection via user id.
+			m_ConnectionMutex.Lock( );
+			UserConnectionMap::iterator it = m_UserConnections.find( p_UserId );
+			if( it == m_UserConnections.end( ) )
+			{
+				return false;
+			}
+
+			// Get the connection
+			Connection * pConnection = it->second;
+
+			// Unlock the connection mutex.
+			m_ConnectionMutex.Unlock( );
+
+			// Add the connection to the cleanup thread.
+			m_CleanupConnections.Mutex.Lock( );
+			m_CleanupConnections.Value.push( pConnection );
+			m_CleanupConnections.Mutex.Unlock( );
+
+			// Increase the semaphore for cleanups
+			m_CleanupSemaphore.Release( );
+
+			return true;
 		}
 
-		void Server::BanUser( const Uint16 p_UserId )
+		Bool Server::BanUser( const Uint16 p_UserId )
 		{
+			return false;
 		}
 
 		void Server::BanIp( const Address & p_Address )
@@ -79,8 +113,14 @@ namespace Bit
 			// Set max connections.
 			m_MaxConnections = p_MaxConnections;
 
+			// Add the free user IDs to the queue
+			for( Uint16 i = 1; i <= static_cast<Uint16>(m_MaxConnections); i++ )
+			{
+				m_FreeUserIds.push( i );
+			}
+
 			// Start the server thread.
-			m_Thread.Execute( [ this ] ( )
+			m_MainThread.Execute( [ this ] ( )
 			{
 					const SizeType bufferSize = 128;
 					char buffer[ bufferSize ];
@@ -97,7 +137,7 @@ namespace Bit
 					while( IsRunning( ) )
 					{
 						// Receive any packet.
-						recvSize = m_Socket.Receive( buffer, bufferSize, address, port, Time::Infinite );
+						recvSize = m_Socket.Receive( buffer, bufferSize, address, port, Milliseconds( 5 ) );
 
 						// Ignore empty packets.
 						if( recvSize <= 0 )
@@ -110,31 +150,42 @@ namespace Bit
 												static_cast<Uint64>( port ) +
 												static_cast<Uint64>( port ) ;
 
-						m_Connections.Mutex.Lock( );
-						ConnectionMap::iterator it = m_Connections.Value.find( clientAddress );
-						if( it != m_Connections.Value.end( ) )
+						m_ConnectionMutex.Lock( );
+						AddressConnectionMap::iterator it = m_AddressConnections.find( clientAddress );
+						if( it != m_AddressConnections.end( ) )
 						{
 							// Send the packet to the client thread.
 							it->second->AddRawPacket( buffer, recvSize );
-							m_Connections.Mutex.Unlock( );
+							m_ConnectionMutex.Unlock( );
 						}
-						/*else
+						else
 						{
 							// This is an unknown client, maybe it's trying to connect.
 							if( buffer[ 0 ] == ePacketType::Syn )
 							{
 								// Send Deny packet if the server is full.
-								if( m_Connections.Value.size( ) == m_MaxConnections )
+								if( m_AddressConnections.size( ) == m_MaxConnections || m_FreeUserIds.size( ) == 0 )
 								{
 									buffer[ 0 ] = ePacketType::Close;
 									m_Socket.Send( buffer, 1, address, port );
 									continue;
 								}
 
-								// Add the client to the client map
-								Connection * pConnection = new Connection( address, port );
-								m_Connections.Value.insert( ConnectionMapPair( clientId, pConnection ) );
-								m_Connections.Mutex.Unlock( );
+								// Get a user id for this connection
+								const Uint16 userId = m_FreeUserIds.front( );
+								m_FreeUserIds.pop( );
+
+								// Create the connection
+								Connection * pConnection = new Connection( address, port, userId );
+
+								// Add the client to the address connection map
+								m_AddressConnections.insert( AddressConnectionMapPair( clientAddress, pConnection ) );
+
+								// Add the client to the user connection map
+								m_UserConnections.insert( UserConnectionMapPair( userId, pConnection ) );
+
+								// Unlock the connection mutex
+								m_ConnectionMutex.Unlock( );
 						
 								// Start client thread.
 								pConnection->StartThreads( this );
@@ -143,13 +194,67 @@ namespace Bit
 								buffer[ 0 ] = ePacketType::SynAck;
 								m_Socket.Send( buffer, 1, address, port );
 
-								// Add connect event
-								//AddEvent( eEventType::Connect, pConnection );
+								// Run the on connection function
+								OnConnection( userId );
 							}
-						}*/
+						}
 				
 					}
 				}
+			);
+
+			// Start the cleanup thread.
+			m_CleanupThread.Execute( [ this ] ( )
+			{
+				while( IsRunning( ) )
+				{
+					// Wait for semaphore to trigger
+					m_CleanupSemaphore.Wait( );
+
+					// Lock the cleanup connections mutex
+					m_CleanupConnections.Mutex.Lock( );
+
+					// Error check the queue
+					if( m_CleanupConnections.Value.size( ) == 0 )
+					{
+						continue;
+					}
+
+					Connection * pConnection = m_CleanupConnections.Value.front( );
+					m_CleanupConnections.Value.pop( );
+
+					// Get the packet address and user id.
+					const Uint64 packetAddress = pConnection->GetPackedAddress( );
+					const Uint16 userId = pConnection->GetUserId( );
+
+					// Unlock mutex
+					m_CleanupConnections.Mutex.Unlock( );
+
+					// Remove the connection and wait for the connection to thread to finish
+					m_ConnectionMutex.Lock( );
+
+					// Erase the connection from the address connections
+					AddressConnectionMap::iterator it1 = m_AddressConnections.find( packetAddress );
+					if( it1 != m_AddressConnections.end( ) )
+					{
+						m_AddressConnections.erase( it1 );
+					}
+
+					// Erase the connection from the user id connections
+					UserConnectionMap::iterator it2 = m_UserConnections.find( userId );
+					if( it2 != m_UserConnections.end( ) )
+					{
+						m_UserConnections.erase( it2 );
+					}
+
+					// Unlock the connection mutex
+					m_ConnectionMutex.Unlock( );
+
+					// Delete the connection
+					delete pConnection;
+				}
+
+			}
 			);
 
 			// Server is now running
@@ -165,22 +270,46 @@ namespace Bit
 				m_Running.Value = false;
 				m_Running.Mutex.Unlock( );
 
+				// Wait for the cleanup thread to finish
+				m_CleanupSemaphore.Release( );
+				m_CleanupThread.Finish( );
+
+				// Clean up the cleanup connections
+				m_CleanupConnections.Mutex.Lock( );
+				while( m_CleanupConnections.Value.size( ) )
+				{
+					m_CleanupConnections.Value.pop( );
+				}
+				m_CleanupConnections.Mutex.Unlock( );
+
+				// Wait for the main thread to finish
+				m_MainThread.Finish( );
+
 				// Disconnect all the connections
-				m_Connections.Mutex.Lock( );
-				ConnectionMap::iterator it = m_Connections.Value.begin( );
-				while( it != m_Connections.Value.end( ) )
+				m_ConnectionMutex.Lock( );
+				AddressConnectionMap::iterator it = m_AddressConnections.begin( );
+				while( it != m_AddressConnections.end( ) )
 				{
 					// Disconnect and delete the connection.
 					Connection * pConnection = it->second;
 					delete pConnection;
 
 					// Erase the connection
-					m_Connections.Value.erase( it );
+					m_AddressConnections.erase( it );
 
 					// Get the beginning again.
-					it = m_Connections.Value.begin( );
+					it = m_AddressConnections.begin( );
 				}
-				m_Connections.Mutex.Unlock( );
+
+				// Remove all the user connections
+				m_UserConnections.clear( );
+
+				// Unlock the mutex
+				m_ConnectionMutex.Unlock( );
+
+
+				// Close the sockets
+				m_Socket.Close( );
 
 			}
 		}

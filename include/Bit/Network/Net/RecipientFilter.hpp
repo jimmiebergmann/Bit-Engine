@@ -21,8 +21,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_EVENT_HPP
-#define BIT_NETWORK_NET_EVENT_HPP
+#ifndef BIT_NETWORK_NET_RECIPIENT_FILTER_HPP
+#define BIT_NETWORK_NET_RECIPIENT_FILTER_HPP
 
 #include <Bit/Build.hpp>
 #include <string>
@@ -38,10 +38,10 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief Event class
+		/// \brief Recipient filter class.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API Event
+		class BIT_API RecipientFilter
 		{
 
 		public:
@@ -50,25 +50,10 @@ namespace Bit
 			/// \brief Constructor
 			///
 			////////////////////////////////////////////////////////////////
-			Event( const std::string & p_Name, Server * p_pServer );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Fire the event
-			///
-			////////////////////////////////////////////////////////////////
-			Bool FireEvent( );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Get event name
-			///
-			////////////////////////////////////////////////////////////////
-			const std::string & GetName( ) const;
+			RecipientFilter( );
 
 		private:
 
-			// Private variables.
-			std::string		m_Name;		///< Event name
-			Server *		m_pServer;	///< Pointer to server class.
 		};
 
 	}
