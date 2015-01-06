@@ -138,7 +138,12 @@ namespace Bit
 
 		void UserMessageDecoder::SetPosition( const SizeType p_Position )
 		{
-			m_Position = p_Position;
+			SizeType position = p_Position;
+			if( position >= m_MessageSize )
+			{
+				position = m_MessageSize - 1;
+			}
+			m_Position = position;
 		}
 
 

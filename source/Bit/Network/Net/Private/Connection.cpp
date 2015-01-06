@@ -331,9 +331,6 @@ namespace Bit
 									m_ReceivedData.Mutex.Lock( );
 									m_ReceivedData.Value.push( pReceivedData );
 									m_ReceivedData.Mutex.Unlock( );
-
-									// Add the event
-								//	m_pServer->AddEvent( eEventType::Receive, this );
 								}
 								break;
 								case ePacketType::ReliablePacket:
@@ -361,9 +358,6 @@ namespace Bit
 										m_ReceivedData.Mutex.Lock( );
 										m_ReceivedData.Value.push( pReceivedData );
 										m_ReceivedData.Mutex.Unlock( );
-
-										// Add the event
-										//m_pServer->AddEvent( eEventType::Receive, this );
 									}
 								}
 								break;

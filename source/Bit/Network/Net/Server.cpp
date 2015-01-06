@@ -77,6 +77,8 @@ namespace Bit
 			UserConnectionMap::iterator it = m_UserConnections.find( p_UserId );
 			if( it == m_UserConnections.end( ) )
 			{
+				// Unlock the connection mutex.
+				m_ConnectionMutex.Unlock( );
 				return false;
 			}
 
@@ -119,7 +121,7 @@ namespace Bit
 			m_MaxConnections = p_MaxConnections;
 
 			// Add the free user IDs to the queue
-			for( Uint16 i = 1; i <= static_cast<Uint16>(m_MaxConnections); i++ )
+			for( Uint16 i = 0; i < static_cast<Uint16>(m_MaxConnections); i++ )
 			{
 				m_FreeUserIds.push( i );
 			}
@@ -173,6 +175,9 @@ namespace Bit
 								{
 									buffer[ 0 ] = ePacketType::Close;
 									m_Socket.Send( buffer, 1, address, port );
+									
+									// Unlock the connection mutex
+									m_ConnectionMutex.Unlock( );
 									continue;
 								}
 
@@ -202,6 +207,11 @@ namespace Bit
 								// Run the on connection function
 								OnConnection( userId );
 							}
+							else
+							{
+								// Unlock the connection mutex
+								m_ConnectionMutex.Unlock( );
+							}
 						}
 				
 					}
@@ -222,6 +232,7 @@ namespace Bit
 					// Error check the queue
 					if( m_CleanupConnections.Value.size( ) == 0 )
 					{
+						m_CleanupConnections.Mutex.Unlock( );
 						continue;
 					}
 
@@ -251,6 +262,9 @@ namespace Bit
 					{
 						m_UserConnections.erase( it2 );
 					}
+
+					// Restore the user id to the free user id queue
+					m_FreeUserIds.push( pConnection->GetUserId( ) );
 
 					// Unlock the connection mutex
 					m_ConnectionMutex.Unlock( );
