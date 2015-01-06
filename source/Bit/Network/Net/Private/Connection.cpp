@@ -82,39 +82,7 @@ namespace Bit
 					static_cast<Uint64>( m_Port ) ;
 		}
 /*
-		void Connection::SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize )
-		{
-			// Use memory pool here?
 
-			// Create the packet.
-			const Bit::SizeType packetSize = p_DataSize + HeaderSize;
-			char * pData = new char[ packetSize ];
-			pData[ 0 ] = ePacketType::UnreliablePacket;
-
-			// Get the current sequence
-			m_Sequence.Mutex.Lock( );
-			Bit::Uint16 sequence = Bit::Hton16( m_Sequence.Value );
-			// Increment the sequence
-			m_Sequence.Value++;
-			m_Sequence.Mutex.Unlock( );
-
-			// Add the sequence to the data buffer.
-			memcpy( pData + 1, &sequence, 2 );
-
-			// Add the data to the new buffer
-			memcpy( pData + HeaderSize, p_pData, p_DataSize );
-
-			// Send the packet.
-			m_pServer->m_Socket.Send( pData, packetSize, m_Address, m_Port );
-
-			// Delete the packet
-			delete [ ] pData;
-		}
-
-		void Connection::SendReliable( void * p_pData, const Bit::SizeType p_DataSize )
-		{
-			InternalSendReliable( ePacketType::ReliablePacket, p_pData, p_DataSize );
-		}
 
 		Bit::Bool Connection::Receive( Packet & p_Packet )
 		{
@@ -154,10 +122,10 @@ namespace Bit
 		}
 		*/
 		// Raw packet struct
-		Connection::RawPacket::RawPacket( char * p_pData, const SizeType p_DataSize )
+		Connection::RawPacket::RawPacket( Uint8 * p_pData, const SizeType p_DataSize )
 		{
 			DataSize = p_DataSize;
-			pData = new char[ p_DataSize ];
+			pData = new Uint8[ p_DataSize ];
 			memcpy( pData, p_pData, p_DataSize );
 		}
 
@@ -352,7 +320,7 @@ namespace Bit
 									// Add the unreliable packet to the received data queue.	
 									ReceivedData * pReceivedData = new ReceivedData;
 									pReceivedData->DataSize = pPacket->DataSize - HeaderSize;
-									pReceivedData->pData = new char[ pReceivedData->DataSize ];
+									pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
 									memcpy( pReceivedData->pData, pPacket->pData + HeaderSize, pReceivedData->DataSize );
 
 									// Get the sequence
@@ -386,7 +354,7 @@ namespace Bit
 										ReceivedData * pReceivedData = new ReceivedData;
 										pReceivedData->Sequence = sequence;
 										pReceivedData->DataSize = pPacket->DataSize - HeaderSize;
-										pReceivedData->pData = new char[ pReceivedData->DataSize ];
+										pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
 										memcpy( pReceivedData->pData, pPacket->pData + HeaderSize, pReceivedData->DataSize );
 
 										// Push the packet
@@ -507,7 +475,7 @@ namespace Bit
 
 		}
 
-		void Connection::AddRawPacket( char * p_pData, const SizeType p_DataSize )
+		void Connection::AddRawPacket( Uint8 * p_pData, const SizeType p_DataSize )
 		{
 			if( p_DataSize == 0 )
 			{
@@ -568,7 +536,7 @@ namespace Bit
 			if( connected )
 			{
 				// Send close packet.
-				char buffer = ePacketType::Close;
+				Uint8 buffer = ePacketType::Close;
 				m_pServer->m_Socket.Send( &buffer, 1, m_Address, m_Port );
 			}
 				
@@ -618,12 +586,46 @@ namespace Bit
 			m_PingList.clear( );
 		}
 
+		void Connection::SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize )
+		{
+			// Use memory pool here?
+
+			// Create the packet.
+			const Bit::SizeType packetSize = p_DataSize + HeaderSize;
+			Uint8 * pData = new Uint8[ packetSize ];
+			pData[ 0 ] = ePacketType::UnreliablePacket;
+
+			// Get the current sequence
+			m_Sequence.Mutex.Lock( );
+			Bit::Uint16 sequence = Bit::Hton16( m_Sequence.Value );
+			// Increment the sequence
+			m_Sequence.Value++;
+			m_Sequence.Mutex.Unlock( );
+
+			// Add the sequence to the data buffer.
+			memcpy( pData + 1, &sequence, 2 );
+
+			// Add the data to the new buffer
+			memcpy( pData + HeaderSize, p_pData, p_DataSize );
+
+			// Send the packet.
+			m_pServer->m_Socket.Send( pData, packetSize, m_Address, m_Port );
+
+			// Delete the packet
+			delete [ ] pData;
+		}
+
+		void Connection::SendReliable( void * p_pData, const Bit::SizeType p_DataSize )
+		{
+			InternalSendReliable( ePacketType::ReliablePacket, p_pData, p_DataSize );
+		}
+
 		void Connection::InternalSendReliable( const ePacketType & p_PacketType, void * p_pData, const SizeType p_DataSize )
 		{
 			// Create a new buffer.
 			const SizeType packetSize = p_DataSize + HeaderSize;
-			char * pData = new char[ packetSize ];
-			pData[ 0 ] = static_cast<char>( p_PacketType );
+			Uint8 * pData = new Uint8[ packetSize ];
+			pData[ 0 ] = static_cast<Uint8>( p_PacketType );
 
 			// Add the sequence to the data buffer.
 			m_Sequence.Mutex.Lock( );

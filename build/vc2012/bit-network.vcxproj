@@ -168,7 +168,9 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\Event.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\Connection.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\ServerEntityChanger.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\Net\RecipientFilter.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageDecoder.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageListener.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserRecipientFilter.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\UserMessage.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Variable.cpp" />
@@ -196,7 +198,9 @@
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\EntityChanger.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\NetPacket.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\ServerEntityChanger.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Net\RecipientFilter.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageDecoder.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageListener.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserRecipientFilter.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Server.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\UserMessage.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Variable.hpp" />

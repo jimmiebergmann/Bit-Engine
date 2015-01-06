@@ -67,7 +67,7 @@ namespace Bit
 			friend class Connection;
 			friend class Event;
 			friend class UserMessage;
-			friend class RecipientFilter;
+			friend class UserRecipientFilter;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
@@ -110,21 +110,33 @@ namespace Bit
 			virtual void OnDisconnection( const Uint16 p_UserId );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Create event.
+			/// \brief Create recipient filter
 			///
-			/// \param p_Name Name of the event.
+			/// Destroy the pointer by yourself, or you will suffer from memoryleaks.
 			///
 			////////////////////////////////////////////////////////////////
-			Event * CreateEvent( const std::string & p_Name );
+			UserRecipientFilter * CreateRecipientFilter( const Bool p_Reliable = true );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create user message.
+			///
+			/// Destroy the pointer by yourself, or you will suffer from memoryleaks.
 			///
 			/// \param p_Name Name of the user message.
 			/// \param p_MessageSize Message size. 0 < if dynamically allocated.
 			///
 			////////////////////////////////////////////////////////////////
-			UserMessage * CreateUserMessage( const std::string & p_Name, const Int32 p_MessageSize );
+			UserMessage * CreateUserMessage( const std::string & p_Name, const Int32 p_MessageSize = -1 );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Create event.
+			///
+			/// Destroy the pointer by yourself, or you will suffer from memoryleaks.
+			///
+			/// \param p_Name Name of the event.
+			///
+			////////////////////////////////////////////////////////////////
+			Event * CreateEvent( const std::string & p_Name );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Disconnect a user from the server.

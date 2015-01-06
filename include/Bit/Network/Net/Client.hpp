@@ -28,12 +28,15 @@
 #include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/UdpSocket.hpp>
+#include <Bit/Network/Net/UserMessageListener.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
+#include <Bit/System/Semaphore.hpp>
 #include <Bit/System/Timer.hpp>
 #include <queue>
 #include <map>
 #include <list>
+#include <set>
 
 namespace Bit
 {
@@ -54,8 +57,8 @@ namespace Bit
 
 		public:
 
-			// Public typdefs
-			typedef void (* HostMessageFunction)(Client *, const void *, SizeType );
+			// Friend classes
+			friend class UserMessageListener;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor
@@ -105,10 +108,10 @@ namespace Bit
 			Time GetPing( );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Register host message function
+			/// \brief Add listener to a user message.
 			///
 			////////////////////////////////////////////////////////////////
-			//Bool RegisterHostMessage( const std::string & p_MessageName, HostMessageFunction p_Function );
+			Bool HookUserMessage( UserMessageListener * p_pListener, const std::string & m_MessageName );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send unreliable packet to the server.
@@ -159,8 +162,10 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			struct ReceivedData
 			{
+				ReceivedData( );
+				~ReceivedData( );
 				Uint16		Sequence;
-				char *			pData;
+				Uint8 *		pData;
 				SizeType	DataSize;
 			};
 
@@ -204,7 +209,7 @@ namespace Bit
 			struct ReliablePacket
 			{
 				Uint16		Sequence;
-				char *		pData;
+				Uint8 *		pData;
 				SizeType	DataSize;
 				Timer		SendTimer;
 				Timer		ResendTimer;
@@ -212,11 +217,13 @@ namespace Bit
 			};
 
 			// Private  typedefs
-			typedef std::queue<ReceivedData*> ReceivedDataQueue;
-			typedef std::map<Uint16, ReliablePacket*> ReliablePacketMap;
-			typedef std::pair<Uint16, ReliablePacket*> ReliablePacketPair;
-			typedef std::list<Time> TimeList;
-			//typedef std::map<std::string, HostMessageFunction> HostMessageMap;
+			typedef std::map<Uint16, ReliablePacket*>					ReliablePacketMap;
+			typedef std::pair<Uint16, ReliablePacket*>					ReliablePacketPair;
+			typedef std::list<Time>										TimeList;
+			typedef std::set<UserMessageListener*>						UserMessageListenerSet;
+			typedef std::map<std::string, UserMessageListenerSet *>		UserMessageListenerMap;
+			typedef std::pair<std::string, UserMessageListenerSet *>	UserMessageListenerPair;
+			typedef std::queue<ReceivedData*>							ReceivedDataQueue;
 
 			// Private functions
 			////////////////////////////////////////////////////////////////
@@ -225,7 +232,8 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			void InternalDisconnect(	const Bool p_CloseMainThread,
 										const Bool p_CloseEventThread,
-										const Bool p_CloseReliableThread );
+										const Bool p_CloseReliableThread,
+										const Bool p_CloseUserMessageThread );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send reliable packet to the server.
@@ -244,25 +252,35 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			void CalculateNewPing( const Time & p_LapsedTime );
 
+			////////////////////////////////////////////////////////////////
+			/// \brief	Function for adding user messages to the function caller queue.
+			///
+			////////////////////////////////////////////////////////////////
+			void AddUserMessage( ReceivedData * p_ReceivedData );
+			
+
 			// Private variables
-			UdpSocket						m_Socket;				///< Udp socket.
-			Uint16							m_Port;					///< Udp and TCP port.
-			Thread							m_Thread;				///< Thread created after the connection is established.
-			Thread							m_EventThread;			///< Thread for creating specific events.
-			Thread							m_ReliableThread;		///< Thread for checking reliable packets for resend.
-			Address							m_ServerAddress;		///< The server's address.
-			Uint16							m_ServerPort;			///< The server's port.
-			ThreadValue<ReceivedDataQueue>	m_ReceivedData;			///< Queue of data ready to get polled by the user.
-			ThreadValue<Bool>				m_Connected;			///< Flag for checking if you are connected.
-			ThreadValue<Timer>				m_LastRecvTimer;		///< Time for checking when the last recv packet.
-			ThreadValue<Timer>				m_LastSendTimer;		///< Time for checking when the last sent reliable packet.
-			ThreadValue<Time>				m_ConnectionTimeout;	///< Ammount of time until the connection timeout.
-			ThreadValue<Uint16>				m_Sequence;				///< The sequence of the next packet being sent.
-			AcknowledgementData				m_AcknowledgementData;	///< Struct of the ack data.
-			ThreadValue<ReliablePacketMap>	m_ReliableMap;			///< Map of reliable packets.
-			ThreadValue<Time>				m_Ping;					///< Current network ping.
-			TimeList						m_PingList;				///< List of the last pings.
-			//HostMessageMap					m_HostMessages;			///< Host message function map.
+			UdpSocket							m_Socket;				///< Udp socket.
+			Uint16								m_Port;					///< Udp and TCP port.
+			Thread								m_Thread;				///< Thread created after the connection is established.
+			Thread								m_EventThread;			///< Thread for creating specific events.
+			Thread								m_ReliableThread;		///< Thread for checking reliable packets for resend.
+			Thread								m_UserMessageThread;	///< Thread for handling user messages.
+			Address								m_ServerAddress;		///< The server's address.
+			Uint16								m_ServerPort;			///< The server's port.
+			ThreadValue<Bool>					m_Connected;			///< Flag for checking if you are connected.
+			ThreadValue<Timer>					m_LastRecvTimer;		///< Time for checking when the last recv packet.
+			ThreadValue<Timer>					m_LastSendTimer;		///< Time for checking when the last sent reliable packet.
+			ThreadValue<Time>					m_ConnectionTimeout;	///< Ammount of time until the connection timeout.
+			ThreadValue<Uint16>					m_Sequence;				///< The sequence of the next packet being sent.
+			AcknowledgementData					m_AcknowledgementData;	///< Struct of the ack data.
+			ThreadValue<ReliablePacketMap>		m_ReliableMap;		///< Map of reliable packets.
+			ThreadValue<Time>					m_Ping;					///< Current network ping.
+			TimeList							m_PingList;				///< List of the last pings.
+			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;	///< Map of user message listeners and their message types.
+			ThreadValue<ReceivedDataQueue>		m_UserMessages;			///< Queue of user messages.
+			Semaphore							m_UserMessageSemaphore;	///< Semaphore for executing user message listeners.
+
 		};
 
 	}

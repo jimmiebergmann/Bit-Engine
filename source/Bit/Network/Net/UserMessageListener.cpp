@@ -21,43 +21,19 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_RECIPIENT_FILTER_HPP
-#define BIT_NETWORK_NET_RECIPIENT_FILTER_HPP
-
-#include <Bit/Build.hpp>
-#include <string>
+#include <Bit/Network/Net/UserMessageListener.hpp>
+#include <Bit/Network/Net/Client.hpp>
+#include <iostream>
+#include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
-	
+
 	namespace Net
 	{
 
-		// Forward declarations
-		class Server;
-
-		////////////////////////////////////////////////////////////////
-		/// \ingroup Network
-		/// \brief Recipient filter class.
-		///
-		////////////////////////////////////////////////////////////////
-		class BIT_API RecipientFilter
-		{
-
-		public:
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Constructor
-			///
-			////////////////////////////////////////////////////////////////
-			RecipientFilter( );
-
-		private:
-
-		};
+		
 
 	}
 
 }
-
-#endif

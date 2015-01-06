@@ -21,7 +21,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Network/Net/RecipientFilter.hpp>
+#include <Bit/Network/Net/UserRecipientFilter.hpp>
+#include <Bit/Network/Net/Server.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -31,8 +32,53 @@ namespace Bit
 	namespace Net
 	{
 
-		RecipientFilter::RecipientFilter( )
+		UserRecipientFilter::UserRecipientFilter( Server * p_pServer, const Bool p_Reliable ) :
+			m_pServer( p_pServer ),
+			m_Reliable( p_Reliable )
 		{
+		}
+
+		Bool UserRecipientFilter::AddUser( const Uint16 p_UserId )
+		{
+			m_Users.insert( p_UserId );
+			return true;
+		}
+
+		Bool UserRecipientFilter::AddAllUsers( )
+		{
+			// Go through the connections and add the connections
+			m_pServer->m_ConnectionMutex.Lock( );
+
+			for( Server::UserConnectionMap::iterator it = m_pServer->m_UserConnections.begin( );
+				 it != m_pServer->m_UserConnections.end( );
+				 it++ )
+			{
+				m_Users.insert( it->first );
+			}
+
+			m_pServer->m_ConnectionMutex.Unlock( );
+
+			return true;
+		}
+
+		Bool UserRecipientFilter::AddGroup( const std::string & p_GroupName )
+		{
+			return false;
+		}
+
+		void UserRecipientFilter::MakeReliable( )
+		{
+			m_Reliable = true;
+		}
+
+		void UserRecipientFilter::MakeUnreliable( )
+		{
+			m_Reliable = false;
+		}
+
+		Bool UserRecipientFilter::IsReliable( ) const
+		{
+			return m_Reliable;
 		}
 
 	}

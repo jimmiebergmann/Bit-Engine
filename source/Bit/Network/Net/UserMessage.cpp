@@ -38,8 +38,21 @@ namespace Bit
 		{
 			if( p_MessageSize > 0 )
 			{
-				m_Message.reserve( static_cast<MessageVector::size_type>( p_MessageSize ) );
+				m_Message.reserve( static_cast<MessageVector::size_type>( p_MessageSize ) +
+								   static_cast<MessageVector::size_type>( p_Name.size( ) ) + 2 );
 			}
+			else
+			{
+				m_Message.reserve( static_cast<MessageVector::size_type>( p_Name.size( ) ) + 2  );
+			}
+
+			// Add the message type and message name
+			m_Message.push_back( static_cast<Uint8>( eMessageType::UserMessageType ) );
+			for( std::string::size_type i = 0; i < p_Name.size( ); i++ )
+			{
+				m_Message.push_back( static_cast<Uint8>( p_Name[ i ] ) );
+			}
+			m_Message.push_back( 0 );
 		}
 
 		void UserMessage::WriteByte( const Uint8 p_Byte )
@@ -49,7 +62,7 @@ namespace Bit
 
 		void UserMessage::WriteInt( const Int32 p_Int )
 		{
-			Uint32 integer = Ntoh32( static_cast<Uint32>( p_Int ) );
+			Uint32 integer = Hton32( static_cast<Uint32>( p_Int ) );
 
 			m_Message.push_back( static_cast<Uint8>( integer ) );
 			m_Message.push_back( static_cast<Uint8>( integer >> 8 ) );
@@ -77,8 +90,52 @@ namespace Bit
 			m_Message.push_back( 0 );
 		}
 
-		Bool UserMessage::Send( const RecipientFilter & p_Filter )
+		Bool UserMessage::Send( UserRecipientFilter * p_pFilter )
 		{
+			// Error check the filter pointer.
+			if( p_pFilter == NULL )
+			{
+				return false;
+			}
+
+			// Go throguh the connections from the server and send the data
+			m_pServer->m_ConnectionMutex.Lock( );
+
+			UserRecipientFilter::UserSet::const_iterator it1 = p_pFilter->m_Users.begin( );
+			while(it1 != p_pFilter->m_Users.end( ) )
+			{
+				// Find the connection
+				Server::UserConnectionMap::iterator it2 = m_pServer->m_UserConnections.find( *it1 );
+				if( it2 == m_pServer->m_UserConnections.end( ) )
+				{
+					// Remove the user from the set if it doesn't exist.
+					p_pFilter->m_Users.erase( it1 );
+
+					// Continue to the next user
+					continue;
+				}
+				else
+				{
+					// Increase the iterator for users.
+					it1++;
+				}
+
+				// Get the connection
+				Connection * pConnection = it2->second;
+
+				// Send the message
+				if( p_pFilter->IsReliable( ) )
+				{
+					pConnection->SendReliable( reinterpret_cast<void*>( m_Message.data( ) ), m_Message.size( ) );
+				}
+				else
+				{
+					pConnection->SendUnreliable( reinterpret_cast<void*>( m_Message.data( ) ), m_Message.size( ) );
+				}
+			}
+
+			m_pServer->m_ConnectionMutex.Unlock( );
+
 			return true;
 		}
 

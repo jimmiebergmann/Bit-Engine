@@ -21,10 +21,11 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_EVENT_HPP
-#define BIT_NETWORK_NET_EVENT_HPP
+#ifndef BIT_NETWORK_NET_USER_MESSAGE_LISTENER_HPP
+#define BIT_NETWORK_NET_USER_MESSAGE_LISTENER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Network/Net/UserMessageDecoder.hpp>
 #include <string>
 
 namespace Bit
@@ -33,44 +34,22 @@ namespace Bit
 	namespace Net
 	{
 
-		// Forward declarations
-		class Server;
-
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief Event class for server side.
+		/// \brief User message listener base class for client side.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API Event
+		class BIT_API UserMessageListener
 		{
 
 		public:
 
-			friend class Server;
-
 			////////////////////////////////////////////////////////////////
-			/// \brief Fire the event
+			/// \brief Virtual function for handling user messages.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool FireEvent( );
+			virtual void HandleMessage( UserMessageDecoder & p_Message ) = 0;
 
-			////////////////////////////////////////////////////////////////
-			/// \brief Get event name
-			///
-			////////////////////////////////////////////////////////////////
-			const std::string & GetName( ) const;
-
-		private:
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Constructor
-			///
-			////////////////////////////////////////////////////////////////
-			Event( const std::string & p_Name, Server * p_pServer );
-
-			// Private variables.
-			std::string		m_Name;		///< Event name
-			Server *		m_pServer;	///< Pointer to server class.
 		};
 
 	}

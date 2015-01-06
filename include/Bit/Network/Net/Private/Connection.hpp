@@ -52,6 +52,7 @@ namespace Bit
 
 			// Public friend classes
 			friend class Server;
+			friend class UserMessage;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
@@ -92,24 +93,7 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Uint64 GetPackedAddress( ) const;
 
-			////////////////////////////////////////////////////////////////
-			/// \brief Send unreliable packet to the client.
-			///
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
-			///
-			////////////////////////////////////////////////////////////////
-		/*	void SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Send reliable packet to the client.
-			///
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
-			///
-			////////////////////////////////////////////////////////////////
-			void SendReliable( void * p_pData, const Bit::SizeType p_DataSize );
-
+			/*
 			////////////////////////////////////////////////////////////////
 			/// \brief Receive data from client
 			///
@@ -132,10 +116,10 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			struct RawPacket
 			{
-				RawPacket( char * p_pData, const SizeType p_DataSize );
+				RawPacket( Uint8 * p_pData, const SizeType p_DataSize );
 				~RawPacket( );
 
-				char * pData;
+				Uint8 * pData;
 				SizeType DataSize;
 			};
 
@@ -146,7 +130,7 @@ namespace Bit
 			struct ReceivedData
 			{
 				Uint16		Sequence;
-				char *			pData;
+				Uint8 *			pData;
 				SizeType	DataSize;
 			};
 
@@ -190,7 +174,7 @@ namespace Bit
 			struct ReliablePacket
 			{
 				Uint16		Sequence;
-				char *			pData;
+				Uint8 *			pData;
 				SizeType	DataSize;
 				Timer		SendTimer;
 				Timer		ResendTimer;
@@ -216,7 +200,7 @@ namespace Bit
 			/// \brief Add raw packet to queue.
 			///
 			////////////////////////////////////////////////////////////////
-			void AddRawPacket( char * p_pData, const SizeType p_DataSize );
+			void AddRawPacket( Uint8 * p_pData, const SizeType p_DataSize );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Poll raw packet from queue.
@@ -237,6 +221,24 @@ namespace Bit
 			void InternalDisconnect(	const Bool p_CloseMainThread,
 										const Bool p_CloseEventThread,
 										const Bool p_CloseReliableThread );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Send unreliable packet to the client.
+			///
+			/// \param p_pData Pointer to the data to send.
+			/// \param p_DataSize Size of the data.
+			///
+			////////////////////////////////////////////////////////////////
+			void SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Send reliable packet to the client.
+			///
+			/// \param p_pData Pointer to the data to send.
+			/// \param p_DataSize Size of the data.
+			///
+			////////////////////////////////////////////////////////////////
+			void SendReliable( void * p_pData, const Bit::SizeType p_DataSize );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send reliable packet to the server.

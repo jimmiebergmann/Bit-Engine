@@ -21,11 +21,12 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_EVENT_HPP
-#define BIT_NETWORK_NET_EVENT_HPP
+#ifndef BIT_NETWORK_NET_RECIPIENT_FILTER_HPP
+#define BIT_NETWORK_NET_RECIPIENT_FILTER_HPP
 
 #include <Bit/Build.hpp>
 #include <string>
+#include <set>
 
 namespace Bit
 {
@@ -38,27 +39,52 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief Event class for server side.
+		/// \brief User recipient filter class.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API Event
+		class BIT_API UserRecipientFilter
 		{
 
 		public:
 
 			friend class Server;
+			friend class UserMessage;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Fire the event
+			/// \brief Add user to receipient list
 			///
 			////////////////////////////////////////////////////////////////
-			Bool FireEvent( );
+			Bool AddUser( const Uint16 p_UserId );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Get event name
+			/// \brief Add all users to receipient list
 			///
 			////////////////////////////////////////////////////////////////
-			const std::string & GetName( ) const;
+			Bool AddAllUsers( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Add group to receipient list
+			///
+			////////////////////////////////////////////////////////////////
+			Bool AddGroup( const std::string & p_GroupName );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set reliable filter to true.
+			///
+			////////////////////////////////////////////////////////////////
+			void MakeReliable( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set reliable filter to false.
+			///
+			////////////////////////////////////////////////////////////////
+			void MakeUnreliable( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set reliable filter to false.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool IsReliable( ) const;
 
 		private:
 
@@ -66,11 +92,17 @@ namespace Bit
 			/// \brief Constructor
 			///
 			////////////////////////////////////////////////////////////////
-			Event( const std::string & p_Name, Server * p_pServer );
+			UserRecipientFilter( Server * p_pServer, const Bool p_Reliable = true );
+
+			// Private typedefs
+			typedef std::set<Uint16> UserSet;
 
 			// Private variables.
-			std::string		m_Name;		///< Event name
-			Server *		m_pServer;	///< Pointer to server class.
+			Server *	m_pServer;	///< Server pointer.
+			UserSet		m_Users;	///< Set of all the users
+			bool		m_Reliable;	///< Reliable flag.
+
+
 		};
 
 	}

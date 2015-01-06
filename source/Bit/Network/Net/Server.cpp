@@ -55,14 +55,19 @@ namespace Bit
 		{
 		}
 
-		Event * Server::CreateEvent( const std::string & p_Name )
+		UserRecipientFilter * Server::CreateRecipientFilter( const Bool p_Reliable )
 		{
-			return new Event( p_Name, this );
+			return new UserRecipientFilter( this, p_Reliable );
 		}
 
 		UserMessage * Server::CreateUserMessage( const std::string & p_Name, const Int32 p_MessageSize )
 		{
 			return new UserMessage( p_Name, this, p_MessageSize );
+		}
+
+		Event * Server::CreateEvent( const std::string & p_Name )
+		{
+			return new Event( p_Name, this );
 		}
 			
 		Bool Server::DisconnectUser( const Uint16 p_UserId )
@@ -122,8 +127,8 @@ namespace Bit
 			// Start the server thread.
 			m_MainThread.Execute( [ this ] ( )
 			{
-					const SizeType bufferSize = 128;
-					char buffer[ bufferSize ];
+					const SizeType bufferSize = 2048;
+					Uint8 buffer[ bufferSize ];
 					Address address;
 					Uint16 port = 0;
 					Int16 recvSize = 0;
