@@ -90,6 +90,14 @@ namespace Bit
 			m_Message.push_back( 0 );
 		}
 
+		void UserMessage::WriteArray( const void * p_pArray, const SizeType p_Size )
+		{
+			for( SizeType i = 0; i < p_Size; i++ )
+			{
+				m_Message.push_back( reinterpret_cast<const Uint8 *>( p_pArray )[ i ] );
+			}
+		}
+
 		Bool UserMessage::Send( UserRecipientFilter * p_pFilter )
 		{
 			// Error check the filter pointer.

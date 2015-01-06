@@ -121,6 +121,23 @@ namespace Bit
 			return true;
 		}
 
+		Bool UserMessageDecoder::ReadArray( void * p_pArray, const SizeType p_Size )
+		{
+			if( m_Position + p_Size > m_MessageSize )
+			{
+				return 0.0f;
+			}
+
+			// Copy the bytes
+			memcpy( p_pArray, m_pMessage + m_Position, p_Size );
+
+			// Move the position
+			m_Position += p_Size;
+			
+			// Succeeded.
+			return true;
+		}
+
 		const std::string & UserMessageDecoder::GetName( ) const
 		{
 			return m_Name;
