@@ -42,7 +42,7 @@ namespace Bit
 		}
 
 
-		Bool Client::Connect(	const Address & p_Address, const Uint16 p_Port,
+		Client::eStatus Client::Connect(	const Address & p_Address, const Uint16 p_Port,
 								const Time & p_ConnectionTimeout )
 		{
 			// make sure to be disconnected.
@@ -54,7 +54,7 @@ namespace Bit
 			// Open the socket.
 			if( m_Socket.Open( m_Port ) == false )
 			{
-				return false;
+				return SocketError;
 			}
 
 			// Set blocking and return true.
@@ -167,6 +167,7 @@ namespace Bit
 											m_Sequence.Value = 0;
 											m_Sequence.Mutex.Unlock( );
 
+											return;
 										}
 										break;
 										// Alive packet from server.
@@ -232,6 +233,26 @@ namespace Bit
 											{
 												break;
 											}
+										}
+										break;
+										// Check if we are banned.
+										case ePacketType::Ban:
+										{
+											// Set connected to false.
+											m_Connected.Mutex.Lock( );
+											m_Connected.Value = false;
+											m_Connected.Mutex.Unlock( );
+
+											// Wait for the threads to finish.
+											m_EventThread.Finish( );
+											m_ReliableThread.Finish( );
+
+											// Reset the sequence.
+											m_Sequence.Mutex.Lock( );
+											m_Sequence.Value = 0;
+											m_Sequence.Mutex.Unlock( );
+
+											return;
 										}
 										break;
 										// Received unreliable packet.
@@ -465,26 +486,30 @@ namespace Bit
 					);
 
 					
-					
-			
-					return true;
+					// The connection succeeded
+					return Succeeded;
 				}
 				// The server answered with a disconnect packet, we are denied. 
 				else if( buffer[ 0 ] == ePacketType::Close )
 				{
 					// The server denied us.
-					return false;
+					return Denied;
+				}
+				else if( buffer[ 0 ] == ePacketType::Ban )
+				{
+					// The server banned us.
+					return Banned;
 				}
 				// Unknown packet from the server.
 				else
 				{
-					// Error in the server packet, try again.
-					continue;
+					// Error in the server packet, unknown error.
+					return Unknown;
 				}
 			}
 
 			// We timed out.
-			return false;
+			return TimedOut;
 		}
 
 		void Client::Disconnect( )

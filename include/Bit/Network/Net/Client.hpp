@@ -60,6 +60,17 @@ namespace Bit
 			// Friend classes
 			friend class UserMessageListener;
 
+			// Public enums
+			enum eStatus
+			{
+				Unknown,
+				SocketError,
+				TimedOut,
+				Succeeded,
+				Denied,
+				Banned
+			};
+
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor
 			///
@@ -85,7 +96,7 @@ namespace Bit
 			/// \return True if succeeded, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			Bit::Bool Connect(	const Address & p_Address,
+			eStatus Connect(	const Address & p_Address,
 								const Uint16 p_Port,
 								const Time & p_ConnectionTimeout = Time::Infinite );
 

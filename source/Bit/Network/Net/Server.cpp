@@ -26,6 +26,7 @@
 #include <Bit/Network/TcpSocket.hpp>
 #include <Bit/System/Sleep.hpp>
 #include <Bit/System/Timer.hpp>
+#include <Bit/System/SmartMutex.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -88,24 +89,73 @@ namespace Bit
 			// Unlock the connection mutex.
 			m_ConnectionMutex.Unlock( );
 
-			// Add the connection to the cleanup thread.
-			m_CleanupConnections.Mutex.Lock( );
-			m_CleanupConnections.Value.push( pConnection );
-			m_CleanupConnections.Mutex.Unlock( );
-
-			// Increase the semaphore for cleanups
-			m_CleanupSemaphore.Release( );
+			// Add the connection for cleanup
+			AddConnectionForCleanup( pConnection );
 
 			return true;
 		}
 
-		Bool Server::BanUser( const Uint16 p_UserId )
+		Bool Server::BanUser( const Uint16 p_UserId, const Time p_Time )
 		{
-			return false;
+			// Find the connection via user id.
+			m_ConnectionMutex.Lock( );
+			UserConnectionMap::iterator it = m_UserConnections.find( p_UserId );
+			if( it == m_UserConnections.end( ) )
+			{
+				// Unlock the connection mutex.
+				m_ConnectionMutex.Unlock( );
+				return false;
+			}
+
+			// Get the connection
+			Connection * pConnection = it->second;
+
+			// Unlock the connection mutex.
+			m_ConnectionMutex.Unlock( );
+
+			// Add addresss to ban set
+			m_BanSet.Mutex.Lock( );
+			m_BanSet.Value.insert( pConnection->GetAddress( ) );
+			m_BanSet.Mutex.Unlock( );
+
+			// Send ban message
+			Uint32 seconds = Hton32( static_cast<Uint32>( p_Time.AsSeconds( ) ) );
+			pConnection->InternalSendReliable( ePacketType::Ban, &seconds, sizeof( seconds ) );
+
+			// Add the connection for cleanup
+			AddConnectionForCleanup( pConnection );
+
+			return true;
+		}
+
+		Bool Server::RemoveBan( const Address & p_Address )
+		{
+			// Check if the address is banned
+			m_BanSet.Mutex.Lock( );
+			AddressSet::iterator it = m_BanSet.Value.find( p_Address );
+			if( it == m_BanSet.Value.end( ) )
+			{
+				// Unlock the ban set mutex.
+				m_BanSet.Mutex.Unlock( );
+				return false;
+			}
+
+			// Remove the address from the set.
+			m_BanSet.Value.erase( it );
+
+			// Unlock the ban set mutex.
+			m_BanSet.Mutex.Unlock( );
+
+			// Succeeded.
+			return true;
 		}
 
 		void Server::BanIp( const Address & p_Address )
 		{
+			// Add addresss to ban set
+			m_BanSet.Mutex.Lock( );
+			m_BanSet.Value.insert( p_Address );
+			m_BanSet.Mutex.Unlock( );
 		}
 
 		Bool Server::Start( const Uint16 p_Port, Uint8 p_MaxConnections )
@@ -170,6 +220,25 @@ namespace Bit
 							// This is an unknown client, maybe it's trying to connect.
 							if( buffer[ 0 ] == ePacketType::Syn )
 							{
+								// Check if the address is banned
+								m_BanSet.Mutex.Lock( );
+								if( m_BanSet.Value.find( address.GetAddress( ) ) != m_BanSet.Value.end( ) )
+								{
+									// Send ban packet
+									buffer[ 0 ] = ePacketType::Ban;
+									Uint32 seconds = Hton32( 0 );
+									memcpy( buffer + 1, &seconds, sizeof( seconds ) );
+									m_Socket.Send( buffer, 5, address, port );
+
+									// Unlock the ban set mutex.
+									m_BanSet.Mutex.Unlock( );
+
+									// Unlock the connection mutex
+									m_ConnectionMutex.Unlock( );
+									continue;
+								}
+								m_BanSet.Mutex.Unlock( );
+
 								// Send Deny packet if the server is full.
 								if( m_AddressConnections.size( ) == m_MaxConnections || m_FreeUserIds.size( ) == 0 )
 								{
@@ -236,12 +305,25 @@ namespace Bit
 						continue;
 					}
 
+					// Get the connection
 					Connection * pConnection = m_CleanupConnections.Value.front( );
-					m_CleanupConnections.Value.pop( );
+					
+					// Error check the connection pointer
+					if( pConnection == NULL )
+					{
+						m_CleanupConnections.Mutex.Unlock( );
+						continue;
+					}
 
 					// Get the packet address and user id.
 					const Uint64 packetAddress = pConnection->GetPackedAddress( );
 					const Uint16 userId = pConnection->GetUserId( );
+
+					// Delete the connection
+					delete pConnection;
+
+					// Pop the connection from the list
+					m_CleanupConnections.Value.pop_front( );					
 
 					// Unlock mutex
 					m_CleanupConnections.Mutex.Unlock( );
@@ -264,13 +346,10 @@ namespace Bit
 					}
 
 					// Restore the user id to the free user id queue
-					m_FreeUserIds.push( pConnection->GetUserId( ) );
+					m_FreeUserIds.push( userId );
 
 					// Unlock the connection mutex
 					m_ConnectionMutex.Unlock( );
-
-					// Delete the connection
-					delete pConnection;
 				}
 
 			}
@@ -295,10 +374,7 @@ namespace Bit
 
 				// Clean up the cleanup connections
 				m_CleanupConnections.Mutex.Lock( );
-				while( m_CleanupConnections.Value.size( ) )
-				{
-					m_CleanupConnections.Value.pop( );
-				}
+				m_CleanupConnections.Value.clear( );
 				m_CleanupConnections.Mutex.Unlock( );
 
 				// Wait for the main thread to finish
@@ -339,6 +415,29 @@ namespace Bit
 			Bool running = m_Running.Value;
 			m_Running.Mutex.Unlock( );
 			return running;
+		}
+
+		void Server::AddConnectionForCleanup( Connection * p_pConnection )
+		{
+			// Add the connection to the cleanup thread.
+			m_CleanupConnections.Mutex.Lock( );
+
+			// Go throguh the cleanup connection and make sure that the connection is unique
+			for( ConnectionList::iterator it = m_CleanupConnections.Value.begin( );
+				 it != m_CleanupConnections.Value.end( );
+				 it++ )
+			{
+				if( p_pConnection == (*it) )
+				{
+					return;
+				}
+			}
+
+			m_CleanupConnections.Value.push_back( p_pConnection );
+			m_CleanupConnections.Mutex.Unlock( );
+
+			// Increase the semaphore for cleanups
+			m_CleanupSemaphore.Release( );
 		}
 
 	}

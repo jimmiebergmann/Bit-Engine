@@ -49,8 +49,9 @@ namespace Bit
 			Ack					= 3,
 			Alive				= 4,
 			Close				= 5,
-			UnreliablePacket	= 6,
-			ReliablePacket		= 7
+			Ban					= 6,
+			UnreliablePacket	= 7,
+			ReliablePacket		= 8
 		};
 
 		

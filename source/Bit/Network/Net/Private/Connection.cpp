@@ -74,6 +74,16 @@ namespace Bit
 		{
 			return m_UserId;
 		}
+
+		const Address & Connection::GetAddress( ) const
+		{
+			return m_Address;
+		}
+
+		Uint16 Connection::GetPort( ) const
+		{
+			return m_Port;
+		}
 		
 		Uint64 Connection::GetPackedAddress( ) const
 		{
@@ -230,21 +240,19 @@ namespace Bit
 								// Disconnect packet from client.
 								case ePacketType::Close:
 								{
+									// Destroy the packet.
+									delete pPacket;
+
 									// Set the connection flag to false
 									m_Connected.Mutex.Lock( );
 									m_Connected.Value = false;
 									m_Connected.Mutex.Unlock( );
 
 									// Add the connection to the cleanup thread.
-									m_pServer->m_CleanupConnections.Mutex.Lock( );
-									m_pServer->m_CleanupConnections.Value.push( this );
-									m_pServer->m_CleanupConnections.Mutex.Unlock( );
+									m_pServer->AddConnectionForCleanup( this );
 
 									// Increase the semaphore for cleanups
 									m_pServer->m_CleanupSemaphore.Release( );
-									
-									// Destroy the packet.
-									delete pPacket;
 
 									// Call on disconnect function
 									m_pServer->OnDisconnection( m_UserId );
@@ -318,7 +326,7 @@ namespace Bit
 									}
 
 									// Add the unreliable packet to the received data queue.	
-									ReceivedData * pReceivedData = new ReceivedData;
+									/*ReceivedData * pReceivedData = new ReceivedData;
 									pReceivedData->DataSize = pPacket->DataSize - HeaderSize;
 									pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
 									memcpy( pReceivedData->pData, pPacket->pData + HeaderSize, pReceivedData->DataSize );
@@ -330,7 +338,7 @@ namespace Bit
 									// Push the packet
 									m_ReceivedData.Mutex.Lock( );
 									m_ReceivedData.Value.push( pReceivedData );
-									m_ReceivedData.Mutex.Unlock( );
+									m_ReceivedData.Mutex.Unlock( );*/
 								}
 								break;
 								case ePacketType::ReliablePacket:
@@ -348,7 +356,7 @@ namespace Bit
 									// Add the unreliable packet to the received data queue if it's not a resent packet.
 									if( m_AcknowledgementData.AddAcknowledgement( sequence ) )
 									{
-										ReceivedData * pReceivedData = new ReceivedData;
+										/*ReceivedData * pReceivedData = new ReceivedData;
 										pReceivedData->Sequence = sequence;
 										pReceivedData->DataSize = pPacket->DataSize - HeaderSize;
 										pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
@@ -357,7 +365,7 @@ namespace Bit
 										// Push the packet
 										m_ReceivedData.Mutex.Lock( );
 										m_ReceivedData.Value.push( pReceivedData );
-										m_ReceivedData.Mutex.Unlock( );
+										m_ReceivedData.Mutex.Unlock( );*/
 									}
 								}
 								break;
@@ -391,9 +399,7 @@ namespace Bit
 							m_Connected.Mutex.Unlock( );
 
 							// Add the connection to the cleanup thread.
-							m_pServer->m_CleanupConnections.Mutex.Lock( );
-							m_pServer->m_CleanupConnections.Value.push( this );
-							m_pServer->m_CleanupConnections.Mutex.Unlock( );
+							m_pServer->AddConnectionForCleanup( this );
 
 							// Increase the semaphore for cleanups
 							m_pServer->m_CleanupSemaphore.Release( );

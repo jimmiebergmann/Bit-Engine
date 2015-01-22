@@ -148,7 +148,13 @@ namespace Bit
 			/// \brief Ban a user from the server.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool BanUser( const Uint16 p_UserId );
+			Bool BanUser( const Uint16 p_UserId, const Time p_Time = Microseconds( 0 ) );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Remove a ip ban.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool RemoveBan( const Address & p_Address );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Ban an ip address from the server.
@@ -184,13 +190,22 @@ namespace Bit
 
 		private:
 
+			// Private functions
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Add a client to the cleanup vector.
+			///
+			////////////////////////////////////////////////////////////////
+			void AddConnectionForCleanup( Connection * p_pConnection );
+
 			// Private  typedefs
 			typedef std::map<Uint64,	Connection*>	AddressConnectionMap;
 			typedef std::pair<Uint64,	Connection*>	AddressConnectionMapPair;
 			typedef std::map<Uint16,	Connection*>	UserConnectionMap;
 			typedef std::pair<Uint16,	Connection*>	UserConnectionMapPair;
-			typedef std::queue<Connection*>				ConnectionQueue;
+			typedef std::list<Connection*>				ConnectionList;
 			typedef std::queue<Uint16>					FreeUserIdMap;
+			typedef std::set<Address>					AddressSet;
 			
 
 			// Private variables
@@ -198,13 +213,14 @@ namespace Bit
 			Thread							m_MainThread;			///< Thread for handling incoming packets.
 			Thread							m_CleanupThread;		///< Thread for cleaning up connections.
 			Semaphore						m_CleanupSemaphore;		///< Semaphore for cleanups.
-			ThreadValue<ConnectionQueue>	m_CleanupConnections;	///< Queue of connections to cleanup.
+			ThreadValue<ConnectionList>		m_CleanupConnections;	///< Queue of connections to cleanup.
 			Uint8							m_MaxConnections;		///< Maximum amount of connections.
 			FreeUserIdMap					m_FreeUserIds;			///< Queue of free user Ids.
 			AddressConnectionMap			m_AddressConnections;	///< Map of all the connections via their addresses.
 			UserConnectionMap				m_UserConnections;		///< Map of all the connections via their user IDs.
 			Mutex							m_ConnectionMutex;		///< Mutex for the address and user connections.
 			ThreadValue<Bool>				m_Running;				///< Flag for checking if the server is running.
+			ThreadValue<AddressSet>			m_BanSet;				///< Set of banned addresses.
 	
 		};
 

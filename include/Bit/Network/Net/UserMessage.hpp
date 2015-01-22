@@ -98,6 +98,12 @@ namespace Bit
 		private:
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor
+			///
+			////////////////////////////////////////////////////////////////
+			UserMessage( );
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
 			///
 			/// \param p_Name Name of the user message.
@@ -113,7 +119,7 @@ namespace Bit
 			// Private variables.
 			std::string			m_Name;		///< Event name
 			Server *			m_pServer;	///< Pointer to server class.
-			MessageVector	m_Message;	///< Vector of message data.
+			MessageVector		m_Message;	///< Vector of message data.
 
 		};
 

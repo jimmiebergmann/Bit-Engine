@@ -32,6 +32,10 @@ namespace Bit
 	namespace Net
 	{
 
+		UserMessage::UserMessage( )
+		{
+		}
+
 		UserMessage::UserMessage( const std::string & p_Name, Server * p_pServer, Int32 p_MessageSize ) :
 			m_Name( p_Name ),
 			m_pServer( p_pServer )

@@ -138,4 +138,14 @@ namespace Bit
 		return m_Address != p_Address.GetAddress( );
 	}
 
+	Bool Address::operator < ( const Address & p_Address ) const
+	{
+		return m_Address < p_Address.m_Address;
+	}
+
+	Bool Address::operator > ( const Address & p_Address ) const
+	{
+		return m_Address > p_Address.m_Address;
+	}
+
 }

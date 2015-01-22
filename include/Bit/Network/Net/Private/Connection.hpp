@@ -88,6 +88,18 @@ namespace Bit
 			Uint16 GetUserId( ) const;
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Get the ip address 
+			///
+			////////////////////////////////////////////////////////////////
+			const Address & GetAddress( ) const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the port
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetPort( ) const;
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Get the packed address (ip * port + port )
 			///
 			////////////////////////////////////////////////////////////////
@@ -182,7 +194,7 @@ namespace Bit
 			};
 
 			// Private  typedefs
-			typedef std::queue<ReceivedData*>	ReceivedDataQueue;
+			//typedef std::queue<ReceivedData*>	ReceivedDataQueue;
 			typedef std::queue<RawPacket*>		RawPacketQueue;
 			typedef std::map<Uint16, ReliablePacket*> ReliablePacketMap;
 			typedef std::pair<Uint16, ReliablePacket*> ReliablePacketPair;
@@ -191,7 +203,7 @@ namespace Bit
 			// Private functions
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Start the connection thread
+			/// \brief Start the threads
 			///
 			////////////////////////////////////////////////////////////////
 			void StartThreads( Server * p_pServer );
@@ -267,7 +279,7 @@ namespace Bit
 			const Uint16					m_UserId;				///< The client's user id.
 			Time							m_ConnectionTimeout;	///< Ammount of time until the connection timeout.
 			Semaphore						m_EventSemaphore;		///< Semaphore for the events.
-			ThreadValue<ReceivedDataQueue>	m_ReceivedData;			///< Queue of data ready to get polled by the user.
+			//ThreadValue<ReceivedDataQueue>	m_ReceivedData;			///< Queue of data ready to get polled by the user.
 			ThreadValue<RawPacketQueue>		m_RawPacketQueue;		///< Queue of raw packets.
 			ThreadValue<Bool>				m_Connected;			///< Flag for checking if you are connected.
 			ThreadValue<Timer>				m_LastRecvTimer;		///< Time for checking when the last recv packet.
