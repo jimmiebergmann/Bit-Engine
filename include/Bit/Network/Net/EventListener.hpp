@@ -21,15 +21,39 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Network/Net/UserMessageListener.hpp>
-#include <Bit/System/MemoryLeak.hpp>
+#ifndef BIT_NETWORK_NET_EVENT_LISTENER_HPP
+#define BIT_NETWORK_NET_EVENT_LISTENER_HPP
+
+#include <Bit/Build.hpp>
+#include <Bit/Network/Net/EventDecoder.hpp>
+#include <string>
 
 namespace Bit
 {
-
+	
 	namespace Net
 	{
+
+		////////////////////////////////////////////////////////////////
+		/// \ingroup Network
+		/// \brief Event listener base class for client side.
+		///
+		////////////////////////////////////////////////////////////////
+		class BIT_API EventListener
+		{
+
+		public:
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Virtual function for handling events.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void HandleEvent( EventDecoder & p_Event ) = 0;
+
+		};
 
 	}
 
 }
+
+#endif

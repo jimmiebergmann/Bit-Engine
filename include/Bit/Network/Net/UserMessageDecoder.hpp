@@ -35,7 +35,7 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief User message listener base class for client side.
+		/// \brief User message decoder base class for client side.
 		///
 		////////////////////////////////////////////////////////////////
 		class BIT_API UserMessageDecoder
@@ -87,7 +87,7 @@ namespace Bit
 			Bool ReadArray( void * p_pArray, const SizeType p_Size );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Get message size.
+			/// \brief Get message name.
 			///
 			////////////////////////////////////////////////////////////////
 			const std::string & GetName( ) const;

@@ -53,6 +53,7 @@ namespace Bit
 			// Public friend classes
 			friend class Server;
 			friend class UserMessage;
+			friend class Event;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.

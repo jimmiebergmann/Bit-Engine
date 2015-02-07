@@ -21,7 +21,9 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Network/Net/UserMessageListener.hpp>
+#include <Bit/Network/Net/EventDecoder.hpp>
+#include <Bit/Network/Socket.hpp>
+#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -29,6 +31,40 @@ namespace Bit
 
 	namespace Net
 	{
+
+		EventDecoder::EventDecoder( const std::string & p_Name) :
+			m_Name( p_Name )
+		{
+		}
+
+		EventDecoder::~EventDecoder( )
+		{
+		}
+
+		Uint8 EventDecoder::GetByte( const std::string & p_VariableName )
+		{
+			return 0;
+		}
+
+		Int32 EventDecoder::GetInt( const std::string & p_VariableName )
+		{
+			return 0;
+		}
+
+		Float32 EventDecoder::GetFloat( const std::string & p_VariableName )
+		{
+			return 0.0f;
+		}
+
+		std::string EventDecoder::GetString( const std::string & p_VariableName )
+		{
+			return "";
+		}		
+
+		const std::string & EventDecoder::GetName( ) const
+		{
+			return m_Name;
+		}
 
 	}
 

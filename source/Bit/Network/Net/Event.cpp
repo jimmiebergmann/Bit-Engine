@@ -38,14 +38,54 @@ namespace Bit
 		{
 		}
 
+		Event::~Event( )
+		{
+		}
+
 		Bool Event::FireEvent( )
 		{
+			// Create the event data message
+			std::vector<Uint8> message;
+
+			// Go throguh all the connections
+			m_pServer->m_ConnectionMutex.Lock( );
+
+			for( Server::UserConnectionMap::iterator it = m_pServer->m_UserConnections.begin( );
+				 it != m_pServer->m_UserConnections.end( );
+				 it++ )
+			{
+				// Get the connection
+				Connection * pConnection = it->second;
+
+				// Send the message
+				pConnection->SendReliable( reinterpret_cast<void*>( message.data( ) ), message.size( ) );
+			}
+
+			m_pServer->m_ConnectionMutex.Unlock( );
+			
+
 			return true;
 		}
 
 		const std::string & Event::GetName( ) const
 		{
 			return m_Name;
+		}
+
+		void Event::SetByte( const std::string & p_VariableName, const Uint8 p_Byte )
+		{
+		}
+
+		void Event::SetInt( const std::string & p_VariableName, const Int32 p_Int )
+		{
+		}
+
+		void Event::SetFloat( const std::string & p_VariableName, const Float32 p_Float )
+		{
+		}
+
+		void Event::SetString( const std::string & p_VariableName, const std::string & p_String )
+		{
 		}
 
 	}

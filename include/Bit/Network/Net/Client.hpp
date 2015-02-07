@@ -29,6 +29,7 @@
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/Network/Net/UserMessageListener.hpp>
+#include <Bit/Network/Net/EventListener.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
 #include <Bit/System/Semaphore.hpp>
@@ -123,6 +124,12 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Bool HookUserMessage( UserMessageListener * p_pListener, const std::string & m_MessageName );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Add listener to an event.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool HookEvent( EventListener * p_pListener, const std::string & m_EventName );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send unreliable packet to the server.

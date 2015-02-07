@@ -21,7 +21,7 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Network/Net/UserMessageListener.hpp>
+#include <Bit/Network/Net/EventListener.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
