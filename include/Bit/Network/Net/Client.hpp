@@ -239,8 +239,11 @@ namespace Bit
 			typedef std::pair<Uint16, ReliablePacket*>					ReliablePacketPair;
 			typedef std::list<Time>										TimeList;
 			typedef std::set<UserMessageListener*>						UserMessageListenerSet;
+			typedef std::set<EventListener*>							EventListenerSet;
 			typedef std::map<std::string, UserMessageListenerSet *>		UserMessageListenerMap;
 			typedef std::pair<std::string, UserMessageListenerSet *>	UserMessageListenerPair;
+			typedef std::map<std::string, EventListenerSet *>			EventListenerMap;
+			typedef std::pair<std::string, EventListenerSet *>			EventListenerPair;
 			typedef std::queue<ReceivedData*>							ReceivedDataQueue;
 
 			// Private functions
@@ -249,9 +252,10 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			void InternalDisconnect(	const Bool p_CloseMainThread,
-										const Bool p_CloseEventThread,
+										const Bool p_CloseTriggerThread,
 										const Bool p_CloseReliableThread,
-										const Bool p_CloseUserMessageThread );
+										const Bool p_CloseUserMessageThread,
+										const Bool p_CloseEventThread );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send reliable packet to the server.
@@ -275,15 +279,21 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			void AddUserMessage( ReceivedData * p_ReceivedData );
-			
+
+			////////////////////////////////////////////////////////////////
+			/// \brief	Function for adding event messages to the function caller queue.
+			///
+			////////////////////////////////////////////////////////////////
+			void AddEventMessage( ReceivedData * p_ReceivedData );
 
 			// Private variables
 			UdpSocket							m_Socket;				///< Udp socket.
 			Uint16								m_Port;					///< Udp and TCP port.
 			Thread								m_Thread;				///< Thread created after the connection is established.
-			Thread								m_EventThread;			///< Thread for creating specific events.
+			Thread								m_TriggerThread;		///< Thread for creating specific triggers.
 			Thread								m_ReliableThread;		///< Thread for checking reliable packets for resend.
 			Thread								m_UserMessageThread;	///< Thread for handling user messages.
+			Thread								m_EventThread;			///< Thread for handling events.
 			Address								m_ServerAddress;		///< The server's address.
 			Uint16								m_ServerPort;			///< The server's port.
 			ThreadValue<Bool>					m_Connected;			///< Flag for checking if you are connected.
@@ -292,12 +302,15 @@ namespace Bit
 			ThreadValue<Time>					m_ConnectionTimeout;	///< Ammount of time until the connection timeout.
 			ThreadValue<Uint16>					m_Sequence;				///< The sequence of the next packet being sent.
 			AcknowledgementData					m_AcknowledgementData;	///< Struct of the ack data.
-			ThreadValue<ReliablePacketMap>		m_ReliableMap;		///< Map of reliable packets.
+			ThreadValue<ReliablePacketMap>		m_ReliableMap;			///< Map of reliable packets.
 			ThreadValue<Time>					m_Ping;					///< Current network ping.
 			TimeList							m_PingList;				///< List of the last pings.
 			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;	///< Map of user message listeners and their message types.
-			ThreadValue<ReceivedDataQueue>		m_UserMessages;			///< Queue of user messages.
+			ThreadValue<ReceivedDataQueue>		m_UserMessages;			///< Queue of user messages
+			ThreadValue<EventListenerMap>		m_EventListeners;		///< Map of event listeners and their message types.
+			ThreadValue<ReceivedDataQueue>		m_Events;				///< Queue of events.
 			Semaphore							m_UserMessageSemaphore;	///< Semaphore for executing user message listeners.
+			Semaphore							m_EventSemaphore;		///< Semaphore for executing event listeners.
 
 		};
 

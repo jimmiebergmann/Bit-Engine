@@ -26,6 +26,7 @@
 
 #include <Bit/Build.hpp>
 #include <string>
+#include <map>
 
 namespace Bit
 {
@@ -50,7 +51,9 @@ namespace Bit
 			/// \brief Constructor
 			///
 			////////////////////////////////////////////////////////////////
-			EventDecoder( const std::string & p_Name );
+			EventDecoder(	const std::string & p_Name,
+							Uint8 *				p_pMessage,
+							SizeType			p_MessageSize );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Destructor
@@ -90,9 +93,20 @@ namespace Bit
 
 		private:
 
+			// Typedefs
+			typedef std::pair<Uint16, Uint8 *>			Variable;
+			typedef std::map<std::string, Variable *>	VariableMap;
+
+			// Private functions
+			////////////////////////////////////////////////////////////////
+			/// \brief Get variable
+			///
+			////////////////////////////////////////////////////////////////
+			Variable * GetVariable( const std::string & p_VariableName );
+
 			// Private variables.
 			std::string m_Name;			///< Message name.
-
+			VariableMap m_Variables;	///< Map of variables.
 		};
 
 	}

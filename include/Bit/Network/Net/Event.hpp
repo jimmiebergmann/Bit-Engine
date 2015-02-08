@@ -26,6 +26,7 @@
 
 #include <Bit/Build.hpp>
 #include <string>
+#include <map>
 
 namespace Bit
 {
@@ -93,15 +94,27 @@ namespace Bit
 
 		private:
 
+			// Typedefs
+			typedef std::pair<Uint16, Uint8 *>			Variable;
+			typedef std::map<std::string, Variable *>	VariableMap;
+
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
 			///
 			////////////////////////////////////////////////////////////////
 			Event( const std::string & p_Name, Server * p_pServer );
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Get variable pointer, or create a new one if it doesn't extist.
+			///
+			////////////////////////////////////////////////////////////////
+			Variable * GetVariable( const std::string & p_VariableName );
+
 			// Private variables.
-			std::string		m_Name;		///< Event name
-			Server *		m_pServer;	///< Pointer to server class.
+			std::string		m_Name;			///< Event name
+			Server *		m_pServer;		///< Pointer to server class.
+			VariableMap		m_Variables;	///< Map of varaibes.
+
 		};
 
 	}
