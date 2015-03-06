@@ -56,14 +56,14 @@ namespace Bit
 		{
 		}
 
-		UserRecipientFilter * Server::CreateRecipientFilter( const Bool p_Reliable )
+		HostRecipientFilter * Server::CreateRecipientFilter( const Bool p_Reliable )
 		{
-			return new UserRecipientFilter( this, p_Reliable );
+			return new HostRecipientFilter( this, p_Reliable );
 		}
 
-		UserMessage * Server::CreateUserMessage( const std::string & p_Name, const Int32 p_MessageSize )
+		HostMessage * Server::CreateHostMessage( const std::string & p_Name, const Int32 p_MessageSize )
 		{
-			return new UserMessage( p_Name, this, p_MessageSize );
+			return new HostMessage( p_Name, this, p_MessageSize );
 		}
 
 		Event * Server::CreateEvent( const std::string & p_Name )

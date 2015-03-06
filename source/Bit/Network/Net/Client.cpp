@@ -30,15 +30,15 @@ namespace Bit
 			InternalDisconnect( true, true, true, true, true );
 
 			// Clear the user message listeners
-			m_UserMessageListeners.Mutex.Lock( );
-			for( UserMessageListenerMap::iterator it = m_UserMessageListeners.Value.begin( );
-				 it != m_UserMessageListeners.Value.end( );
+			m_HostMessageListeners.Mutex.Lock( );
+			for( HostMessageListenerMap::iterator it = m_HostMessageListeners.Value.begin( );
+				 it != m_HostMessageListeners.Value.end( );
 				 it++ )
 			{
 				delete it->second;
 			}
-			m_UserMessageListeners.Value.clear( );
-			m_UserMessageListeners.Mutex.Unlock( );
+			m_HostMessageListeners.Value.clear( );
+			m_HostMessageListeners.Mutex.Unlock( );
 
 			// Clear the event listeners
 			m_EventListeners.Mutex.Lock( );
@@ -478,34 +478,34 @@ namespace Bit
 								}
 
 								// Find the listeners for this user message
-								m_UserMessageListeners.Mutex.Lock( );
-								UserMessageListenerMap::iterator it = m_UserMessageListeners.Value.find( name );
-								if( it == m_UserMessageListeners.Value.end( ) )
+								m_HostMessageListeners.Mutex.Lock( );
+								HostMessageListenerMap::iterator it = m_HostMessageListeners.Value.find( name );
+								if( it == m_HostMessageListeners.Value.end( ) )
 								{
 									// Delete the received data pointer
 									delete pReceivedData;
 									continue;
 								}
 
-								UserMessageListenerSet * pMessageSet = it->second;
+								HostMessageListenerSet * pMessageSet = it->second;
 
 								// Go through the listeners and call the listener function
-								for( UserMessageListenerSet::iterator it2 = pMessageSet->begin( ); it2 != pMessageSet->end( ); it2++ )
+								for( HostMessageListenerSet::iterator it2 = pMessageSet->begin( ); it2 != pMessageSet->end( ); it2++ )
 								{
 									// Get the listener.
-									UserMessageListener * pListener = *it2;
+									HostMessageListener * pListener = *it2;
 
 									// Create a message decoder
 									Uint8 * pDataPointer =  pReceivedData->pData + name.size( ) + 2;
 									const SizeType dataSize = pReceivedData->DataSize - name.size( ) - 2;
-									UserMessageDecoder messageDecoder( name, pDataPointer, dataSize ) ;
+									HostMessageDecoder messageDecoder( name, pDataPointer, dataSize ) ;
 
 									// Use threads????
 									// Handle the message.
 									pListener->HandleMessage( messageDecoder );
 								}
 
-								m_UserMessageListeners.Mutex.Unlock( );
+								m_HostMessageListeners.Mutex.Unlock( );
 
 								// Delete the received data pointer
 								delete pReceivedData;
@@ -656,7 +656,7 @@ namespace Bit
 			return time;
 		}
 
-		Bool Client::HookUserMessage( UserMessageListener * p_pListener, const std::string & m_MessageName )
+		Bool Client::HookHostMessage( HostMessageListener * p_pListener, const std::string & m_MessageName )
 		{
 			// Error check the parameters
 			if( p_pListener == NULL || m_MessageName.size( ) == 0 )
@@ -664,18 +664,18 @@ namespace Bit
 				return false;
 			}
 
-			m_UserMessageListeners.Mutex.Lock( );
+			m_HostMessageListeners.Mutex.Lock( );
 
 			// Find the user mesage set pointer.
-			UserMessageListenerSet * pMessageSet = NULL;
+			HostMessageListenerSet * pMessageSet = NULL;
 
 			// Find the message
-			UserMessageListenerMap::iterator it = m_UserMessageListeners.Value.find( m_MessageName );
-			if( it == m_UserMessageListeners.Value.end( ) )
+			HostMessageListenerMap::iterator it = m_HostMessageListeners.Value.find( m_MessageName );
+			if( it == m_HostMessageListeners.Value.end( ) )
 			{
 				// Create a new message
-				pMessageSet = new UserMessageListenerSet;
-				m_UserMessageListeners.Value.insert( UserMessageListenerPair( m_MessageName, pMessageSet ) );
+				pMessageSet = new HostMessageListenerSet;
+				m_HostMessageListeners.Value.insert( HostMessageListenerPair( m_MessageName, pMessageSet ) );
 			}
 			else
 			{
@@ -685,7 +685,7 @@ namespace Bit
 			// Add the listener to the message set
 			pMessageSet->insert( p_pListener );
 
-			m_UserMessageListeners.Mutex.Unlock( );
+			m_HostMessageListeners.Mutex.Unlock( );
 
 			return true;
 		}

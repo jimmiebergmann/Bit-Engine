@@ -21,11 +21,11 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_USER_MESSAGE_LISTENER_HPP
-#define BIT_NETWORK_NET_USER_MESSAGE_LISTENER_HPP
+#ifndef BIT_NETWORK_NET_HOST_MESSAGE_LISTENER_HPP
+#define BIT_NETWORK_NET_HOST_MESSAGE_LISTENER_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Net/UserMessageDecoder.hpp>
+#include <Bit/Network/Net/HostMessageDecoder.hpp>
 #include <string>
 
 namespace Bit
@@ -36,10 +36,10 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief User message listener base class for client side.
+		/// \brief Host message listener base class for client side.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API UserMessageListener
+		class BIT_API HostMessageListener
 		{
 
 		public:
@@ -48,7 +48,7 @@ namespace Bit
 			/// \brief Virtual function for handling user messages.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void HandleMessage( UserMessageDecoder & p_Message ) = 0;
+			virtual void HandleMessage( HostMessageDecoder & p_Message ) = 0;
 
 		};
 

@@ -28,7 +28,7 @@
 #include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/UdpSocket.hpp>
-#include <Bit/Network/Net/UserMessageListener.hpp>
+#include <Bit/Network/Net/HostMessageListener.hpp>
 #include <Bit/Network/Net/EventListener.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
@@ -59,7 +59,7 @@ namespace Bit
 		public:
 
 			// Friend classes
-			friend class UserMessageListener;
+			friend class HostMessageListener;
 
 			// Public enums
 			enum eStatus
@@ -123,7 +123,7 @@ namespace Bit
 			/// \brief Add listener to a user message.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool HookUserMessage( UserMessageListener * p_pListener, const std::string & m_MessageName );
+			Bool HookHostMessage( HostMessageListener * p_pListener, const std::string & m_MessageName );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Add listener to an event.
@@ -238,10 +238,10 @@ namespace Bit
 			typedef std::map<Uint16, ReliablePacket*>					ReliablePacketMap;
 			typedef std::pair<Uint16, ReliablePacket*>					ReliablePacketPair;
 			typedef std::list<Time>										TimeList;
-			typedef std::set<UserMessageListener*>						UserMessageListenerSet;
+			typedef std::set<HostMessageListener*>						HostMessageListenerSet;
 			typedef std::set<EventListener*>							EventListenerSet;
-			typedef std::map<std::string, UserMessageListenerSet *>		UserMessageListenerMap;
-			typedef std::pair<std::string, UserMessageListenerSet *>	UserMessageListenerPair;
+			typedef std::map<std::string, HostMessageListenerSet *>		HostMessageListenerMap;
+			typedef std::pair<std::string, HostMessageListenerSet *>	HostMessageListenerPair;
 			typedef std::map<std::string, EventListenerSet *>			EventListenerMap;
 			typedef std::pair<std::string, EventListenerSet *>			EventListenerPair;
 			typedef std::queue<ReceivedData*>							ReceivedDataQueue;
@@ -305,7 +305,7 @@ namespace Bit
 			ThreadValue<ReliablePacketMap>		m_ReliableMap;			///< Map of reliable packets.
 			ThreadValue<Time>					m_Ping;					///< Current network ping.
 			TimeList							m_PingList;				///< List of the last pings.
-			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;	///< Map of user message listeners and their message types.
+			ThreadValue<HostMessageListenerMap>	m_HostMessageListeners;	///< Map of user message listeners and their message types.
 			ThreadValue<ReceivedDataQueue>		m_UserMessages;			///< Queue of user messages
 			ThreadValue<EventListenerMap>		m_EventListeners;		///< Map of event listeners and their message types.
 			ThreadValue<ReceivedDataQueue>		m_Events;				///< Queue of events.

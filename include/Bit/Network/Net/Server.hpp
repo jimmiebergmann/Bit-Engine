@@ -29,7 +29,7 @@
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/Net/Private/Connection.hpp>
 #include <Bit/Network/Net/Event.hpp>
-#include <Bit/Network/Net/UserMessage.hpp>
+#include <Bit/Network/Net/HostMessage.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/Network/TcpListener.hpp>
 #include <Bit/System/Thread.hpp>
@@ -66,8 +66,8 @@ namespace Bit
 			// friend classes
 			friend class Connection;
 			friend class Event;
-			friend class UserMessage;
-			friend class UserRecipientFilter;
+			friend class HostMessage;
+			friend class HostRecipientFilter;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
@@ -115,7 +115,7 @@ namespace Bit
 			/// Destroy the pointer by yourself, or you will suffer from memoryleaks.
 			///
 			////////////////////////////////////////////////////////////////
-			UserRecipientFilter * CreateRecipientFilter( const Bool p_Reliable = true );
+			HostRecipientFilter * CreateRecipientFilter( const Bool p_Reliable = true );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create user message.
@@ -126,7 +126,7 @@ namespace Bit
 			/// \param p_MessageSize Message size. 0 < if dynamically allocated.
 			///
 			////////////////////////////////////////////////////////////////
-			UserMessage * CreateUserMessage( const std::string & p_Name, const Int32 p_MessageSize = -1 );
+			HostMessage * CreateHostMessage( const std::string & p_Name, const Int32 p_MessageSize = -1 );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create event.

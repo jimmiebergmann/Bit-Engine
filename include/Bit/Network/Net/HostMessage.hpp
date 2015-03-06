@@ -21,11 +21,13 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_USER_MESSAGE_HPP
-#define BIT_NETWORK_NET_USER_MESSAGE_HPP
+#ifndef BIT_NETWORK_NET_HOST_MESSAGE_HPP
+#define BIT_NETWORK_NET_HOST_MESSAGE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Network/Net/HostRecipientFilter.hpp>
 #include <string>
+#include <vector>
 
 namespace Bit
 {
@@ -38,28 +40,54 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief Entity manager class.
+		/// \brief Host message class for server side.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API UserMessage
+		class BIT_API HostMessage
 		{
 
 		public:
 
 			// Friend classes
-			friend class ServerEntityChanger;
+			friend class Server;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Constructor
+			/// \brief Write byte to message.
 			///
 			////////////////////////////////////////////////////////////////
-			UserMessage( const std::string & p_Name, Server * p_pServer );
+			void WriteByte( const Uint8 p_Byte );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Write signed integer to message.
+			///
+			////////////////////////////////////////////////////////////////
+			void WriteInt( const Int32 p_Int );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Write floating point to message.
+			///
+			////////////////////////////////////////////////////////////////
+			void WriteFloat( const Float32 p_Float );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Write string to message.
+			///
+			////////////////////////////////////////////////////////////////
+			void WriteString( const std::string & p_String );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Write string to message.
+			///
+			/// Integers are not in network or host order.
+			///
+			////////////////////////////////////////////////////////////////
+			void WriteArray( const void * p_pArray, const SizeType p_Size );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send user message to user.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool Send( const Uint16 p_User );
+			Bool Send( HostRecipientFilter * p_pFilter );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get event name
@@ -69,9 +97,29 @@ namespace Bit
 
 		private:
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor
+			///
+			////////////////////////////////////////////////////////////////
+			HostMessage( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Constructor
+			///
+			/// \param p_Name Name of the host message.
+			/// \param p_pServer Pointer to server.
+			/// \param p_MessageSize Message size. 0 < if dynamically allocated.
+			///
+			////////////////////////////////////////////////////////////////
+			HostMessage( const std::string & p_Name, Server * p_pServer, Int32 p_MessageSize = -1 );
+
+			// Private typedefs
+			typedef std::vector<Uint8> MessageVector;
+
 			// Private variables.
-			std::string		m_Name;		///< Event name
-			Server *		m_pServer;	///< Pointer to server class.
+			std::string			m_Name;		///< Event name
+			Server *			m_pServer;	///< Pointer to server class.
+			MessageVector		m_Message;	///< Vector of message data.
 
 		};
 

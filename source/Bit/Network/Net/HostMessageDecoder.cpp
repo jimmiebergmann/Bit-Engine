@@ -21,7 +21,7 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Network/Net/UserMessageDecoder.hpp>
+#include <Bit/Network/Net/HostMessageDecoder.hpp>
 #include <Bit/Network/Socket.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -32,7 +32,7 @@ namespace Bit
 	namespace Net
 	{
 
-		UserMessageDecoder::UserMessageDecoder( const std::string & p_Name,
+		HostMessageDecoder::HostMessageDecoder( const std::string & p_Name,
 												Uint8 *		p_pMessage,
 												SizeType	p_MessageSize ) :
 			m_Name( p_Name ),
@@ -42,7 +42,7 @@ namespace Bit
 		{
 		}
 
-		Uint8 UserMessageDecoder::ReadByte( )
+		Uint8 HostMessageDecoder::ReadByte( )
 		{
 			if( m_Position > m_MessageSize )
 			{
@@ -52,7 +52,7 @@ namespace Bit
 			return m_pMessage[ m_Position++ ];
 		}
 
-		Int32 UserMessageDecoder::ReadInt( )
+		Int32 HostMessageDecoder::ReadInt( )
 		{
 			if( m_Position + 4 > m_MessageSize )
 			{
@@ -71,7 +71,7 @@ namespace Bit
 			return Ntoh32( integer );
 		}
 	
-		Float32 UserMessageDecoder::ReadFloat( )
+		Float32 HostMessageDecoder::ReadFloat( )
 		{
 			if( m_Position + 4 > m_MessageSize )
 			{
@@ -89,7 +89,7 @@ namespace Bit
 			return floatingPoint;
 		}
 
-		Bool UserMessageDecoder::ReadString( std::string & p_String )
+		Bool HostMessageDecoder::ReadString( std::string & p_String )
 		{
 			// Get the message name
 			SizeType stringEnd = 0;
@@ -121,7 +121,7 @@ namespace Bit
 			return true;
 		}
 
-		Bool UserMessageDecoder::ReadArray( void * p_pArray, const SizeType p_Size )
+		Bool HostMessageDecoder::ReadArray( void * p_pArray, const SizeType p_Size )
 		{
 			if( m_Position + p_Size > m_MessageSize )
 			{
@@ -138,22 +138,22 @@ namespace Bit
 			return true;
 		}
 
-		const std::string & UserMessageDecoder::GetName( ) const
+		const std::string & HostMessageDecoder::GetName( ) const
 		{
 			return m_Name;
 		}
 
-		SizeType UserMessageDecoder::GetMessageSize( ) const
+		SizeType HostMessageDecoder::GetMessageSize( ) const
 		{
 			return m_MessageSize;
 		}
 
-		SizeType UserMessageDecoder::GetPosition( ) const
+		SizeType HostMessageDecoder::GetPosition( ) const
 		{
 			return m_Position;
 		}
 
-		void UserMessageDecoder::SetPosition( const SizeType p_Position )
+		void HostMessageDecoder::SetPosition( const SizeType p_Position )
 		{
 			SizeType position = p_Position;
 			if( position >= m_MessageSize )

@@ -21,13 +21,12 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_NETWORK_NET_USER_MESSAGE_HPP
-#define BIT_NETWORK_NET_USER_MESSAGE_HPP
+#ifndef BIT_NETWORK_NET_HOST_RECIPIENT_FILTER_HPP
+#define BIT_NETWORK_NET_HOST_RECIPIENT_FILTER_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Net/UserRecipientFilter.hpp>
 #include <string>
-#include <vector>
+#include <set>
 
 namespace Bit
 {
@@ -40,86 +39,69 @@ namespace Bit
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief User message class for server side.
+		/// \brief User recipient filter class.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API UserMessage
+		class BIT_API HostRecipientFilter
 		{
 
 		public:
 
-			// Friend classes
 			friend class Server;
+			friend class HostMessage;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Write byte to message.
+			/// \brief Add user to receipient list
 			///
 			////////////////////////////////////////////////////////////////
-			void WriteByte( const Uint8 p_Byte );
+			Bool AddUser( const Uint16 p_UserId );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Write signed integer to message.
+			/// \brief Add all users to receipient list
 			///
 			////////////////////////////////////////////////////////////////
-			void WriteInt( const Int32 p_Int );
+			Bool AddAllUsers( );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Write floating point to message.
+			/// \brief Add group to receipient list
 			///
 			////////////////////////////////////////////////////////////////
-			void WriteFloat( const Float32 p_Float );
+			Bool AddGroup( const std::string & p_GroupName );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Write string to message.
+			/// \brief Set reliable filter to true.
 			///
 			////////////////////////////////////////////////////////////////
-			void WriteString( const std::string & p_String );
+			void MakeReliable( );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Write string to message.
-			///
-			/// Integers are not in network or host order.
+			/// \brief Set reliable filter to false.
 			///
 			////////////////////////////////////////////////////////////////
-			void WriteArray( const void * p_pArray, const SizeType p_Size );
+			void MakeUnreliable( );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Send user message to user.
+			/// \brief Set reliable filter to false.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool Send( UserRecipientFilter * p_pFilter );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Get event name
-			///
-			////////////////////////////////////////////////////////////////
-			const std::string & GetName( ) const;
+			Bool IsReliable( ) const;
 
 		private:
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Default constructor
-			///
-			////////////////////////////////////////////////////////////////
-			UserMessage( );
-
-			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
 			///
-			/// \param p_Name Name of the user message.
-			/// \param p_pServer Pointer to server.
-			/// \param p_MessageSize Message size. 0 < if dynamically allocated.
-			///
 			////////////////////////////////////////////////////////////////
-			UserMessage( const std::string & p_Name, Server * p_pServer, Int32 p_MessageSize = -1 );
+			HostRecipientFilter( Server * p_pServer, const Bool p_Reliable = true );
 
 			// Private typedefs
-			typedef std::vector<Uint8> MessageVector;
+			typedef std::set<Uint16> UserSet;
 
 			// Private variables.
-			std::string			m_Name;		///< Event name
-			Server *			m_pServer;	///< Pointer to server class.
-			MessageVector		m_Message;	///< Vector of message data.
+			Server *	m_pServer;	///< Server pointer.
+			UserSet		m_Users;	///< Set of all the users
+			bool		m_Reliable;	///< Reliable flag.
+
 
 		};
 

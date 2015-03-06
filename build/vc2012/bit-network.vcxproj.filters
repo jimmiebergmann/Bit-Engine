@@ -49,22 +49,22 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\Event.cpp">
       <Filter>Net</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\UserRecipientFilter.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageDecoder.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageListener.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\Bit\Network\Net\EventListener.cpp">
       <Filter>Net</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Network\Net\EventDecoder.cpp">
       <Filter>Net</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessage.cpp">
+    <ClCompile Include="..\..\source\Bit\Network\Net\HostMessage.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\HostMessageDecoder.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\HostMessageListener.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\HostRecipientFilter.cpp">
       <Filter>Net</Filter>
     </ClCompile>
   </ItemGroup>
@@ -136,22 +136,22 @@
     <ClInclude Include="..\..\include\Bit\Network\Net\Event.hpp">
       <Filter>Net</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\UserRecipientFilter.hpp">
-      <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageDecoder.hpp">
-      <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageListener.hpp">
-      <Filter>Net</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\EventListener.hpp">
       <Filter>Net</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\EventDecoder.hpp">
       <Filter>Net</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessage.hpp">
+    <ClInclude Include="..\..\include\Bit\Network\Net\HostMessage.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\HostMessageDecoder.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\HostMessageListener.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\HostRecipientFilter.hpp">
       <Filter>Net</Filter>
     </ClInclude>
   </ItemGroup>
