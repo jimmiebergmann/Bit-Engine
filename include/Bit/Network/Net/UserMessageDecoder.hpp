@@ -51,6 +51,7 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			UserMessageDecoder(	const std::string & p_Name,
+								const Uint16		p_UserId,
 								Uint8 *				p_pMessage,
 								SizeType			p_MessageSize );
 
@@ -87,6 +88,12 @@ namespace Bit
 			Bool ReadArray( void * p_pArray, const SizeType p_Size );
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Get user id.
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetUser( ) const;
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Get message name.
 			///
 			////////////////////////////////////////////////////////////////
@@ -114,6 +121,7 @@ namespace Bit
 
 			// Private variables.
 			std::string m_Name;			///< Message name.
+			Uint16		m_UserId;		/// Id of the user.
 			SizeType	m_Position;		///< Current position in message
 			Uint8 *		m_pMessage;		///< Pointer to message.
 			SizeType	m_MessageSize;	///< Size of the message.

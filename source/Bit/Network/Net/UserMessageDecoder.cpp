@@ -33,9 +33,11 @@ namespace Bit
 	{
 
 		UserMessageDecoder::UserMessageDecoder( const std::string & p_Name,
+												const Uint16 p_UserId, 
 												Uint8 *		p_pMessage,
 												SizeType	p_MessageSize ) :
 			m_Name( p_Name ),
+			m_UserId( p_UserId ),
 			m_Position( 0 ),
 			m_pMessage( p_pMessage ),
 			m_MessageSize( p_MessageSize )
@@ -136,6 +138,11 @@ namespace Bit
 			
 			// Succeeded.
 			return true;
+		}
+
+		Uint16 UserMessageDecoder::GetUser( ) const
+		{
+			return m_UserId;
 		}
 
 		const std::string & UserMessageDecoder::GetName( ) const

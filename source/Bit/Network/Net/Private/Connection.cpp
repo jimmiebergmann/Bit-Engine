@@ -464,7 +464,7 @@ namespace Bit
 							// Create a message decoder
 							Uint8 * pDataPointer =  pReceivedData->pData + name.size( ) + 2;
 							const SizeType dataSize = pReceivedData->DataSize - name.size( ) - 2;
-							UserMessageDecoder messageDecoder( name, pDataPointer, dataSize ) ;
+							UserMessageDecoder messageDecoder( name, m_UserId, pDataPointer, dataSize ) ;
 
 							// Use threads????
 							// Handle the message.
