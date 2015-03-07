@@ -28,6 +28,7 @@
 #include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/Net/Private/Connection.hpp>
+#include <Bit/Network/Net/UserMessageListener.hpp>
 #include <Bit/Network/Net/Event.hpp>
 #include <Bit/Network/Net/HostMessage.hpp>
 #include <Bit/Network/UdpSocket.hpp>
@@ -118,11 +119,11 @@ namespace Bit
 			HostRecipientFilter * CreateRecipientFilter( const Bool p_Reliable = true );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Create user message.
+			/// \brief Create host message.
 			///
 			/// Destroy the pointer by yourself, or you will suffer from memoryleaks.
 			///
-			/// \param p_Name Name of the user message.
+			/// \param p_Name Name of the host message.
 			/// \param p_MessageSize Message size. 0 < if dynamically allocated.
 			///
 			////////////////////////////////////////////////////////////////
@@ -185,6 +186,12 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Bool IsRunning( );
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Add listener to a user message.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool HookUserMessage( UserMessageListener * p_pListener, const std::string & m_MessageName );
+
 			// Protected variables
 			EntityManager		m_EntityManager;
 
@@ -199,29 +206,33 @@ namespace Bit
 			void AddConnectionForCleanup( Connection * p_pConnection );
 
 			// Private  typedefs
-			typedef std::map<Uint64,	Connection*>	AddressConnectionMap;
-			typedef std::pair<Uint64,	Connection*>	AddressConnectionMapPair;
-			typedef std::map<Uint16,	Connection*>	UserConnectionMap;
-			typedef std::pair<Uint16,	Connection*>	UserConnectionMapPair;
-			typedef std::list<Connection*>				ConnectionList;
-			typedef std::queue<Uint16>					FreeUserIdMap;
-			typedef std::set<Address>					AddressSet;
+			typedef std::map<Uint64,	Connection*>					AddressConnectionMap;
+			typedef std::pair<Uint64,	Connection*>					AddressConnectionMapPair;
+			typedef std::map<Uint16,	Connection*>					UserConnectionMap;
+			typedef std::pair<Uint16,	Connection*>					UserConnectionMapPair;
+			typedef std::list<Connection*>								ConnectionList;
+			typedef std::queue<Uint16>									FreeUserIdMap;
+			typedef std::set<Address>									AddressSet;
+			typedef std::set<UserMessageListener*>						UserMessageListenerSet;
+			typedef std::map<std::string, UserMessageListenerSet *>		UserMessageListenerMap;
+			typedef std::pair<std::string, UserMessageListenerSet *>	UserMessageListenerPair;
 			
 
 			// Private variables
-			UdpSocket						m_Socket;				///< Udp socket.
-			Thread							m_MainThread;			///< Thread for handling incoming packets.
-			Thread							m_CleanupThread;		///< Thread for cleaning up connections.
-			Semaphore						m_CleanupSemaphore;		///< Semaphore for cleanups.
-			ThreadValue<ConnectionList>		m_CleanupConnections;	///< Queue of connections to cleanup.
-			Uint8							m_MaxConnections;		///< Maximum amount of connections.
-			FreeUserIdMap					m_FreeUserIds;			///< Queue of free user Ids.
-			AddressConnectionMap			m_AddressConnections;	///< Map of all the connections via their addresses.
-			UserConnectionMap				m_UserConnections;		///< Map of all the connections via their user IDs.
-			Mutex							m_ConnectionMutex;		///< Mutex for the address and user connections.
-			ThreadValue<Bool>				m_Running;				///< Flag for checking if the server is running.
-			ThreadValue<AddressSet>			m_BanSet;				///< Set of banned addresses.
-	
+			UdpSocket							m_Socket;				///< Udp socket.
+			Thread								m_MainThread;			///< Thread for handling incoming packets.
+			Thread								m_CleanupThread;		///< Thread for cleaning up connections.
+			Semaphore							m_CleanupSemaphore;		///< Semaphore for cleanups.
+			ThreadValue<ConnectionList>			m_CleanupConnections;	///< Queue of connections to cleanup.
+			Uint8								m_MaxConnections;		///< Maximum amount of connections.
+			FreeUserIdMap						m_FreeUserIds;			///< Queue of free user Ids.
+			AddressConnectionMap				m_AddressConnections;	///< Map of all the connections via their addresses.
+			UserConnectionMap					m_UserConnections;		///< Map of all the connections via their user IDs.
+			Mutex								m_ConnectionMutex;		///< Mutex for the address and user connections.
+			ThreadValue<Bool>					m_Running;				///< Flag for checking if the server is running.
+			ThreadValue<AddressSet>				m_BanSet;				///< Set of banned addresses.
+			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;	///< Map of user message listeners and their message types.
+			
 		};
 
 	}

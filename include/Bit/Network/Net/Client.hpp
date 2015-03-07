@@ -30,6 +30,7 @@
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/Network/Net/HostMessageListener.hpp>
 #include <Bit/Network/Net/EventListener.hpp>
+#include <Bit/Network/Net/UserMessage.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
 #include <Bit/System/Semaphore.hpp>
@@ -59,6 +60,7 @@ namespace Bit
 		public:
 
 			// Friend classes
+			friend class UserMessage;
 			friend class HostMessageListener;
 
 			// Public enums
@@ -120,7 +122,7 @@ namespace Bit
 			Time GetPing( );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Add listener to a user message.
+			/// \brief Add listener to a host message.
 			///
 			////////////////////////////////////////////////////////////////
 			Bool HookHostMessage( HostMessageListener * p_pListener, const std::string & m_MessageName );
@@ -132,35 +134,15 @@ namespace Bit
 			Bool HookEvent( EventListener * p_pListener, const std::string & m_EventName );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Send unreliable packet to the server.
+			/// \brief Create user message.
 			///
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
+			/// Destroy the pointer by yourself, or you will suffer from memoryleaks.
 			///
-			////////////////////////////////////////////////////////////////
-			/*void SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Send reliable packet to the server.
-			///
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
+			/// \param p_Name Name of the user message.
+			/// \param p_MessageSize Message size. 0 < if dynamically allocated.
 			///
 			////////////////////////////////////////////////////////////////
-			void SendReliable( void * p_pData, const Bit::SizeType p_DataSize );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Receive data from server
-			///
-			/// You have to delete the data in the packet by yourself to prevent memory leaks.
-			///
-			/// \param p_Packet Udp packet.
-			///
-			/// \return True if received packet, else false.
-			///
-			////////////////////////////////////////////////////////////////
-			Bit::Bool Receive( Packet & p_Packet );
-			*/
+			UserMessage * CreateUserMessage( const std::string & p_Name, const Int32 p_MessageSize = -1 );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get the time since last received packet, including heartbeats.
@@ -170,7 +152,6 @@ namespace Bit
 
 			// Protected variables
 			EntityManager		m_EntityManager;
-
 
 		private:
 
@@ -257,6 +238,25 @@ namespace Bit
 										const Bool p_CloseUserMessageThread,
 										const Bool p_CloseEventThread );
 
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Send unreliable packet to the server.
+			///
+			/// \param p_pData Pointer to the data to send.
+			/// \param p_DataSize Size of the data.
+			///
+			////////////////////////////////////////////////////////////////
+			void SendUnreliable( void * p_pData, const SizeType p_DataSize );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Send reliable packet to the server.
+			///
+			/// \param p_pData Pointer to the data to send.
+			/// \param p_DataSize Size of the data.
+			///
+			////////////////////////////////////////////////////////////////
+			void SendReliable( void * p_pData, const SizeType p_DataSize );
+
 			////////////////////////////////////////////////////////////////
 			/// \brief Send reliable packet to the server.
 			///
@@ -278,7 +278,7 @@ namespace Bit
 			/// \brief	Function for adding user messages to the function caller queue.
 			///
 			////////////////////////////////////////////////////////////////
-			void AddUserMessage( ReceivedData * p_ReceivedData );
+			void AddHostMessage( ReceivedData * p_ReceivedData );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Function for adding event messages to the function caller queue.

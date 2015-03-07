@@ -417,6 +417,40 @@ namespace Bit
 			return running;
 		}
 
+		Bool Server::HookUserMessage( UserMessageListener * p_pListener, const std::string & m_MessageName )
+		{
+			// Error check the parameters
+			if( p_pListener == NULL || m_MessageName.size( ) == 0 )
+			{
+				return false;
+			}
+
+			m_UserMessageListeners.Mutex.Lock( );
+
+			// Find the user mesage set pointer.
+			UserMessageListenerSet * pMessageSet = NULL;
+
+			// Find the message
+			UserMessageListenerMap::iterator it = m_UserMessageListeners.Value.find( m_MessageName );
+			if( it == m_UserMessageListeners.Value.end( ) )
+			{
+				// Create a new message
+				pMessageSet = new UserMessageListenerSet;
+				m_UserMessageListeners.Value.insert( UserMessageListenerPair( m_MessageName, pMessageSet ) );
+			}
+			else
+			{
+				pMessageSet = it->second;
+			}
+
+			// Add the listener to the message set
+			pMessageSet->insert( p_pListener );
+
+			m_UserMessageListeners.Mutex.Unlock( );
+
+			return true;
+		}
+
 		void Server::AddConnectionForCleanup( Connection * p_pConnection )
 		{
 			// Add the connection to the cleanup thread.

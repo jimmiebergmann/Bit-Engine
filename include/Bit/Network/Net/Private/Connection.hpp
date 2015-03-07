@@ -187,7 +187,7 @@ namespace Bit
 			struct ReliablePacket
 			{
 				Uint16		Sequence;
-				Uint8 *			pData;
+				Uint8 *		pData;
 				SizeType	DataSize;
 				Timer		SendTimer;
 				Timer		ResendTimer;
@@ -196,10 +196,11 @@ namespace Bit
 
 			// Private  typedefs
 			//typedef std::queue<ReceivedData*>	ReceivedDataQueue;
-			typedef std::queue<RawPacket*>		RawPacketQueue;
-			typedef std::map<Uint16, ReliablePacket*> ReliablePacketMap;
-			typedef std::pair<Uint16, ReliablePacket*> ReliablePacketPair;
-			typedef std::list<Time> TimeList;
+			typedef std::queue<RawPacket*>				RawPacketQueue;
+			typedef std::map<Uint16, ReliablePacket*>	ReliablePacketMap;
+			typedef std::pair<Uint16, ReliablePacket*>	ReliablePacketPair;
+			typedef std::list<Time>						TimeList;
+			typedef std::queue<ReceivedData*>			ReceivedDataQueue;
 
 			// Private functions
 
@@ -233,7 +234,8 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			void InternalDisconnect(	const Bool p_CloseMainThread,
 										const Bool p_CloseEventThread,
-										const Bool p_CloseReliableThread );
+										const Bool p_CloseReliableThread,
+										const Bool p_CloseUserMessageThread );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send unreliable packet to the client.
@@ -270,8 +272,15 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			void CalculateNewPing( const Time & p_LapsedTime );
 
+			////////////////////////////////////////////////////////////////
+			/// \brief	Function for adding user messages to the function caller queue.
+			///
+			////////////////////////////////////////////////////////////////
+			void AddUserMessage( ReceivedData * p_ReceivedData );
+
 			// Private variables
 			Thread							m_Thread;				///< Thread for handling raw packets.
+			Thread							m_UserMessageThread;	///< Thread for handling user messages.
 			Thread							m_EventThread;			///< Thread for creating specific events.
 			Thread							m_ReliableThread;		///< Thread for checking reliable packets for resend.
 			Server *						m_pServer;				///< Pointer to the server.
@@ -280,7 +289,6 @@ namespace Bit
 			const Uint16					m_UserId;				///< The client's user id.
 			Time							m_ConnectionTimeout;	///< Ammount of time until the connection timeout.
 			Semaphore						m_EventSemaphore;		///< Semaphore for the events.
-			//ThreadValue<ReceivedDataQueue>	m_ReceivedData;			///< Queue of data ready to get polled by the user.
 			ThreadValue<RawPacketQueue>		m_RawPacketQueue;		///< Queue of raw packets.
 			ThreadValue<Bool>				m_Connected;			///< Flag for checking if you are connected.
 			ThreadValue<Timer>				m_LastRecvTimer;		///< Time for checking when the last recv packet.
@@ -290,6 +298,10 @@ namespace Bit
 			ThreadValue<ReliablePacketMap>	m_ReliableMap;			///< Map of reliable packets.
 			ThreadValue<Time>				m_Ping;					///< Current network ping.
 			TimeList						m_PingList;				///< List of the last pings.
+			ThreadValue<ReceivedDataQueue>	m_UserMessages;			///< Queue of user messages
+			Semaphore						m_UserMessageSemaphore;	///< Semaphore for executing user message listeners.
+			
+
 		};
 
 	}

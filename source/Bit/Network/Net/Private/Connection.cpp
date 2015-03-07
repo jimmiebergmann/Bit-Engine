@@ -51,7 +51,7 @@ namespace Bit
 		Connection::~Connection( )
 		{
 			// Disconnect the client.
-			InternalDisconnect( true, true, true );
+			InternalDisconnect( true, true, true, true );
 		}
 
 		Bool Connection::IsConnected( )
@@ -326,7 +326,7 @@ namespace Bit
 									}
 
 									// Add the unreliable packet to the received data queue.	
-									/*ReceivedData * pReceivedData = new ReceivedData;
+									ReceivedData * pReceivedData = new ReceivedData;
 									pReceivedData->DataSize = pPacket->DataSize - HeaderSize;
 									pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
 									memcpy( pReceivedData->pData, pPacket->pData + HeaderSize, pReceivedData->DataSize );
@@ -335,10 +335,16 @@ namespace Bit
 									pReceivedData->Sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 1 ] ) ) |
 																		static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 2 ] ) << 8 ) );
 														
-									// Push the packet
-									m_ReceivedData.Mutex.Lock( );
-									m_ReceivedData.Value.push( pReceivedData );
-									m_ReceivedData.Mutex.Unlock( );*/
+									switch( pReceivedData->pData[ 0 ] )
+									{
+										case eMessageType::UserMessageType:
+										{
+											AddUserMessage( pReceivedData );
+										}
+										break;
+										default:
+											break;
+									}
 								}
 								break;
 								case ePacketType::ReliablePacket:
@@ -356,16 +362,22 @@ namespace Bit
 									// Add the unreliable packet to the received data queue if it's not a resent packet.
 									if( m_AcknowledgementData.AddAcknowledgement( sequence ) )
 									{
-										/*ReceivedData * pReceivedData = new ReceivedData;
+										ReceivedData * pReceivedData = new ReceivedData;
 										pReceivedData->Sequence = sequence;
 										pReceivedData->DataSize = pPacket->DataSize - HeaderSize;
 										pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
 										memcpy( pReceivedData->pData, pPacket->pData + HeaderSize, pReceivedData->DataSize );
 
-										// Push the packet
-										m_ReceivedData.Mutex.Lock( );
-										m_ReceivedData.Value.push( pReceivedData );
-										m_ReceivedData.Mutex.Unlock( );*/
+										switch( pReceivedData->pData[ 0 ] )
+										{
+											case eMessageType::UserMessageType:
+											{
+												AddUserMessage( pReceivedData );
+											}
+											break;
+											default:
+												break;
+										}
 									}
 								}
 								break;
@@ -379,6 +391,96 @@ namespace Bit
 
 					}
 				}
+			);
+
+			// Execute user message
+			m_UserMessageThread.Execute( [ this ] ( )
+			{
+				while( IsConnected( ) )
+				{
+					// Wait for the semaphore to release
+					m_UserMessageSemaphore.Wait( );
+
+					// Go throguh the user messages.
+					m_UserMessages.Mutex.Lock( );
+
+					while( m_UserMessages.Value.size( ) )
+					{
+						// Ge the received data
+						ReceivedData * pReceivedData = m_UserMessages.Value.front( );
+
+						// Pop the message
+						m_UserMessages.Value.pop( );
+
+						// Get the message name
+						SizeType nameEnd = 1;
+						for( SizeType i = 1; i < pReceivedData->DataSize; i++ )
+						{
+							if( pReceivedData->pData[ i ] == 0 )
+							{
+								nameEnd = i;
+								break;
+							}
+						}
+
+						// Error check the name length
+						if( nameEnd == 1 )
+						{
+							// Delete the received data pointer
+							delete pReceivedData;
+							continue;
+						}
+
+						// Copy the name.
+						std::string name;
+						name.assign( reinterpret_cast<char*>(pReceivedData->pData + 1), nameEnd - 1 );
+
+						// Check if there is any message left
+						if( name.size( ) + 2 >= pReceivedData->DataSize )
+						{
+							// Delete the received data pointer
+							delete pReceivedData;
+							continue;
+						}
+
+						// Find the listeners for this user message
+						m_pServer->m_UserMessageListeners.Mutex.Lock( );
+						Server::UserMessageListenerMap::iterator it = m_pServer->m_UserMessageListeners.Value.find( name );
+						if( it == m_pServer->m_UserMessageListeners.Value.end( ) )
+						{
+							// Delete the received data pointer
+							delete pReceivedData;
+							continue;
+						}
+
+						Server::UserMessageListenerSet * pMessageSet = it->second;
+
+						// Go through the listeners and call the listener function
+						for( Server::UserMessageListenerSet::iterator it2 = pMessageSet->begin( ); it2 != pMessageSet->end( ); it2++ )
+						{
+							// Get the listener.
+							UserMessageListener * pListener = *it2;
+
+							// Create a message decoder
+							Uint8 * pDataPointer =  pReceivedData->pData + name.size( ) + 2;
+							const SizeType dataSize = pReceivedData->DataSize - name.size( ) - 2;
+							UserMessageDecoder messageDecoder( name, pDataPointer, dataSize ) ;
+
+							// Use threads????
+							// Handle the message.
+							pListener->HandleMessage( messageDecoder );
+						}
+
+						m_pServer->m_UserMessageListeners.Mutex.Unlock( );
+
+						// Delete the received data pointer
+						delete pReceivedData;
+
+					}
+
+					m_UserMessages.Mutex.Unlock( );
+				}
+			}
 			);
 
 
@@ -525,7 +627,8 @@ namespace Bit
 
 		void Connection::InternalDisconnect(	const Bool p_CloseMainThread,
 												const Bool p_CloseEventThread,
-												const Bool p_CloseReliableThread )
+												const Bool p_CloseReliableThread,
+												const Bool p_CloseUserMessageThread )
 		{
 			// Get status and set connected to false.
 			m_Connected.Mutex.Lock( );
@@ -553,6 +656,11 @@ namespace Bit
 			if( p_CloseReliableThread )
 			{
 				m_ReliableThread.Finish( );
+			}
+			if( p_CloseUserMessageThread )
+			{
+				m_UserMessageSemaphore.Release( );
+				m_UserMessageThread.Finish( );
 			}
 
 			// Reset the sequence.
@@ -688,6 +796,15 @@ namespace Bit
 			m_Ping.Mutex.Lock( );
 			m_Ping.Value = Microseconds( newPing );
 			m_Ping.Mutex.Unlock( ); 
+		}
+
+		void Connection::AddUserMessage( ReceivedData * p_pReceivedData )
+		{
+			m_UserMessages.Mutex.Lock( );
+			m_UserMessages.Value.push( p_pReceivedData );
+			m_UserMessages.Mutex.Unlock( );
+
+			m_UserMessageSemaphore.Release( );
 		}
 
 	}

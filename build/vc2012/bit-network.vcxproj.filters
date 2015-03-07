@@ -67,6 +67,15 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\HostRecipientFilter.cpp">
       <Filter>Net</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageListener.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageDecoder.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessage.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -152,6 +161,15 @@
       <Filter>Net</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\HostRecipientFilter.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageListener.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageDecoder.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessage.hpp">
       <Filter>Net</Filter>
     </ClInclude>
   </ItemGroup>

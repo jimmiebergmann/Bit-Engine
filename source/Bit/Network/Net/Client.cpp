@@ -286,7 +286,7 @@ namespace Bit
 											{
 												case eMessageType::UserMessageType:
 												{
-													AddUserMessage( pReceivedData );
+													AddHostMessage( pReceivedData );
 												}
 												break;
 												case eMessageType::EventMessageType:
@@ -324,7 +324,7 @@ namespace Bit
 												{
 													case eMessageType::UserMessageType:
 													{
-														AddUserMessage( pReceivedData );
+														AddHostMessage( pReceivedData );
 													}
 													break;
 													case eMessageType::EventMessageType:
@@ -724,77 +724,10 @@ namespace Bit
 			return true;
 		}
 
-
-/*
-		void Client::SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize )
+		UserMessage * Client::CreateUserMessage( const std::string & p_Name, const Int32 p_MessageSize )
 		{
-			// Create the packet.
-			const Bit::SizeType packetSize = p_DataSize + HeaderSize;
-			char * pData = new char[ packetSize ];
-			pData[ 0 ] = static_cast<char>( ePacketType::UnreliablePacket );
-
-			// Add the sequence to the data buffer.
-			m_Sequence.Mutex.Lock( );
-			Bit::Uint16 sequence = Bit::Hton16( m_Sequence.Value );
-			memcpy( pData + 1, &sequence, 2 );
-	
-			// Increment the sequence
-			m_Sequence.Value++;
-			m_Sequence.Mutex.Unlock( );
-
-			// Add the data to the new buffer
-			memcpy( pData + HeaderSize, p_pData, p_DataSize );
-
-			// Send the packet.
-			m_Socket.Send( pData, packetSize, m_ServerAddress, m_ServerPort );
-
-			// Delete the packet
-			delete [ ] pData;
+			return new UserMessage( p_Name, this, p_MessageSize );
 		}
-
-		void Client::SendReliable( void * p_pData, const Bit::SizeType p_DataSize )
-		{
-			InternalSendReliable( ePacketType::ReliablePacket, p_pData, p_DataSize );
-		}
-
-		Bit::Bool Client::Receive( Packet & p_Packet )
-		{
-			// Check if there's data to read, lock the mutex.
-			m_ReceivedData.Mutex.Lock( );
-			if( m_ReceivedData.Value.size( ) == 0 )
-			{
-				// Unlock the mutex and return false.
-				m_ReceivedData.Mutex.Unlock( );
-				return false;
-			}
-
-			// Get the received data
-			ReceivedData * pReceivedData = m_ReceivedData.Value.front( );
-
-			// Unlock the mutex
-			m_ReceivedData.Mutex.Unlock( );
-
-			/// Calculate the data size
-			Bit::SizeType dataSize = pReceivedData->DataSize;
-
-			// Set the parameter
-			p_Packet.pData = pReceivedData->pData;
-			p_Packet.DataSize = pReceivedData->DataSize;
-			p_Packet.Sequence = pReceivedData->Sequence;
-
-			// Remove the received data from the queue.
-			delete pReceivedData;
-
-			// Pop the data in mutex lock.
-			m_ReceivedData.Mutex.Lock( );
-			m_ReceivedData.Value.pop( );
-			m_ReceivedData.Mutex.Unlock( );
-
-			// Return true.
-			return true;
-		}
-		*/
-		
 
 		Time Client::TimeSinceLastRecvPacket( )
 		{
@@ -937,6 +870,40 @@ namespace Bit
 			m_PingList.clear( );
 		}
 
+			void Client::SendUnreliable( void * p_pData, const SizeType p_DataSize )
+		{
+			// Use memory pool here?
+
+			// Create the packet.
+			const Bit::SizeType packetSize = p_DataSize + HeaderSize;
+			Uint8 * pData = new Uint8[ packetSize ];
+			pData[ 0 ] = ePacketType::UnreliablePacket;
+
+			// Get the current sequence
+			m_Sequence.Mutex.Lock( );
+			Bit::Uint16 sequence = Bit::Hton16( m_Sequence.Value );
+			// Increment the sequence
+			m_Sequence.Value++;
+			m_Sequence.Mutex.Unlock( );
+
+			// Add the sequence to the data buffer.
+			memcpy( pData + 1, &sequence, 2 );
+
+			// Add the data to the new buffer
+			memcpy( pData + HeaderSize, p_pData, p_DataSize );
+
+			// Send the packet.
+			m_Socket.Send( pData, packetSize, m_ServerAddress, m_Port );
+
+			// Delete the packet
+			delete [ ] pData;
+		}
+		
+		void Client::SendReliable( void * p_pData, const SizeType p_DataSize )
+		{
+			InternalSendReliable( ePacketType::ReliablePacket, p_pData, p_DataSize );
+		}
+
 		void Client::InternalSendReliable( const ePacketType & p_PacketType, void * p_pData, const SizeType p_DataSize )
 		{
 			// Create a new buffer.
@@ -1007,7 +974,7 @@ namespace Bit
 			m_Ping.Mutex.Unlock( ); 
 		}
 
-		void Client::AddUserMessage( ReceivedData * p_pReceivedData )
+		void Client::AddHostMessage( ReceivedData * p_pReceivedData )
 		{
 			m_UserMessages.Mutex.Lock( );
 			m_UserMessages.Value.push( p_pReceivedData );
