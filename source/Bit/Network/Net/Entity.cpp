@@ -22,6 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/Entity.hpp>
+#include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -31,8 +32,16 @@ namespace Bit
 	{
 
 		Entity::Entity( ) :
-			m_pEntityChanger( NULL )
+			m_pEntityManager( NULL )
 		{
+		}
+
+		Entity::~Entity( )
+		{
+			if( m_pEntityManager )
+			{
+				m_pEntityManager->DestroyEntity( this, false );
+			}
 		}
 
 		Uint16 Entity::GetId( ) const

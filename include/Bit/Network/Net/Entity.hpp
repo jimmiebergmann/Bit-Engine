@@ -25,6 +25,7 @@
 #define BIT_NETWORK_NET_ENTITY_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Network/Net/Variable.hpp>
 #include <string>
 
 namespace Bit
@@ -34,7 +35,7 @@ namespace Bit
 	{
 
 		// Forward declaractions
-		class BIT_API EntityChanger;
+		class BIT_API EntityManager;
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
@@ -57,6 +58,12 @@ namespace Bit
 			Entity( );
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Destructor.
+			///
+			////////////////////////////////////////////////////////////////
+			~Entity( );
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Get entity id.
 			///
 			////////////////////////////////////////////////////////////////
@@ -73,7 +80,7 @@ namespace Bit
 			// Private variables
 			Uint16			m_Id;				///< Entity id.
 			std::string		m_Name;				///< Entity name.
-			EntityChanger * m_pEntityChanger;	///< Entity changer class.
+			EntityManager * m_pEntityManager;	///< Entity changer class.
 
 		};
 

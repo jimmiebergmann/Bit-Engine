@@ -45,9 +45,10 @@ void Variable<T>::Set( const T & p_Value )
 	// Call the on variable function for the entity changer
 	if( m_pParent )
 	{
-		if( m_pParent->m_pEntityChanger )
+		if( m_pParent->m_pEntityManager && 
+			m_pParent->m_pEntityManager->m_pEntityChanger )
 		{
-			m_pParent->m_pEntityChanger->OnVariableChange( m_pParent, this );
+			m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange( m_pParent, this );
 		}
 	}
 };

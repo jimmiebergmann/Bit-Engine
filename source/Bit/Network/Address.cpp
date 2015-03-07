@@ -30,6 +30,7 @@ namespace Bit
 {
 
 	const Address Address::NoAddress = Address( 0 );
+	const Address Address::Localhost = Address( 2130706433 );
 
 	Address::Address( ) :
         m_Address( 0 )

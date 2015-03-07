@@ -179,112 +179,147 @@ namespace Bit
 			// Start the server thread.
 			m_MainThread.Execute( [ this ] ( )
 			{
-					const SizeType bufferSize = 2048;
-					Uint8 buffer[ bufferSize ];
-					Address address;
-					Uint16 port = 0;
-					Int16 recvSize = 0;
+				const SizeType bufferSize = 2048;
+				Uint8 buffer[ bufferSize ];
+				Address address;
+				Uint16 port = 0;
+				Int16 recvSize = 0;
 
-					// Set the running flag to true.
-					m_Running.Mutex.Lock( );
-					m_Running.Value = true;
-					m_Running.Mutex.Unlock( );
+				// Set the running flag to true.
+				m_Running.Mutex.Lock( );
+				m_Running.Value = true;
+				m_Running.Mutex.Unlock( );
 
-					// Receive packets as long as the server is running.
-					while( IsRunning( ) )
+				// Receive packets as long as the server is running.
+				while( IsRunning( ) )
+				{
+					// Receive any packet.
+					recvSize = m_Socket.Receive( buffer, bufferSize, address, port, Milliseconds( 5 ) );
+
+					// Ignore empty packets.
+					if( recvSize <= 0 )
 					{
-						// Receive any packet.
-						recvSize = m_Socket.Receive( buffer, bufferSize, address, port, Milliseconds( 5 ) );
+						continue;
+					}
 
-						// Ignore empty packets.
-						if( recvSize <= 0 )
+					// Check if the packet is from any known client
+					Uint64 clientAddress =	static_cast<Uint64>( address.GetAddress( ) ) * 
+											static_cast<Uint64>( port ) +
+											static_cast<Uint64>( port ) ;
+
+					m_ConnectionMutex.Lock( );
+					AddressConnectionMap::iterator it = m_AddressConnections.find( clientAddress );
+					if( it != m_AddressConnections.end( ) )
+					{
+						// Send the packet to the client thread.
+						it->second->AddRawPacket( buffer, recvSize );
+						m_ConnectionMutex.Unlock( );
+					}
+					else
+					{
+						// This is an unknown client, maybe it's trying to connect.
+						if( buffer[ 0 ] == ePacketType::Syn )
 						{
-							continue;
-						}
+							// Check if the address is banned
+							m_BanSet.Mutex.Lock( );
+							if( m_BanSet.Value.find( address.GetAddress( ) ) != m_BanSet.Value.end( ) )
+							{
+								// Send ban packet
+								buffer[ 0 ] = ePacketType::Ban;
+								Uint32 seconds = Hton32( 0 );
+								memcpy( buffer + 1, &seconds, sizeof( seconds ) );
+								m_Socket.Send( buffer, 5, address, port );
 
-						// Check if the packet is from any known client
-						Uint64 clientAddress =	static_cast<Uint64>( address.GetAddress( ) ) * 
-												static_cast<Uint64>( port ) +
-												static_cast<Uint64>( port ) ;
+								// Unlock the ban set mutex.
+								m_BanSet.Mutex.Unlock( );
 
-						m_ConnectionMutex.Lock( );
-						AddressConnectionMap::iterator it = m_AddressConnections.find( clientAddress );
-						if( it != m_AddressConnections.end( ) )
-						{
-							// Send the packet to the client thread.
-							it->second->AddRawPacket( buffer, recvSize );
+								// Unlock the connection mutex
+								m_ConnectionMutex.Unlock( );
+								continue;
+							}
+							m_BanSet.Mutex.Unlock( );
+
+							// Send Deny packet if the server is full.
+							if( m_AddressConnections.size( ) == m_MaxConnections || m_FreeUserIds.size( ) == 0 )
+							{
+								buffer[ 0 ] = ePacketType::Close;
+								m_Socket.Send( buffer, 1, address, port );
+									
+								// Unlock the connection mutex
+								m_ConnectionMutex.Unlock( );
+								continue;
+							}
+
+							// Get a user id for this connection
+							const Uint16 userId = m_FreeUserIds.front( );
+							m_FreeUserIds.pop( );
+
+							// Create the connection
+							Connection * pConnection = new Connection( address, port, userId );
+
+							// Add the client to the address connection map
+							m_AddressConnections.insert( AddressConnectionMapPair( clientAddress, pConnection ) );
+
+							// Add the client to the user connection map
+							m_UserConnections.insert( UserConnectionMapPair( userId, pConnection ) );
+
+							// Unlock the connection mutex
 							m_ConnectionMutex.Unlock( );
+						
+							// Start client thread.
+							pConnection->StartThreads( this );
+
+							// Answer the client with a SYNACK packet.
+							buffer[ 0 ] = ePacketType::SynAck;
+							m_Socket.Send( buffer, 1, address, port );
+
+							// Run the on connection function
+							OnConnection( userId );
 						}
 						else
 						{
-							// This is an unknown client, maybe it's trying to connect.
-							if( buffer[ 0 ] == ePacketType::Syn )
-							{
-								// Check if the address is banned
-								m_BanSet.Mutex.Lock( );
-								if( m_BanSet.Value.find( address.GetAddress( ) ) != m_BanSet.Value.end( ) )
-								{
-									// Send ban packet
-									buffer[ 0 ] = ePacketType::Ban;
-									Uint32 seconds = Hton32( 0 );
-									memcpy( buffer + 1, &seconds, sizeof( seconds ) );
-									m_Socket.Send( buffer, 5, address, port );
-
-									// Unlock the ban set mutex.
-									m_BanSet.Mutex.Unlock( );
-
-									// Unlock the connection mutex
-									m_ConnectionMutex.Unlock( );
-									continue;
-								}
-								m_BanSet.Mutex.Unlock( );
-
-								// Send Deny packet if the server is full.
-								if( m_AddressConnections.size( ) == m_MaxConnections || m_FreeUserIds.size( ) == 0 )
-								{
-									buffer[ 0 ] = ePacketType::Close;
-									m_Socket.Send( buffer, 1, address, port );
-									
-									// Unlock the connection mutex
-									m_ConnectionMutex.Unlock( );
-									continue;
-								}
-
-								// Get a user id for this connection
-								const Uint16 userId = m_FreeUserIds.front( );
-								m_FreeUserIds.pop( );
-
-								// Create the connection
-								Connection * pConnection = new Connection( address, port, userId );
-
-								// Add the client to the address connection map
-								m_AddressConnections.insert( AddressConnectionMapPair( clientAddress, pConnection ) );
-
-								// Add the client to the user connection map
-								m_UserConnections.insert( UserConnectionMapPair( userId, pConnection ) );
-
-								// Unlock the connection mutex
-								m_ConnectionMutex.Unlock( );
-						
-								// Start client thread.
-								pConnection->StartThreads( this );
-
-								// Answer the client with a SYNACK packet.
-								buffer[ 0 ] = ePacketType::SynAck;
-								m_Socket.Send( buffer, 1, address, port );
-
-								// Run the on connection function
-								OnConnection( userId );
-							}
-							else
-							{
-								// Unlock the connection mutex
-								m_ConnectionMutex.Unlock( );
-							}
+							// Unlock the connection mutex
+							m_ConnectionMutex.Unlock( );
 						}
-				
 					}
+				
 				}
+			}
+			);
+
+			// Start the entity thread
+			m_EntityThread.Execute( [ this ] ( )
+			{
+				while( IsRunning( ) )
+				{
+					// Sleep for some time
+					const Bit::Float64 ups = 30.0f;
+					Bit::Sleep( Bit::Seconds( 1.0f / ups ) );
+
+					// Create the entity message
+					SizeType messageSize = 0;
+					Uint8 * pData = reinterpret_cast<Uint8 * >( m_EntityManager.CreateEntityMessage( messageSize ) );
+
+					// Error check the message
+					if( messageSize == 0 || pData == NULL )
+					{
+						continue;
+					}
+
+					// Send the message to all the connections
+				/*	m_ConnectionMutex.Lock( );
+
+					for(	UserConnectionMap::iterator it = m_UserConnections.begin( );
+							it != m_UserConnections.end( );
+							it++ )
+					{
+						it->second->SendUnreliable( pData, messageSize );
+					}
+
+					m_ConnectionMutex.Unlock( );*/
+
+				}
+			}
 			);
 
 			// Start the cleanup thread.
@@ -367,6 +402,9 @@ namespace Bit
 				m_Running.Mutex.Lock( );
 				m_Running.Value = false;
 				m_Running.Mutex.Unlock( );
+
+				// Wait for the entity thread to finish
+				m_EntityThread.Finish( );
 
 				// Wait for the cleanup thread to finish
 				m_CleanupSemaphore.Release( );

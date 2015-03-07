@@ -221,6 +221,7 @@ namespace Bit
 			// Private variables
 			UdpSocket							m_Socket;				///< Udp socket.
 			Thread								m_MainThread;			///< Thread for handling incoming packets.
+			Thread								m_EntityThread;			///< Thread for sending entity states to users.
 			Thread								m_CleanupThread;		///< Thread for cleaning up connections.
 			Semaphore							m_CleanupSemaphore;		///< Semaphore for cleanups.
 			ThreadValue<ConnectionList>			m_CleanupConnections;	///< Queue of connections to cleanup.

@@ -294,6 +294,11 @@ namespace Bit
 													AddEventMessage( pReceivedData );
 												}
 												break;
+												case eMessageType::EntityMessageType:
+												{
+													std::cout << "Entity MESSAGE!" << std::endl;
+												};
+												break;
 												default:
 													break;
 											}
@@ -331,6 +336,11 @@ namespace Bit
 													{
 														AddEventMessage( pReceivedData );
 													}
+													break;
+													case eMessageType::EntityMessageType:
+													{
+														std::cout << "Entity MESSAGE!" << std::endl;
+													};
 													break;
 													default:
 														break;

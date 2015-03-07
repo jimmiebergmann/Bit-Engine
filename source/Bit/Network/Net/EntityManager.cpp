@@ -22,6 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/EntityManager.hpp>
+#include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -43,7 +44,6 @@ namespace Bit
 
 			for( EntityMap::iterator it =  m_Entities.begin( ); it !=  m_Entities.end( ); it++ )
 			{
-				delete it->second->pEntity;
 				delete it->second;
 			}
 			m_Entities.clear( );
@@ -74,7 +74,7 @@ namespace Bit
 			// Set id and entity changer
 			pEntity->m_Id = m_CurrentId;
 			pEntity->m_Name = p_Key;
-			pEntity->m_pEntityChanger = m_pEntityChanger;
+			pEntity->m_pEntityManager = this;
 
 			// Go through the variables and set the parent(entity)
 			EntityMetaData * pMetadata = it->second;
@@ -101,6 +101,50 @@ namespace Bit
 
 			// Return the newly created entity
 			return pEntity;
+		}
+
+		void EntityManager::DestroyEntity( Entity * p_pEntity, const Bool & p_Unallocate )
+		{
+			// Error check the entity pointer
+			if( p_pEntity == NULL )
+			{
+				return;
+			}
+
+			// Get the entity link
+			EntityMap::iterator linkIt = m_Entities.find( p_pEntity->GetId( ) );
+			if( linkIt == m_Entities.end( ) )
+			{
+				return;
+			}
+
+			// Get the iterator for the entity map
+			EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_pEntity->GetName( ) );
+			if( it == m_EntityMetaDataMap.end( ) )
+			{
+				return;
+			}
+
+			// Go through the variables and remove the parent
+			EntityMetaData * pMetadata = it->second;
+			for( EntityVariableMap::iterator it2 = pMetadata->EntityVariables.begin( );
+				 it2 != pMetadata->EntityVariables.end( );
+				 it2++ )
+			{
+				// Get the current variable pointer
+				VariableBase Entity::*pVariable = it2->second;
+				(p_pEntity->*pVariable).m_pParent = NULL;
+			}
+
+			// Delete and remove the link
+			delete linkIt->second;
+			m_Entities.erase( linkIt );
+
+			// Delete the pointer
+			if( p_Unallocate )
+			{
+				delete p_pEntity;
+			}
 		}
 
 		Entity * EntityManager::GetEntity( const Uint16 p_EntityId )
@@ -358,6 +402,9 @@ namespace Bit
 			
 			// Create the message
 			std::vector<Uint8> message;
+
+			// Add message type.
+			message.push_back( static_cast<Uint8>( eMessageType::EventMessageType ) );
 
 			// Add entity count
 			Uint16 entityCount = Hton16( static_cast<Uint16>( m_ChangedEntities.size( ) ) );

@@ -54,6 +54,8 @@ namespace Bit
 
 			// Friend classes
 			friend class ServerEntityChanger;
+			friend class VariableBase;
+			template<typename T> friend class Variable;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
@@ -110,6 +112,7 @@ namespace Bit
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create a new entity.
+			///		   Make sure to destroy the entity by yourself.
 			///
 			/// \param p_Key Name of the entity, or key value.
 			///
@@ -117,6 +120,15 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Entity * CreateEntityByName( const std::string & p_Key );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Destroy entity.
+			///
+			/// \param p_pEntity	Pointer to the entity.
+			/// \param p_Unallocate	Unallocate the memory.
+			///
+			////////////////////////////////////////////////////////////////
+			void DestroyEntity( Entity * p_pEntity, const Bool & p_Unallocate = true );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get entity.
@@ -200,11 +212,11 @@ namespace Bit
 			};
 		
 			// Private variable
-			EntityChanger * m_pEntityChanger;		///< Poiter to entity changer base class.
-			EntityMetaDataMap m_EntityMetaDataMap;	///< Map of entity class meta data.
-			ChangedEntitiesMap m_ChangedEntities;	///< Map of changed entitites
-			EntityMap m_Entities;					///< Map of all entities.
-			Uint32 m_CurrentId;						///< Temporary solution for incremening the ID.
+			EntityChanger *		m_pEntityChanger;		///< Poiter to entity changer base class.
+			EntityMetaDataMap	m_EntityMetaDataMap;	///< Map of entity class meta data.
+			ChangedEntitiesMap	m_ChangedEntities;		///< Map of changed entitites
+			EntityMap			m_Entities;				///< Map of all entities.
+			Uint32				m_CurrentId;			///< Temporary solution for incremening the ID.
 
 		};
 
