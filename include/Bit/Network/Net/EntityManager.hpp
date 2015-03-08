@@ -168,7 +168,8 @@ namespace Bit
 			/// \return Pointer to the message data.
 			///
 			////////////////////////////////////////////////////////////////
-			void * CreateEntityMessage( SizeType & p_MessageSize );
+			Bool CreateEntityMessage(	std::vector<Uint8> & p_Message,
+										SizeType & p_MessageSize );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Clear the list of all changed entities.

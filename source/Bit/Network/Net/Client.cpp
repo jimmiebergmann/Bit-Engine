@@ -121,7 +121,7 @@ namespace Bit
 					// Start the client thread.
 					m_Thread.Execute( [ this ] ( )
 					{
-							const SizeType bufferSize = 128;
+							const SizeType bufferSize = 2048;
 							Uint8 buffer[ bufferSize ];
 							Address address;
 							Uint16 port = 0;
@@ -296,7 +296,8 @@ namespace Bit
 												break;
 												case eMessageType::EntityMessageType:
 												{
-													std::cout << "Entity MESSAGE!" << std::endl;
+													m_EntityManager.ParseEntityMessage( &(pReceivedData->pData[ 1 ]), pReceivedData->DataSize );
+													delete pReceivedData;
 												};
 												break;
 												default:
@@ -339,7 +340,8 @@ namespace Bit
 													break;
 													case eMessageType::EntityMessageType:
 													{
-														std::cout << "Entity MESSAGE!" << std::endl;
+														m_EntityManager.ParseEntityMessage( &(pReceivedData->pData[ 1 ]), pReceivedData->DataSize );
+														delete pReceivedData;
 													};
 													break;
 													default:

@@ -368,13 +368,14 @@ namespace Bit
 		}
 
 
-		void * EntityManager::CreateEntityMessage( SizeType & p_MessageSize )
+		Bool EntityManager::CreateEntityMessage(	std::vector<Uint8> & p_Message,
+													SizeType & p_MessageSize )
 		{
 			// Check if any entities were changed
 			if( m_ChangedEntities.size( ) == 0 )
 			{
 				p_MessageSize = 0;
-				return NULL;
+				return false;
 			}
 
 			/*
@@ -400,16 +401,16 @@ namespace Bit
 			*/
 
 			
-			// Create the message
-			std::vector<Uint8> message;
+			// Clear the message
+			p_Message.clear( );
 
 			// Add message type.
-			message.push_back( static_cast<Uint8>( eMessageType::EventMessageType ) );
+			p_Message.push_back( static_cast<Uint8>( eMessageType::EntityMessageType ) );
 
 			// Add entity count
 			Uint16 entityCount = Hton16( static_cast<Uint16>( m_ChangedEntities.size( ) ) );
-			message.push_back( static_cast<Uint8>( entityCount ) );
-			message.push_back( static_cast<Uint8>( entityCount >> 8 ) );
+			p_Message.push_back( static_cast<Uint8>( entityCount ) );
+			p_Message.push_back( static_cast<Uint8>( entityCount >> 8 ) );
 
 			// Go through the changed entities(name)
 			for( ChangedEntitiesMap::iterator it = m_ChangedEntities.begin( );
@@ -419,22 +420,25 @@ namespace Bit
 				// Get the changed variables(name)
 				ChangedVariablesMap * pChangedVariables = it->second;
 
+				// Store the position for the block size, we need to set it later
+				Uint16 eBlockPos = static_cast<Uint16>( p_Message.size( ) );
+
 				// Add block size and entity name length and name
-				message.push_back( 0 );
-				message.push_back( 0 );
+				p_Message.push_back( 0 );
+				p_Message.push_back( 0 );
 
-				message.push_back( static_cast<Uint8>( it->first.size( ) ) );
+				p_Message.push_back( static_cast<Uint8>( it->first.size( ) ) );
 
-				message.reserve( message.size( ) + it->first.size( ) );
+				p_Message.reserve( p_Message.size( ) + it->first.size( ) );
 				for( SizeType i = 0; i < it->first.size( ); i++ )
 				{
-					message.push_back( static_cast<Uint8>( it->first[ i ] ) );
+					p_Message.push_back( static_cast<Uint8>( it->first[ i ] ) );
 				}
 
 				// Add varaible count
 				Uint16 variableCount = Hton16( static_cast<Uint16>( it->second->size( ) ) );
-				message.push_back( static_cast<Uint8>( variableCount ) );
-				message.push_back( static_cast<Uint8>( variableCount >> 8 ) );
+				p_Message.push_back( static_cast<Uint8>( variableCount ) );
+				p_Message.push_back( static_cast<Uint8>( variableCount >> 8 ) );
 
 				// Go through the changed entities(name)
 				for( ChangedVariablesMap::iterator it2 = pChangedVariables->begin( );
@@ -443,30 +447,33 @@ namespace Bit
 				{
 					ChangedEntityVariableMap * pChangedEntityVariables = it2->second;
 
+					// Store the position for the block size, we need to set it later
+					Uint16 vBlockPos = static_cast<Uint16>( p_Message.size( ) );
+
 					// Add block size and variable name length and name
-					message.push_back( 0 );
-					message.push_back( 0 );
+					p_Message.push_back( 0 );
+					p_Message.push_back( 0 );
 
-					message.push_back( static_cast<Uint8>( it2->first.size( ) ) );
+					p_Message.push_back( static_cast<Uint8>( it2->first.size( ) ) );
 
-					message.reserve( message.size( ) + it2->first.size( ) );
+					p_Message.reserve( p_Message.size( ) + it2->first.size( ) );
 					for( SizeType j = 0; j < it2->first.size( ); j++ )
 					{
-						message.push_back( static_cast<Uint8>( it2->first[ j ] ) );
+						p_Message.push_back( static_cast<Uint8>( it2->first[ j ] ) );
 					}
 
 					// Add id count
 					Uint16 idCount = Hton16( static_cast<Uint16>( it2->second->size( ) ) );
-					message.push_back( static_cast<Uint8>( idCount ) );
-					message.push_back( static_cast<Uint8>( idCount >> 8 ) );
+					p_Message.push_back( static_cast<Uint8>( idCount ) );
+					p_Message.push_back( static_cast<Uint8>( idCount >> 8 ) );
 
 					// Add data size
 					if( pChangedEntityVariables->begin( ) == pChangedEntityVariables->end( ) )
 					{
 						p_MessageSize = 0;
-						return NULL;
+						return false;
 					}
-					message.push_back( static_cast<Uint8>( pChangedEntityVariables->begin( )->second->GetSize( ) ) );
+					p_Message.push_back( static_cast<Uint8>( pChangedEntityVariables->begin( )->second->GetSize( ) ) );
 
 					// Get the changed entity and variable
 					for( ChangedEntityVariableMap::iterator it3 = pChangedEntityVariables->begin( );
@@ -478,15 +485,41 @@ namespace Bit
 
 						// Get the varaible
 						VariableBase * pVariable = it3->second;
+						
+						// Add the entity id
+						Uint16 entityId = Hton16( static_cast<Uint16>( pEntity->GetId( ) ) );
+						p_Message.push_back( static_cast<Uint8>( entityId ) );
+						p_Message.push_back( static_cast<Uint8>( entityId >> 8 ) );
 
+						// Add the data
+						Uint16 dataPos = static_cast<Uint16>( p_Message.size( ) );
+						p_Message.resize( p_Message.size( ) + pVariable->GetSize( ) );
 
+						// Create temporary variable, in order to access the data pointer
+						Variable<Uint8> * pTempVar = reinterpret_cast<Variable<Uint8> *>( pVariable );
+						void * pDataPointer = reinterpret_cast<void *>( &(pTempVar->m_Value ) );
+
+						// copy the data
+						memcpy( &(p_Message[ dataPos ] ), pDataPointer, pVariable->GetSize( ) );
 					}
+
+					// Set the variable block size
+					Uint16 vBlockSize = Hton16( static_cast<Uint16>( p_Message.size( ) ) - vBlockPos - 2 );
+					p_Message[ vBlockPos ] = static_cast<Uint8>( vBlockSize );
+					p_Message[ vBlockPos + 1 ] = static_cast<Uint8>( vBlockSize >> 8 );
+
 				}
+
+				// Set the entity block size
+				Uint16 eBlockSize = Hton16( static_cast<Uint16>( p_Message.size( ) ) - eBlockPos - 2 );
+				p_Message[ eBlockPos ] = static_cast<Uint8>( eBlockSize );
+				p_Message[ eBlockPos + 1 ] = static_cast<Uint8>( eBlockSize >> 8 );
+
 			}
 			
 			// Return the message pointer and set the message size
-			p_MessageSize = static_cast<SizeType>( message.size( ) );
-			return reinterpret_cast<void *>( message.data( ) );
+			p_MessageSize = static_cast<SizeType>( p_Message.size( ) );
+			return true;
 		}
 
 		void EntityManager::ClearEntityMessage( )

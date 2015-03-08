@@ -297,26 +297,30 @@ namespace Bit
 					Bit::Sleep( Bit::Seconds( 1.0f / ups ) );
 
 					// Create the entity message
+					std::vector<Uint8> message;
 					SizeType messageSize = 0;
-					Uint8 * pData = reinterpret_cast<Uint8 * >( m_EntityManager.CreateEntityMessage( messageSize ) );
+					if( m_EntityManager.CreateEntityMessage( message, messageSize ) == false )
+					{
+						continue;
+					}
 
 					// Error check the message
-					if( messageSize == 0 || pData == NULL )
+					if( messageSize == 0 )
 					{
 						continue;
 					}
 
 					// Send the message to all the connections
-				/*	m_ConnectionMutex.Lock( );
+					m_ConnectionMutex.Lock( );
 
 					for(	UserConnectionMap::iterator it = m_UserConnections.begin( );
 							it != m_UserConnections.end( );
 							it++ )
 					{
-						it->second->SendUnreliable( pData, messageSize );
+						it->second->SendUnreliable( reinterpret_cast<Uint8 * >( message.data( ) ), messageSize );
 					}
 
-					m_ConnectionMutex.Unlock( );*/
+					m_ConnectionMutex.Unlock( );
 
 				}
 			}
