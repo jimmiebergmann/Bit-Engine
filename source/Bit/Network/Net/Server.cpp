@@ -38,7 +38,8 @@ namespace Bit
 
 		Server::Server( ) :
 			m_EntityManager( new ServerEntityChanger( &m_EntityManager ) ),
-			m_MaxConnections( 0 )
+			m_MaxConnections( 0 ),
+			m_EntityUpdatesPerSecond( 0 )
 		{
 	
 		}
@@ -158,7 +159,9 @@ namespace Bit
 			m_BanSet.Mutex.Unlock( );
 		}
 
-		Bool Server::Start( const Uint16 p_Port, Uint8 p_MaxConnections )
+		Bool Server::Start( const Uint16 p_Port,
+							const Uint8 p_MaxConnections,
+							const Uint8 p_EntityUpdatesPerSecond )
 		{
 			// Open the udp socket.
 			if( m_Socket.Open( p_Port ) == false )
@@ -169,6 +172,9 @@ namespace Bit
 
 			// Set max connections.
 			m_MaxConnections = p_MaxConnections;
+
+			// Set entity updates per second
+			m_EntityUpdatesPerSecond = p_EntityUpdatesPerSecond;
 
 			// Add the free user IDs to the queue
 			for( Uint16 i = 0; i < static_cast<Uint16>(m_MaxConnections); i++ )
@@ -290,11 +296,34 @@ namespace Bit
 			// Start the entity thread
 			m_EntityThread.Execute( [ this ] ( )
 			{
+				if( m_EntityUpdatesPerSecond == 0 )
+				{
+					return;
+				}
+
+				// Calculate the update time
+				const Float64 updateTime = 1.0f / static_cast<Float64>( m_EntityUpdatesPerSecond );
+
+				// Start a timer
+				Timer timer;
+				timer.Start( );
+
+				// Run the 
 				while( IsRunning( ) )
 				{
+
+					// Calculate the sleep time
+					timer.Stop( );
+					Float64 sleepTime = updateTime - timer.GetTime( ).AsSeconds( );
+
 					// Sleep for some time
-					const Bit::Float64 ups = 30.0f;
-					Bit::Sleep( Bit::Seconds( 1.0f / ups ) );
+					if( sleepTime > 0.0f )
+					{
+						Sleep( Bit::Seconds( sleepTime ) );
+					}
+
+					// Start the timer
+					timer.Start( );
 
 					// Create the entity message
 					std::vector<Uint8> message;

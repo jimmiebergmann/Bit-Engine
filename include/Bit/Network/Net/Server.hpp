@@ -168,11 +168,14 @@ namespace Bit
 			///
 			/// \param p_Port Server port.
 			/// \param p_MaxConnections Maximum number of connections.
+			/// \param p_EntityUpdatesPerSecond Entity updates per second.
 			///
 			/// \return True if succeeded, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool Start( const Uint16 p_Port, Uint8 p_MaxConnections = 255 );
+			Bool Start( const Uint16 p_Port, 
+						const Uint8 p_MaxConnections = 255,
+						const Uint8 p_EntityUpdatesPerSecond = 20 );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Stop the server.
@@ -219,20 +222,21 @@ namespace Bit
 			
 
 			// Private variables
-			UdpSocket							m_Socket;				///< Udp socket.
-			Thread								m_MainThread;			///< Thread for handling incoming packets.
-			Thread								m_EntityThread;			///< Thread for sending entity states to users.
-			Thread								m_CleanupThread;		///< Thread for cleaning up connections.
-			Semaphore							m_CleanupSemaphore;		///< Semaphore for cleanups.
-			ThreadValue<ConnectionList>			m_CleanupConnections;	///< Queue of connections to cleanup.
-			Uint8								m_MaxConnections;		///< Maximum amount of connections.
-			FreeUserIdMap						m_FreeUserIds;			///< Queue of free user Ids.
-			AddressConnectionMap				m_AddressConnections;	///< Map of all the connections via their addresses.
-			UserConnectionMap					m_UserConnections;		///< Map of all the connections via their user IDs.
-			Mutex								m_ConnectionMutex;		///< Mutex for the address and user connections.
-			ThreadValue<Bool>					m_Running;				///< Flag for checking if the server is running.
-			ThreadValue<AddressSet>				m_BanSet;				///< Set of banned addresses.
-			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;	///< Map of user message listeners and their message types.
+			UdpSocket							m_Socket;					///< Udp socket.
+			Thread								m_MainThread;				///< Thread for handling incoming packets.
+			Thread								m_EntityThread;				///< Thread for sending entity states to users.
+			Thread								m_CleanupThread;			///< Thread for cleaning up connections.
+			Semaphore							m_CleanupSemaphore;			///< Semaphore for cleanups.
+			ThreadValue<ConnectionList>			m_CleanupConnections;		///< Queue of connections to cleanup.
+			Uint8								m_MaxConnections;			///< Maximum amount of connections.
+			Uint8								m_EntityUpdatesPerSecond;	///< Number of updates per second for the entities.
+			FreeUserIdMap						m_FreeUserIds;				///< Queue of free user Ids.
+			AddressConnectionMap				m_AddressConnections;		///< Map of all the connections via their addresses.
+			UserConnectionMap					m_UserConnections;			///< Map of all the connections via their user IDs.
+			Mutex								m_ConnectionMutex;			///< Mutex for the address and user connections.
+			ThreadValue<Bool>					m_Running;					///< Flag for checking if the server is running.
+			ThreadValue<AddressSet>				m_BanSet;					///< Set of banned addresses.
+			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;		///< Map of user message listeners and their message types.
 			
 		};
 
