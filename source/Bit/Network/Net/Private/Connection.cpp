@@ -91,55 +91,33 @@ namespace Bit
 					static_cast<Uint64>( m_Port ) +
 					static_cast<Uint64>( m_Port ) ;
 		}
-/*
 
-
-		Bit::Bool Connection::Receive( Packet & p_Packet )
-		{
-			// Check if there's data to read, lock the mutex.
-			m_ReceivedData.Mutex.Lock( );
-			if( m_ReceivedData.Value.size( ) == 0 )
-			{
-				// Unlock the mutex and return false.
-				m_ReceivedData.Mutex.Unlock( );
-				return false;
-			}
-
-			// Get the received data
-			ReceivedData * pReceivedData = m_ReceivedData.Value.front( );
-
-			// Unlock the mutex
-			m_ReceivedData.Mutex.Unlock( );
-
-			/// Calculate the data size
-			Bit::SizeType dataSize = pReceivedData->DataSize;
-
-			// Set the parameter
-			p_Packet.pData = pReceivedData->pData;
-			p_Packet.DataSize = pReceivedData->DataSize;
-			p_Packet.Sequence = pReceivedData->Sequence;
-
-			// Remove the received data from the queue.
-			delete pReceivedData;
-
-			// Pop the data in mutex lock.
-			m_ReceivedData.Mutex.Lock( );
-			m_ReceivedData.Value.pop( );
-			m_ReceivedData.Mutex.Unlock( );
-
-			// Return true.
-			return true;
-		}
-		*/
 		// Raw packet struct
-		Connection::RawPacket::RawPacket( Uint8 * p_pData, const SizeType p_DataSize )
+		Connection::RawPacket::RawPacket(	Uint8 * p_pData,
+											const SizeType p_DataSize ) :
+			DataSize( p_DataSize )
 		{
-			DataSize = p_DataSize;
 			pData = new Uint8[ p_DataSize ];
 			memcpy( pData, p_pData, p_DataSize );
 		}
 
 		Connection::RawPacket::~RawPacket( )
+		{
+			delete [ ] pData;
+		}
+
+		// received data struct
+		Connection::ReceivedData::ReceivedData( Uint8 * p_pData,
+												const SizeType p_DataSize,
+												const Uint16 p_Sequence ) :
+			Sequence( p_Sequence ),
+			DataSize( p_DataSize )
+		{
+			pData = new Uint8[ p_DataSize ];
+			memcpy( pData, p_pData, p_DataSize );
+		}
+
+		Connection::ReceivedData::~ReceivedData( )
 		{
 			delete [ ] pData;
 		}
@@ -325,16 +303,15 @@ namespace Bit
 										continue;
 									}
 
-									// Add the unreliable packet to the received data queue.	
-									ReceivedData * pReceivedData = new ReceivedData;
-									pReceivedData->DataSize = pPacket->DataSize - HeaderSize;
-									pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
-									memcpy( pReceivedData->pData, pPacket->pData + HeaderSize, pReceivedData->DataSize );
-
 									// Get the sequence
-									pReceivedData->Sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 1 ] ) ) |
-																		static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 2 ] ) << 8 ) );
-														
+									const Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 1 ] ) ) |
+																	static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 2 ] ) << 8 ) );
+
+									// Add the unreliable packet to the received data queue.	
+									ReceivedData * pReceivedData = new ReceivedData(	pPacket->pData + HeaderSize,
+																						pPacket->DataSize - HeaderSize,
+																						sequence );
+									
 									switch( pReceivedData->pData[ 0 ] )
 									{
 										case eMessageType::UserMessageType:
@@ -362,11 +339,11 @@ namespace Bit
 									// Add the unreliable packet to the received data queue if it's not a resent packet.
 									if( m_AcknowledgementData.AddAcknowledgement( sequence ) )
 									{
-										ReceivedData * pReceivedData = new ReceivedData;
-										pReceivedData->Sequence = sequence;
-										pReceivedData->DataSize = pPacket->DataSize - HeaderSize;
-										pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
-										memcpy( pReceivedData->pData, pPacket->pData + HeaderSize, pReceivedData->DataSize );
+									
+										// Add the unreliable packet to the received data queue.	
+										ReceivedData * pReceivedData = new ReceivedData(	pPacket->pData + HeaderSize,
+																							pPacket->DataSize - HeaderSize,
+																							sequence );
 
 										switch( pReceivedData->pData[ 0 ] )
 										{
@@ -475,7 +452,6 @@ namespace Bit
 
 						// Delete the received data pointer
 						delete pReceivedData;
-
 					}
 
 					m_UserMessages.Mutex.Unlock( );

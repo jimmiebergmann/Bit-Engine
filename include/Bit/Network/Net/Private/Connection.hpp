@@ -142,8 +142,11 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			struct ReceivedData
 			{
+				ReceivedData( Uint8 * p_pData, const SizeType p_DataSize, const Uint16 p_Sequence );
+				~ReceivedData( );
+
 				Uint16		Sequence;
-				Uint8 *			pData;
+				Uint8 *		pData;
 				SizeType	DataSize;
 			};
 

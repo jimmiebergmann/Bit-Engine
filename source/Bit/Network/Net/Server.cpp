@@ -47,6 +47,7 @@ namespace Bit
 		Server::~Server( )
 		{
 			Stop( );
+			UnhookUserMessages( );
 		}
 
 		void Server::OnConnection( const Uint16 p_UserId )
@@ -65,11 +66,6 @@ namespace Bit
 		HostMessage * Server::CreateHostMessage( const std::string & p_Name, const Int32 p_MessageSize )
 		{
 			return new HostMessage( p_Name, this, p_MessageSize );
-		}
-
-		Event * Server::CreateEvent( const std::string & p_Name )
-		{
-			return new Event( p_Name, this );
 		}
 			
 		Bool Server::DisconnectUser( const Uint16 p_UserId )
@@ -520,6 +516,22 @@ namespace Bit
 			m_UserMessageListeners.Mutex.Unlock( );
 
 			return true;
+		}
+
+		void Server::UnhookUserMessages( )
+		{
+			m_UserMessageListeners.Mutex.Lock( );
+
+			for(	UserMessageListenerMap::iterator it = m_UserMessageListeners.Value.begin( );
+					it != m_UserMessageListeners.Value.end( );
+					it++ )
+			{
+				delete it->second;
+			}
+			m_UserMessageListeners.Value.clear( );
+
+
+			m_UserMessageListeners.Mutex.Unlock( );
 		}
 
 		void Server::AddConnectionForCleanup( Connection * p_pConnection )

@@ -62,8 +62,7 @@ namespace Bit
 		enum eMessageType
 		{
 			EntityMessageType	= 0,
-			UserMessageType		= 1,
-			EventMessageType	= 2
+			UserMessageType		= 1
 		};
 
 		////////////////////////////////////////////////////////////////

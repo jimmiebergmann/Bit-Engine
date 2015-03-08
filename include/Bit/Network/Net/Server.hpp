@@ -66,7 +66,6 @@ namespace Bit
 
 			// friend classes
 			friend class Connection;
-			friend class Event;
 			friend class HostMessage;
 			friend class HostRecipientFilter;
 
@@ -130,16 +129,6 @@ namespace Bit
 			HostMessage * CreateHostMessage( const std::string & p_Name, const Int32 p_MessageSize = -1 );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Create event.
-			///
-			/// Destroy the pointer by yourself, or you will suffer from memoryleaks.
-			///
-			/// \param p_Name Name of the event.
-			///
-			////////////////////////////////////////////////////////////////
-			Event * CreateEvent( const std::string & p_Name );
-
-			////////////////////////////////////////////////////////////////
 			/// \brief Disconnect a user from the server.
 			///
 			////////////////////////////////////////////////////////////////
@@ -194,6 +183,12 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Bool HookUserMessage( UserMessageListener * p_pListener, const std::string & m_MessageName );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Unhook all the user messages
+			///
+			////////////////////////////////////////////////////////////////
+			void UnhookUserMessages( );
 
 			// Protected variables
 			EntityManager		m_EntityManager;

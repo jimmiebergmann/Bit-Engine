@@ -165,9 +165,6 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\Client.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Entity.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\EntityManager.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\Net\Event.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\Net\EventDecoder.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\Net\EventListener.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\Connection.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\ServerEntityChanger.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\HostMessageDecoder.cpp" />
@@ -198,9 +195,6 @@
     <ClInclude Include="..\..\include\Bit\Network\Net\Client.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Entity.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\EntityManager.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Net\Event.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Net\EventDecoder.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Net\EventListener.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\Connection.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\EntityChanger.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\NetPacket.hpp" />

@@ -46,15 +46,6 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\ServerEntityChanger.cpp">
       <Filter>Net\Private</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\Event.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\EventListener.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\EventDecoder.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\Bit\Network\Net\HostMessage.cpp">
       <Filter>Net</Filter>
     </ClCompile>
@@ -141,15 +132,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\NetPacket.hpp">
       <Filter>Net\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\Event.hpp">
-      <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\EventListener.hpp">
-      <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\EventDecoder.hpp">
-      <Filter>Net</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\HostMessage.hpp">
       <Filter>Net</Filter>

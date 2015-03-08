@@ -29,7 +29,6 @@
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/Network/Net/HostMessageListener.hpp>
-#include <Bit/Network/Net/EventListener.hpp>
 #include <Bit/Network/Net/UserMessage.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
@@ -128,12 +127,6 @@ namespace Bit
 			Bool HookHostMessage( HostMessageListener * p_pListener, const std::string & m_MessageName );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Add listener to an event.
-			///
-			////////////////////////////////////////////////////////////////
-			Bool HookEvent( EventListener * p_pListener, const std::string & m_EventName );
-
-			////////////////////////////////////////////////////////////////
 			/// \brief Create user message.
 			///
 			/// Destroy the pointer by yourself, or you will suffer from memoryleaks.
@@ -220,11 +213,8 @@ namespace Bit
 			typedef std::pair<Uint16, ReliablePacket*>					ReliablePacketPair;
 			typedef std::list<Time>										TimeList;
 			typedef std::set<HostMessageListener*>						HostMessageListenerSet;
-			typedef std::set<EventListener*>							EventListenerSet;
 			typedef std::map<std::string, HostMessageListenerSet *>		HostMessageListenerMap;
 			typedef std::pair<std::string, HostMessageListenerSet *>	HostMessageListenerPair;
-			typedef std::map<std::string, EventListenerSet *>			EventListenerMap;
-			typedef std::pair<std::string, EventListenerSet *>			EventListenerPair;
 			typedef std::queue<ReceivedData*>							ReceivedDataQueue;
 
 			// Private functions
@@ -235,8 +225,7 @@ namespace Bit
 			void InternalDisconnect(	const Bool p_CloseMainThread,
 										const Bool p_CloseTriggerThread,
 										const Bool p_CloseReliableThread,
-										const Bool p_CloseUserMessageThread,
-										const Bool p_CloseEventThread );
+										const Bool p_CloseUserMessageThread );
 
 
 			////////////////////////////////////////////////////////////////
@@ -280,12 +269,6 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			void AddHostMessage( ReceivedData * p_ReceivedData );
 
-			////////////////////////////////////////////////////////////////
-			/// \brief	Function for adding event messages to the function caller queue.
-			///
-			////////////////////////////////////////////////////////////////
-			void AddEventMessage( ReceivedData * p_ReceivedData );
-
 			// Private variables
 			UdpSocket							m_Socket;				///< Udp socket.
 			Uint16								m_Port;					///< Udp and TCP port.
@@ -293,7 +276,6 @@ namespace Bit
 			Thread								m_TriggerThread;		///< Thread for creating specific triggers.
 			Thread								m_ReliableThread;		///< Thread for checking reliable packets for resend.
 			Thread								m_UserMessageThread;	///< Thread for handling user messages.
-			Thread								m_EventThread;			///< Thread for handling events.
 			Address								m_ServerAddress;		///< The server's address.
 			Uint16								m_ServerPort;			///< The server's port.
 			ThreadValue<Bool>					m_Connected;			///< Flag for checking if you are connected.
@@ -307,10 +289,7 @@ namespace Bit
 			TimeList							m_PingList;				///< List of the last pings.
 			ThreadValue<HostMessageListenerMap>	m_HostMessageListeners;	///< Map of user message listeners and their message types.
 			ThreadValue<ReceivedDataQueue>		m_UserMessages;			///< Queue of user messages
-			ThreadValue<EventListenerMap>		m_EventListeners;		///< Map of event listeners and their message types.
-			ThreadValue<ReceivedDataQueue>		m_Events;				///< Queue of events.
 			Semaphore							m_UserMessageSemaphore;	///< Semaphore for executing user message listeners.
-			Semaphore							m_EventSemaphore;		///< Semaphore for executing event listeners.
 
 		};
 
