@@ -45,6 +45,21 @@ namespace Bit
 		WaitForSingleObject(  m_Semaphore, INFINITE );
 	}
 
+	void SemaphoreWin32::Wait( const Time & p_Timeout )
+	{
+		DWORD time = static_cast<DWORD>( p_Timeout.AsMilliseconds( ) );
+
+		// Do not timeout
+		if( time == 0 )
+		{
+			WaitForSingleObject(  m_Semaphore, INFINITE );
+			return;
+		}
+
+		// Wait for the sempahore to release, with timeout
+		WaitForSingleObject(  m_Semaphore, time );
+	}
+
 	void SemaphoreWin32::Release( const Uint32 & p_Ammount )
 	{
 		ReleaseSemaphore( m_Semaphore, static_cast<LONG>( p_Ammount ), NULL );

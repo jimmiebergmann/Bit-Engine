@@ -34,3 +34,19 @@ ThreadValue<T>::ThreadValue( T p_Value ) :
 {
 	
 }
+
+template <typename T>
+T ThreadValue<T>::Get( )
+{
+	SmartMutex sm( Mutex );
+	sm.Lock( );
+	return Value;
+}
+
+template <typename T>
+void ThreadValue<T>::Set( const T & p_Value )
+{
+	Mutex.Lock( );
+	Value = p_Value;
+	Mutex.Unlock( );
+}

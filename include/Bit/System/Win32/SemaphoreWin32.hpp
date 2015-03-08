@@ -26,6 +26,7 @@
 #define BIT_SYSTEM_SEMAPHORE_WIN32_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Time.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Windows.h>
 #undef SetPort
@@ -61,6 +62,15 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		void Wait( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Wait until the semaphore is larger than 0.
+		///
+		/// \param p_Timeout	Time for the sempahore wait to timeout.
+		///						No timeout if value is 0.
+		///
+		////////////////////////////////////////////////////////////////
+		void Wait( const Time & p_Timeout );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Release the semaphore by the ammount.
