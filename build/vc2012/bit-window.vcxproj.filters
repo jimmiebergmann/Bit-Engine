@@ -14,11 +14,15 @@
     <ClInclude Include="..\..\include\Bit\Window\Style.hpp" />
     <ClInclude Include="..\..\include\Bit\Window\VideoMode.hpp" />
     <ClInclude Include="..\..\include\Bit\Window\Window.hpp" />
+    <ClInclude Include="..\..\include\Bit\Window\SimpleRenderWindow.hpp" />
+    <ClInclude Include="..\..\include\Bit\Window\Shape.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Window\Win32\RenderWindowWin32.cpp">
       <Filter>Win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\Window\VideoMode.cpp" />
+    <ClCompile Include="..\..\source\Bit\Window\SimpleRenderWindow.cpp" />
+    <ClCompile Include="..\..\source\Bit\Window\Shape.cpp" />
   </ItemGroup>
 </Project>

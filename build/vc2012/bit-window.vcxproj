@@ -171,13 +171,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Window\Event.hpp" />
+    <ClInclude Include="..\..\include\Bit\Window\Shape.hpp" />
     <ClInclude Include="..\..\include\Bit\Window\RenderWindow.hpp" />
+    <ClInclude Include="..\..\include\Bit\Window\SimpleRenderWindow.hpp" />
     <ClInclude Include="..\..\include\Bit\Window\Style.hpp" />
     <ClInclude Include="..\..\include\Bit\Window\VideoMode.hpp" />
     <ClInclude Include="..\..\include\Bit\Window\Win32\RenderWindowWin32.hpp" />
     <ClInclude Include="..\..\include\Bit\Window\Window.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Window\Shape.cpp" />
+    <ClCompile Include="..\..\source\Bit\Window\SimpleRenderWindow.cpp" />
     <ClCompile Include="..\..\source\Bit\Window\VideoMode.cpp" />
     <ClCompile Include="..\..\source\Bit\Window\Win32\RenderWindowWin32.cpp" />
   </ItemGroup>

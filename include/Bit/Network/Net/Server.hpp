@@ -29,7 +29,6 @@
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/Net/Private/Connection.hpp>
 #include <Bit/Network/Net/UserMessageListener.hpp>
-#include <Bit/Network/Net/Event.hpp>
 #include <Bit/Network/Net/HostMessage.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/Network/TcpListener.hpp>
