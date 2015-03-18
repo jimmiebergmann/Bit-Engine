@@ -23,9 +23,11 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Window/SimpleRenderWindow.hpp>
+#include <Bit/Graphics/VertexArray.hpp>
+#include <Bit/Graphics/ShaderProgram.hpp>
+#include <Bit/Graphics/Shader.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLGraphicDevice.hpp>
-#include <sstream>
-#include <iostream>
+#include <Bit/System/Matrix4x4.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -33,14 +35,21 @@ namespace Bit
 
 	SimpleRenderWindow::SimpleRenderWindow( ) :
 		m_RenderWindow( ),
-		m_pGraphicDevice( NULL )
+		m_pGraphicDevice( NULL ),
+		m_pShaderProgram( NULL ),
+		m_pVertexShader( NULL ),
+		m_pFragmentShader( NULL )
 	{
 	}
 
 	SimpleRenderWindow::SimpleRenderWindow(	const VideoMode & p_VideoMode,
 											const std::string & p_Title,
 											const Uint32 p_Style ) :
-		m_pGraphicDevice( NULL )
+		m_RenderWindow( ),
+		m_pGraphicDevice( NULL ),
+		m_pShaderProgram( NULL ),
+		m_pVertexShader( NULL ),
+		m_pFragmentShader( NULL )
 	{
 		Open( p_VideoMode, p_Title, p_Style );
 	}
@@ -85,12 +94,112 @@ namespace Bit
 		m_pGraphicDevice->SetViewport( Vector2u32( 0, 0 ), p_VideoMode.GetSize( ) );
 		m_pGraphicDevice->SetClearColor( 0, 255, 0, 255 );
 
+		// Create shaders
+		m_pShaderProgram = m_pGraphicDevice->CreateShaderProgram( );
+		m_pVertexShader = m_pGraphicDevice->CreateShader( ShaderType::Vertex );
+		m_pFragmentShader = m_pGraphicDevice->CreateShader( ShaderType::Fragment );
+
+		if( !m_pShaderProgram || !m_pVertexShader || !m_pFragmentShader )
+		{
+			return false;
+		}
+
+		// Add shader sources
+		static const std::string vertexSource =
+			"#version 330\n"
+
+			// Matrix uniforms
+			"uniform mat4 uProjectionMatrix;\n"
+			"uniform vec3 uPosition;\n"
+			"uniform vec3 uSize;\n"
+
+			// In values
+			"in vec3 position;\n"
+
+			// Main function
+			"void main( )\n"
+			"{\n"
+
+				// Set the vertex position
+			"	gl_Position = uProjectionMatrix * vec4( position * uSize + uPosition, 1.0 );\n"
+
+			"}\n";
+
+		if( m_pVertexShader->CompileFromMemory( vertexSource ) == false )
+		{
+			return false;
+		}
+
+		static const std::string fragmentSource =
+			"#version 330\n"
+
+			// Uniforms
+			"uniform vec4 uColor;\n"
+
+			// Out values
+			"out vec4 outColor;\n"
+
+			// Main function
+			"void main( )\n"
+			"{ \n"
+
+				// Create final color
+			"	outColor = uColor;\n"
+	
+			"}\n";
+		
+		if( m_pFragmentShader->CompileFromMemory( fragmentSource ) == false )
+		{
+			return false;
+		}
+
+		
+		// Create a projection matrix
+		Matrix4x4f32 projectionMatrix;
+		projectionMatrix.Orthographic(	0.0f,
+										static_cast<Bit::Float32>( m_RenderWindow.GetVideoMode( ).GetSize( ).x ),
+										0.0f,
+										static_cast<Bit::Float32>( m_RenderWindow.GetVideoMode( ).GetSize( ).y ),
+										-1.0f,
+										1.0f );
+
+		// Attach shaders and set up everything
+		m_pShaderProgram->AttachShader( *m_pVertexShader );
+		m_pShaderProgram->AttachShader( *m_pFragmentShader );
+		m_pShaderProgram->SetAttributeLocation( "position", 0 );
+		m_pShaderProgram->Link( );
+		m_pShaderProgram->Bind( );
+		m_pShaderProgram->SetUniformMatrix4x4f( "uProjectionMatrix", projectionMatrix );
+		m_pShaderProgram->SetUniform3f( "uPosition", 0.0f, 0.0f, 0.0f );
+		m_pShaderProgram->SetUniform3f( "uSize", 1.0f, 1.0f, 1.0f );
+		m_pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
+		m_pShaderProgram->Unbind( );
+
+
 		// Succeeded
 		return true;
 	}
 
 	void SimpleRenderWindow::Close( )
 	{
+		if( m_pVertexShader )
+		{
+			delete m_pVertexShader;
+			m_pVertexShader = NULL;
+		}
+
+		if( m_pFragmentShader )
+		{
+			delete m_pFragmentShader;
+			m_pFragmentShader = NULL;
+		}
+
+		if( m_pShaderProgram )
+		{
+			delete m_pShaderProgram;
+			m_pShaderProgram = NULL;
+		}
+
 		if( m_pGraphicDevice )
 		{
 			delete m_pGraphicDevice;
@@ -107,6 +216,47 @@ namespace Bit
 
 	void SimpleRenderWindow::Draw( Shape * p_pShape )
 	{
+		// Error check the pointer
+		if( p_pShape == NULL )
+		{
+			return;
+		}
+
+		// Get and error check the vertex array
+		VertexArray * pVertexArray = p_pShape->GetVertexArray( );
+		if( pVertexArray == NULL )
+		{
+			return;
+		}
+
+		// Bind shader program
+		m_pShaderProgram->Bind( );
+
+		// Set uniforms
+		m_pShaderProgram->SetUniform3f( "uPosition", p_pShape->GetPosition( ).x, p_pShape->GetPosition( ).y, 0.0f );
+		m_pShaderProgram->SetUniform3f( "uSize", p_pShape->GetSize( ).x, p_pShape->GetSize( ).y, 0.0f );
+		m_pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
+
+		// Render the array
+		pVertexArray->Render( PrimitiveMode::Triangles );
+		
+		// Unbind shader program
+		m_pShaderProgram->Unbind( );
+	}
+
+	Shape * SimpleRenderWindow::CreateShape( const Bool p_OrigoInCenter )
+	{
+		return new Shape( m_pGraphicDevice, p_OrigoInCenter );
+	}
+
+	void SimpleRenderWindow::DestroyShape( Shape * p_pShape )
+	{
+		if( p_pShape == NULL )
+		{
+			return;
+		}
+
+		delete p_pShape;
 	}
 
 	void SimpleRenderWindow::Present( )
