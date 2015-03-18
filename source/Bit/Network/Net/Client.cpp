@@ -43,7 +43,7 @@ namespace Bit
 		}
 
 		Client::eStatus Client::Connect(	const Address & p_Address, const Uint16 p_Port,
-								const Time & p_ConnectionTimeout )
+											const Time & p_ConnectionTimeout )
 		{
 			// make sure to be disconnected.
 			InternalDisconnect( true, true, true, true );
@@ -70,469 +70,486 @@ namespace Bit
 				m_PingList.push_front( m_Ping.Value );
 			}
 
-			// Keep on sending the connect packet until the server answer.
+
+			// Send SYN packet, tell the server that we would like to connect.
+			buffer[ 0 ] = ePacketType::Syn;
+			if( m_Socket.Send( buffer, 1, p_Address, p_Port ) != 1 )
+			{
+				// Error sending connection packet.
+				return Unknown;
+			}
+
+			// Wait for the reply from the server
+			Int32 recvSize = 0;
+			Address recvAddress;
+			Uint16 recvPort = 0;
+ 
+			// Keep on receiving until we get a message from the host
 			Timer timer;
 			timer.Start( );
-			while( timer.GetLapsedTime( ).AsMicroseconds( ) < p_ConnectionTimeout.AsMicroseconds( ) )
+			Time timeout = p_ConnectionTimeout;
+			while( timer.GetLapsedTime( ) < timeout )
 			{
-				// Send SYN packet, tell the server that we would like to connect.
-				buffer[ 0 ] = ePacketType::Syn;
-				if( m_Socket.Send( buffer, 1, p_Address, p_Port ) != 1 )
+				// Receive message
+				recvSize = m_Socket.Receive( buffer, bufferSize, recvAddress, recvPort, timeout );
+				
+				// Check the address and port
+				if( recvAddress == p_Address && recvPort == p_Port )
 				{
-					// Error sending connection packet.
-					continue;
-				}
-
-				// Wait for the reply from the server
-				SizeType recvSize = 0;
-				Address recvAddress;
-				Uint16 recvPort = 0;
- 
-				recvSize = m_Socket.Receive( buffer, bufferSize, recvAddress, recvPort, Seconds( 1 ) );
-				if( recvSize <= 0 )
-				{
-					// Error receiving the server answer.
-					continue;
-				}
-
-				// Check if this is a SYN-ACK packet, the server wants us to connect.
-				if( buffer[ 0 ] == ePacketType::SynAck )
-				{
-					// Set the connected flag to true.
-					m_Connected.Mutex.Lock( );
-					m_Connected.Value = true;
-					m_Connected.Mutex.Unlock( );
-
-					// We now connected, we assume that the server receive the UDP_ACCEPT packet,
-					// resend the packet in client thread if we get another accept packet later.
-					m_ServerAddress = p_Address;
-					m_ServerPort = p_Port;
-
-					// Start the client thread.
-					m_Thread.Execute( [ this ] ( )
+					// Check the receive size.
+					if( recvSize <= 0 )
 					{
-							const SizeType bufferSize = 2048;
-							Uint8 buffer[ bufferSize ];
-							Address address;
-							Uint16 port = 0;
-							Int16 recvSize = 0;
+						// The connection timeouted
+						return TimedOut;
+					}
+					// Break the check if the packet is from the host
+					else
+					{
+						break;
+					}
+				}
 
-							// Start the timer for the last recv packet.
+				// Decrease the timeout time
+				timeout = p_ConnectionTimeout - timer.GetLapsedTime( );
+			}
+
+			// Check if this is a SYN-ACK packet, the server wants us to connect.
+			if( buffer[ 0 ] == ePacketType::SynAck )
+			{
+				// Set the connected flag to true.
+				m_Connected.Mutex.Lock( );
+				m_Connected.Value = true;
+				m_Connected.Mutex.Unlock( );
+
+				// We now connected, we assume that the server receive the UDP_ACCEPT packet,
+				// resend the packet in client thread if we get another accept packet later.
+				m_ServerAddress = p_Address;
+				m_ServerPort = p_Port;
+
+			}
+			// The server answered with a disconnect packet, we are denied. 
+			else if( buffer[ 0 ] == ePacketType::Close )
+			{
+				// The server denied us.
+				return Denied;
+			}
+			else if( buffer[ 0 ] == ePacketType::Ban )
+			{
+				// The server banned us.
+				return Banned;
+			}
+			// Unknown packet from the server.
+			else
+			{
+				// Error in the server packet, unknown error.
+				return Unknown;
+			}
+
+			// Receive the initialization packet from the server, sync all the entities
+
+			// Start the client thread.
+			m_Thread.Execute( [ this ] ( )
+			{
+					const SizeType bufferSize = 2048;
+					Uint8 buffer[ bufferSize ];
+					Address address;
+					Uint16 port = 0;
+					Int32 recvSize = 0;
+
+					// Start the timer for the last recv packet.
+					m_LastRecvTimer.Mutex.Lock( );
+					m_LastRecvTimer.Value.Start( );
+					m_LastRecvTimer.Mutex.Unlock( );
+
+					// Start the timer for the last send packet.
+					m_LastSendTimer.Mutex.Lock( );
+					m_LastSendTimer.Value.Start( );
+					m_LastSendTimer.Mutex.Unlock( );
+
+					// Receive packets as long as we are connected.
+					while( IsConnected( ) )
+					{
+						// Receive any packet.
+						recvSize = m_Socket.Receive( buffer, bufferSize, address, port, Microseconds( 1000 ) );
+
+						// Make sure that the packet is from the server
+						if( address != m_ServerAddress || port != m_ServerPort )
+						{
+							continue;
+						}
+
+						// Parse the packet.
+						if( recvSize > 0 )
+						{
+							// Reset the time for checking last time a packet arrived
 							m_LastRecvTimer.Mutex.Lock( );
 							m_LastRecvTimer.Value.Start( );
 							m_LastRecvTimer.Mutex.Unlock( );
 
-							// Start the timer for the last send packet.
-							m_LastSendTimer.Mutex.Lock( );
-							m_LastSendTimer.Value.Start( );
-							m_LastSendTimer.Mutex.Unlock( );
-
-							// Receive packets as long as we are connected.
-							while( IsConnected( ) )
+							// Check the packet type
+							switch( buffer[ 0 ] )
 							{
-								// Receive any packet.
-								recvSize = m_Socket.Receive( buffer, bufferSize, address, port, Microseconds( 1000 ) );
-
-								// Make sure that the packet is from the server
-								if( address != m_ServerAddress || port != m_ServerPort )
+								// The server disconnected.
+								case ePacketType::Close:
 								{
-									continue;
+									// Set connected to false.
+									m_Connected.Mutex.Lock( );
+									m_Connected.Value = false;
+									m_Connected.Mutex.Unlock( );
+
+									// Wait for the threads to finish.
+									m_TriggerThread.Finish( );
+									m_ReliableThread.Finish( );
+
+									// Reset the sequence.
+									m_Sequence.Mutex.Lock( );
+									m_Sequence.Value = 0;
+									m_Sequence.Mutex.Unlock( );
+
+									return;
 								}
-
-								// Parse the packet.
-								if( recvSize > 0 )
+								break;
+								// Alive packet from server.
+								case ePacketType::Alive:
 								{
-									// Reset the time for checking last time a packet arrived
-									m_LastRecvTimer.Mutex.Lock( );
-									m_LastRecvTimer.Value.Start( );
-									m_LastRecvTimer.Mutex.Unlock( );
-
-									// Check the packet type
-									switch( buffer[ 0 ] )
+									// Ignore "corrupt" alive packet.
+									if( recvSize != 3 )
 									{
-										// The server disconnected.
-										case ePacketType::Close:
+										continue;
+									}
+
+									Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( buffer[ 1 ] ) ) |
+																static_cast<Uint16>( static_cast<Uint8>( buffer[ 2 ] ) << 8 ) );
+
+									// Use the already allocated packet, change the type
+									buffer[ 0 ] = ePacketType::Ack;
+
+									// Send the ack packet
+									m_Socket.Send( buffer, 3, m_ServerAddress, m_ServerPort );
+								}
+								break;
+								// ACK packet from server.
+								case ePacketType::Ack:
+								{
+									// Ignore "corrupt" ack packet.
+									if( recvSize != 3 )
+									{
+										continue;
+									}
+
+									// Get the sequence
+									Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( buffer[ 1 ] ) ) |
+																static_cast<Uint16>( static_cast<Uint8>( buffer[ 2 ] ) << 8 ) );
+
+									// Find the sequence in the reliable map
+									m_ReliableMap.Mutex.Lock( );
+									ReliablePacketMap::iterator it = m_ReliableMap.Value.find( sequence );
+									// Remove the packet from the map if it's found and calculate the ping.
+									if( it != m_ReliableMap.Value.end( ) )
+									{
+										// Calculate the new ping from the lapsed time if it's not a resent packet
+										if( it->second->Resent == false )
 										{
-											// Set connected to false.
-											m_Connected.Mutex.Lock( );
-											m_Connected.Value = false;
-											m_Connected.Mutex.Unlock( );
-
-											// Wait for the threads to finish.
-											m_TriggerThread.Finish( );
-											m_ReliableThread.Finish( );
-
-											// Reset the sequence.
-											m_Sequence.Mutex.Lock( );
-											m_Sequence.Value = 0;
-											m_Sequence.Mutex.Unlock( );
-
-											return;
+											CalculateNewPing( it->second->SendTimer.GetLapsedTime( ) );
 										}
+
+										// Clean up the data
+										delete [ ] it->second->pData;
+										delete it->second;
+
+										// Erase the reliable packet
+										m_ReliableMap.Value.erase( it );
+									}
+									m_ReliableMap.Mutex.Unlock( );
+								}
+								break;
+								// The server request another ACK packet,
+								// the first one was lost.
+								case ePacketType::SynAck:
+								{
+									buffer[ 0 ] = ePacketType::Ack;
+									if( m_Socket.Send( buffer, 1, address, port ) != 1 )
+									{
 										break;
-										// Alive packet from server.
-										case ePacketType::Alive:
-										{
-											// Ignore "corrupt" alive packet.
-											if( recvSize != 3 )
-											{
-												continue;
-											}
+									}
+								}
+								break;
+								// Check if we are banned.
+								case ePacketType::Ban:
+								{
+									// Set connected to false.
+									m_Connected.Mutex.Lock( );
+									m_Connected.Value = false;
+									m_Connected.Mutex.Unlock( );
 
-											Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( buffer[ 1 ] ) ) |
-																		static_cast<Uint16>( static_cast<Uint8>( buffer[ 2 ] ) << 8 ) );
+									// Wait for the threads to finish.
+									m_TriggerThread.Finish( );
+									m_ReliableThread.Finish( );
 
-											// Use the already allocated packet, change the type
-											buffer[ 0 ] = ePacketType::Ack;
+									// Reset the sequence.
+									m_Sequence.Mutex.Lock( );
+									m_Sequence.Value = 0;
+									m_Sequence.Mutex.Unlock( );
 
-											// Send the ack packet
-											m_Socket.Send( buffer, 3, m_ServerAddress, m_ServerPort );
-										}
-										break;
-										// ACK packet from server.
-										case ePacketType::Ack:
-										{
-											// Ignore "corrupt" ack packet.
-											if( recvSize != 3 )
-											{
-												continue;
-											}
-
-											// Get the sequence
-											Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( buffer[ 1 ] ) ) |
-																		static_cast<Uint16>( static_cast<Uint8>( buffer[ 2 ] ) << 8 ) );
-
-											// Find the sequence in the reliable map
-											m_ReliableMap.Mutex.Lock( );
-											ReliablePacketMap::iterator it = m_ReliableMap.Value.find( sequence );
-											// Remove the packet from the map if it's found and calculate the ping.
-											if( it != m_ReliableMap.Value.end( ) )
-											{
-												// Calculate the new ping from the lapsed time if it's not a resent packet
-												if( it->second->Resent == false )
-												{
-													CalculateNewPing( it->second->SendTimer.GetLapsedTime( ) );
-												}
-
-												// Clean up the data
-												delete [ ] it->second->pData;
-												delete it->second;
-
-												// Erase the reliable packet
-												m_ReliableMap.Value.erase( it );
-											}
-											m_ReliableMap.Mutex.Unlock( );
-										}
-										break;
-										// The server request another ACK packet,
-										// the first one was lost.
-										case ePacketType::SynAck:
-										{
-											buffer[ 0 ] = ePacketType::Ack;
-											if( m_Socket.Send( buffer, 1, address, port ) != 1 )
-											{
-												break;
-											}
-										}
-										break;
-										// Check if we are banned.
-										case ePacketType::Ban:
-										{
-											// Set connected to false.
-											m_Connected.Mutex.Lock( );
-											m_Connected.Value = false;
-											m_Connected.Mutex.Unlock( );
-
-											// Wait for the threads to finish.
-											m_TriggerThread.Finish( );
-											m_ReliableThread.Finish( );
-
-											// Reset the sequence.
-											m_Sequence.Mutex.Lock( );
-											m_Sequence.Value = 0;
-											m_Sequence.Mutex.Unlock( );
-
-											return;
-										}
-										break;
-										// Received unreliable packet.
-										case ePacketType::UnreliablePacket:
-										{
-											if( recvSize <= HeaderSize + 2 )
-											{
-												continue;
-											}
+									return;
+								}
+								break;
+								// Received unreliable packet.
+								case ePacketType::UnreliablePacket:
+								{
+									if( recvSize <= HeaderSize + 2 )
+									{
+										continue;
+									}
 									
-											ReceivedData * pReceivedData = new ReceivedData;
-											pReceivedData->DataSize = recvSize - HeaderSize;
-											pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
-											memcpy( pReceivedData->pData, buffer + HeaderSize, pReceivedData->DataSize );
+									ReceivedData * pReceivedData = new ReceivedData;
+									pReceivedData->DataSize = recvSize - HeaderSize;
+									pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
+									memcpy( pReceivedData->pData, buffer + HeaderSize, pReceivedData->DataSize );
 
-											// Get the sequence
-											pReceivedData->Sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( buffer[ 1 ] ) ) |
-																				static_cast<Uint16>( static_cast<Uint8>( buffer[ 2 ] ) << 8 ) );
+									// Get the sequence
+									pReceivedData->Sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( buffer[ 1 ] ) ) |
+																		static_cast<Uint16>( static_cast<Uint8>( buffer[ 2 ] ) << 8 ) );
 								
-											switch( pReceivedData->pData[ 0 ] )
-											{
-												case eMessageType::UserMessageType:
-												{
-													AddHostMessage( pReceivedData );
-												}
-												break;
-												case eMessageType::EntityMessageType:
-												{
-													m_EntityManager.ParseEntityMessage( &(pReceivedData->pData[ 1 ]), pReceivedData->DataSize );
-													delete pReceivedData;
-												};
-												break;
-												default:
-													break;
-											}
+									switch( pReceivedData->pData[ 0 ] )
+									{
+										case eMessageType::UserMessageType:
+										{
+											AddHostMessage( pReceivedData );
 										}
 										break;
-										case ePacketType::ReliablePacket:
+										case eMessageType::EntityMessageType:
 										{
-											// Use the already allocated packet, change the type
-											buffer[ 0 ] = ePacketType::Ack;
-
-											// Send the ack packet
-											m_Socket.Send( buffer, 3, m_ServerAddress, m_ServerPort );
-
-											// Get the sequence.
-											Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( buffer[ 1 ] ) ) |
-																		static_cast<Uint16>( static_cast<Uint8>( buffer[ 2 ] ) << 8 ) );
-
-											// Add the unreliable packet to the received data queue if it's not a resent packet.
-											if( m_AcknowledgementData.AddAcknowledgement( sequence ) )
-											{
-												ReceivedData * pReceivedData = new ReceivedData;
-												pReceivedData->Sequence = sequence;
-												pReceivedData->DataSize = recvSize - HeaderSize;
-												pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
-												memcpy( pReceivedData->pData, buffer + HeaderSize, pReceivedData->DataSize );
-
-												switch( pReceivedData->pData[ 0 ] )
-												{
-													case eMessageType::UserMessageType:
-													{
-														AddHostMessage( pReceivedData );
-													}
-													break;
-													case eMessageType::EntityMessageType:
-													{
-														m_EntityManager.ParseEntityMessage( &(pReceivedData->pData[ 1 ]), pReceivedData->DataSize );
-														delete pReceivedData;
-													};
-													break;
-													default:
-														break;
-												}
-
-											}
-										}
+											m_EntityManager.ParseEntityMessage( &(pReceivedData->pData[ 1 ]), pReceivedData->DataSize );
+											delete pReceivedData;
+										};
 										break;
 										default:
 											break;
 									}
 								}
-
-							}
-						}
-
-					);
-
-					// Execute the event thread
-					m_TriggerThread.Execute( [ this ] ( )
-						{
-							while( IsConnected( ) )
-							{
-								// Sleep for some time.
-								Sleep( Milliseconds( 10 ) );
-
-								// Disconnect you've not heard anything from the server in a while.
-								if( TimeSinceLastRecvPacket( ) >= m_ConnectionTimeout.Value )
+								break;
+								case ePacketType::ReliablePacket:
 								{
-									InternalDisconnect( true, false, true, true );
-									return;
-								}
+									// Use the already allocated packet, change the type
+									buffer[ 0 ] = ePacketType::Ack;
 
-								// Get the lapsed time since the last packet was sent.
-								m_LastSendTimer.Mutex.Lock( );
-								Time lapsedTime =  m_LastSendTimer.Value.GetLapsedTime( );
-								m_LastSendTimer.Mutex.Unlock( );
+									// Send the ack packet
+									m_Socket.Send( buffer, 3, m_ServerAddress, m_ServerPort );
 
-								// Send alive packet if requred
-								if( lapsedTime >= Seconds( 0.5f ) )
-								{
-									InternalSendReliable( ePacketType::Alive, NULL, 0 );
-								}
+									// Get the sequence.
+									Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( buffer[ 1 ] ) ) |
+																static_cast<Uint16>( static_cast<Uint8>( buffer[ 2 ] ) << 8 ) );
 
-							}
-						}
-					);
-
-					// Execute the reliable thread
-					m_ReliableThread.Execute( [ this ] ( )
-						{
-							ReliablePacket * pPacket = NULL;
-
-							while( IsConnected( ) )
-							{
-								// Sleep for some time.
-								Sleep( Milliseconds( 1 ) );
-
-								// Check if we should resend any packet.
-								m_ReliableMap.Mutex.Lock( );
-						
-								for(	ReliablePacketMap::iterator it = m_ReliableMap.Value.begin( );
-										it != m_ReliableMap.Value.end( );
-										it++ ) 
-								{
-									pPacket = it->second;
-
-									// Resend packet after ping * 3.0 seconds.
-									// Calculte the resend time.
-									m_Ping.Mutex.Lock( );
-									Time resendTime = Microseconds( static_cast<Uint64>(static_cast<Float64>( m_Ping.Value.AsMicroseconds( ) ) * 3.0f ));
-									m_Ping.Mutex.Unlock( );
-
-									if( pPacket->ResendTimer.GetLapsedTime( ) >= resendTime )
+									// Add the unreliable packet to the received data queue if it's not a resent packet.
+									if( m_AcknowledgementData.AddAcknowledgement( sequence ) )
 									{
-										// Send packet.
-										m_Socket.Send( pPacket->pData, pPacket->DataSize, m_ServerAddress, m_ServerPort );
+										ReceivedData * pReceivedData = new ReceivedData;
+										pReceivedData->Sequence = sequence;
+										pReceivedData->DataSize = recvSize - HeaderSize;
+										pReceivedData->pData = new Uint8[ pReceivedData->DataSize ];
+										memcpy( pReceivedData->pData, buffer + HeaderSize, pReceivedData->DataSize );
 
-										// Restart the resend timer
-										pPacket->ResendTimer.Start( );
+										switch( pReceivedData->pData[ 0 ] )
+										{
+											case eMessageType::UserMessageType:
+											{
+												AddHostMessage( pReceivedData );
+											}
+											break;
+											case eMessageType::EntityMessageType:
+											{
+												m_EntityManager.ParseEntityMessage( &(pReceivedData->pData[ 1 ]), pReceivedData->DataSize );
+												delete pReceivedData;
+											};
+											break;
+											default:
+												break;
+										}
 
-										// Mark the packet as resent.
-										pPacket->Resent = true;
-
-										// Increase the ping if we lose packets
-										m_Ping.Mutex.Lock( );
-										m_Ping.Value = Microseconds( static_cast<Uint64>(static_cast<Float64>( m_Ping.Value.AsMicroseconds( ) ) * 1.2f ));
-										m_Ping.Mutex.Unlock( );
 									}
 								}
-								m_ReliableMap.Mutex.Unlock( );
-
+								break;
+								default:
+									break;
 							}
 						}
-					);
 
-					// Execute user message
-					m_UserMessageThread.Execute( [ this ] ( )
-					{
-						while( IsConnected( ) )
-						{
-							// Wait for the semaphore to release
-							m_UserMessageSemaphore.Wait( );
-
-							// Go throguh the user messages.
-							m_UserMessages.Mutex.Lock( );
-
-							while( m_UserMessages.Value.size( ) )
-							{
-								// Ge the received data
-								ReceivedData * pReceivedData = m_UserMessages.Value.front( );
-
-								// Pop the message
-								m_UserMessages.Value.pop( );
-
-								// Get the message name
-								SizeType nameEnd = 1;
-								for( SizeType i = 1; i < pReceivedData->DataSize; i++ )
-								{
-									if( pReceivedData->pData[ i ] == 0 )
-									{
-										nameEnd = i;
-										break;
-									}
-								}
-
-								// Error check the name length
-								if( nameEnd == 1 )
-								{
-									// Delete the received data pointer
-									delete pReceivedData;
-									continue;
-								}
-
-								// Copy the name.
-								std::string name;
-								name.assign( reinterpret_cast<char*>(pReceivedData->pData + 1), nameEnd - 1 );
-
-								// Check if there is any message left
-								if( name.size( ) + 2 >= pReceivedData->DataSize )
-								{
-									// Delete the received data pointer
-									delete pReceivedData;
-									continue;
-								}
-
-								// Find the listeners for this user message
-								m_HostMessageListeners.Mutex.Lock( );
-								HostMessageListenerMap::iterator it = m_HostMessageListeners.Value.find( name );
-								if( it == m_HostMessageListeners.Value.end( ) )
-								{
-									// Delete the received data pointer
-									delete pReceivedData;
-									continue;
-								}
-
-								HostMessageListenerSet * pMessageSet = it->second;
-
-								// Go through the listeners and call the listener function
-								for( HostMessageListenerSet::iterator it2 = pMessageSet->begin( ); it2 != pMessageSet->end( ); it2++ )
-								{
-									// Get the listener.
-									HostMessageListener * pListener = *it2;
-
-									// Create a message decoder
-									Uint8 * pDataPointer =  pReceivedData->pData + name.size( ) + 2;
-									const SizeType dataSize = pReceivedData->DataSize - name.size( ) - 2;
-									HostMessageDecoder messageDecoder( name, pDataPointer, dataSize ) ;
-
-									// Use threads????
-									// Handle the message.
-									pListener->HandleMessage( messageDecoder );
-								}
-
-								m_HostMessageListeners.Mutex.Unlock( );
-
-								// Delete the received data pointer
-								delete pReceivedData;
-
-							}
-
-							m_UserMessages.Mutex.Unlock( );
-						}
 					}
-					);
-					
-					// The connection succeeded
-					return Succeeded;
 				}
-				// The server answered with a disconnect packet, we are denied. 
-				else if( buffer[ 0 ] == ePacketType::Close )
+
+			);
+
+			// Execute the event thread
+			m_TriggerThread.Execute( [ this ] ( )
 				{
-					// The server denied us.
-					return Denied;
+					while( IsConnected( ) )
+					{
+						// Sleep for some time.
+						Sleep( Milliseconds( 10 ) );
+
+						// Disconnect you've not heard anything from the server in a while.
+						if( TimeSinceLastRecvPacket( ) >= m_ConnectionTimeout.Value )
+						{
+							InternalDisconnect( true, false, true, true );
+							return;
+						}
+
+						// Get the lapsed time since the last packet was sent.
+						m_LastSendTimer.Mutex.Lock( );
+						Time lapsedTime =  m_LastSendTimer.Value.GetLapsedTime( );
+						m_LastSendTimer.Mutex.Unlock( );
+
+						// Send alive packet if requred
+						if( lapsedTime >= Seconds( 0.5f ) )
+						{
+							InternalSendReliable( ePacketType::Alive, NULL, 0 );
+						}
+
+					}
 				}
-				else if( buffer[ 0 ] == ePacketType::Ban )
+			);
+
+			// Execute the reliable thread
+			m_ReliableThread.Execute( [ this ] ( )
 				{
-					// The server banned us.
-					return Banned;
+					ReliablePacket * pPacket = NULL;
+
+					while( IsConnected( ) )
+					{
+						// Sleep for some time.
+						Sleep( Milliseconds( 1 ) );
+
+						// Check if we should resend any packet.
+						m_ReliableMap.Mutex.Lock( );
+						
+						for(	ReliablePacketMap::iterator it = m_ReliableMap.Value.begin( );
+								it != m_ReliableMap.Value.end( );
+								it++ ) 
+						{
+							pPacket = it->second;
+
+							// Resend packet after ping * 3.0 seconds.
+							// Calculte the resend time.
+							m_Ping.Mutex.Lock( );
+							Time resendTime = Microseconds( static_cast<Uint64>(static_cast<Float64>( m_Ping.Value.AsMicroseconds( ) ) * 3.0f ));
+							m_Ping.Mutex.Unlock( );
+
+							if( pPacket->ResendTimer.GetLapsedTime( ) >= resendTime )
+							{
+								// Send packet.
+								m_Socket.Send( pPacket->pData, pPacket->DataSize, m_ServerAddress, m_ServerPort );
+
+								// Restart the resend timer
+								pPacket->ResendTimer.Start( );
+
+								// Mark the packet as resent.
+								pPacket->Resent = true;
+
+								// Increase the ping if we lose packets
+								m_Ping.Mutex.Lock( );
+								m_Ping.Value = Microseconds( static_cast<Uint64>(static_cast<Float64>( m_Ping.Value.AsMicroseconds( ) ) * 1.2f ));
+								m_Ping.Mutex.Unlock( );
+							}
+						}
+						m_ReliableMap.Mutex.Unlock( );
+
+					}
 				}
-				// Unknown packet from the server.
-				else
+			);
+
+			// Execute user message
+			m_UserMessageThread.Execute( [ this ] ( )
+			{
+				while( IsConnected( ) )
 				{
-					// Error in the server packet, unknown error.
-					return Unknown;
+					// Wait for the semaphore to release
+					m_UserMessageSemaphore.Wait( );
+
+					// Go throguh the user messages.
+					m_UserMessages.Mutex.Lock( );
+
+					while( m_UserMessages.Value.size( ) )
+					{
+						// Ge the received data
+						ReceivedData * pReceivedData = m_UserMessages.Value.front( );
+
+						// Pop the message
+						m_UserMessages.Value.pop( );
+
+						// Get the message name
+						SizeType nameEnd = 1;
+						for( SizeType i = 1; i < pReceivedData->DataSize; i++ )
+						{
+							if( pReceivedData->pData[ i ] == 0 )
+							{
+								nameEnd = i;
+								break;
+							}
+						}
+
+						// Error check the name length
+						if( nameEnd == 1 )
+						{
+							// Delete the received data pointer
+							delete pReceivedData;
+							continue;
+						}
+
+						// Copy the name.
+						std::string name;
+						name.assign( reinterpret_cast<char*>(pReceivedData->pData + 1), nameEnd - 1 );
+
+						// Check if there is any message left
+						if( name.size( ) + 2 >= pReceivedData->DataSize )
+						{
+							// Delete the received data pointer
+							delete pReceivedData;
+							continue;
+						}
+
+						// Find the listeners for this user message
+						m_HostMessageListeners.Mutex.Lock( );
+						HostMessageListenerMap::iterator it = m_HostMessageListeners.Value.find( name );
+						if( it == m_HostMessageListeners.Value.end( ) )
+						{
+							// Delete the received data pointer
+							delete pReceivedData;
+							continue;
+						}
+
+						HostMessageListenerSet * pMessageSet = it->second;
+
+						// Go through the listeners and call the listener function
+						for( HostMessageListenerSet::iterator it2 = pMessageSet->begin( ); it2 != pMessageSet->end( ); it2++ )
+						{
+							// Get the listener.
+							HostMessageListener * pListener = *it2;
+
+							// Create a message decoder
+							Uint8 * pDataPointer =  pReceivedData->pData + name.size( ) + 2;
+							const SizeType dataSize = pReceivedData->DataSize - name.size( ) - 2;
+							HostMessageDecoder messageDecoder( name, pDataPointer, dataSize ) ;
+
+							// Use threads????
+							// Handle the message.
+							pListener->HandleMessage( messageDecoder );
+						}
+
+						m_HostMessageListeners.Mutex.Unlock( );
+
+						// Delete the received data pointer
+						delete pReceivedData;
+
+					}
+
+					m_UserMessages.Mutex.Unlock( );
 				}
 			}
-
-			// We timed out.
-			return TimedOut;
+			);
+			
+			// The connection succeeded
+			return Succeeded;
 		}
 
 		void Client::Disconnect( )
