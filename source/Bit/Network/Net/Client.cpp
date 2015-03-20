@@ -61,7 +61,7 @@ namespace Bit
 			m_Socket.SetBlocking( true );
 
 			// Create a data buffer.
-			const SizeType bufferSize = 128;
+			const SizeType bufferSize = 2048;
 			Uint8 buffer[ bufferSize ];
 
 			// Initialize the ping list
@@ -81,46 +81,51 @@ namespace Bit
 
 			// Wait for the reply from the server
 			Int32 recvSize = 0;
-			Address recvAddress;
-			Uint16 recvPort = 0;
- 
+
+
 			// Keep on receiving until we get a message from the host
+			Bool recvSucceeded = false;
 			Timer timer;
 			timer.Start( );
 			Time timeout = p_ConnectionTimeout;
 			while( timer.GetLapsedTime( ) < timeout )
 			{
 				// Receive message
+				Address recvAddress;
+				Uint16 recvPort = 0;
 				recvSize = m_Socket.Receive( buffer, bufferSize, recvAddress, recvPort, timeout );
 				
+				// Decrease the timeout time
+				timeout = p_ConnectionTimeout - timer.GetLapsedTime( );
+
 				// Check the address and port
 				if( recvAddress == p_Address && recvPort == p_Port )
 				{
 					// Check the receive size.
-					if( recvSize <= 0 )
+					/*if( recvSize <= 0 )
 					{
 						// The connection timeouted
 						return TimedOut;
 					}
 					// Break the check if the packet is from the host
-					else
+					else*/
+					if( recvSize > 0 )
 					{
+						recvSucceeded = true;
 						break;
 					}
 				}
+			}
 
-				// Decrease the timeout time
-				timeout = p_ConnectionTimeout - timer.GetLapsedTime( );
+			if( recvSucceeded == false )
+			{
+				// The connection timeouted
+				return TimedOut;
 			}
 
 			// Check if this is a SYN-ACK packet, the server wants us to connect.
 			if( buffer[ 0 ] == ePacketType::SynAck )
 			{
-				// Set the connected flag to true.
-				m_Connected.Mutex.Lock( );
-				m_Connected.Value = true;
-				m_Connected.Mutex.Unlock( );
-
 				// We now connected, we assume that the server receive the UDP_ACCEPT packet,
 				// resend the packet in client thread if we get another accept packet later.
 				m_ServerAddress = p_Address;
@@ -145,7 +150,62 @@ namespace Bit
 				return Unknown;
 			}
 
+
 			// Receive the initialization packet from the server, sync all the entities
+			recvSucceeded = false;
+			while( timer.GetLapsedTime( ) < timeout )
+			{			
+				// Decrease the timeout time
+				timeout = p_ConnectionTimeout - timer.GetLapsedTime( );
+
+				// Receive the packet
+				Address recvAddress;
+				Uint16 recvPort = 0;
+				recvSize = m_Socket.Receive( buffer, bufferSize, recvAddress, recvPort, timeout );
+
+				// Check the address and port
+				if( recvAddress == p_Address && recvPort == p_Port )
+				{
+					// Check the receive size.
+					/*if( recvSize <= 0 )
+					{
+						// The connection timeouted
+						return TimedOut;
+					}
+					// The packet is valid so far
+					else*/
+					if( recvSize > 0 )
+					{
+						// Check if it's a sync packet
+						if( buffer[ 0 ] == ePacketType::Sync )
+						{
+							// Parse the entity message.
+							if( m_EntityManager.ParseEntityMessage( &buffer[ 2 ], recvSize - 2 ) == false )
+							{
+								return Unknown;
+							}
+
+							// Break, everything is initialized.
+							recvSucceeded = true;
+							break;
+						}
+					}
+				}
+
+			}
+
+			if( recvSucceeded == false )
+			{
+				// The connection timeouted
+				return TimedOut;
+			}
+
+
+			// Set the connected flag to true.
+			m_Connected.Mutex.Lock( );
+			m_Connected.Value = true;
+			m_Connected.Mutex.Unlock( );
+		
 
 			// Start the client thread.
 			m_Thread.Execute( [ this ] ( )

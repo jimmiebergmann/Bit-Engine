@@ -252,6 +252,24 @@ namespace Bit
 								continue;
 							}
 
+							
+
+							// Answer the client with a SYNACK packet.
+							buffer[ 0 ] = ePacketType::SynAck;
+							m_Socket.Send( buffer, 1, address, port );
+
+							// Send all the entitiy data in order to sync all the entities with the connected client
+							std::vector<Uint8> entityMessage;
+							entityMessage.push_back( static_cast<Uint8>( ePacketType::Sync ) );
+							m_EntityManager.CreateFullEntityMessage( entityMessage, false );
+							
+							Sleep( Seconds( 0.3f ) );
+							if( m_Socket.Send( entityMessage.data( ), entityMessage.size( ), address, port ) != entityMessage.size( ) )
+							{
+								continue;
+							}
+
+
 							// Get a user id for this connection
 							const Uint16 userId = m_FreeUserIds.front( );
 							m_FreeUserIds.pop( );
@@ -271,9 +289,6 @@ namespace Bit
 							// Start client thread.
 							pConnection->StartThreads( this );
 
-							// Answer the client with a SYNACK packet.
-							buffer[ 0 ] = ePacketType::SynAck;
-							m_Socket.Send( buffer, 1, address, port );
 
 							// Run the on connection function
 							OnConnection( userId );
@@ -323,14 +338,13 @@ namespace Bit
 
 					// Create the entity message
 					std::vector<Uint8> message;
-					SizeType messageSize = 0;
-					if( m_EntityManager.CreateEntityMessage( message, messageSize ) == false )
+					if( m_EntityManager.CreateEntityMessage( message ) == false )
 					{
 						continue;
 					}
 
 					// Error check the message
-					if( messageSize == 0 )
+					if( message.size( ) == 0 )
 					{
 						continue;
 					}
@@ -342,7 +356,7 @@ namespace Bit
 							it != m_UserConnections.end( );
 							it++ )
 					{
-						it->second->SendUnreliable( reinterpret_cast<Uint8 * >( message.data( ) ), messageSize );
+						it->second->SendUnreliable( reinterpret_cast<Uint8 * >( message.data( ) ), message.size( ) );
 					}
 
 					m_ConnectionMutex.Unlock( );

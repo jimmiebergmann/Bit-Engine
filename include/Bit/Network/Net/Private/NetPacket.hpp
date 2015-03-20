@@ -21,6 +21,10 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+// Documentation about the packet structure, please:
+// ... NIL
+
+
 #ifndef BIT_NETWORK_NET_PACKET_HPP
 #define BIT_NETWORK_NET_PACKET_HPP
 
@@ -46,12 +50,13 @@ namespace Bit
 		{
 			Syn					= 1,
 			SynAck				= 2,
-			Ack					= 3,
-			Alive				= 4,
-			Close				= 5,
-			Ban					= 6,
-			UnreliablePacket	= 7,
-			ReliablePacket		= 8
+			Sync				= 3,
+			Ack					= 4,
+			Alive				= 5,
+			Close				= 6,
+			Ban					= 7,
+			UnreliablePacket	= 8,
+			ReliablePacket		= 9
 		};
 
 		

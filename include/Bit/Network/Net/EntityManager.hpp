@@ -25,9 +25,10 @@
 #define BIT_NETWORK_NET_ENTITY_MANAGER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Network/Socket.hpp>
 #include <Bit/Network/Net/Variable.hpp>
 #include <Bit/Network/Net/Entity.hpp>
-#include <Bit/Network/Socket.hpp>
+#include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <string>
 #include <vector> 
 #include <map>
@@ -165,11 +166,15 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief	Create a entity message from all the changed entities.
 			///
-			/// \return Pointer to the message data.
+			////////////////////////////////////////////////////////////////
+			Bool CreateEntityMessage(	std::vector<Uint8> & p_Message );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief	Create a entity message from all the entities.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool CreateEntityMessage(	std::vector<Uint8> & p_Message,
-										SizeType & p_MessageSize );
+			Bool CreateFullEntityMessage(	std::vector<Uint8> & p_Message,
+											const Bool p_ClearMessage = false );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Clear the list of all changed entities.
@@ -200,6 +205,9 @@ namespace Bit
 			{
 				Entity*(*CreationPointer)();		///< Pointer to function for creating entity.
 				EntityVariableMap EntityVariables;	///< Map of all the variables for this entity.
+
+				// List of all entities of this type here??
+				// .. variable...
 			};
 
 			////////////////////////////////////////////////////////////////

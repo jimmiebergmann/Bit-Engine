@@ -22,7 +22,6 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/EntityManager.hpp>
-#include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -216,7 +215,7 @@ namespace Bit
 					return false;
 				}
 
-				// Read the entity name
+				// Read the entity name 
 				Uint8 entityNameLength = pData[ dataPos++ ];
 				char * pEntityName = new char[ entityNameLength + 1 ];
 				memcpy( pEntityName, pData + dataPos, entityNameLength );
@@ -368,13 +367,11 @@ namespace Bit
 		}
 
 
-		Bool EntityManager::CreateEntityMessage(	std::vector<Uint8> & p_Message,
-													SizeType & p_MessageSize )
+		Bool EntityManager::CreateEntityMessage( std::vector<Uint8> & p_Message )
 		{
 			// Check if any entities were changed
 			if( m_ChangedEntities.size( ) == 0 )
 			{
-				p_MessageSize = 0;
 				return false;
 			}
 
@@ -440,7 +437,7 @@ namespace Bit
 				p_Message.push_back( static_cast<Uint8>( variableCount ) );
 				p_Message.push_back( static_cast<Uint8>( variableCount >> 8 ) );
 
-				// Go through the changed entities(name)
+				// Go through the changed entity variables
 				for( ChangedVariablesMap::iterator it2 = pChangedVariables->begin( );
 					 it2 != pChangedVariables->end( );
 					 it2++ )
@@ -470,7 +467,6 @@ namespace Bit
 					// Add data size
 					if( pChangedEntityVariables->begin( ) == pChangedEntityVariables->end( ) )
 					{
-						p_MessageSize = 0;
 						return false;
 					}
 					p_Message.push_back( static_cast<Uint8>( pChangedEntityVariables->begin( )->second->GetSize( ) ) );
@@ -517,8 +513,201 @@ namespace Bit
 
 			}
 			
-			// Return the message pointer and set the message size
-			p_MessageSize = static_cast<SizeType>( p_Message.size( ) );
+			// Succeeded
+			return true;
+		}
+
+		Bool EntityManager::CreateFullEntityMessage(	std::vector<Uint8> & p_Message,
+														const Bool p_ClearMessage )
+		{
+			/*
+				Message structure:
+				- Entity count(2)
+					-Entity:
+						- Block size(2)
+						- Name length(1)
+						- Name(...)
+						- Variable count(2)
+						- Variable:
+							- Block Size (2)
+							- Name length (1)
+							- Name (...)
+							- ID count (2)
+							- Data size (1)
+							- Data:
+								- ID	(2)
+								- Data	(..)
+								- ...
+							- ...
+						- ...
+			*/
+
+			// Clear the message
+			if( p_ClearMessage )
+			{
+				p_Message.clear( );
+			}
+
+			// Add message type.
+			p_Message.push_back( static_cast<Uint8>( eMessageType::EntityMessageType ) );
+
+			// Add entity count
+			Uint16 entityCount = Hton16( static_cast<Uint16>( m_EntityMetaDataMap.size( ) ) );
+			p_Message.push_back( static_cast<Uint8>( entityCount ) );
+			p_Message.push_back( static_cast<Uint8>( entityCount >> 8 ) );
+
+			///		std::cout << "Entity count: " << m_Entities.size( ) << std::endl;
+
+			// Go through the entity meta data
+			for(	EntityMetaDataMap::iterator it = m_EntityMetaDataMap.begin( );
+					it != m_EntityMetaDataMap.end( );
+					it++ )
+			{
+				// Store the position for the block size, we need to set it later
+				Uint16 eBlockPos = static_cast<Uint16>( p_Message.size( ) );
+
+				// Add block size and entity name length and name
+				p_Message.push_back( 0 );
+				p_Message.push_back( 0 );
+
+				///		std::cout << "\tBlock size: " << 0 << std::endl;
+
+				p_Message.push_back( static_cast<Uint8>( it->first.size( ) ) );
+
+				///		std::cout << "\tEntity name length: " << it->first.size( ) << std::endl;
+
+				p_Message.reserve( p_Message.size( ) + it->first.size( ) );
+				for( SizeType i = 0; i < it->first.size( ); i++ )
+				{
+					p_Message.push_back( static_cast<Uint8>( it->first[ i ] ) );
+				}
+
+				///		std::cout << "\tEntity name: " << it->first << std::endl;
+
+
+				// Get the current entity variable map
+				EntityVariableMap & entityVariables = it->second->EntityVariables;
+
+				// Add varaible count
+				Uint16 variableCount = Hton16( static_cast<Uint16>( entityVariables.size( ) ) );
+				p_Message.push_back( static_cast<Uint8>( variableCount ) );
+				p_Message.push_back( static_cast<Uint8>( variableCount >> 8 ) );
+
+				///		std::cout << "\tVariable count: " << entityVariables.size( ) << std::endl;
+
+				// Go throguh the entities variables
+				// Go through the changed entity variables
+				for( EntityVariableMap::iterator it2 = entityVariables.begin( );
+					 it2 != entityVariables.end( );
+					 it2++ )
+				{
+					// Get the varaible pointer
+					Variable<Uint8> Entity::* pVariable = reinterpret_cast<Variable<Uint8> Entity::*>( it2->second );
+
+					// Store the position for the block size, we need to set it later
+					Uint16 vBlockPos = static_cast<Uint16>( p_Message.size( ) );
+
+					// Add block size and variable name length and name
+					p_Message.push_back( 0 );
+					p_Message.push_back( 0 );
+
+					///		std::cout << "\t\tVariable block size: " << 0 << std::endl;
+
+					p_Message.push_back( static_cast<Uint8>( it2->first.size( ) ) );
+
+					///		std::cout << "\t\tVariable name length: " << it2->first.size( ) << std::endl;
+
+					p_Message.reserve( p_Message.size( ) + it2->first.size( ) );
+					for( SizeType j = 0; j < it2->first.size( ); j++ )
+					{
+						p_Message.push_back( static_cast<Uint8>( it2->first[ j ] ) );
+					}
+
+					///		std::cout << "\t\tVariable name: " << it2->first << std::endl;
+
+					// Store the position for the block size, we need to set it later
+					Uint16 idcBlockPos = static_cast<Uint16>( p_Message.size( ) );
+
+					// Add id count
+					p_Message.push_back( 0 );
+					p_Message.push_back( 0 );
+					
+					///		std::cout << "\t\tEntity id count: " << 0 << std::endl;
+
+					// Store the data size position
+					Uint16 dataSizePos = static_cast<Uint16>( p_Message.size( ) );
+					p_Message.push_back( 0 );
+					Uint8 dataSize = 0;
+
+					///		std::cout << "\t\tVariable data size: " << 0 << std::endl;
+
+					// Find all entities with the same entity name
+					Uint16 entityCount = 0;
+					for(	EntityMap::iterator it3 = m_Entities.begin( );
+							it3 != m_Entities.end( );
+							it3++ )
+					{
+						// ignore wrong entities.
+						if( it3->second->Class != it->first )
+						{
+							continue;
+						}
+
+	
+						// increment the entitiy count of the same name
+						entityCount++;
+
+						// Get the entity
+						Entity * pEntity = it3->second->pEntity;
+
+						// Get the data size
+						dataSize = static_cast<Uint8>( (pEntity->*pVariable).GetSize( ) );
+
+						// Add the entity id
+						Uint16 entityId = Hton16( static_cast<Uint16>( pEntity->GetId( ) ) );
+						p_Message.push_back( static_cast<Uint8>( entityId ) );
+						p_Message.push_back( static_cast<Uint8>( entityId >> 8 ) );
+
+						///		std::cout << "\t\t\tId: " << pEntity->GetId( ) << std::endl;
+
+
+						// Add the data
+						Uint16 dataPos = static_cast<Uint16>( p_Message.size( ) );
+						p_Message.resize( p_Message.size( ) + dataSize );
+
+						// Create temporary variable, in order to access the data pointer
+						void * pDataPointer = reinterpret_cast<void *>( &(pEntity->*pVariable).m_Value );
+
+						// copy the data
+						memcpy( &(p_Message[ dataPos ] ), pDataPointer, dataSize );
+
+						///		std::cout << "\t\t\tData: " << (int)dataSize << std::endl;
+						
+					}
+
+					// Set the data size
+					p_Message[ dataSizePos ] = dataSize;
+
+					// Set the id count
+					Uint16 hEntityCount = Hton16( entityCount );
+					p_Message[ idcBlockPos ] = static_cast<Uint8>( hEntityCount );
+					p_Message[ idcBlockPos + 1 ] = static_cast<Uint8>( hEntityCount >> 8 );
+
+
+					// Set the variable block size
+					Uint16 vBlockSize = Hton16( static_cast<Uint16>( p_Message.size( ) ) - vBlockPos - 2 - 1 );
+					p_Message[ vBlockPos ] = static_cast<Uint8>( vBlockSize );
+					p_Message[ vBlockPos + 1 ] = static_cast<Uint8>( vBlockSize >> 8 );
+					
+				}
+
+				// Set the entity block size
+				Uint16 eBlockSize = Hton16( static_cast<Uint16>( p_Message.size( ) ) - eBlockPos - 2 - 1 );
+				p_Message[ eBlockPos ] = static_cast<Uint8>( eBlockSize );
+				p_Message[ eBlockPos + 1 ] = static_cast<Uint8>( eBlockSize >> 8 );
+			}
+
+			// Succeeded
 			return true;
 		}
 

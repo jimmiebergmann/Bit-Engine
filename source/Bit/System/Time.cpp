@@ -89,6 +89,11 @@ namespace Bit
 
 	Time Time::operator - ( const Time & p_Time ) const
 	{
+		if( p_Time.m_Microseconds > m_Microseconds )
+		{
+			return Time( 0 );
+		}
+
 		return Time( m_Microseconds - p_Time.m_Microseconds );
 	}
 
