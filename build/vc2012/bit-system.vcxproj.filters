@@ -66,6 +66,7 @@
       <Filter>Win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\System\ThreadValue.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Timestep.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -74,6 +75,7 @@
     <None Include="..\..\include\Bit\System\Vector3.inl" />
     <None Include="..\..\include\Bit\System\Vector4.inl" />
     <None Include="..\..\include\Bit\System\ThreadValue.inl" />
+    <None Include="..\..\include\Bit\System\Timestep.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />

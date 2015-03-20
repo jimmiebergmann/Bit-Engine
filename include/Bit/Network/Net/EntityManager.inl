@@ -51,9 +51,9 @@ bool EntityManager::LinkEntity( const std::string & p_Key )
 
 // Function for registering entity variables.
 template < typename Type, typename Class>
-bool EntityManager::RegisterVariable( const std::string & p_Class,
-											const std::string & p_Variable,
-											Variable<Type> Class::* p_Pointer )
+bool EntityManager::RegisterVariable(	const std::string & p_Class,
+										const std::string & p_Variable,
+										Variable<Type> Class::* p_Pointer )
 {
 	// Find the meta data and make sure it's doesn't already exists.
 	EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Class );

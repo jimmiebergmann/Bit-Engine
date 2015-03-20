@@ -262,8 +262,6 @@ namespace Bit
 							std::vector<Uint8> entityMessage;
 							entityMessage.push_back( static_cast<Uint8>( ePacketType::Sync ) );
 							m_EntityManager.CreateFullEntityMessage( entityMessage, false );
-							
-							Sleep( Seconds( 0.3f ) );
 							if( m_Socket.Send( entityMessage.data( ), entityMessage.size( ), address, port ) != entityMessage.size( ) )
 							{
 								continue;
