@@ -27,7 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Time.hpp>
-#include <complex>
+#include <functional>
 
 namespace Bit
 {
@@ -39,20 +39,19 @@ namespace Bit
 	/// The Execute function locks the current thread until the time as exceeded. 
 	///
 	////////////////////////////////////////////////////////////////
-	template <class classType>
 	class Timestep
 	{
 
 	public:
 
 		// Public typedefs
-		typedef void (classType::*ClassFunctionPtr)();
+		typedef std::function< void( ) > Function;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		Timestep( classType * p_pClassPointer, ClassFunctionPtr p_pClassFunctionPtr );
+		Timestep(  );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor.
@@ -60,22 +59,9 @@ namespace Bit
 		/// \return Exceeded time.
 		///
 		////////////////////////////////////////////////////////////////
-		Time Execute( const Int32 p_UpdatesPerSecond );
-
-	private:
-
-		////////////////////////////////////////////////////////////////
-		// Private variable members
-		////////////////////////////////////////////////////////////////
-		classType *			m_pClassPointer;
-		ClassFunctionPtr	m_pFunctionPointer;
+		Time Execute( const Time & p_UpdateTime, Function p_Function );
 
 	};
-
-	////////////////////////////////////////////////////////////////
-	// Include the inline file.
-	////////////////////////////////////////////////////////////////
-	#include <Bit/System/Timestep.inl>
 
 }
 

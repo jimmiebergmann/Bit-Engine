@@ -22,54 +22,47 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-/*
-template <typename T>
-inline Vector2<T>::Vector2( )
-{
-}
-*/
+#include <Bit/System/Timestep.hpp>
+#include <Bit/System/Timer.hpp>
+#include <Bit/System/Sleep.hpp>
+#include <complex>
+#include <iostream>
+#include <Bit/System/MemoryLeak.hpp>
 
-template <class classType>
-Timestep<classType>::Timestep( classType * p_pClassPointer, ClassFunctionPtr p_pClassFunctionPtr ) :
-	m_pClassPointer( p_pClassPointer ),
-	m_pFunctionPointer( p_pClassFunctionPtr )
+namespace Bit
 {
-}
 
-template <class classType>
-Time Timestep<classType>::Execute( const Int32 p_UpdatesPerSecond )
-{
-	if( p_UpdatesPerSecond == 0 )
+	Timestep::Timestep(  )
 	{
+	}
+
+	Time Timestep::Execute( const Time & p_UpdateTime, Function p_Function )
+	{
+		// Start a timer
+		Timer timer;
+		timer.Start( );
+
+		// Call the function
+		p_Function( );
+
+		// Calculate the sleep time
+		timer.Stop( );
+		Time sleepTime = p_UpdateTime - timer.GetTime( );
+		Float64 exceeded = std::abs<Float64>( p_UpdateTime.AsSeconds( ) - timer.GetTime( ).AsSeconds( ) );
+
+		// Sleep for some time
+		if( exceeded > 0.0f )
+		{
+			Sleep( sleepTime );
+		}
+		else
+		{
+			// Return the exceeded time
+			return Seconds( exceeded );
+		}
+	
+		// Succeeded in time.
 		return Microseconds( 0 );
 	}
 
-	// Calculate the update time
-	const Float64 updateTime = 1.0f / static_cast<Float64>( p_UpdatesPerSecond );
-
-	// Start a timer
-	Timer timer;
-	timer.Start( );
-
-
-	// Call the function
-	(*m_pClassPointer.*m_pFunctionPointer)();
-
-	// Calculate the sleep time
-	timer.Stop( );
-	Float64 sleepTime = updateTime - timer.GetTime( ).AsSeconds( );
-
-	// Sleep for some time
-	if( sleepTime > 0.0f )
-	{
-		Sleep( Seconds( sleepTime ) );
-	}
-	else
-	{
-		// Return the exceeded time
-		return Seconds( std::abs<Float64>( sleepTime ) );
-	}
-	
-	// Succeeded in time.
-	return Microseconds( 0 );
 }

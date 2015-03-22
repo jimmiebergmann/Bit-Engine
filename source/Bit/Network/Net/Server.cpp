@@ -26,6 +26,7 @@
 #include <Bit/Network/TcpSocket.hpp>
 #include <Bit/System/Sleep.hpp>
 #include <Bit/System/Timer.hpp>
+#include <Bit/System/Timestep.hpp>
 #include <Bit/System/SmartMutex.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -305,60 +306,51 @@ namespace Bit
 			// Start the entity thread
 			m_EntityThread.Execute( [ this ] ( )
 			{
-				if( m_EntityUpdatesPerSecond == 0 )
-				{
-					return;
-				}
-
-				// Calculate the update time
-				const Float64 updateTime = 1.0f / static_cast<Float64>( m_EntityUpdatesPerSecond );
-
-				// Start a timer
-				Timer timer;
-				timer.Start( );
+				// Create an instance of a timestep
+				Timestep timestep;
 
 				// Run the 
 				while( IsRunning( ) )
 				{
-
-					// Calculate the sleep time
-					timer.Stop( );
-					Float64 sleepTime = updateTime - timer.GetTime( ).AsSeconds( );
-
-					// Sleep for some time
-					if( sleepTime > 0.0f )
+					if( m_EntityUpdatesPerSecond == 0 )
 					{
-						Sleep( Bit::Seconds( sleepTime ) );
-					}
-
-					// Start the timer
-					timer.Start( );
-
-					// Create the entity message
-					std::vector<Uint8> message;
-					if( m_EntityManager.CreateEntityMessage( message ) == false )
-					{
+						Sleep( Microseconds( 100000 ) );
 						continue;
 					}
 
-					// Error check the message
-					if( message.size( ) == 0 )
+					// Calculate the timestep time
+					Time time = Seconds( 1.0f / static_cast<Float32>( m_EntityUpdatesPerSecond ) );
+
+					// Execute the timestep
+					timestep.Execute( time, [ this ] ( )
 					{
-						continue;
+						// Create the entity message
+						std::vector<Uint8> message;
+						if( m_EntityManager.CreateEntityMessage( message ) == false )
+						{
+							return;
+						}
+
+						// Error check the message
+						if( message.size( ) == 0 )
+						{
+							return;
+						}
+
+						// Send the message to all the connections
+						m_ConnectionMutex.Lock( );
+
+						for(	UserConnectionMap::iterator it = m_UserConnections.begin( );
+								it != m_UserConnections.end( );
+								it++ )
+						{
+							it->second->SendUnreliable( reinterpret_cast<Uint8 * >( message.data( ) ), message.size( ) );
+						}
+
+						m_ConnectionMutex.Unlock( );
 					}
-
-					// Send the message to all the connections
-					m_ConnectionMutex.Lock( );
-
-					for(	UserConnectionMap::iterator it = m_UserConnections.begin( );
-							it != m_UserConnections.end( );
-							it++ )
-					{
-						it->second->SendUnreliable( reinterpret_cast<Uint8 * >( message.data( ) ), message.size( ) );
-					}
-
-					m_ConnectionMutex.Unlock( );
-
+					);
+					
 				}
 			}
 			);

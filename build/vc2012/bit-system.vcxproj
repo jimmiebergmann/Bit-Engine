@@ -66,7 +66,6 @@
     <None Include="..\..\include\Bit\System\Math.inl" />
     <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
     <None Include="..\..\include\Bit\System\ThreadValue.inl" />
-    <None Include="..\..\include\Bit\System\Timestep.inl" />
     <None Include="..\..\include\Bit\System\Vector2.inl" />
     <None Include="..\..\include\Bit\System\Vector3.inl" />
     <None Include="..\..\include\Bit\System\Vector4.inl" />
@@ -90,6 +89,7 @@
     <ClCompile Include="..\..\source\Bit\System\SmartMutex.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Time.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Timestep.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Version.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\KeyboardWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp" />
