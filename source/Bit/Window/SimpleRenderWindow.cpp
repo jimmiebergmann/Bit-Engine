@@ -27,7 +27,7 @@
 #include <Bit/Graphics/ShaderProgram.hpp>
 #include <Bit/Graphics/Shader.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLGraphicDevice.hpp>
-#include <Bit/System/Matrix4x4.hpp>
+#include <Bit/System/MatrixManager.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -92,7 +92,7 @@ namespace Bit
 
 		// Initialize the graphic device
 		m_pGraphicDevice->SetViewport( Vector2u32( 0, 0 ), p_VideoMode.GetSize( ) );
-		m_pGraphicDevice->SetClearColor( 0, 255, 0, 255 );
+		m_pGraphicDevice->SetClearColor( 0, 0, 0, 255 );
 
 		// Create shaders
 		m_pShaderProgram = m_pGraphicDevice->CreateShaderProgram( );
@@ -110,6 +110,7 @@ namespace Bit
 
 			// Matrix uniforms
 			"uniform mat4 uProjectionMatrix;\n"
+			"uniform mat4 uModelViewMatrix;\n"
 			"uniform vec3 uPosition;\n"
 			"uniform vec3 uSize;\n"
 
@@ -121,7 +122,7 @@ namespace Bit
 			"{\n"
 
 				// Set the vertex position
-			"	gl_Position = uProjectionMatrix * vec4( position * uSize + uPosition, 1.0 );\n"
+			"	gl_Position = uProjectionMatrix * uModelViewMatrix * vec4( position * uSize + uPosition, 1.0 );\n"
 
 			"}\n";
 
@@ -155,13 +156,17 @@ namespace Bit
 
 		
 		// Create a projection matrix
-		Matrix4x4f32 projectionMatrix;
-		projectionMatrix.Orthographic(	0.0f,
-										static_cast<Bit::Float32>( m_RenderWindow.GetVideoMode( ).GetSize( ).x ),
-										0.0f,
-										static_cast<Bit::Float32>( m_RenderWindow.GetVideoMode( ).GetSize( ).y ),
-										-1.0f,
-										1.0f );
+
+		MatrixManager::SetCurrentStack( MatrixManager::Projection );
+		MatrixManager::LoadOrthographic(	0.0f,
+											static_cast<Bit::Float32>( m_RenderWindow.GetVideoMode( ).GetSize( ).x ),
+											0.0f,
+											static_cast<Bit::Float32>( m_RenderWindow.GetVideoMode( ).GetSize( ).y ),
+											-1.0f,
+											1.0f );
+
+		MatrixManager::SetCurrentStack( MatrixManager::ModelView );
+		MatrixManager::LoadIdentity( );
 
 		// Attach shaders and set up everything
 		m_pShaderProgram->AttachShader( *m_pVertexShader );
@@ -169,7 +174,8 @@ namespace Bit
 		m_pShaderProgram->SetAttributeLocation( "position", 0 );
 		m_pShaderProgram->Link( );
 		m_pShaderProgram->Bind( );
-		m_pShaderProgram->SetUniformMatrix4x4f( "uProjectionMatrix", projectionMatrix );
+		m_pShaderProgram->SetUniformMatrix4x4f( "uProjectionMatrix", MatrixManager::GetProjectionMatrix( ) );
+		m_pShaderProgram->SetUniformMatrix4x4f( "uModelViewMatrix",  MatrixManager::GetModelViewMatrix( ) );
 		m_pShaderProgram->SetUniform3f( "uPosition", 0.0f, 0.0f, 0.0f );
 		m_pShaderProgram->SetUniform3f( "uSize", 1.0f, 1.0f, 1.0f );
 		m_pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
@@ -214,7 +220,15 @@ namespace Bit
 		m_RenderWindow.Update( );
 	}
 
-	void SimpleRenderWindow::Draw( Shape * p_pShape )
+	void SimpleRenderWindow::SetClearColor( Uint8 p_Red, Uint8 p_Green, Uint8 p_Blue, Uint8 p_Alpha )
+	{
+		if( m_pGraphicDevice )
+		{
+			m_pGraphicDevice->SetClearColor( p_Red, p_Green, p_Blue, p_Alpha );
+		}
+	}
+
+	void SimpleRenderWindow::Draw( Shape * p_pShape, const PrimitiveMode::eMode p_PrimitiveMode )
 	{
 		// Error check the pointer
 		if( p_pShape == NULL )
@@ -233,20 +247,40 @@ namespace Bit
 		m_pShaderProgram->Bind( );
 
 		// Set uniforms
+		m_pShaderProgram->SetUniformMatrix4x4f( "uModelViewMatrix",  MatrixManager::GetModelViewMatrix( ) );
 		m_pShaderProgram->SetUniform3f( "uPosition", p_pShape->GetPosition( ).x, p_pShape->GetPosition( ).y, 0.0f );
 		m_pShaderProgram->SetUniform3f( "uSize", p_pShape->GetSize( ).x, p_pShape->GetSize( ).y, 0.0f );
 		m_pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
 
 		// Render the array
-		pVertexArray->Render( PrimitiveMode::Triangles );
+		pVertexArray->Render( p_PrimitiveMode );
 		
 		// Unbind shader program
 		m_pShaderProgram->Unbind( );
 	}
 
-	Shape * SimpleRenderWindow::CreateShape( const Bool p_OrigoInCenter )
+	Shape * SimpleRenderWindow::CreateQuadShape( )
 	{
-		return new Shape( m_pGraphicDevice, p_OrigoInCenter );
+		Shape * pShape = new Shape;
+		if( pShape->LoadQuad(  m_pGraphicDevice ) == false )
+		{
+			delete pShape;
+			return NULL;
+		}
+
+		return pShape;
+	}
+
+	Shape * SimpleRenderWindow::CreateCircleShape( const Uint32 p_Parts )
+	{
+		Shape * pShape = new Shape;
+		if( pShape->LoadCircle( m_pGraphicDevice, p_Parts ) == false )
+		{
+			delete pShape;
+			return NULL;
+		}
+
+		return pShape;
 	}
 
 	void SimpleRenderWindow::DestroyShape( Shape * p_pShape )

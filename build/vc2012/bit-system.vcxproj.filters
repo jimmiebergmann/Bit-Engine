@@ -67,6 +67,18 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\System\ThreadValue.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Timestep.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Phys2\Private\Manifold.hpp">
+      <Filter>Phys2\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Phys2\Body.hpp">
+      <Filter>Phys2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Phys2\Scene.hpp">
+      <Filter>Phys2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Phys2\Shape.hpp">
+      <Filter>Phys2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -126,6 +138,18 @@
       <Filter>Win32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\System\Timestep.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Phys2\Body.cpp">
+      <Filter>Phys2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Phys2\Scene.cpp">
+      <Filter>Phys2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Phys2\Shape.cpp">
+      <Filter>Phys2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Phys2\Private\Manifold.cpp">
+      <Filter>Phys2\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">
@@ -139,6 +163,12 @@
     </Filter>
     <Filter Include="ResourceManager">
       <UniqueIdentifier>{a732a1df-aec1-44fd-a98c-9e1a9de08bd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Phys2">
+      <UniqueIdentifier>{10651cff-f080-40be-b53a-47c9ca969566}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Phys2\Private">
+      <UniqueIdentifier>{48655f83-82a2-4d9e-b226-bcaeeae0c81f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

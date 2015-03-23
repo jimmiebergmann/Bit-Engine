@@ -52,39 +52,121 @@ namespace Bit
 		}
 	}
 
-	Shape::Shape( GraphicDevice * p_pGraphicDevice, const Bool p_OrigoInCenter ) :
-		m_Position( 0.0f, 0.0f ),
-		m_Size( 1.0f, 1.0f ),
-		m_pVertexArray( NULL ),
-		m_pVertexBuffer( NULL )
+	Bool Shape::LoadQuad( GraphicDevice * p_pGraphicDevice )
 	{
 		// Allocate the pointers
-		m_pVertexBuffer = p_pGraphicDevice->CreateVertexBuffer( );
-		m_pVertexArray = p_pGraphicDevice->CreateVertexArray( );
-
-		if( p_OrigoInCenter )
+		if( ( m_pVertexBuffer = p_pGraphicDevice->CreateVertexBuffer( ) ) == NULL )
 		{
-			// Load the buffer
-			Float32 buffer[ 12 ] =
-			{
-				-0.5f, -0.5f,		0.5f, -0.5f,	0.5f, 0.5f,
-				-0.5f, -0.5f,		0.5f, 0.5f,		-0.5f, 0.5f
-			};
-			m_pVertexBuffer->Load( 48, buffer );
+			return false;
 		}
-		else
+
+		if( ( m_pVertexArray = p_pGraphicDevice->CreateVertexArray( ) ) == NULL )
 		{
-			// Load the buffer
-			Float32 buffer[ 12 ] =
-			{
-				0.0f, 0.0f,		1.0f, 0.0f,		1.0f, 1.0f,
-				0.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f
-			};
-			m_pVertexBuffer->Load( 48, buffer );
+			delete m_pVertexBuffer;
+			m_pVertexBuffer = NULL;
+			return false;
+		}
+
+
+		// Load the buffer
+		Float32 buffer[ 8 ] =
+		{
+			0.0f, 0.0f,		1.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f
+		};
+		if( m_pVertexBuffer->Load( 32, buffer ) == false )
+		{
+			delete m_pVertexBuffer;
+			m_pVertexBuffer = NULL;
+			delete m_pVertexArray;
+			m_pVertexArray = NULL;
 		}
 
 		// Add the vertex buffer to the vertex array
-		m_pVertexArray->AddVertexBuffer( *m_pVertexBuffer, 2, DataType::Float32, 0 );
+		if( m_pVertexArray->AddVertexBuffer( *m_pVertexBuffer, 2, DataType::Float32, 0 ) == false )
+		{
+			delete m_pVertexBuffer;
+			m_pVertexBuffer = NULL;
+			delete m_pVertexArray;
+			m_pVertexArray = NULL;
+		
+			return false;
+		}
+
+		// Succeeded
+		return true;
+	}
+		
+	Bool Shape::LoadCircle( GraphicDevice * p_pGraphicDevice, const Uint32 p_Parts )
+	{
+		// You need at least 3 parts
+		if( p_Parts < 3 )
+		{
+			return false;
+		}
+
+		// Allocate the pointers
+		if( ( m_pVertexBuffer = p_pGraphicDevice->CreateVertexBuffer( ) ) == NULL )
+		{
+			return false;
+		}
+
+		if( ( m_pVertexArray = p_pGraphicDevice->CreateVertexArray( ) ) == NULL )
+		{
+			delete m_pVertexBuffer;
+			m_pVertexBuffer = NULL;
+			return false;
+		}
+
+
+		// Allocate the buffer
+		const SizeType bufferSize = (p_Parts * 2 ) + 2;
+		Float32 * pBuffer = new Float32[ bufferSize  ];
+
+		// Compute the angle for each part
+		Float32 partAngle = 360.0f / p_Parts;
+
+		// Set the first point
+		pBuffer[ 0 ] = 0.0f;
+		pBuffer[ 1 ] = 1.0f;
+
+		// Add the other points
+		for( SizeType i = 1; i <= p_Parts; i++ )
+		{
+			Vector2f32 point( 0.0f, 1.0f );
+			point.Rotate( Degrees( partAngle * i ) );
+
+			pBuffer[ ( i * 2 ) ]		= point.x;
+			pBuffer[ ( i * 2 ) + 1 ]	= point.y;
+		}
+
+		// Load the vertex buffer
+		if( m_pVertexBuffer->Load( bufferSize * sizeof( Float32 ), pBuffer ) == false )
+		{
+			delete m_pVertexBuffer;
+			m_pVertexBuffer = NULL;
+			delete m_pVertexArray;
+			m_pVertexArray = NULL;
+			
+			// Delete the buffer
+			delete pBuffer;
+		}
+
+		// Delete the buffer
+		delete pBuffer;
+
+		// Add the vertex buffer to the vertex array
+		if( m_pVertexArray->AddVertexBuffer( *m_pVertexBuffer, 2, DataType::Float32, 0 ) == false )
+		{
+			delete m_pVertexBuffer;
+			m_pVertexBuffer = NULL;
+			delete m_pVertexArray;
+			m_pVertexArray = NULL;
+		
+			return false;
+		}
+
+		// Succeeded
+		return true;
 	}
 
 	VertexArray * Shape::GetVertexArray( ) const
@@ -100,6 +182,12 @@ namespace Bit
 	void Shape::SetSize( const Vector2f32 & p_Size )
 	{
 		m_Size = p_Size;
+	}
+
+	void Shape::SetRadius( const Float32 p_Radius )
+	{
+		m_Size.x = p_Radius;
+		m_Size.y = p_Radius;
 	}
 		
 	Vector2f32 Shape::GetPosition( ) const
