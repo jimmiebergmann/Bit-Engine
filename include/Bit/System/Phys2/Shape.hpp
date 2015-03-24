@@ -34,6 +34,12 @@ namespace Bit
 	namespace Phys2
 	{
 
+		// Forward declarations
+		namespace Private
+		{
+			class Manifold;
+		}
+
 		////////////////////////////////////////////////////////////////
 		/// \ingroup System
 		/// \brief Shape base class for 2D physics.
@@ -77,7 +83,6 @@ namespace Bit
 
 		};
 
-
 		////////////////////////////////////////////////////////////////
 		/// \ingroup System
 		/// \brief Circle shape class for 2D physics.
@@ -87,6 +92,9 @@ namespace Bit
 		{
 
 		public:
+
+			// Friend classes
+			friend class Private::Manifold;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor

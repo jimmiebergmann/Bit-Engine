@@ -27,16 +27,17 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Phys2/Body.hpp>
+#include <Bit/System/Phys2/Private/Manifold.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <Bit/System/Time.hpp>
 #include <list>
+#include <vector>
 
 namespace Bit
 {
 
 	namespace Phys2
 	{
-
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup System
@@ -64,7 +65,7 @@ namespace Bit
 			/// \brief Step the physics in the scene.
 			/// 
 			////////////////////////////////////////////////////////////////
-			void Step( const Time & p_StepTime );
+			void Step( const Time & p_StepTime, const Uint32 p_Iterations );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Add body to scene.
@@ -72,7 +73,7 @@ namespace Bit
 			/// \return Pointer to created body.
 			/// 
 			////////////////////////////////////////////////////////////////
-			Body * Add( Shape * p_pShape, const Vector2f32 & p_Position );
+			Body * Add( Shape * p_pShape, const Vector2f32 & p_Position, const Float32 p_Restitution );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Remove body from the scene.
@@ -88,8 +89,23 @@ namespace Bit
 
 		private:
 
+			// Private functions
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Compute position for body
+			/// 
+			////////////////////////////////////////////////////////////////
+			void ComputePosition( Body * p_pBody, const Time & p_StepTime );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Apply forces to body
+			/// 
+			////////////////////////////////////////////////////////////////
+			void ApplyForces( Body * p_pBody, const Time & p_StepTime );
+
 			// Private typedefs
-			typedef std::list<Body *> BodyList;
+			typedef std::list<Body *>					BodyList;
+			typedef std::vector<Private::Manifold *>	ManifoldVector;
 
 			// Private variables
 			BodyList		m_Bodies;

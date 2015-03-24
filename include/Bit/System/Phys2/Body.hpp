@@ -50,12 +50,21 @@ namespace Bit
 
 			// Friend classes
 			friend class Scene;
+			friend class Private::Manifold;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
 			/// 
 			////////////////////////////////////////////////////////////////
-			Body( Shape * p_pShape, const Float32 p_Density, const Vector2f32 & p_Position );
+			Body(	Scene * p_pScene, Shape * p_pShape,
+					const Vector2f32 & p_Position, const Float32 p_Density,
+					const Float32 p_Restitution );
+			
+			////////////////////////////////////////////////////////////////
+			/// \brief Apply force to the body
+			/// 
+			////////////////////////////////////////////////////////////////
+			void ApplyForce( const Vector2f32 & p_Force );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get position
@@ -65,14 +74,30 @@ namespace Bit
 
 		private:
 
+			// Private functions
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Destructor
+			/// 
+			////////////////////////////////////////////////////////////////
+			~Body( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Apply impulse to body
+			/// 
+			////////////////////////////////////////////////////////////////
+			void ApplyImpulse( const Vector2f32 & p_Impulse );
+
 			// Private variables
 			Scene *			m_pScene;
 			Shape *			m_pShape;
 			Vector2f32		m_Position;
 			Vector2f32		m_Velocity;
+			Vector2f32		m_Force;
 			Float32			m_Density;
 			Float32			m_Mass;
 			Float32			m_MassInverse;
+			Float32			m_Restitution;
 
 		};
 

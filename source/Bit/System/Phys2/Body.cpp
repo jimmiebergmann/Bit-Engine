@@ -32,20 +32,43 @@ namespace Bit
 	namespace Phys2
 	{
 		
-		Body::Body( Shape * p_pShape, const Float32 p_Density, const Vector2f32 & p_Position ) :
+		Body::Body( Scene * p_pScene, Shape * p_pShape,
+					const Vector2f32 & p_Position, const Float32 p_Density,
+					const Float32 p_Restitution ) :
+			m_pScene( p_pScene),
 			m_pShape( p_pShape->Clone( ) ),
 			m_Position( p_Position ),
 			m_Velocity( 0.0f, 0.0f ),
-			m_Density( p_Density )
+			m_Force( 0.0f, 0.0f ),
+			m_Density( p_Density ),
+			m_Restitution( p_Restitution )
 		{
 			// Compute the mass
 			m_Mass = m_pShape->ComputeMass( m_Density );
 			m_MassInverse = m_Mass ? 1.0f / m_Mass : 0.0f;
 		}
 
+		void Body::ApplyForce( const Vector2f32 & p_Force )
+		{
+			m_Force += p_Force;
+		}
+
 		Vector2f32 Body::GetPosition( ) const
 		{
 			return m_Position;
+		}
+
+		Body::~Body( )
+		{
+			if( m_pShape )
+			{
+				delete m_pShape;
+			}
+		}
+
+		void Body::ApplyImpulse( const Vector2f32 & p_Impulse )
+		{
+			m_Velocity += p_Impulse * m_MassInverse;
 		}
 
 	}
