@@ -42,47 +42,25 @@ namespace Bit
 			Clear( );
 		}
 
-		void Scene::Step( const Time & p_StepTime, const Uint32 p_Iterations )
+		void Scene::Step(	const Time & p_StepTime,
+							const Uint32 p_VelocityIterations,
+							const Uint32 p_PositionIterations )
 		{
 			// Store intersecting bodies
 			ManifoldVector contacts;
 
 			// Go through all the bodies
-			//for( SizeType i = 0; i < m_Bodies.size( ); i++ )
-			for( BodyList::iterator it1 = m_Bodies.begin( ); it1 != m_Bodies.end( ); it1++ )
+			for( SizeType i = 0; i < m_Bodies.size( ); i++ )
 			{
-				Body * pA = *it1;
-
+				Body * pA = m_Bodies[ i ];
+				
 				// Go through all the bodies once again
-				for( BodyList::iterator it2 = m_Bodies.begin( ); it2 != m_Bodies.end( ); it2++ )
+				for( SizeType j = i + 1; j < m_Bodies.size( ); j++ )
 				{
-					Body * pB = *it2;
-
-					// Ignore checks against the same body
-					if( pA == pB )
-					{
-						continue;
-					}
+					Body * pB = m_Bodies[ j ];
 
 					// Ignore bodies with infinity mass
 					if( pA->m_MassInverse == 0.0f || pB->m_MassInverse == 0.0f )
-					{
-						continue;
-					}
-
-					// BETTER WAY OF DOING THIS??
-					// Go through the vector of contacts and check if the pairs already exists in the vector
-					Bool dublicate = false;
-					for( SizeType i = 0; i < contacts.size( ); i++ )
-					{
-						if( contacts[ i ]->m_pBodyA == pA || contacts[ i ]->m_pBodyA == pB &&
-							contacts[ i ]->m_pBodyB == pA || contacts[ i ]->m_pBodyB == pB )
-						{
-							dublicate = true;
-							break;
-						}
-					}
-					if( dublicate )
 					{
 						continue;
 					}
@@ -108,38 +86,41 @@ namespace Bit
 			}
 
 			// Apply forces on all bodies
-			for( BodyList::iterator it = m_Bodies.begin( ); it != m_Bodies.end( ); it++ )
+			for( SizeType i = 0; i < m_Bodies.size( ); i++ )
 			{
-				ApplyForces( *it, p_StepTime );
-				//Body * pA = *it1;
+				ApplyForces( m_Bodies[ i ], p_StepTime );
 			}
 
 			// Apply impulse to contacting bodies(solve collisions)
-			//for( SizeType i = 0; i < p_Iterations; i++ )
-			//{
-			for( SizeType j = 0; j < contacts.size( ); j++ )
+			
+			for( Uint32 i = 0; i < p_VelocityIterations; i++ )
 			{
-				contacts[ j ]->ApplyImpulse( );
+				for( SizeType j = 0; j < contacts.size( ); j++ )
+				{
+					contacts[ j ]->ApplyImpulse( );
+				}
 			}
-			//}
 
 			// Compute positions for all bodies
-			for( BodyList::iterator it = m_Bodies.begin( ); it != m_Bodies.end( ); it++ )
+			Float32 inversePositionIterations = 1.0f / static_cast<Float32>( p_PositionIterations );
+			for( Uint32 i = 0; i < p_PositionIterations; i++ )
 			{
-				//Body * pA = *it1;
-				ComputePosition( *it, p_StepTime );
-			}
+				for( SizeType i = 0; i < m_Bodies.size( ); i++ )
+				{
+					ComputePosition( m_Bodies[ i ], p_StepTime, inversePositionIterations );
+				}
 			
-			// Corrent positions
-			for( SizeType j = 0; j < contacts.size( ); j++ )
-			{
-				contacts[ j ]->PositionalCorrection( );
+				// Corrent positions
+				for( SizeType j = 0; j < contacts.size( ); j++ )
+				{
+					contacts[ j ]->PositionalCorrection( inversePositionIterations );
+				}
 			}
 
 			// Clear all forces on the bodies
-			for( BodyList::iterator it = m_Bodies.begin( ); it != m_Bodies.end( ); it++ )
+			for( SizeType i = 0; i < m_Bodies.size( ); i++ )
 			{
-				(*it)->m_Force = Vector2f32( 0.0f, 0.0f );
+				m_Bodies[ i ]->m_Force = Vector2f32( 0.0f, 0.0f );
 			}
 
 			// Delete all the contacts
@@ -171,25 +152,32 @@ namespace Bit
 			
 		void Scene::Remove( Body * p_pBody )
 		{
-			m_Bodies.remove( p_pBody );
+			for( BodyVector::iterator it = m_Bodies.begin( ); it != m_Bodies.end( ); it++ )
+			{
+				if( p_pBody == *it )
+				{
+					m_Bodies.erase( it );
+					break;
+				}
+			}
+			
 		}
 
 		void Scene::Clear( )
 		{
 			// Delete all the bodies.
-			for( BodyList::iterator it = m_Bodies.begin( ); it != m_Bodies.end( ); it++ )
+			for( SizeType i = 0; i < m_Bodies.size( ); i++ )
 			{
-				delete *it;
-				
+				delete  m_Bodies[ i ];
 			}
 
 			// Clear the body list.
 			m_Bodies.clear( );
 		}
 
-		void Scene::ComputePosition( Body * p_pBody, const Time & p_StepTime )
+		void Scene::ComputePosition( Body * p_pBody, const Time & p_StepTime, const Float32 p_InverseIterations )
 		{
-			p_pBody->m_Position += p_pBody->m_Velocity * static_cast<Float32>( p_StepTime.AsSeconds( ) );
+			p_pBody->m_Position += p_pBody->m_Velocity * static_cast<Float32>( p_StepTime.AsSeconds( ) ) * p_InverseIterations;
 		}
 
 		void Scene::ApplyForces( Body * p_pBody, const Time & p_StepTime )

@@ -80,11 +80,11 @@ namespace Bit
 
 			}
 
-			void Manifold::PositionalCorrection( )
+			void Manifold::PositionalCorrection( const Float32 p_InverseIterations )
 			{
 				const Float32 percent = 0.4f;	// Penetration percentage to corrent.
 				const Float32 slop = 0.01f;		// Penetration allowance.
-				Vector2f32 correction = m_Normal * ( std::max( m_Penetration - slop,  0.0f ) / ( m_pBodyA->m_MassInverse + m_pBodyB->m_MassInverse ) ) * percent;
+				Vector2f32 correction = m_Normal * ( std::max( m_Penetration - slop,  0.0f ) / ( m_pBodyA->m_MassInverse + m_pBodyB->m_MassInverse ) ) * percent * p_InverseIterations;
 
 				// Correct the positions
 				m_pBodyA->m_Position -= correction * m_pBodyA->m_MassInverse;

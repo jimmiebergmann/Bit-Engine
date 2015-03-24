@@ -33,8 +33,9 @@ namespace Bit
 	{
 		
 		// Shape class
-		Shape::Shape( )
+		Shape::eType Shape::GetType( ) const
 		{
+			return m_Type;
 		}
 
 		Float32 Shape::GetRadius( ) const
@@ -42,10 +43,15 @@ namespace Bit
 			return 0.0f;
 		}
 
+		Shape::Shape( const eType p_Type ) :
+			m_Type( p_Type )
+		{
+		}
+
 
 		// Circle class
 		Circle::Circle( const Float32 p_Radius ) :
-			Shape( ),
+			Shape( CircleType ),
 			m_Radius( p_Radius )
 		{
 		}
@@ -55,14 +61,14 @@ namespace Bit
 			return m_Radius;
 		}
 
-		Float32 Circle::ComputeMass( const Float32 p_Density )
-		{
-			return PiFloat32 * m_Radius * m_Radius * p_Density;
-		}
-
 		Shape * Circle::Clone( ) const
 		{
 			return new Circle( m_Radius );
+		}
+
+		Float32 Circle::ComputeMass( const Float32 p_Density )
+		{
+			return PiFloat32 * m_Radius * m_Radius * p_Density;
 		}
 
 	}

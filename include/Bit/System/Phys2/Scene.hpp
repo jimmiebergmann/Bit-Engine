@@ -65,7 +65,9 @@ namespace Bit
 			/// \brief Step the physics in the scene.
 			/// 
 			////////////////////////////////////////////////////////////////
-			void Step( const Time & p_StepTime, const Uint32 p_Iterations );
+			void Step(	const Time & p_StepTime,
+						const Uint32 p_VelocityIterations = 3,
+						const Uint32 p_PositionIterations = 2 );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Add body to scene.
@@ -95,7 +97,7 @@ namespace Bit
 			/// \brief Compute position for body
 			/// 
 			////////////////////////////////////////////////////////////////
-			void ComputePosition( Body * p_pBody, const Time & p_StepTime );
+			void ComputePosition( Body * p_pBody, const Time & p_StepTime, const Float32 p_InverseIterations );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Apply forces to body
@@ -105,10 +107,11 @@ namespace Bit
 
 			// Private typedefs
 			typedef std::list<Body *>					BodyList;
+			typedef std::vector<Body *>					BodyVector;
 			typedef std::vector<Private::Manifold *>	ManifoldVector;
 
 			// Private variables
-			BodyList		m_Bodies;
+			BodyVector		m_Bodies;
 			Vector2f32		m_Gravity;
 
 		};

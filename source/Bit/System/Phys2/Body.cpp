@@ -31,7 +31,42 @@ namespace Bit
 
 	namespace Phys2
 	{
-		
+
+		// Default shape
+		static const Circle g_DefaultShape( 1.0f );
+
+		// Body implementations
+		void Body::ApplyForce( const Vector2f32 & p_Force )
+		{
+			m_Force += p_Force;
+		}
+
+		void Body::SetForce( const Vector2f32 & p_Force )
+		{
+			m_Force = p_Force;
+		}
+
+		void Body::SetPosition( const Vector2f32 & p_Position )
+		{
+			m_Position = p_Position;
+		}
+
+		Vector2f32 Body::GetPosition( ) const
+		{
+			return m_Position;
+		}
+
+		const Shape & Body::GetShape( ) const
+		{
+			if( m_pShape )
+			{
+				return *m_pShape;
+			}
+
+			// Return the default shape if the shape isn't set yet.
+			return g_DefaultShape;
+		}
+
 		Body::Body( Scene * p_pScene, Shape * p_pShape,
 					const Vector2f32 & p_Position, const Float32 p_Density,
 					const Float32 p_Restitution ) :
@@ -46,16 +81,6 @@ namespace Bit
 			// Compute the mass
 			m_Mass = m_pShape->ComputeMass( m_Density );
 			m_MassInverse = m_Mass ? 1.0f / m_Mass : 0.0f;
-		}
-
-		void Body::ApplyForce( const Vector2f32 & p_Force )
-		{
-			m_Force += p_Force;
-		}
-
-		Vector2f32 Body::GetPosition( ) const
-		{
-			return m_Position;
 		}
 
 		Body::~Body( )

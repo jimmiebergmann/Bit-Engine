@@ -74,7 +74,7 @@ namespace Bit
 				/// \brief Correcting the positions of the bodies.
 				/// 
 				////////////////////////////////////////////////////////////////
-				void PositionalCorrection( );
+				void PositionalCorrection( const Float32 p_InverseIterations );
 
 			private:
 
