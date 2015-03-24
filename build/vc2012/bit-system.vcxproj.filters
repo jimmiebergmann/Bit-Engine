@@ -79,6 +79,9 @@
     <ClInclude Include="..\..\include\Bit\System\Phys2\Shape.hpp">
       <Filter>Phys2</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Phys2\Material.hpp">
+      <Filter>Phys2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -149,6 +152,9 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\System\Phys2\Private\Manifold.cpp">
       <Filter>Phys2\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Phys2\Material.cpp">
+      <Filter>Phys2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

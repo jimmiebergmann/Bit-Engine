@@ -22,16 +22,11 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_SYSTEM_PHYS2_SCENE_HPP
-#define BIT_SYSTEM_PHYS2_SCENE_HPP
+#ifndef BIT_SYSTEM_PHYS2_MATERIAL_HPP
+#define BIT_SYSTEM_PHYS2_MATERIAL_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/System/Phys2/Body.hpp>
-#include <Bit/System/Phys2/Private/Manifold.hpp>
 #include <Bit/System/Vector2.hpp>
-#include <Bit/System/Time.hpp>
-#include <list>
-#include <vector>
 
 namespace Bit
 {
@@ -39,80 +34,66 @@ namespace Bit
 	namespace Phys2
 	{
 
+		// Forward declarations
+		namespace Private
+		{
+			class Manifold;
+		}
+
 		////////////////////////////////////////////////////////////////
 		/// \ingroup System
-		/// \brief Scene class for 2D physics.
+		/// \brief Material base class for 2D physics.
 		/// 
 		////////////////////////////////////////////////////////////////
-		class BIT_API Scene
+		class BIT_API Material
 		{
 
 		public:
+
+			// Friend classes
+			friend class Body;
+			friend class Private::Manifold;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor
 			/// 
 			////////////////////////////////////////////////////////////////
-			Scene( const Vector2f32 & p_Gravity = Vector2f32( 0.0f, 0.0f ) );
+			Material( const Float32 p_Density = 1.0f, const Float32 p_Restitution = 0.2  );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Destructor
+			/// \brief Set density
 			/// 
 			////////////////////////////////////////////////////////////////
-			~Scene( );
+			void SetDensity( const Float32 p_Density );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Step the physics in the scene.
+			/// \brief Set restitution
 			/// 
 			////////////////////////////////////////////////////////////////
-			void Step(	const Time & p_StepTime,
-						const Uint32 p_VelocityIterations = 3,
-						const Uint32 p_PositionIterations = 2 );
+			void SetRestitution( const Float32 p_Restitution );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Add body to scene.
-			///
-			/// \return Pointer to created body.
+			/// \brief Get density
 			/// 
 			////////////////////////////////////////////////////////////////
-			Body * Add( Shape * p_pShape, const Vector2f32 & p_Position, const Material & p_Material = Material::Default );
+			Float32 GetDensity( ) const;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Remove body from the scene.
+			/// \brief Get restitution
 			/// 
 			////////////////////////////////////////////////////////////////
-			void Remove( Body * p_pBody );
+			Float32 GetRestitution( ) const;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Clear the scenes from all bodies
+			/// \brief Static default material
 			/// 
 			////////////////////////////////////////////////////////////////
-			void Clear( );
+			static const Material Default;
 
 		private:
 
-			// Private functions
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Compute position for body
-			/// 
-			////////////////////////////////////////////////////////////////
-			void ComputePosition( Body * p_pBody, const Time & p_StepTime, const Float32 p_InverseIterations );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Apply forces to body
-			/// 
-			////////////////////////////////////////////////////////////////
-			void ApplyForces( Body * p_pBody, const Time & p_StepTime );
-
-			// Private typedefs
-			typedef std::list<Body *>					BodyList;
-			typedef std::vector<Body *>					BodyVector;
-			typedef std::vector<Private::Manifold *>	ManifoldVector;
-
-			// Private variables
-			BodyVector		m_Bodies;
-			Vector2f32		m_Gravity;
+			Float32	m_Density;
+			Float32	m_Restitution;		
 
 		};
 

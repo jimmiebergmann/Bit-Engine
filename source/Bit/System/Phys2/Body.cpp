@@ -56,6 +56,11 @@ namespace Bit
 			return m_Position;
 		}
 
+		Vector2f32 Body::GetForce( ) const
+		{
+			return m_Force;
+		}
+
 		const Shape & Body::GetShape( ) const
 		{
 			if( m_pShape )
@@ -68,18 +73,16 @@ namespace Bit
 		}
 
 		Body::Body( Scene * p_pScene, Shape * p_pShape,
-					const Vector2f32 & p_Position, const Float32 p_Density,
-					const Float32 p_Restitution ) :
+					const Vector2f32 & p_Position, const Material & p_Material ) :
 			m_pScene( p_pScene),
 			m_pShape( p_pShape->Clone( ) ),
 			m_Position( p_Position ),
 			m_Velocity( 0.0f, 0.0f ),
 			m_Force( 0.0f, 0.0f ),
-			m_Density( p_Density ),
-			m_Restitution( p_Restitution )
+			m_Material( p_Material )
 		{
 			// Compute the mass
-			m_Mass = m_pShape->ComputeMass( m_Density );
+			m_Mass = m_pShape->ComputeMass( m_Material.m_Density );
 			m_MassInverse = m_Mass ? 1.0f / m_Mass : 0.0f;
 		}
 

@@ -26,6 +26,7 @@
 #define BIT_SYSTEM_PHYS2_BODY_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Phys2/Material.hpp>
 #include <Bit/System/Phys2/Shape.hpp>
 #include <Bit/System/Vector2.hpp>
 
@@ -77,6 +78,12 @@ namespace Bit
 			Vector2f32 GetPosition( ) const;
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Get force
+			/// 
+			////////////////////////////////////////////////////////////////
+			Vector2f32 GetForce( ) const;
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Get const reference to shape
 			/// 
 			////////////////////////////////////////////////////////////////
@@ -91,8 +98,7 @@ namespace Bit
 			/// 
 			////////////////////////////////////////////////////////////////
 			Body(	Scene * p_pScene, Shape * p_pShape,
-					const Vector2f32 & p_Position, const Float32 p_Density,
-					const Float32 p_Restitution );
+					const Vector2f32 & p_Position, const Material & p_Material );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Destructor
@@ -109,13 +115,14 @@ namespace Bit
 			// Private variables
 			Scene *			m_pScene;
 			Shape *			m_pShape;
+			Material		m_Material;
 			Vector2f32		m_Position;
 			Vector2f32		m_Velocity;
 			Vector2f32		m_Force;
-			Float32			m_Density;
 			Float32			m_Mass;
 			Float32			m_MassInverse;
-			Float32			m_Restitution;
+
+			
 
 		};
 

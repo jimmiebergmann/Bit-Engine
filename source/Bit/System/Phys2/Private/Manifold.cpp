@@ -67,7 +67,7 @@ namespace Bit
 				}
 
 				// Calcualte the restitution
-				Float32 e = std::min( m_pBodyA->m_Restitution, m_pBodyB->m_Restitution );
+				Float32 e = std::min( m_pBodyA->m_Material.m_Restitution, m_pBodyB->m_Material.m_Restitution );
 
 				// Calculate the impulse scalar
 				Float32 j = -( 1.0f + e ) * velAlongNormal;

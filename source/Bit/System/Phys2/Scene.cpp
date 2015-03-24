@@ -60,7 +60,7 @@ namespace Bit
 					Body * pB = m_Bodies[ j ];
 
 					// Ignore bodies with infinity mass
-					if( pA->m_MassInverse == 0.0f || pB->m_MassInverse == 0.0f )
+					if( pA->m_MassInverse == 0.0f && pB->m_MassInverse == 0.0f )
 					{
 						continue;
 					}
@@ -132,7 +132,7 @@ namespace Bit
 
 		}
 
-		Body * Scene::Add( Shape * p_pShape, const Vector2f32 & p_Position, const Float32 p_Restitution )
+		Body * Scene::Add( Shape * p_pShape, const Vector2f32 & p_Position, const Material & p_Material )
 		{
 			// Error check the shape pointer
 			if( p_pShape == NULL )
@@ -141,7 +141,7 @@ namespace Bit
 			}
 
 			// Create the body
-			Body * pBody = new Body( this, p_pShape, p_Position, 1.0f, p_Restitution );
+			Body * pBody = new Body( this, p_pShape, p_Position, p_Material );
 
 			// Add the body to the body list
 			m_Bodies.push_back( pBody );
