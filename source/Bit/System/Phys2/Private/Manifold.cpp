@@ -80,6 +80,17 @@ namespace Bit
 
 			}
 
+			void Manifold::PositionalCorrection( )
+			{
+				const Float32 percent = 0.4f;	// Penetration percentage to corrent.
+				const Float32 slop = 0.01f;		// Penetration allowance.
+				Vector2f32 correction = m_Normal * ( std::max( m_Penetration - slop,  0.0f ) / ( m_pBodyA->m_MassInverse + m_pBodyB->m_MassInverse ) ) * percent;
+
+				// Correct the positions
+				m_pBodyA->m_Position -= correction * m_pBodyA->m_MassInverse;
+				m_pBodyB->m_Position += correction * m_pBodyB->m_MassInverse;
+			}
+
 			void Manifold::CircleToCircle( )
 			{
 				// Get the shapes

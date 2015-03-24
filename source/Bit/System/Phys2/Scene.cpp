@@ -70,6 +70,23 @@ namespace Bit
 						continue;
 					}
 
+					// BETTER WAY OF DOING THIS??
+					// Go through the vector of contacts and check if the pairs already exists in the vector
+					Bool dublicate = false;
+					for( SizeType i = 0; i < contacts.size( ); i++ )
+					{
+						if( contacts[ i ]->m_pBodyA == pA || contacts[ i ]->m_pBodyA == pB &&
+							contacts[ i ]->m_pBodyB == pA || contacts[ i ]->m_pBodyB == pB )
+						{
+							dublicate = true;
+							break;
+						}
+					}
+					if( dublicate )
+					{
+						continue;
+					}
+
 					// Create a manifold
 					Private::Manifold * pManifold = new Private::Manifold( pA, pB );
 
@@ -114,7 +131,10 @@ namespace Bit
 			}
 			
 			// Corrent positions
-			// ...
+			for( SizeType j = 0; j < contacts.size( ); j++ )
+			{
+				contacts[ j ]->PositionalCorrection( );
+			}
 
 			// Clear all forces on the bodies
 			for( BodyList::iterator it = m_Bodies.begin( ); it != m_Bodies.end( ); it++ )
@@ -175,6 +195,7 @@ namespace Bit
 		void Scene::ApplyForces( Body * p_pBody, const Time & p_StepTime )
 		{
 			p_pBody->m_Velocity += p_pBody->m_Force * p_pBody->m_MassInverse;
+			p_pBody->m_Velocity += m_Gravity * static_cast<Float32>( p_StepTime.AsSeconds( ) );
 		}
 
 	}
