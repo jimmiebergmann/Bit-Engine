@@ -175,6 +175,16 @@ namespace Bit
 			m_Bodies.clear( );
 		}
 
+		void Scene::SetGravity( const Vector2f32 & p_Gravity )
+		{
+			m_Gravity = p_Gravity;
+		}
+			
+		Vector2f32 Scene::GetGravity( ) const
+		{
+			return m_Gravity;
+		}
+
 		void Scene::ComputePosition( Body * p_pBody, const Time & p_StepTime, const Float32 p_InverseIterations )
 		{
 			p_pBody->m_Position += p_pBody->m_Velocity * static_cast<Float32>( p_StepTime.AsSeconds( ) ) * p_InverseIterations;
@@ -182,6 +192,11 @@ namespace Bit
 
 		void Scene::ApplyForces( Body * p_pBody, const Time & p_StepTime )
 		{
+			if( p_pBody->m_MassInverse == 0.0f )
+			{
+				return;
+			}
+
 			p_pBody->m_Velocity += p_pBody->m_Force * p_pBody->m_MassInverse;
 			p_pBody->m_Velocity += m_Gravity * static_cast<Float32>( p_StepTime.AsSeconds( ) );
 		}

@@ -33,9 +33,14 @@ namespace Bit
 
 		const Material Material::Default;
 
-		Material::Material( const Float32 p_Density, const Float32 p_Restitution ) :
+		Material::Material( const Float32 p_Density,		
+							const Float32 p_Restitution,
+							const Float32 p_StaticFriction,
+							const Float32 p_DynamicFriction ) :
 			m_Density( p_Density ),
-			m_Restitution( p_Restitution )
+			m_Restitution( p_Restitution ),
+			m_StaticFriction( p_StaticFriction ),
+			m_DynamicFriction( p_DynamicFriction )
 		{
 		}
 
@@ -49,6 +54,16 @@ namespace Bit
 			m_Restitution = p_Restitution;
 		}
 
+		void Material::SetStaticFriction( const Float32 p_StaticFriction )
+		{
+			m_StaticFriction = p_StaticFriction;
+		}
+
+		void Material::SetDynamicFriction( const Float32 p_DynamicFriction )
+		{
+			m_DynamicFriction = p_DynamicFriction;
+		}
+
 		Float32 Material::GetDensity( ) const
 		{
 			return m_Density;
@@ -57,6 +72,16 @@ namespace Bit
 		Float32 Material::GetRestitution( ) const
 		{
 			return m_Restitution;
+		}
+
+		Float32 Material::GetStaticFriction( ) const
+		{
+			return m_StaticFriction;
+		}
+
+		Float32 Material::GetDynamicFriction( ) const
+		{
+			return m_DynamicFriction;
 		}
 
 	}

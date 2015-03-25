@@ -25,6 +25,7 @@
 #include <Bit/System/Phys2/Private/Manifold.hpp>
 #include <Bit/System/Phys2/Body.hpp>
 #include <algorithm>
+#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -54,6 +55,8 @@ namespace Bit
 
 			void Manifold::ApplyImpulse( )
 			{
+				// Compute velocity
+
 				// Compute relative velocity
 				Vector2f32 rv = m_pBodyB->m_Velocity - m_pBodyA->m_Velocity;
 
@@ -78,6 +81,44 @@ namespace Bit
 				m_pBodyA->ApplyImpulse( -impulse );
 				m_pBodyB->ApplyImpulse( impulse );
 
+
+				// Compute friction
+				
+				// Compute relative velocity once again
+				rv = m_pBodyB->m_Velocity - m_pBodyA->m_Velocity;
+
+				// Compute the tangent vector
+				Vector2f32 tangent = rv - ( m_Normal * Vector2f32::Dot( rv, m_Normal ) );
+				tangent.Normalize( );
+
+				// Compute magnitude to apply along the friction vector
+				Float32 jt = -static_cast<Float32>( Vector2f32::Dot( rv, tangent ) );
+				jt /= m_pBodyA->m_MassInverse + m_pBodyB->m_MassInverse;
+
+				// Make sure jt isn't invalid.
+				if( Math::EqualEpsilon<Float32>( jt, 0.0f ) )
+				{
+					return;
+				}
+
+				// Compute static and dynamic friction
+				Float32 sf = std::sqrt( m_pBodyA->m_Material.m_StaticFriction * m_pBodyB->m_Material.m_StaticFriction );
+				Float32 df = std::sqrt( m_pBodyA->m_Material.m_DynamicFriction * m_pBodyB->m_Material.m_DynamicFriction );
+
+				// Compute friction impulse
+				Vector2f32 frictionImpulse;
+				if( std::abs( jt ) < j * sf )
+				{ 
+					frictionImpulse = tangent * jt;
+				}
+				else
+				{
+					frictionImpulse = tangent * (-j) * df;
+				}
+
+				// Apply friction impulse to bodies
+				m_pBodyA->ApplyImpulse( -frictionImpulse );
+				m_pBodyB->ApplyImpulse( frictionImpulse );
 			}
 
 			void Manifold::PositionalCorrection( const Float32 p_InverseIterations )
