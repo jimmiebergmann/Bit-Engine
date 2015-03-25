@@ -76,15 +76,13 @@ namespace Bit
 				////////////////////////////////////////////////////////////////
 				void PositionalCorrection( const Float32 p_InverseIterations );
 
-			private:
-
-				// Private variables
-
 				////////////////////////////////////////////////////////////////
 				/// \brief Solve circle to circle intersections
 				/// 
 				////////////////////////////////////////////////////////////////
 				void CircleToCircle( );
+
+private:
 
 				// Private varaibles
 				Body *			m_pBodyA;		///< Pointer to the first body.

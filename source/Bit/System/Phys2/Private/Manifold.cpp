@@ -36,7 +36,26 @@ namespace Bit
 
 		namespace Private
 		{
+
+			static Vector2f32 Cross( const Float32 a, const Vector2f32 & v )
+			{
+			  return Vector2f32( -a * v.y, a * v.x );
+			}
+
+			static Float32 Cross( const Vector2f32 & a, const Vector2f32& b )
+			{
+				return a.x * b.y - a.y * b.x;
+			}
+
+			// Create a jump table for collison checks, based on the shape type.
+			typedef void (Manifold::*CollisionFunctionPointer)( );
+			CollisionFunctionPointer g_CollisionJumpTable[ 1 ][ 1 ] =
+			{
+				&Manifold::CircleToCircle
+			};
+
 		
+			// Manifold class
 			Manifold::Manifold( Body * p_pBodyA, Body * p_pBodyB ) :
 				m_pBodyA( p_pBodyA ),
 				m_pBodyB( p_pBodyB ),
@@ -50,15 +69,21 @@ namespace Bit
 
 			void Manifold::Solve( )
 			{
-				CircleToCircle( );
+				// Call the collision function from jumptable.
+				(this->*g_CollisionJumpTable[ m_pBodyA->GetShape( ).GetType( ) ][ m_pBodyB->GetShape( ).GetType( ) ])( );
 			}
 
 			void Manifold::ApplyImpulse( )
 			{
 				// Compute velocity
 
+				// Compute  radius from COM to contact point
+				Vector2f32 rA = m_Contact - m_pBodyA->m_Position;
+				Vector2f32 rB = m_Contact - m_pBodyB->m_Position;
+
 				// Compute relative velocity
-				Vector2f32 rv = m_pBodyB->m_Velocity - m_pBodyA->m_Velocity;
+				Vector2f32 rv = m_pBodyB->m_Velocity + Cross( m_pBodyB->m_AngularVelocity, rB ) -
+								m_pBodyA->m_Velocity - Cross( m_pBodyA->m_AngularVelocity, rA );
 
 				// Calculate velocity along the normal
 				Float32 velAlongNormal = static_cast<Float32>( Vector2f32::Dot( rv, m_Normal ) );
@@ -72,20 +97,32 @@ namespace Bit
 				// Calcualte the restitution
 				Float32 e = std::min( m_pBodyA->m_Material.m_Restitution, m_pBodyB->m_Material.m_Restitution );
 
+
+				// Calculate the inv mass sum
+				Float32 raCrossN = Cross( rA, m_Normal );
+				raCrossN *= raCrossN;
+				Float32 rbCrossN = Cross( rB, m_Normal );
+				rbCrossN *= rbCrossN;
+
+				Float32 invMassSum =	m_pBodyA->m_MassInverse + m_pBodyB->m_MassInverse +
+										( raCrossN * m_pBodyA->m_InertiaInverse )  +
+										( rbCrossN * m_pBodyB->m_InertiaInverse );
+
 				// Calculate the impulse scalar
 				Float32 j = -( 1.0f + e ) * velAlongNormal;
-				j /= m_pBodyA->m_MassInverse + m_pBodyB->m_MassInverse;
+				j /= invMassSum;
 
 				// Apply impulse to bodies
 				Vector2f32 impulse = m_Normal * j;
-				m_pBodyA->ApplyImpulse( -impulse );
-				m_pBodyB->ApplyImpulse( impulse );
+				m_pBodyA->ApplyImpulse( -impulse, rA );
+				m_pBodyB->ApplyImpulse( impulse, rB );
 
 
 				// Compute friction
 				
 				// Compute relative velocity once again
-				rv = m_pBodyB->m_Velocity - m_pBodyA->m_Velocity;
+				rv =	m_pBodyB->m_Velocity + Cross( m_pBodyB->m_AngularVelocity, rB ) -
+						m_pBodyA->m_Velocity - Cross( m_pBodyA->m_AngularVelocity, rA );
 
 				// Compute the tangent vector
 				Vector2f32 tangent = rv - ( m_Normal * Vector2f32::Dot( rv, m_Normal ) );
@@ -93,7 +130,7 @@ namespace Bit
 
 				// Compute magnitude to apply along the friction vector
 				Float32 jt = -static_cast<Float32>( Vector2f32::Dot( rv, tangent ) );
-				jt /= m_pBodyA->m_MassInverse + m_pBodyB->m_MassInverse;
+				jt /= invMassSum;
 
 				// Make sure jt isn't invalid.
 				if( Math::EqualEpsilon<Float32>( jt, 0.0f ) )
@@ -117,8 +154,8 @@ namespace Bit
 				}
 
 				// Apply friction impulse to bodies
-				m_pBodyA->ApplyImpulse( -frictionImpulse );
-				m_pBodyB->ApplyImpulse( frictionImpulse );
+				m_pBodyA->ApplyImpulse( -frictionImpulse, rA );
+				m_pBodyB->ApplyImpulse( frictionImpulse, rB );
 			}
 
 			void Manifold::PositionalCorrection( const Float32 p_InverseIterations )

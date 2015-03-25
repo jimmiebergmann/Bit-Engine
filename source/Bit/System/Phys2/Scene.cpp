@@ -121,6 +121,7 @@ namespace Bit
 			for( SizeType i = 0; i < m_Bodies.size( ); i++ )
 			{
 				m_Bodies[ i ]->m_Force = Vector2f32( 0.0f, 0.0f );
+				m_Bodies[ i ]->m_Torque = 0.0f;
 			}
 
 			// Delete all the contacts
@@ -187,7 +188,13 @@ namespace Bit
 
 		void Scene::ComputePosition( Body * p_pBody, const Time & p_StepTime, const Float32 p_InverseIterations )
 		{
+			if( p_pBody->m_MassInverse == 0.0f )
+			{
+				return;
+			}
+
 			p_pBody->m_Position += p_pBody->m_Velocity * static_cast<Float32>( p_StepTime.AsSeconds( ) ) * p_InverseIterations;
+			p_pBody->m_Orient += p_pBody->m_AngularVelocity * static_cast<Float32>( p_StepTime.AsSeconds( ) ) * p_InverseIterations; 
 		}
 
 		void Scene::ApplyForces( Body * p_pBody, const Time & p_StepTime )
@@ -199,6 +206,7 @@ namespace Bit
 
 			p_pBody->m_Velocity += p_pBody->m_Force * p_pBody->m_MassInverse;
 			p_pBody->m_Velocity += m_Gravity * static_cast<Float32>( p_StepTime.AsSeconds( ) );
+			p_pBody->m_AngularVelocity += p_pBody->m_Torque * p_pBody->m_InertiaInverse;
 		}
 
 	}

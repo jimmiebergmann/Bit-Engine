@@ -32,6 +32,13 @@ namespace Bit
 	namespace Phys2
 	{
 
+
+		static Float32 Cross( const Vector2f32 & a, const Vector2f32& b )
+		{
+			return a.x * b.y - a.y * b.x;
+		}
+
+
 		// Default shape
 		static const Circle g_DefaultShape( 1.0f );
 
@@ -39,6 +46,17 @@ namespace Bit
 		void Body::ApplyForce( const Vector2f32 & p_Force )
 		{
 			m_Force += p_Force;
+		}
+
+		void Body::ApplyTorque( const Float32 p_Torque )
+		{
+			m_Torque += p_Torque;
+		}
+
+		void Body::ApplyImpulse( const Vector2f32 & p_Impulse, const Vector2f32 & p_ContactPoint )
+		{
+			m_Velocity += p_Impulse * m_MassInverse;
+			m_AngularVelocity += Cross( p_ContactPoint, p_Impulse ) * m_InertiaInverse;
 		}
 
 		void Body::SetForce( const Vector2f32 & p_Force )
@@ -61,6 +79,11 @@ namespace Bit
 			return m_Force;
 		}
 
+		Angle Body::GetOrientation( ) const
+		{
+			return Radians( m_Orient );
+		}
+
 		const Shape & Body::GetShape( ) const
 		{
 			if( m_pShape )
@@ -76,14 +99,22 @@ namespace Bit
 					const Vector2f32 & p_Position, const Material & p_Material ) :
 			m_pScene( p_pScene),
 			m_pShape( p_pShape->Clone( ) ),
+			m_Material( p_Material ),
 			m_Position( p_Position ),
 			m_Velocity( 0.0f, 0.0f ),
-			m_Force( 0.0f, 0.0f ),
-			m_Material( p_Material )
+			m_AngularVelocity( 0.0f ),
+			m_Torque( 0.0f ),
+			m_Orient( 0.0f ),
+			m_Force( 0.0f, 0.0f )
 		{
 			// Compute the mass
 			m_Mass = m_pShape->ComputeMass( m_Material.m_Density );
 			m_MassInverse = m_Mass ? 1.0f / m_Mass : 0.0f;
+
+			m_Mass = m_pShape->ComputeMass( m_Material.m_Density );
+			m_MassInverse = m_Mass ? 1.0f / m_Mass : 0.0f;
+			m_Inertia = m_pShape->ComputeInertia( m_Mass );
+			m_InertiaInverse = m_Inertia ? 1.0f / m_Inertia : 0.0f;
 		}
 
 		Body::~Body( )
@@ -92,11 +123,6 @@ namespace Bit
 			{
 				delete m_pShape;
 			}
-		}
-
-		void Body::ApplyImpulse( const Vector2f32 & p_Impulse )
-		{
-			m_Velocity += p_Impulse * m_MassInverse;
 		}
 
 	}

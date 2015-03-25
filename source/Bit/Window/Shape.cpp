@@ -34,6 +34,7 @@ namespace Bit
 	Shape::Shape( ) :
 		m_Position( 0.0f, 0.0f ),
 		m_Size( 1.0f, 1.0f ),
+		m_Rotation( Radians( 0.0f ) ),
 		m_pVertexArray( NULL ),
 		m_pVertexBuffer( NULL )
 	{
@@ -189,6 +190,11 @@ namespace Bit
 		m_Size.x = p_Radius;
 		m_Size.y = p_Radius;
 	}
+
+	void Shape::SetRotation( const Angle & p_Angle )
+	{
+		m_Rotation = p_Angle;
+	}
 		
 	Vector2f32 Shape::GetPosition( ) const
 	{
@@ -198,6 +204,11 @@ namespace Bit
 	Vector2f32 Shape::GetSize( ) const
 	{
 		return m_Size;
+	}
+
+	Angle Shape::GetRotation( ) const
+	{
+		return m_Rotation;
 	}
 
 }

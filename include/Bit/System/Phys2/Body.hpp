@@ -60,6 +60,18 @@ namespace Bit
 			void ApplyForce( const Vector2f32 & p_Force );
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Apply torque to body
+			/// 
+			////////////////////////////////////////////////////////////////
+			void ApplyTorque( const Float32 p_Torque );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Apply impulse to body
+			/// 
+			////////////////////////////////////////////////////////////////
+			void ApplyImpulse( const Vector2f32 & p_Impulse, const Vector2f32 & p_ContactPoint );
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Set force
 			/// 
 			////////////////////////////////////////////////////////////////
@@ -84,6 +96,12 @@ namespace Bit
 			Vector2f32 GetForce( ) const;
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Get orientation
+			/// 
+			////////////////////////////////////////////////////////////////
+			Angle GetOrientation( ) const;
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Get const reference to shape
 			/// 
 			////////////////////////////////////////////////////////////////
@@ -106,23 +124,20 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			~Body( );
 
-			////////////////////////////////////////////////////////////////
-			/// \brief Apply impulse to body
-			/// 
-			////////////////////////////////////////////////////////////////
-			void ApplyImpulse( const Vector2f32 & p_Impulse );
-
 			// Private variables
-			Scene *			m_pScene;
-			Shape *			m_pShape;
-			Material		m_Material;
-			Vector2f32		m_Position;
-			Vector2f32		m_Velocity;
-			Vector2f32		m_Force;
-			Float32			m_Mass;
-			Float32			m_MassInverse;
-
-			
+			Scene *			m_pScene;			///< Pointer to parent scene.
+			Shape *			m_pShape;			///< Pointer to child shape.
+			Material		m_Material;			///< Structure of material data.
+			Vector2f32		m_Position;			///< The body's position.
+			Vector2f32		m_Velocity;			///< The body's velocity.
+			Float32			m_AngularVelocity;	///< The body's angular velocity.
+			Float32			m_Torque;			///< Torque.
+			Float32			m_Orient;			///< In radians.
+			Vector2f32		m_Force;			///< Force acting on body.
+			Float32			m_Mass;				///< Body's mass.
+			Float32			m_MassInverse;		///< Inverse of mass, for faster computing.
+			Float32			m_Inertia;			///< Body's moment of intertia.
+			Float32			m_InertiaInverse;	///< Inverse of intertia, for faster computing.
 
 		};
 

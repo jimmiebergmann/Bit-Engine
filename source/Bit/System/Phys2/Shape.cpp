@@ -43,6 +43,11 @@ namespace Bit
 			return 0.0f;
 		}
 
+		void Shape::SetRadius( const Float32 p_Radius )
+		{
+
+		}
+
 		Shape::Shape( const eType p_Type ) :
 			m_Type( p_Type )
 		{
@@ -61,6 +66,11 @@ namespace Bit
 			return m_Radius;
 		}
 
+		void Circle::SetRadius( const Float32 p_Radius )
+		{
+			m_Radius = p_Radius;
+		}
+
 		Shape * Circle::Clone( ) const
 		{
 			return new Circle( m_Radius );
@@ -69,6 +79,11 @@ namespace Bit
 		Float32 Circle::ComputeMass( const Float32 p_Density )
 		{
 			return PiFloat32 * m_Radius * m_Radius * p_Density;
+		}
+
+		Float32 Circle::ComputeInertia( const Float32 p_Mass )
+		{
+			return p_Mass * m_Radius * m_Radius;
 		}
 
 	}

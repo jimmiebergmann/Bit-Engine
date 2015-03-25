@@ -111,7 +111,6 @@ namespace Bit
 			// Matrix uniforms
 			"uniform mat4 uProjectionMatrix;\n"
 			"uniform mat4 uModelViewMatrix;\n"
-			"uniform vec3 uPosition;\n"
 			"uniform vec3 uSize;\n"
 
 			// In values
@@ -122,7 +121,7 @@ namespace Bit
 			"{\n"
 
 				// Set the vertex position
-			"	gl_Position = uProjectionMatrix * uModelViewMatrix * vec4( position * uSize + uPosition, 1.0 );\n"
+			"	gl_Position = uProjectionMatrix * uModelViewMatrix * vec4( position * uSize, 1.0 );\n"
 
 			"}\n";
 
@@ -176,7 +175,6 @@ namespace Bit
 		m_pShaderProgram->Bind( );
 		m_pShaderProgram->SetUniformMatrix4x4f( "uProjectionMatrix", MatrixManager::GetProjectionMatrix( ) );
 		m_pShaderProgram->SetUniformMatrix4x4f( "uModelViewMatrix",  MatrixManager::GetModelViewMatrix( ) );
-		m_pShaderProgram->SetUniform3f( "uPosition", 0.0f, 0.0f, 0.0f );
 		m_pShaderProgram->SetUniform3f( "uSize", 1.0f, 1.0f, 1.0f );
 		m_pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
 		m_pShaderProgram->Unbind( );
@@ -246,9 +244,13 @@ namespace Bit
 		// Bind shader program
 		m_pShaderProgram->Bind( );
 
+		MatrixManager::SetCurrentStack( MatrixManager::ModelView );
+		MatrixManager::Push( );
+		MatrixManager::Translate( p_pShape->m_Position.x, p_pShape->m_Position.y, 0.0f );
+		MatrixManager::RotateZ( p_pShape->m_Rotation );
+
 		// Set uniforms
 		m_pShaderProgram->SetUniformMatrix4x4f( "uModelViewMatrix",  MatrixManager::GetModelViewMatrix( ) );
-		m_pShaderProgram->SetUniform3f( "uPosition", p_pShape->GetPosition( ).x, p_pShape->GetPosition( ).y, 0.0f );
 		m_pShaderProgram->SetUniform3f( "uSize", p_pShape->GetSize( ).x, p_pShape->GetSize( ).y, 0.0f );
 		m_pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
 
@@ -257,6 +259,8 @@ namespace Bit
 		
 		// Unbind shader program
 		m_pShaderProgram->Unbind( );
+
+		MatrixManager::Pop( );
 	}
 
 	Shape * SimpleRenderWindow::CreateQuadShape( )
