@@ -69,6 +69,11 @@ namespace Bit
 			m_Position = p_Position;
 		}
 
+		void Body::SetOrientation( const Angle & p_Orientation )
+		{
+			m_Orient = static_cast<Float32>( p_Orientation.AsRadians( ) );
+		}
+
 		Vector2f32 Body::GetPosition( ) const
 		{
 			return m_Position;

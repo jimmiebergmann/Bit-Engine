@@ -135,7 +135,9 @@ namespace Bit
 	// Math constants
 	////////////////////////////////////////////////////////////////
 	const Float64 Pi					= 3.141592653589793f;
+	const Float64 Pi2					= 6.283185307179586f;
 	const Float32 PiFloat32				= 3.1415927f;
+	const Float32 Pi2Float32			= 6.28318531f;
 	const Float64 Epsilon				= 1.0e-6f;
 	const Float64 EpsilonHalf			= 1.0e-3f;
 	const Float32 EpsilonFloat32		= 1.0e-6f;

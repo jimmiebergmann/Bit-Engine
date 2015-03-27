@@ -60,8 +60,8 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			enum eType
 			{
-				CircleType/*,
-				RectangleType*/
+				CircleType,
+				RectangleType
 			};
 
 			////////////////////////////////////////////////////////////////
@@ -69,18 +69,6 @@ namespace Bit
 			/// 
 			////////////////////////////////////////////////////////////////
 			eType GetType( ) const;
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the radius of the shape(circle only).
-			/// 
-			////////////////////////////////////////////////////////////////
-			virtual Float32 GetRadius( ) const;
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for setting the radius of the shape(circle only).
-			/// 
-			////////////////////////////////////////////////////////////////
-			virtual void SetRadius( const Float32 p_Radius );
 
 		protected:
 
@@ -134,19 +122,19 @@ namespace Bit
 			/// \brief Constructor
 			/// 
 			////////////////////////////////////////////////////////////////
-			Circle( const Float32 p_Radius );
+			Circle( const Float32 p_Radius = 1.0f );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virtual function for getting the radius of the shape(circle only).
 			/// 
 			////////////////////////////////////////////////////////////////
-			virtual Float32 GetRadius( ) const;
+			Float32 GetRadius( ) const;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virtual function for setting the radius of the shape(circle only).
 			/// 
 			////////////////////////////////////////////////////////////////
-			virtual void SetRadius( const Float32 p_Radius );
+			void SetRadius( const Float32 p_Radius );
 
 		private:
 
@@ -180,7 +168,7 @@ namespace Bit
 		/// \brief Rectangle shape class for 2D physics.
 		/// 
 		////////////////////////////////////////////////////////////////
-	/*	class BIT_API Rectangle : public Shape
+		class BIT_API Rectangle : public Shape
 		{
 
 		public:
@@ -192,19 +180,19 @@ namespace Bit
 			/// \brief Constructor
 			/// 
 			////////////////////////////////////////////////////////////////
-			Rectangle( const Vector2f32 & p_Size );
+			Rectangle( const Vector2f32 & p_Size = Vector2f32( 1.0f, 1.0f ) );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the radius of the shape(circle only).
+			/// \brief Get size( width and height ).
 			/// 
 			////////////////////////////////////////////////////////////////
-			virtual Float32 GetRadius( ) const;
+			Vector2f32 GetSize( ) const;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function Computing mass.
+			/// \brief Virtual function for setting the radius of the shape(circle only).
 			/// 
 			////////////////////////////////////////////////////////////////
-			virtual Float32 ComputeMass( const Float32 p_Density );
+			void SetSize( const Vector2f32 & p_Size );
 
 		private:
 
@@ -216,10 +204,22 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			virtual Shape * Clone( ) const;
 
-			// Private variables
-			
+			////////////////////////////////////////////////////////////////
+			/// \brief Virtual function computing mass.
+			/// 
+			////////////////////////////////////////////////////////////////
+			virtual Float32 ComputeMass( const Float32 p_Density );
 
-		};*/
+			////////////////////////////////////////////////////////////////
+			/// \brief Virtual function computing inertia.
+			/// 
+			////////////////////////////////////////////////////////////////
+			virtual Float32 ComputeInertia( const Float32 p_Mass );
+
+			// Private variables
+			Vector2f32 m_Size;
+
+		};
 
 	}
 

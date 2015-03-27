@@ -38,16 +38,6 @@ namespace Bit
 			return m_Type;
 		}
 
-		Float32 Shape::GetRadius( ) const
-		{
-			return 0.0f;
-		}
-
-		void Shape::SetRadius( const Float32 p_Radius )
-		{
-
-		}
-
 		Shape::Shape( const eType p_Type ) :
 			m_Type( p_Type )
 		{
@@ -83,7 +73,40 @@ namespace Bit
 
 		Float32 Circle::ComputeInertia( const Float32 p_Mass )
 		{
-			return p_Mass * m_Radius * m_Radius;
+			return p_Mass * m_Radius * m_Radius / 2.0f;
+		}
+
+
+		// Rectangle class
+		Rectangle::Rectangle( const Vector2f32 & p_Size ) :
+			Shape( RectangleType ),
+			m_Size( p_Size )
+		{
+		}
+
+		Vector2f32 Rectangle::GetSize( ) const
+		{
+			return m_Size;
+		}
+
+		void Rectangle::SetSize( const Vector2f32 & p_Size )
+		{
+			m_Size = p_Size;
+		}
+
+		Shape * Rectangle::Clone( ) const
+		{
+			return new Rectangle( m_Size );
+		}
+
+		Float32 Rectangle::ComputeMass( const Float32 p_Density )
+		{
+			return m_Size.x * m_Size.y * p_Density;
+		}
+
+		Float32 Rectangle::ComputeInertia( const Float32 p_Mass )
+		{
+			return ( p_Mass * ( m_Size.x * m_Size.x + m_Size.y * m_Size.y ) ) / 12.0f;
 		}
 
 	}

@@ -263,10 +263,10 @@ namespace Bit
 		MatrixManager::Pop( );
 	}
 
-	Shape * SimpleRenderWindow::CreateQuadShape( )
+	Shape * SimpleRenderWindow::CreateRectangleShape( )
 	{
 		Shape * pShape = new Shape;
-		if( pShape->LoadQuad(  m_pGraphicDevice ) == false )
+		if( pShape->LoadRectangle( m_pGraphicDevice ) == false )
 		{
 			delete pShape;
 			return NULL;

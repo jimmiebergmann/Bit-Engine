@@ -25,6 +25,7 @@
 #include <Bit/System/Phys2/Private/Manifold.hpp>
 #include <Bit/System/Phys2/Body.hpp>
 #include <algorithm>
+#include <limits>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -48,10 +49,11 @@ namespace Bit
 			}
 
 			// Create a jump table for collison checks, based on the shape type.
-			typedef void (Manifold::*CollisionFunctionPointer)( );
-			CollisionFunctionPointer g_CollisionJumpTable[ 1 ][ 1 ] =
+			typedef void (Manifold::*CollisionFunctionPointer)( Body *, Body * );
+			CollisionFunctionPointer g_CollisionJumpTable[ 2 ][ 2 ] =
 			{
-				&Manifold::CircleToCircle
+				{ &Manifold::CircleToCircle, &Manifold::CircleToRectangle },
+				{ &Manifold::RectangleToCircle, &Manifold::RectangleToRectangle }
 			};
 
 		
@@ -70,7 +72,7 @@ namespace Bit
 			void Manifold::Solve( )
 			{
 				// Call the collision function from jumptable.
-				(this->*g_CollisionJumpTable[ m_pBodyA->GetShape( ).GetType( ) ][ m_pBodyB->GetShape( ).GetType( ) ])( );
+				(this->*g_CollisionJumpTable[ m_pBodyA->GetShape( ).GetType( ) ][ m_pBodyB->GetShape( ).GetType( ) ])( m_pBodyA, m_pBodyB );
 			}
 
 			void Manifold::ApplyImpulse( )
@@ -169,14 +171,14 @@ namespace Bit
 				m_pBodyB->m_Position += correction * m_pBodyB->m_MassInverse;
 			}
 
-			void Manifold::CircleToCircle( )
+			void Manifold::CircleToCircle( Body * p_pBodyA, Body * p_pBodyB )
 			{
 				// Get the shapes
-				Circle * pA = reinterpret_cast<Circle *>( m_pBodyA->m_pShape );
-				Circle * pB = reinterpret_cast<Circle *>( m_pBodyB->m_pShape );
+				Circle * pA = reinterpret_cast<Circle *>( p_pBodyA->m_pShape );
+				Circle * pB = reinterpret_cast<Circle *>( p_pBodyB->m_pShape );
 
 				// Compute the normal between the circles
-				Vector2f32 normal = m_pBodyB->m_Position - m_pBodyA->m_Position;
+				Vector2f32 normal = p_pBodyB->m_Position - p_pBodyA->m_Position;
 
 				// Compute the radiuses and distance
 				Float32 radius = pA->m_Radius + pB->m_Radius;
@@ -197,14 +199,166 @@ namespace Bit
 				{
 					m_Penetration = radius;
 					m_Normal = Vector2f32( 1.0f, 0.0f );
-					m_Contact = m_pBodyA->m_Position;
+					m_Contact = p_pBodyA->m_Position;
 				}
 				else // The circles are not on the same positions
 				{
 					m_Penetration = radius - distance;
 					m_Normal = normal / distance;
-					m_Contact = ( m_Normal * pA->m_Radius ) + m_pBodyA->m_Position;
+					m_Contact = ( m_Normal * pA->m_Radius ) + p_pBodyA->m_Position;
 				}
+			}
+
+			static Float32 Clip( Float32 p_Value, Float32 p_Lower, Float32 p_Upper)
+			{
+				return std::max( p_Lower, std::min( p_Value, p_Upper ) );
+			}
+
+			void Manifold::CircleToRectangle( Body * p_pCircle, Body * p_pRectangle )
+			{
+				// Get the shapes
+				Circle * pCircleShape = reinterpret_cast<Circle *>( p_pCircle->m_pShape );
+				Rectangle * pRectShape = reinterpret_cast<Rectangle *>( p_pRectangle->m_pShape );
+
+				// Get min and max rectangle values.
+				Vector2f32 min = Vector2f32( -pRectShape->m_Size.x / 2.0, -pRectShape->m_Size.y / 2.0 ) + p_pRectangle->m_Position; 
+				Vector2f32 max = Vector2f32( pRectShape->m_Size.x / 2.0, pRectShape->m_Size.y / 2.0 ) + p_pRectangle->m_Position; 
+
+				Vector2f32 circlePositionRot = p_pCircle->m_Position - p_pRectangle->m_Position;
+				circlePositionRot.Rotate( Radians( -p_pRectangle->m_Orient ) );
+				circlePositionRot += p_pRectangle->m_Position;
+
+				// Get the clamped circle position
+				Vector2f32 pointRot(	Clip( circlePositionRot.x, min.x, max.x ),
+										Clip( circlePositionRot.y, min.y, max.y ) );
+
+				// Get the circle to clamped circle position, and length.
+				Vector2f32 circleToPointRot = pointRot - circlePositionRot;
+				Float32 distance = static_cast<Float32>( circleToPointRot.Length( ) );
+
+				// There's no collision
+				if( distance > pCircleShape->m_Radius )
+				{
+					m_ContactCount = 0;
+					return;
+				}
+				
+				// Collided.
+				m_ContactCount = 1;
+
+				// Compute the real contact point
+				Vector2f32 point = pointRot - p_pRectangle->m_Position;
+				point.Rotate( Radians( p_pRectangle->m_Orient ) );
+				point += p_pRectangle->m_Position; 
+
+				// Get the circle to clamped circle position, and length.
+				Vector2f32 circleToPoint = point - p_pCircle->m_Position;
+
+				// The circles origin is inside the box.
+				/*if( distance == 0.0f )
+				{
+					m_Penetration = radius;
+					m_Normal = Vector2f32( 1.0f, 0.0f );
+					m_Contact = p_pBodyA->m_Position;
+				}
+				else*/
+				{
+					m_Penetration = pCircleShape->m_Radius - distance;
+					m_Normal = circleToPoint.Normal( );
+					m_Contact = point;
+
+					/*m_Penetration = radius - distance;
+					m_Normal = normal / distance;
+					m_Contact = ( m_Normal * pA->m_Radius ) + p_pBodyA->m_Position;*/
+				}
+
+				
+
+				// Get the corners of the rectangle
+				/*Vector2f32 corners[ 4 ] =
+				{
+					Vector2f32( -pRectShape->m_Size.x / 2.0f,	-pRectShape->m_Size.y / 2.0f ),
+					Vector2f32( pRectShape->m_Size.x / 2.0f,	-pRectShape->m_Size.y / 2.0f ),
+					Vector2f32( pRectShape->m_Size.x / 2.0f,	pRectShape->m_Size.y / 2.0f ),
+					Vector2f32( -pRectShape->m_Size.x / 2.0f,	pRectShape->m_Size.y / 2.0f )
+				};
+
+				// Rotate the rectangle corners
+				for( SizeType i = 0; i < 4; i++ )
+				{
+					corners[ i ].Rotate( Radians( m_pBodyB->m_Orient ) );
+				}*/
+
+				// Compute normal from circle to rectangle
+				/*const Vector2f32 normal( p_pRectangle->m_Position - p_pCircle->m_Position );
+				const Vector2f32 unitNormal = normal.Normal( );
+				const Float32 distance = static_cast<Float32>( normal.Length( ) );
+				*/
+				// Get the maximum
+				//Float32 max = std::numeric_limits<Float32>::max( );
+
+				/*for( SizeType i = 0; i < 4; i++ )
+				{
+					// Get the vector from rectangle to the circle
+					const Vector2f32 v( corners[ i ] + p_pRectangle->m_Position - p_pCircle->m_Position );
+
+					//Vector2f32 circleToCorner( v.x - p_pCircle->m_Position.x, v.y - p_pCircle->m_Position.y );
+
+					// Get current projection
+					Float32 currentProj = static_cast<Float32>( Vector2f32::Dot( v, normal ) );
+					
+					int a = 5;
+					
+					if( max < currentProj )
+					{
+						max = currentProj;
+					}
+				}*/
+
+				//m_ContactCount = 0;
+
+/*
+				// No contact
+				if( (  max - pCircleShape->m_Radius ) > 0.0f )
+				{
+					m_ContactCount = 0;
+					return;
+				}
+
+				
+				return;
+
+				m_ContactCount = 1;
+				m_Penetration = 0.0f;
+
+				if(  distance == 0.0f )
+				{
+					m_Normal = Vector2f32( 1.0f, 0.0f );
+					m_Contact = p_pCircle->m_Position;
+				}
+				else
+				{
+					m_Normal = unitNormal;
+					m_Contact = ( m_Normal * pCircleShape->m_Radius ) + p_pCircle->m_Position;
+				}
+				*/
+				
+
+				
+
+
+				
+			}
+
+			void Manifold::RectangleToCircle( Body * p_pBodyA, Body * p_pBodyB )
+			{
+				CircleToRectangle( p_pBodyB, p_pBodyA );
+				m_Normal = -m_Normal;
+			}
+
+			void Manifold::RectangleToRectangle( Body * p_pBodyA, Body * p_pBodyB )
+			{
+				m_ContactCount = 0;
 			}
 
 		}

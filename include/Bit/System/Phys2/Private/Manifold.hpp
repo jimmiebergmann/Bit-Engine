@@ -80,9 +80,27 @@ namespace Bit
 				/// \brief Solve circle to circle intersections
 				/// 
 				////////////////////////////////////////////////////////////////
-				void CircleToCircle( );
+				void CircleToCircle( Body * p_pBodyA, Body * p_pBodyB );
 
-private:
+				////////////////////////////////////////////////////////////////
+				/// \brief Solve circle to rectangle intersections
+				/// 
+				////////////////////////////////////////////////////////////////
+				void CircleToRectangle( Body * p_pBodyA, Body * p_pBodyB );
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Solve rectangle to circle intersections
+				/// 
+				////////////////////////////////////////////////////////////////
+				void RectangleToCircle( Body * p_pBodyA, Body * p_pBodyB );
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Solve rectangle to rectangle intersections
+				/// 
+				////////////////////////////////////////////////////////////////
+				void RectangleToRectangle( Body * p_pBodyA, Body * p_pBodyB );
+
+			private:
 
 				// Private varaibles
 				Body *			m_pBodyA;		///< Pointer to the first body.

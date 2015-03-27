@@ -110,7 +110,7 @@ namespace Bit
 		/// \brief Load quad function
 		///
 		////////////////////////////////////////////////////////////////
-		Bool LoadQuad( GraphicDevice * p_pGraphicDevice );
+		Bool LoadRectangle( GraphicDevice * p_pGraphicDevice );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load circle function

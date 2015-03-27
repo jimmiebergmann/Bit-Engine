@@ -53,7 +53,7 @@ namespace Bit
 		}
 	}
 
-	Bool Shape::LoadQuad( GraphicDevice * p_pGraphicDevice )
+	Bool Shape::LoadRectangle( GraphicDevice * p_pGraphicDevice )
 	{
 		// Allocate the pointers
 		if( ( m_pVertexBuffer = p_pGraphicDevice->CreateVertexBuffer( ) ) == NULL )
@@ -70,11 +70,13 @@ namespace Bit
 
 
 		// Load the buffer
-		Float32 buffer[ 8 ] =
+		Float32 buffer[ 12 ] =
 		{
-			0.0f, 0.0f,		1.0f, 0.0f,		1.0f, 1.0f,		0.0f, 1.0f
+			-0.5f, 0.5f,	-0.5f, -0.5f,
+			0.5f, -0.5f,	0.5f, 0.5f,	
+			-0.5f, 0.5f,	0.0f, 0.5f
 		};
-		if( m_pVertexBuffer->Load( 32, buffer ) == false )
+		if( m_pVertexBuffer->Load( 48, buffer ) == false )
 		{
 			delete m_pVertexBuffer;
 			m_pVertexBuffer = NULL;
