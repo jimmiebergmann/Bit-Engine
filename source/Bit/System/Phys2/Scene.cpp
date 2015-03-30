@@ -198,14 +198,15 @@ namespace Bit
 
 			// Compute orientation
 			p_pBody->m_Orient += p_pBody->m_AngularVelocity * static_cast<Float32>( p_StepTime.AsSeconds( ) ) * p_InverseIterations; 
-			if( p_pBody->m_Orient >= Pi2Float32 )
+			/*if( p_pBody->m_Orient >= Pi2Float32 )
 			{
 				p_pBody->m_Orient -= Pi2Float32;
 			}
 			else if( p_pBody->m_Orient < 0.0f )
 			{
 				p_pBody->m_Orient += Pi2Float32;
-			}
+			}*/
+
 		}
 
 		void Scene::ApplyForces( Body * p_pBody, const Time & p_StepTime )

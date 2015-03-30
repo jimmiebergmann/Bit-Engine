@@ -62,11 +62,9 @@ namespace Bit
 				m_pBodyA( p_pBodyA ),
 				m_pBodyB( p_pBodyB ),
 				m_ContactCount( 0 ),
-				m_Contact( 0.0f, 0.0f),	
 				m_Normal( 0.0f, 0.0f),
 				m_Penetration( 0.0f )
 			{
-
 			}
 
 			void Manifold::Solve( )
@@ -77,87 +75,97 @@ namespace Bit
 
 			void Manifold::ApplyImpulse( )
 			{
-				// Compute velocity
-
-				// Compute  radius from COM to contact point
-				Vector2f32 rA = m_Contact - m_pBodyA->m_Position;
-				Vector2f32 rB = m_Contact - m_pBodyB->m_Position;
-
-				// Compute relative velocity
-				Vector2f32 rv = m_pBodyB->m_Velocity + Cross( m_pBodyB->m_AngularVelocity, rB ) -
-								m_pBodyA->m_Velocity - Cross( m_pBodyA->m_AngularVelocity, rA );
-
-				// Calculate velocity along the normal
-				Float32 velAlongNormal = static_cast<Float32>( Vector2f32::Dot( rv, m_Normal ) );
-
-				// Do not apply impulse if the velocitites are separating
-				if( velAlongNormal > 0.0f )
+				for( Uint32 i = 0; i < m_ContactCount; i++ )
 				{
-					return;
-				}
 
-				// Calcualte the restitution
-				Float32 e = std::min( m_pBodyA->m_Material.m_Restitution, m_pBodyB->m_Material.m_Restitution );
+					// Compute velocity
 
+					// Compute  radius from COM to contact point
+					Vector2f32 rA = m_Contacts[ i ] - m_pBodyA->m_Position;
+					Vector2f32 rB = m_Contacts[ i ] - m_pBodyB->m_Position;
 
-				// Calculate the inv mass sum
-				Float32 raCrossN = Cross( rA, m_Normal );
-				raCrossN *= raCrossN;
-				Float32 rbCrossN = Cross( rB, m_Normal );
-				rbCrossN *= rbCrossN;
+					// Compute relative velocity
+					Vector2f32 rv = m_pBodyB->m_Velocity + Cross( m_pBodyB->m_AngularVelocity, rB ) -
+									m_pBodyA->m_Velocity - Cross( m_pBodyA->m_AngularVelocity, rA );
 
-				Float32 invMassSum =	m_pBodyA->m_MassInverse + m_pBodyB->m_MassInverse +
-										( raCrossN * m_pBodyA->m_InertiaInverse )  +
-										( rbCrossN * m_pBodyB->m_InertiaInverse );
+					// Calculate velocity along the normal
+					Float32 velAlongNormal = static_cast<Float32>( Vector2f32::Dot( rv, m_Normal ) );
 
-				// Calculate the impulse scalar
-				Float32 j = -( 1.0f + e ) * velAlongNormal;
-				j /= invMassSum;
+					// Do not apply impulse if the velocitites are separating
+					if( velAlongNormal > 0.0f )
+					{
+						return;
+					}
 
-				// Apply impulse to bodies
-				Vector2f32 impulse = m_Normal * j;
-				m_pBodyA->ApplyImpulse( -impulse, rA );
-				m_pBodyB->ApplyImpulse( impulse, rB );
+					// Calcualte the restitution
+					Float32 e = std::min( m_pBodyA->m_Material.m_Restitution, m_pBodyB->m_Material.m_Restitution );
 
 
-				// Compute friction
+					// Calculate the inv mass sum
+					Float32 raCrossN = Cross( rA, m_Normal );
+					raCrossN *= raCrossN;
+					Float32 rbCrossN = Cross( rB, m_Normal );
+					rbCrossN *= rbCrossN;
+
+					Float32 invMassSum =	m_pBodyA->m_MassInverse + m_pBodyB->m_MassInverse +
+											( raCrossN * m_pBodyA->m_InertiaInverse )  +
+											( rbCrossN * m_pBodyB->m_InertiaInverse );
+
+					// Calculate the impulse scalar
+					Float32 j = -( 1.0f + e ) * velAlongNormal;
+					j /= invMassSum;
+					j /= static_cast<Float32>( m_ContactCount );
+
+					// Apply impulse to bodies
+					Vector2f32 impulse = m_Normal * j;
+					m_pBodyA->ApplyImpulse( -impulse, rA );
+					m_pBodyB->ApplyImpulse( impulse, rB );
+
+
+					// Compute friction
 				
-				// Compute relative velocity once again
-				rv =	m_pBodyB->m_Velocity + Cross( m_pBodyB->m_AngularVelocity, rB ) -
-						m_pBodyA->m_Velocity - Cross( m_pBodyA->m_AngularVelocity, rA );
+					// Compute relative velocity once again
+					rv =	m_pBodyB->m_Velocity + Cross( m_pBodyB->m_AngularVelocity, rB ) -
+							m_pBodyA->m_Velocity - Cross( m_pBodyA->m_AngularVelocity, rA );
 
-				// Compute the tangent vector
-				Vector2f32 tangent = rv - ( m_Normal * Vector2f32::Dot( rv, m_Normal ) );
-				tangent.Normalize( );
+					// Compute the tangent vector
+					Vector2f32 tangent = rv - ( m_Normal * Vector2f32::Dot( rv, m_Normal ) );
+					tangent.Normalize( );
 
-				// Compute magnitude to apply along the friction vector
-				Float32 jt = -static_cast<Float32>( Vector2f32::Dot( rv, tangent ) );
-				jt /= invMassSum;
+					// Compute magnitude to apply along the friction vector
+					Float32 jt = -static_cast<Float32>( Vector2f32::Dot( rv, tangent ) );
+					jt /= invMassSum;
 
-				// Make sure jt isn't invalid.
-				if( Math::EqualEpsilon<Float32>( jt, 0.0f ) )
-				{
-					return;
+					// Make sure jt isn't invalid.
+					if( Math::EqualEpsilon<Float32>( jt, 0.0f ) )
+					{
+						return;
+					}
+
+					// Compute static and dynamic friction
+					Float32 sf = std::sqrt( m_pBodyA->m_Material.m_StaticFriction * m_pBodyB->m_Material.m_StaticFriction );
+					Float32 df = std::sqrt( m_pBodyA->m_Material.m_DynamicFriction * m_pBodyB->m_Material.m_DynamicFriction );
+
+					// Compute friction impulse
+					Vector2f32 frictionImpulse;
+					if( std::abs( jt ) < j * sf )
+					{ 
+						frictionImpulse = tangent * jt;
+					}
+					else
+					{
+						frictionImpulse = tangent * (-j) * df;
+					}
+
+					// Apply friction impulse to bodies
+					m_pBodyA->ApplyImpulse( -frictionImpulse, rA );
+					m_pBodyB->ApplyImpulse( frictionImpulse, rB );
+					/*
+					// Add fritction in the inverse direction of velocity
+					m_pBodyB->m_Velocity += m_pBodyB->m_Velocity.Normal( ) * df;
+					m_pBodyB->m_Velocity += m_pBodyB->m_Velocity.Normal( ) * df;
+					*/
 				}
-
-				// Compute static and dynamic friction
-				Float32 sf = std::sqrt( m_pBodyA->m_Material.m_StaticFriction * m_pBodyB->m_Material.m_StaticFriction );
-				Float32 df = std::sqrt( m_pBodyA->m_Material.m_DynamicFriction * m_pBodyB->m_Material.m_DynamicFriction );
-
-				// Compute friction impulse
-				Vector2f32 frictionImpulse;
-				if( std::abs( jt ) < j * sf )
-				{ 
-					frictionImpulse = tangent * jt;
-				}
-				else
-				{
-					frictionImpulse = tangent * (-j) * df;
-				}
-
-				// Apply friction impulse to bodies
-				m_pBodyA->ApplyImpulse( -frictionImpulse, rA );
-				m_pBodyB->ApplyImpulse( frictionImpulse, rB );
 			}
 
 			void Manifold::PositionalCorrection( const Float32 p_InverseIterations )
@@ -199,13 +207,13 @@ namespace Bit
 				{
 					m_Penetration = radius;
 					m_Normal = Vector2f32( 1.0f, 0.0f );
-					m_Contact = p_pBodyA->m_Position;
+					m_Contacts[ 0 ] = p_pBodyA->m_Position;
 				}
 				else // The circles are not on the same positions
 				{
 					m_Penetration = radius - distance;
 					m_Normal = normal / distance;
-					m_Contact = ( m_Normal * pA->m_Radius ) + p_pBodyA->m_Position;
+					m_Contacts[ 0 ] = ( m_Normal * pA->m_Radius ) + p_pBodyA->m_Position;
 				}
 			}
 
@@ -255,98 +263,18 @@ namespace Bit
 				Vector2f32 circleToPoint = point - p_pCircle->m_Position;
 
 				// The circles origin is inside the box.
-				/*if( distance == 0.0f )
+				if( distance == 0.0f )
 				{
-					m_Penetration = radius;
+					m_Penetration = pCircleShape->m_Radius;
 					m_Normal = Vector2f32( 1.0f, 0.0f );
-					m_Contact = p_pBodyA->m_Position;
-				}
-				else*/
-				{
-					m_Penetration = pCircleShape->m_Radius - distance;
-					m_Normal = circleToPoint.Normal( );
-					m_Contact = point;
-
-					/*m_Penetration = radius - distance;
-					m_Normal = normal / distance;
-					m_Contact = ( m_Normal * pA->m_Radius ) + p_pBodyA->m_Position;*/
-				}
-
-				
-
-				// Get the corners of the rectangle
-				/*Vector2f32 corners[ 4 ] =
-				{
-					Vector2f32( -pRectShape->m_Size.x / 2.0f,	-pRectShape->m_Size.y / 2.0f ),
-					Vector2f32( pRectShape->m_Size.x / 2.0f,	-pRectShape->m_Size.y / 2.0f ),
-					Vector2f32( pRectShape->m_Size.x / 2.0f,	pRectShape->m_Size.y / 2.0f ),
-					Vector2f32( -pRectShape->m_Size.x / 2.0f,	pRectShape->m_Size.y / 2.0f )
-				};
-
-				// Rotate the rectangle corners
-				for( SizeType i = 0; i < 4; i++ )
-				{
-					corners[ i ].Rotate( Radians( m_pBodyB->m_Orient ) );
-				}*/
-
-				// Compute normal from circle to rectangle
-				/*const Vector2f32 normal( p_pRectangle->m_Position - p_pCircle->m_Position );
-				const Vector2f32 unitNormal = normal.Normal( );
-				const Float32 distance = static_cast<Float32>( normal.Length( ) );
-				*/
-				// Get the maximum
-				//Float32 max = std::numeric_limits<Float32>::max( );
-
-				/*for( SizeType i = 0; i < 4; i++ )
-				{
-					// Get the vector from rectangle to the circle
-					const Vector2f32 v( corners[ i ] + p_pRectangle->m_Position - p_pCircle->m_Position );
-
-					//Vector2f32 circleToCorner( v.x - p_pCircle->m_Position.x, v.y - p_pCircle->m_Position.y );
-
-					// Get current projection
-					Float32 currentProj = static_cast<Float32>( Vector2f32::Dot( v, normal ) );
-					
-					int a = 5;
-					
-					if( max < currentProj )
-					{
-						max = currentProj;
-					}
-				}*/
-
-				//m_ContactCount = 0;
-
-/*
-				// No contact
-				if( (  max - pCircleShape->m_Radius ) > 0.0f )
-				{
-					m_ContactCount = 0;
-					return;
-				}
-
-				
-				return;
-
-				m_ContactCount = 1;
-				m_Penetration = 0.0f;
-
-				if(  distance == 0.0f )
-				{
-					m_Normal = Vector2f32( 1.0f, 0.0f );
-					m_Contact = p_pCircle->m_Position;
+					m_Contacts[ 0 ] = p_pCircle->m_Position;
 				}
 				else
 				{
-					m_Normal = unitNormal;
-					m_Contact = ( m_Normal * pCircleShape->m_Radius ) + p_pCircle->m_Position;
+					m_Penetration = pCircleShape->m_Radius - distance;
+					m_Normal = circleToPoint.Normal( );
+					m_Contacts[ 0 ] = point;
 				}
-				*/
-				
-
-				
-
-
 				
 			}
 

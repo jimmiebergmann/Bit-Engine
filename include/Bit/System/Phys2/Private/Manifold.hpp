@@ -103,12 +103,12 @@ namespace Bit
 			private:
 
 				// Private varaibles
-				Body *			m_pBodyA;		///< Pointer to the first body.
-				Body *			m_pBodyB;		///< Pointer to the second body.
-				Uint32			m_ContactCount;	///< Number of contacts.
-				Vector2f32		m_Contact;		///< Point of contact during collision.
-				Vector2f32		m_Normal;		///< Normal from body A to B.
-				Float32			m_Penetration;	///< depth of penetration from collision.
+				Body *			m_pBodyA;			///< Pointer to the first body.
+				Body *			m_pBodyB;			///< Pointer to the second body.
+				Uint32			m_ContactCount;		///< Number of contacts.
+				Vector2f32		m_Contacts[ 2 ];	///< Point of contact during collision.
+				Vector2f32		m_Normal;			///< Normal from body A to B.
+				Float32			m_Penetration;		///< depth of penetration from collision.
 
 			};
 

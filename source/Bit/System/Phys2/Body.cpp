@@ -56,7 +56,10 @@ namespace Bit
 		void Body::ApplyImpulse( const Vector2f32 & p_Impulse, const Vector2f32 & p_ContactPoint )
 		{
 			m_Velocity += p_Impulse * m_MassInverse;
-			m_AngularVelocity += Cross( p_ContactPoint, p_Impulse ) * m_InertiaInverse;
+
+			Float32 cross = Cross( p_ContactPoint, p_Impulse );
+
+			m_AngularVelocity += cross * m_InertiaInverse * 0.5f;
 		}
 
 		void Body::SetForce( const Vector2f32 & p_Force )
