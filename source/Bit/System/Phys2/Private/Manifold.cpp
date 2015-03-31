@@ -29,6 +29,8 @@
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
+#define Proj( a, b ) a + b
+
 namespace Bit
 {
 
@@ -232,6 +234,7 @@ namespace Bit
 				Vector2f32 min = Vector2f32( -pRectShape->m_Size.x / 2.0, -pRectShape->m_Size.y / 2.0 ) + p_pRectangle->m_Position; 
 				Vector2f32 max = Vector2f32( pRectShape->m_Size.x / 2.0, pRectShape->m_Size.y / 2.0 ) + p_pRectangle->m_Position; 
 
+				// Make the circle relative to the rectangle in AABB space.
 				Vector2f32 circlePositionRot = p_pCircle->m_Position - p_pRectangle->m_Position;
 				circlePositionRot.Rotate( Radians( -p_pRectangle->m_Orient ) );
 				circlePositionRot += p_pRectangle->m_Position;
@@ -286,7 +289,118 @@ namespace Bit
 
 			void Manifold::RectangleToRectangle( Body * p_pBodyA, Body * p_pBodyB )
 			{
-				m_ContactCount = 0;
+				// Store bodies in array, [ body ]
+				const Body * pBodies[ 2 ] = { p_pBodyA, p_pBodyB };
+
+				// Get the shapes, [ shape ]
+				const Rectangle * pShapes[ 2 ] = 
+				{ 
+					reinterpret_cast<Rectangle *>( p_pBodyA->m_pShape ),
+					reinterpret_cast<Rectangle *>( p_pBodyB->m_pShape )
+				};
+
+				// Get the rectangle sizes, [ body ]
+				const Vector2f32 sizes[ 2 ] = { pShapes[ 0 ]->m_Size, pShapes[ 1 ]->m_Size };
+
+				// Get the shape corners in model space, [ shape ][ corner ]
+				Vector2f32 corners[ 2 ][ 4 ] =
+				{
+					{	Vector2f32( -sizes[ 0 ].x / 2.0f, -sizes[ 0 ].y / 2.0f ), Vector2f32( sizes[ 0 ].x / 2.0f, -sizes[ 0 ].y / 2.0f ),
+						Vector2f32( sizes[ 0 ].x / 2.0f, sizes[ 0 ].y / 2.0f ), Vector2f32( -sizes[ 0 ].x / 2.0f, sizes[ 0 ].y / 2.0f ) 
+					},
+					{	Vector2f32( -sizes[ 1 ].x / 2.0f, -sizes[ 1 ].y / 2.0f ), Vector2f32( sizes[ 1 ].x / 2.0f, -sizes[ 1 ].y / 2.0f ),
+						Vector2f32( sizes[ 1 ].x / 2.0f, sizes[ 1 ].y / 2.0f ), Vector2f32( -sizes[ 1 ].x / 2.0f, sizes[ 1 ].y / 2.0f ) 
+					}
+				};
+
+				// Rotate the corners and turn the corners in world space.
+				for( SizeType b = 0; b < 2; b++ )
+				{
+					for( SizeType c = 0; c < 4; c++ )
+					{
+						corners[ b ][ c ].Rotate( Radians( pBodies[ b ]->m_Orient ) );
+					}
+				}
+
+				// Make the position of the corners relative to each other
+				Vector2f32 rPos = p_pBodyB->m_Position - p_pBodyA->m_Position;
+				
+				for( SizeType c = 0; c < 4; c++ )
+				{
+					corners[ 1 ][ c ] += rPos;
+				}
+
+				// Get the rectangle normals, [ shape ][ normal ]
+				Vector2f32 normals[ 2 ][ 2 ] =
+				{
+					{ Vector2f32( 0.0f, 1.0f ), Vector2f32( 1.0f, 0.0f ) },
+					{ Vector2f32( 0.0f, 1.0f ), Vector2f32( 1.0f, 0.0f ) }
+				};
+
+				// Rotate the normals
+				for( SizeType b = 0; b < 2; b++ )
+				{
+					normals[ b ][ 0 ].Rotate( Radians( pBodies[ b ]->m_Orient ) );
+					normals[ b ][ 1 ].Rotate( Radians( pBodies[ b ]->m_Orient ) );
+				}
+
+				// Create normals corner indices, [ normal ][ corners(just 2 needed ]
+				const SizeType cornerIndices[ 2 ][ 2 ] =
+				{
+					{ 1, 2 },
+					{ 0, 1 }
+				};
+
+				// Go through the bidies normals and check if the corners overlap each other.
+				for( SizeType b = 0; b < 2; b++ )
+				{
+					// Go through the current bodys normals
+					for( SizeType n = 0; n < 2; n++ )
+					{
+						// Store min and max value of the scalar, [ body ]
+						Float32 min[ 2 ] = { std::numeric_limits<Float32>::max( ), std::numeric_limits<Float32>::max( ) };
+						Float32 max[ 2 ] = { -std::numeric_limits<Float32>::max( ), -std::numeric_limits<Float32>::max( ) };
+
+						// Project the corners( just 2, use the corner indices ) on the current normal
+						const Vector2f32 currentNormal = normals[ b ][ n ];
+
+						// Go through the corners of both bodies and all the corners
+						for( SizeType bb = 0; bb < 2; bb++ )
+						{
+							for( SizeType c = 0; c < 4; c++ )
+							{
+								const Vector2f32 curCorner = corners[ bb ][ c /*cornerIndices[ n ][ c ]*/ ];
+								const Float32 scalar = static_cast<Float32>( curCorner.Dot( currentNormal ) / currentNormal.Length( ) );
+
+								// Store the scalar in the min/max array.
+								if( scalar < min[ bb ] )
+								{
+									min[ bb ] = scalar;
+								}
+								if( scalar > max[ bb ] )
+								{
+									max[ bb ] = scalar;
+								}
+							}
+						}
+
+						// Check if there's not any collision
+						if( max[ 0 ] < min[ 1 ] || min[ 0 ] > max[ 1 ] )
+						{
+							// Set the contact points to 0
+							m_ContactCount = 0;
+							return;
+						}
+					}
+				}
+
+				// Set the contact points to 1
+				m_ContactCount = 1;
+
+
+				// Compute contact points, penetration and normal.
+
+				
 			}
 
 		}
