@@ -287,6 +287,67 @@ namespace Bit
 				m_Normal = -m_Normal;
 			}
 
+
+			static const Vector2f32 rectCorners[ 4 ] =
+			{
+				Vector2f32(-0.5f, -0.5f), Vector2f32(0.5f, -0.5f),
+				Vector2f32(0.5f, 0.5f), Vector2f32(-0.5f, 0.5f)
+			};
+
+			static const Vector2f32 rectNormals[ 4 ] =
+			{
+				Vector2f32(  0.0f, -1.0f ),
+				Vector2f32(  1.0f,  0.0f ),
+				Vector2f32(  0.0f,  1.0f ),
+				Vector2f32( -1.0f,  0.0f )
+			};
+
+			// Return the distance
+			Float32 Manifold::FindFaceLeastPenetration(Uint32 * p_pFaceIndex, Body * p_pBodyA, Body * p_pBodyB)
+			{
+				// Get the shapes, [ shape ]
+				const Rectangle * pShapes[2] =
+				{
+					reinterpret_cast<Rectangle *>(p_pBodyA->m_pShape),
+					reinterpret_cast<Rectangle *>(p_pBodyB->m_pShape)
+				};
+
+				Float32 bestDistance = -std::numeric_limits<Float32>::max( );
+
+				// Go through Body A's corners
+				for ( Uint32 i = 0; i < 4; i++ )
+				{
+					// Get face normal of A
+					Vector2f32 n = rectNormals[ i ];
+					n.Rotate( Radians( p_pBodyA->m_Orient ) );
+
+					// Turn face normal of A into B's model space.
+					n.Rotate(Radians(-p_pBodyB->m_Orient));
+
+					// Get extreme point
+					const Vector2f32 s = pShapes[ 1 ]->GetExtremePoint( -n );
+
+
+					Vector2f32 v = rectCorners[ i ] * pShapes[ 0 ]->m_Size;
+					v.Rotate( Radians( p_pBodyA->m_Orient ) );
+					v += p_pBodyA->m_Position;
+					v -= p_pBodyB->m_Position;
+					v.Rotate(Radians(-p_pBodyB->m_Orient));
+
+					// Compute the penetration distance
+					const Float32 d = static_cast<Float32>( Vector2f32::Dot(n, s - v) );
+
+					if (d > bestDistance)
+					{
+						bestDistance = d;
+						*p_pFaceIndex = i;
+					}
+
+				}
+
+				return bestDistance;
+			}
+
 			void Manifold::RectangleToRectangle( Body * p_pBodyA, Body * p_pBodyB )
 			{
 				// Store bodies in array, [ body ]
@@ -299,6 +360,48 @@ namespace Bit
 					reinterpret_cast<Rectangle *>( p_pBodyB->m_pShape )
 				};
 
+				// Set contact count to 0.
+				m_ContactCount = 0;
+
+				// Get the first penetration
+				Uint32 faceA = 0;
+				Float32 penetrationA = FindFaceLeastPenetration(&faceA, p_pBodyA, p_pBodyB);
+				if (penetrationA >= 0.0f)
+				{
+					return;
+				}
+
+				// Get the seconds penetration
+				Uint32 faceB = 0;
+				Float32 penetrationB = FindFaceLeastPenetration(&faceB, p_pBodyB, p_pBodyA);
+				if (penetrationB >= 0.0f)
+				{
+					return;
+				}
+
+				// Find collision face
+				Uint32 refIndex;
+				Bool flip;
+				Body * pRefBody;
+				Body * pCollisionBody;
+
+				if (penetrationA > penetrationB)
+				{
+					refIndex = faceA;
+					flip = false;
+					pRefBody = p_pBodyA;
+					pCollisionBody = p_pBodyB;
+				}
+				else
+				{
+					refIndex = faceB;
+					flip = true;
+					pRefBody = p_pBodyB;
+					pCollisionBody = p_pBodyA;
+				}
+
+
+/*
 				// Get the rectangle sizes, [ body ]
 				const Vector2f32 sizes[ 2 ] = { pShapes[ 0 ]->m_Size, pShapes[ 1 ]->m_Size };
 
@@ -369,7 +472,7 @@ namespace Bit
 						{
 							for( SizeType c = 0; c < 4; c++ )
 							{
-								const Vector2f32 curCorner = corners[ bb ][ c /*cornerIndices[ n ][ c ]*/ ];
+								const Vector2f32 curCorner = corners[ bb ][ c ];
 								const Float32 scalar = static_cast<Float32>( curCorner.Dot( currentNormal ) / currentNormal.Length( ) );
 
 								// Store the scalar in the min/max array.
@@ -396,7 +499,7 @@ namespace Bit
 
 				// Set the contact points to 1
 				m_ContactCount = 1;
-
+				*/
 
 				// Compute contact points, penetration and normal.
 

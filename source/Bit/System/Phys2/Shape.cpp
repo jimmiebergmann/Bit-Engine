@@ -24,6 +24,7 @@
 
 #include <Bit/System/Phys2/Shape.hpp>
 #include <Bit/System/Math.hpp>
+#include <limits>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -77,6 +78,13 @@ namespace Bit
 		}
 
 
+		// Static function for rectangle corners
+		static const Vector2f32 rectCorners[ 4 ] =
+		{
+			Vector2f32( -0.5f, -0.5f ),	Vector2f32( 0.5f, -0.5f ),
+			Vector2f32( 0.5f,	0.5f ),	Vector2f32( -0.5f, 0.5f)
+		};
+
 		// Rectangle class
 		Rectangle::Rectangle( const Vector2f32 & p_Size ) :
 			Shape( RectangleType ),
@@ -92,6 +100,31 @@ namespace Bit
 		void Rectangle::SetSize( const Vector2f32 & p_Size )
 		{
 			m_Size = p_Size;
+		}
+
+		Vector2f32 Rectangle::GetExtremePoint(const Vector2f32 & p_Direction) const
+		{
+			// Compute the best point and projection
+			Vector2f32 bestPoint;
+			Float64 bestProjection = static_cast<Float32>(-std::numeric_limits<Float32>::max());
+
+			// Go through the corners
+			for (SizeType i = 0; i < 4; i++)
+			{
+				const Vector2f32 vertex = rectCorners[ i ] * m_Size;
+
+				// Calculate the projection
+				const Float64 projection = Vector2f32::Dot( vertex, p_Direction);
+
+				if (projection > bestProjection)
+				{
+					bestPoint = vertex;
+					bestProjection = projection;
+				}
+			}
+
+			// Return the best point.
+			return bestPoint;
 		}
 
 		Shape * Rectangle::Clone( ) const

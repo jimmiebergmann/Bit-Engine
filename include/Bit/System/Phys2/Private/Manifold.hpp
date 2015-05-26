@@ -102,6 +102,9 @@ namespace Bit
 
 			private:
 
+				// Private functions
+				static Float32 FindFaceLeastPenetration(Uint32 * p_pFaceIndex, Body * p_pBodyA, Body * p_pBodyB);
+
 				// Private varaibles
 				Body *			m_pBodyA;			///< Pointer to the first body.
 				Body *			m_pBodyB;			///< Pointer to the second body.
