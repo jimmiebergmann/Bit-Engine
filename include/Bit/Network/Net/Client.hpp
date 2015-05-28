@@ -94,13 +94,16 @@ namespace Bit
 			/// \param p_Address The address of the server.
 			/// \param p_port The servers port.
 			/// \param p_ConnectionTimeout Amount of time until the attempt in connecting fails.
+			/// \param p_Identifier Identifier string, the host need to
+			///						have the same string in order to be able to connect.
 			///
 			/// \return True if succeeded, else false.
 			///
 			////////////////////////////////////////////////////////////////
 			eStatus Connect(	const Address & p_Address,
 								const Uint16 p_Port,
-								const Time & p_ConnectionTimeout = Time::Infinite );
+								const Time & p_ConnectionTimeout = Time::Infinite,
+								const std::string & p_Identifier = "Bit Engine Network" );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Disconnect from the server.

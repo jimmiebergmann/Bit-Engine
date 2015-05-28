@@ -158,7 +158,8 @@ namespace Bit
 
 		Bool Server::Start( const Uint16 p_Port,
 							const Uint8 p_MaxConnections,
-							const Uint8 p_EntityUpdatesPerSecond )
+							const Uint8 p_EntityUpdatesPerSecond,
+							const std::string & p_Identifier)
 		{
 			// Open the udp socket.
 			if( m_Socket.Open( p_Port ) == false )
@@ -179,8 +180,11 @@ namespace Bit
 				m_FreeUserIds.push( i );
 			}
 
+			// Set the identifier
+			m_Identifier = p_Identifier;
+
 			// Start the server thread.
-			m_MainThread.Execute( [ this ] ( )
+			m_MainThread.Execute([this]()
 			{
 				const SizeType bufferSize = 2048;
 				Uint8 buffer[ bufferSize ];
@@ -223,6 +227,17 @@ namespace Bit
 						// This is an unknown client, maybe it's trying to connect.
 						if( buffer[ 0 ] == ePacketType::Syn )
 						{
+							// Make sure that the identifier is right.
+							if (recvSize != m_Identifier.size() + 1)
+							{
+								continue;
+							}
+							if (memcmp(buffer + 1, m_Identifier.data(), m_Identifier.size()) != 0)
+							{
+								continue;
+							}
+
+
 							// Check if the address is banned
 							m_BanSet.Mutex.Lock( );
 							if( m_BanSet.Value.find( address.GetAddress( ) ) != m_BanSet.Value.end( ) )

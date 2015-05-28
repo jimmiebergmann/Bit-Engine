@@ -163,7 +163,8 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Bool Start( const Uint16 p_Port, 
 						const Uint8 p_MaxConnections = 255,
-						const Uint8 p_EntityUpdatesPerSecond = 20 );
+						const Uint8 p_EntityUpdatesPerSecond = 20,
+						const std::string & p_Identifier = "Bit Engine Network" );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Stop the server.
@@ -222,6 +223,7 @@ namespace Bit
 			Thread								m_CleanupThread;			///< Thread for cleaning up connections.
 			Semaphore							m_CleanupSemaphore;			///< Semaphore for cleanups.
 			ThreadValue<ConnectionList>			m_CleanupConnections;		///< Queue of connections to cleanup.
+			std::string							m_Identifier;				///< Connection identifier string.
 			Uint8								m_MaxConnections;			///< Maximum amount of connections.
 			Uint8								m_EntityUpdatesPerSecond;	///< Number of updates per second for the entities.
 			FreeUserIdMap						m_FreeUserIds;				///< Queue of free user Ids.

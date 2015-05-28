@@ -48,7 +48,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		enum ePacketType
 		{
-			Syn					= 1,
+			Syn					= 1, 
 			SynAck				= 2,
 			Sync				= 3,
 			Ack					= 4,
@@ -58,6 +58,25 @@ namespace Bit
 			UnreliablePacket	= 8,
 			ReliablePacket		= 9
 		};
+
+		/*
+		// FUTURE STRUCKTURE?
+
+
+		enum ePacketType
+		{
+			Connect				= 1,	//< Unreliable packet.
+			Disconnect			= 2,	//< Unreliable packet.
+			Accept				= 3,	//< Unreliable packet.
+			Reject				= 4,	//< Unreliable packet.
+			Ack					= 5,	//< Unreliable packet.
+			Alive				= 6,	//< Reliable packet.
+			EntityUpdate		= 7,	//< [Un]reliable packet availability.
+			UserMessage			= 8,	//< [Un]reliable packet availability.
+			HostMessage			= 9		//< [Un]reliable packet availability.
+		};
+
+		*/
 
 		
 		////////////////////////////////////////////////////////////////

@@ -42,8 +42,10 @@ namespace Bit
 
 		}
 
-		Client::eStatus Client::Connect(	const Address & p_Address, const Uint16 p_Port,
-											const Time & p_ConnectionTimeout )
+		Client::eStatus Client::Connect(	const Address & p_Address,
+											const Uint16 p_Port,
+											const Time & p_ConnectionTimeout,
+											const std::string & p_Identifier )
 		{
 			// make sure to be disconnected.
 			InternalDisconnect( true, true, true, true );
@@ -76,15 +78,18 @@ namespace Bit
 			Uint16 recvPort = 0;
 			Time timeout = p_ConnectionTimeout;
 			const Time sendTime = Seconds(0.2f); ///< How often to check for received packets.
+			const SizeType connectPacketSize = 1 + p_Identifier.size(); ///< Connect packet length
 			bool recvSynAck = false;
 			Timer timer;
 			timer.Start( );
-			
+
+			// Keep on sending and receiving connect / accept packets.
 			while (timeout.AsMicroseconds() > 0)
 			{
 				// Send SYN packet, tell the server that we would like to connect.
 				buffer[0] = ePacketType::Syn;
-				if (m_Socket.Send(buffer, 1, p_Address, p_Port) != 1)
+				memcpy(buffer + 1, p_Identifier.data(), p_Identifier.size());
+				if (m_Socket.Send(buffer, connectPacketSize, p_Address, p_Port) != connectPacketSize)
 				{
 					// Error sending connection packet.
 					return Unknown;
