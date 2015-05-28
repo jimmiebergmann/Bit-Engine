@@ -412,8 +412,8 @@ namespace Bit
 						std::string name;
 						name.assign( reinterpret_cast<char*>(pReceivedData->pData + 1), nameEnd - 1 );
 
-						// Check if there is any message left
-						if( name.size( ) + 2 > pReceivedData->DataSize )
+						// Check if there is any message left(including empty)
+						if( name.size( ) + 2 >= pReceivedData->DataSize )
 						{
 							// Delete the received data pointer
 							delete pReceivedData;

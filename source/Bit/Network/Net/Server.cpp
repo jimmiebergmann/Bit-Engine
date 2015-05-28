@@ -258,7 +258,7 @@ namespace Bit
 							// Answer the client with a SYNACK packet.
 							buffer[ 0 ] = ePacketType::SynAck;
 							m_Socket.Send( buffer, 1, address, port );
-
+							/*
 							// Send all the entitiy data in order to sync all the entities with the connected client
 							std::vector<Uint8> entityMessage;
 							entityMessage.push_back( static_cast<Uint8>( ePacketType::Sync ) );
@@ -267,7 +267,7 @@ namespace Bit
 							{
 								continue;
 							}
-
+							*/
 
 							// Get a user id for this connection
 							const Uint16 userId = m_FreeUserIds.front( );

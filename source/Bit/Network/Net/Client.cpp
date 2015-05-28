@@ -70,89 +70,72 @@ namespace Bit
 				m_PingList.push_front( m_Ping.Value );
 			}
 
-
-			// Send SYN packet, tell the server that we would like to connect.
-			buffer[ 0 ] = ePacketType::Syn;
-			if( m_Socket.Send( buffer, 1, p_Address, p_Port ) != 1 )
-			{
-				// Error sending connection packet.
-				return Unknown;
-			}
-
-			// Wait for the reply from the server
+			// Keep on receiving until we get the right packet message from the host
 			Int32 recvSize = 0;
-
-
-			// Keep on receiving until we get a message from the host
-			Bool recvSucceeded = false;
+			Address recvAddress;
+			Uint16 recvPort = 0;
+			Time timeout = p_ConnectionTimeout;
+			const Time sendTime = Seconds(0.2f); ///< How often to check for received packets.
+			bool recvSynAck = false;
 			Timer timer;
 			timer.Start( );
-			Time timeout = p_ConnectionTimeout;
-			while( timer.GetLapsedTime( ) < timeout )
+			
+			while (timeout.AsMicroseconds() > 0)
 			{
-				// Receive message
-				Address recvAddress;
-				Uint16 recvPort = 0;
-				recvSize = m_Socket.Receive( buffer, bufferSize, recvAddress, recvPort, timeout );
-				
-				// Decrease the timeout time
-				timeout = p_ConnectionTimeout - timer.GetLapsedTime( );
-
-				// Check the address and port
-				if( recvAddress == p_Address && recvPort == p_Port )
+				// Send SYN packet, tell the server that we would like to connect.
+				buffer[0] = ePacketType::Syn;
+				if (m_Socket.Send(buffer, 1, p_Address, p_Port) != 1)
 				{
-					// Check the receive size.
-					/*if( recvSize <= 0 )
-					{
-						// The connection timeouted
-						return TimedOut;
-					}
-					// Break the check if the packet is from the host
-					else*/
-					if( recvSize > 0 )
-					{
-						recvSucceeded = true;
-						break;
-					}
+					// Error sending connection packet.
+					return Unknown;
 				}
-			}
 
-			if( recvSucceeded == false )
-			{
-				// The connection timeouted
-				return TimedOut;
-			}
+				// Receive message
+				recvSize = m_Socket.Receive(buffer, bufferSize, recvAddress, recvPort, sendTime);
 
-			// Check if this is a SYN-ACK packet, the server wants us to connect.
-			if( buffer[ 0 ] == ePacketType::SynAck )
-			{
-				// We now connected, we assume that the server receive the UDP_ACCEPT packet,
-				// resend the packet in client thread if we get another accept packet later.
-				m_ServerAddress = p_Address;
-				m_ServerPort = p_Port;
+				// Decrease the timeout time
+				timeout = p_ConnectionTimeout - timer.GetLapsedTime();
 
-			}
-			// The server answered with a disconnect packet, we are denied. 
-			else if( buffer[ 0 ] == ePacketType::Close )
-			{
-				// The server denied us.
-				return Denied;
-			}
-			else if( buffer[ 0 ] == ePacketType::Ban )
-			{
-				// The server banned us.
-				return Banned;
-			}
-			// Unknown packet from the server.
-			else
-			{
-				// Error in the server packet, unknown error.
-				return Unknown;
+				// Check the address and port, ignore packets that's not from the host.
+				if (recvAddress != p_Address || recvPort != p_Port)
+				{
+					continue;
+				}
+
+				// Check if this is a SYN-ACK packet, the server wants us to connect.
+				if (buffer[0] == ePacketType::SynAck)
+				{
+					// We now connected, we assume that the server receive the UDP_ACCEPT packet,
+					// resend the packet in client thread if we get another accept packet later.
+					m_ServerAddress = p_Address;
+					m_ServerPort = p_Port;
+					recvSynAck = true;
+					break;
+
+				}
+				// The server answered with a disconnect packet, we are denied. 
+				else if (buffer[0] == ePacketType::Close)
+				{
+					// The server denied us.
+					return Denied;
+				}
+				else if (buffer[0] == ePacketType::Ban)
+				{
+					// The server banned us.
+					return Banned;
+				}
+				// Unknown packet from the server.
+				else
+				{
+					continue;
+					// Error in the server packet, unknown error.
+					//return Unknown;
+				}
 			}
 
 
 			// Receive the initialization packet from the server, sync all the entities
-			recvSucceeded = false;
+			/*recvSucceeded = false;
 			while( timer.GetLapsedTime( ) < timeout )
 			{			
 				// Decrease the timeout time
@@ -166,14 +149,7 @@ namespace Bit
 				// Check the address and port
 				if( recvAddress == p_Address && recvPort == p_Port )
 				{
-					// Check the receive size.
-					/*if( recvSize <= 0 )
-					{
-						// The connection timeouted
-						return TimedOut;
-					}
-					// The packet is valid so far
-					else*/
+
 					if( recvSize > 0 )
 					{
 						// Check if it's a sync packet
@@ -193,8 +169,8 @@ namespace Bit
 				}
 
 			}
-
-			if( recvSucceeded == false )
+			*/
+			if( recvSynAck == false )
 			{
 				// The connection timeouted
 				return TimedOut;
@@ -560,7 +536,7 @@ namespace Bit
 						std::string name;
 						name.assign( reinterpret_cast<char*>(pReceivedData->pData + 1), nameEnd - 1 );
 
-						// Check if there is any message left
+						// Check if there is any message left(including empty)
 						if( name.size( ) + 2 >= pReceivedData->DataSize )
 						{
 							// Delete the received data pointer
