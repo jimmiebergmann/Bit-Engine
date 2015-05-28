@@ -215,6 +215,27 @@ namespace Bit
 							// Check the packet type
 							switch( pPacket->pData[ 0 ] )
 							{
+								// Connect packet from client, we should get the packet here if
+								// the client resent the connection packet.
+								case ePacketType::Syn:
+								{
+									// Make sure that the identifier is right.
+									if (pPacket->DataSize != m_pServer->m_Identifier.size() + 1)
+									{
+										delete pPacket;
+										continue;
+									}
+									if (memcmp(pPacket->pData + 1, m_pServer->m_Identifier.data(), m_pServer->m_Identifier.size()) != 0)
+									{
+										delete pPacket;
+										continue;
+									}
+
+									// Answer the client with a SYNACK packet.
+									pPacket->pData[0] = ePacketType::SynAck;
+									m_pServer->m_Socket.Send(pPacket->pData, 1, m_Address, m_Port);
+								}
+								break;
 								// Disconnect packet from client.
 								case ePacketType::Close:
 								{
@@ -265,6 +286,7 @@ namespace Bit
 									// Ignore "corrupt" ack packet.
 									if( pPacket->DataSize != 3 )
 									{
+										delete pPacket;
 										continue;
 									}
 
@@ -413,7 +435,7 @@ namespace Bit
 						name.assign( reinterpret_cast<char*>(pReceivedData->pData + 1), nameEnd - 1 );
 
 						// Check if there is any message left(including empty)
-						if( name.size( ) + 2 >= pReceivedData->DataSize )
+						if( name.size( ) + 2 > pReceivedData->DataSize )
 						{
 							// Delete the received data pointer
 							delete pReceivedData;

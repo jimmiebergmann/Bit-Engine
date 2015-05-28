@@ -129,12 +129,11 @@ namespace Bit
 					// The server banned us.
 					return Banned;
 				}
-				// Unknown packet from the server.
+				// Unexpected packet from the server.
 				else
 				{
+					// Ignore unexpected oacket from the server.
 					continue;
-					// Error in the server packet, unknown error.
-					//return Unknown;
 				}
 			}
 
@@ -542,7 +541,7 @@ namespace Bit
 						name.assign( reinterpret_cast<char*>(pReceivedData->pData + 1), nameEnd - 1 );
 
 						// Check if there is any message left(including empty)
-						if( name.size( ) + 2 >= pReceivedData->DataSize )
+						if( name.size( ) + 2 > pReceivedData->DataSize )
 						{
 							// Delete the received data pointer
 							delete pReceivedData;
