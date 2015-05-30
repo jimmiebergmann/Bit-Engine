@@ -107,11 +107,11 @@ namespace Bit
 			// Send the message
 			if( p_Reliable )
 			{
-				m_pClient->SendReliable( reinterpret_cast<void*>( m_Message.data( ) ), m_Message.size( ) );
+				m_pClient->SendReliable( PacketType::UserMessage, reinterpret_cast<void*>( m_Message.data( ) ), m_Message.size( ), true );
 			}
 			else
 			{
-				m_pClient->SendUnreliable( reinterpret_cast<void*>( m_Message.data( ) ), m_Message.size( ) );
+				m_pClient->SendUnreliable(PacketType::UserMessage, reinterpret_cast<void*>(m_Message.data()), m_Message.size(), true, true);
 			}
 
 			return true;

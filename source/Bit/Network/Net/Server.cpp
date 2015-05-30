@@ -116,9 +116,8 @@ namespace Bit
 			m_BanSet.Value.insert( pConnection->GetAddress( ) );
 			m_BanSet.Mutex.Unlock( );
 
-			// Send ban message
-			Uint32 seconds = Hton32( static_cast<Uint32>( p_Time.AsSeconds( ) ) );
-			pConnection->InternalSendReliable( ePacketType::Ban, &seconds, sizeof( seconds ) );
+			Uint8 reason = DisconnectType::Banned;
+			pConnection->SendUnreliable(PacketType::Disconnect, &reason, sizeof(reason), false, false);
 
 			// Add the connection for cleanup
 			AddConnectionForCleanup( pConnection );
@@ -186,8 +185,7 @@ namespace Bit
 			// Start the server thread.
 			m_MainThread.Execute([this]()
 			{
-				const SizeType bufferSize = 2048;
-				Uint8 buffer[ bufferSize ];
+				Uint8 buffer[BufferSize];
 				Address address;
 				Uint16 port = 0;
 				Int16 recvSize = 0;
@@ -201,7 +199,7 @@ namespace Bit
 				while( IsRunning( ) )
 				{
 					// Receive any packet.
-					recvSize = m_Socket.Receive( buffer, bufferSize, address, port, Milliseconds( 5 ) );
+					recvSize = m_Socket.Receive(buffer, BufferSize, address, port, Milliseconds(5));
 
 					// Ignore empty packets.
 					if( recvSize <= 0 )
@@ -225,28 +223,26 @@ namespace Bit
 					else
 					{
 						// This is an unknown client, maybe it's trying to connect.
-						if( buffer[ 0 ] == ePacketType::Syn )
+						if( buffer[ 0 ] == PacketType::Connect )
 						{
 							// Make sure that the identifier is right.
-							if (recvSize != m_Identifier.size() + 1)
+							if (recvSize != m_Identifier.size() + ConnectPacketSize)
 							{
 								continue;
 							}
-							if (memcmp(buffer + 1, m_Identifier.data(), m_Identifier.size()) != 0)
+							if (memcmp(buffer + ConnectPacketSize, m_Identifier.data(), m_Identifier.size()) != 0)
 							{
 								continue;
 							}
-
 
 							// Check if the address is banned
 							m_BanSet.Mutex.Lock( );
 							if( m_BanSet.Value.find( address.GetAddress( ) ) != m_BanSet.Value.end( ) )
 							{
 								// Send ban packet
-								buffer[ 0 ] = ePacketType::Ban;
-								Uint32 seconds = Hton32( 0 );
-								memcpy( buffer + 1, &seconds, sizeof( seconds ) );
-								m_Socket.Send( buffer, 5, address, port );
+								buffer[ 0 ] = PacketType::Reject;
+								buffer[ 1 ] = RejectType::Banned;
+								m_Socket.Send(buffer, RejectPacketSize, address, port);
 
 								// Unlock the ban set mutex.
 								m_BanSet.Mutex.Unlock( );
@@ -260,29 +256,18 @@ namespace Bit
 							// Send Deny packet if the server is full.
 							if( m_AddressConnections.size( ) == m_MaxConnections || m_FreeUserIds.size( ) == 0 )
 							{
-								buffer[ 0 ] = ePacketType::Close;
-								m_Socket.Send( buffer, 1, address, port );
+								buffer[0] = PacketType::Reject;
+								buffer[1] = RejectType::Full;
+								m_Socket.Send(buffer, RejectPacketSize, address, port);
 									
 								// Unlock the connection mutex
 								m_ConnectionMutex.Unlock( );
 								continue;
 							}
 
-							
-
 							// Answer the client with a SYNACK packet.
-							buffer[ 0 ] = ePacketType::SynAck;
-							m_Socket.Send( buffer, 1, address, port );
-							/*
-							// Send all the entitiy data in order to sync all the entities with the connected client
-							std::vector<Uint8> entityMessage;
-							entityMessage.push_back( static_cast<Uint8>( ePacketType::Sync ) );
-							m_EntityManager.CreateFullEntityMessage( entityMessage, false );
-							if( m_Socket.Send( entityMessage.data( ), entityMessage.size( ), address, port ) != entityMessage.size( ) )
-							{
-								continue;
-							}
-							*/
+							buffer[ 0 ] = PacketType::Accept;
+							m_Socket.Send(buffer, AcceptPacketSize, address, port);
 
 							// Get a user id for this connection
 							const Uint16 userId = m_FreeUserIds.front( );
@@ -329,7 +314,7 @@ namespace Bit
 				{
 					if( m_EntityUpdatesPerSecond == 0 )
 					{
-						Sleep( Microseconds( 100000 ) );
+						Sleep( Microseconds( 1000 ) );
 						continue;
 					}
 
@@ -341,7 +326,7 @@ namespace Bit
 					{
 						// Create the entity message
 						std::vector<Uint8> message;
-						if( m_EntityManager.CreateEntityMessage( message ) == false )
+						if( m_EntityManager.CreateEntityMessage( message, false ) == false )
 						{
 							return;
 						}
@@ -359,7 +344,7 @@ namespace Bit
 								it != m_UserConnections.end( );
 								it++ )
 						{
-							it->second->SendUnreliable( reinterpret_cast<Uint8 * >( message.data( ) ), message.size( ) );
+							it->second->SendUnreliable( PacketType::EntityUpdate, reinterpret_cast<Uint8 * >( message.data( ) ), message.size( ), true, true );
 						}
 
 						m_ConnectionMutex.Unlock( );

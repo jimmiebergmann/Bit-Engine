@@ -367,7 +367,8 @@ namespace Bit
 		}
 
 
-		Bool EntityManager::CreateEntityMessage( std::vector<Uint8> & p_Message )
+		Bool EntityManager::CreateEntityMessage(std::vector<Uint8> & p_Message,
+												const Bool p_ClearMessage)
 		{
 			// Check if any entities were changed
 			if( m_ChangedEntities.size( ) == 0 )
@@ -399,10 +400,10 @@ namespace Bit
 
 			
 			// Clear the message
-			p_Message.clear( );
-
-			// Add message type.
-			p_Message.push_back( static_cast<Uint8>( eMessageType::EntityMessageType ) );
+			if (p_ClearMessage)
+			{
+				p_Message.clear();
+			}
 
 			// Add entity count
 			Uint16 entityCount = Hton16( static_cast<Uint16>( m_ChangedEntities.size( ) ) );
@@ -547,9 +548,6 @@ namespace Bit
 			{
 				p_Message.clear( );
 			}
-
-			// Add message type.
-			p_Message.push_back( static_cast<Uint8>( eMessageType::EntityMessageType ) );
 
 			// Add entity count
 			Uint16 entityCount = Hton16( static_cast<Uint16>( m_EntityMetaDataMap.size( ) ) );

@@ -26,6 +26,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
+#include <Bit/Network/Net/Private/SequenceManager.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
@@ -151,38 +152,6 @@ namespace Bit
 			};
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Struct of the acknowledgement data.
-			///
-			////////////////////////////////////////////////////////////////
-			class AcknowledgementData
-			{
-
-			public:
-
-				////////////////////////////////////////////////////////////////
-				/// \brief Default constructor
-				///
-				////////////////////////////////////////////////////////////////
-				AcknowledgementData( );
-
-				////////////////////////////////////////////////////////////////
-				/// \brief Default constructor
-				///
-				/// \return False if the sequence already is added, else true.
-				///
-				////////////////////////////////////////////////////////////////
-				Bool AddAcknowledgement( const Uint16 p_Sequence );
-
-			private:
-
-				// Private variables
-				static const Uint32		m_SequenceArraySize = 2048;
-				Uint32					m_SequenceBits[ m_SequenceArraySize ];
-				Uint8					m_CurrentBlocks[ 2 ];
-				Mutex					m_Mutex;
-			};
-
-			////////////////////////////////////////////////////////////////
 			/// \brief	Structure for reliable packets,
 			///			save them for later resend if needed.
 			///
@@ -247,7 +216,11 @@ namespace Bit
 			/// \param p_DataSize Size of the data.
 			///
 			////////////////////////////////////////////////////////////////
-			void SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize );
+			void SendUnreliable(const PacketType::eType p_PacketType,
+								void * p_pData, 
+								const Bit::SizeType p_DataSizeconst,
+								bool p_AddSequence,
+								const bool p_AddReliableFlag);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send reliable packet to the client.
@@ -256,18 +229,10 @@ namespace Bit
 			/// \param p_DataSize Size of the data.
 			///
 			////////////////////////////////////////////////////////////////
-			void SendReliable( void * p_pData, const Bit::SizeType p_DataSize );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Send reliable packet to the server.
-			///
-			/// \param p_PacketType Should be UDP_ALIVE or UDP_RELIABLE_PACKET
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
-			///
-			////////////////////////////////////////////////////////////////
-			void InternalSendReliable( const ePacketType & p_PacketType, void * p_pData, const SizeType p_DataSize );
+			void SendReliable(	const PacketType::eType p_PacketType,
+								void * p_pData,
+								const Bit::SizeType p_DataSize,
+								const bool p_AddReliableFlag);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Calculate the new ping.
@@ -297,7 +262,7 @@ namespace Bit
 			ThreadValue<Timer>				m_LastRecvTimer;		///< Time for checking when the last recv packet.
 			ThreadValue<Timer>				m_LastSendTimer;		///< Time for checking when the last sent packet.
 			ThreadValue<Uint16>				m_Sequence;				///< The sequence of the next packet being sent.
-			AcknowledgementData				m_AcknowledgementData;	///< Struct of the ack data.
+			SequenceManager					m_SequenceManager;		///< Sequence manager
 			ThreadValue<ReliablePacketMap>	m_ReliableMap;			///< Map of reliable packets.
 			ThreadValue<Time>				m_Ping;					///< Current network ping.
 			TimeList						m_PingList;				///< List of the last pings.

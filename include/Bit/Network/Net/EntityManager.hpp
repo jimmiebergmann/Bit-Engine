@@ -167,7 +167,8 @@ namespace Bit
 			/// \brief	Create a entity message from all the changed entities.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool CreateEntityMessage(	std::vector<Uint8> & p_Message );
+			Bool CreateEntityMessage(	std::vector<Uint8> & p_Message,
+										const Bool p_ClearMessage = false );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Create a entity message from all the entities.

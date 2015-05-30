@@ -27,6 +27,7 @@
 #include <Bit/Build.hpp>
 #include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
+#include <Bit/Network/Net/Private/SequenceManager.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/Network/Net/HostMessageListener.hpp>
 #include <Bit/Network/Net/UserMessage.hpp>
@@ -49,8 +50,13 @@ namespace Bit
 		/// \ingroup Network
 		/// \brief Client class.
 		///
-		/// The network ping is calculated by taking the average ping
-		/// from the last 3 received packets.
+		/// Technical details.
+		///		- UDP Packets
+		///		- Sending user and host messages(client <---> server communication).
+		///		- Removing dublicate packets.
+		///		- Replicating entity variables from server to client.
+		///		- Resending lost reliable packets.
+		///		- Banning clients
 		///
 		////////////////////////////////////////////////////////////////
 		class BIT_API Client
@@ -70,7 +76,8 @@ namespace Bit
 				TimedOut,
 				Succeeded,
 				Denied,
-				Banned
+				Banned,
+				Full
 			};
 
 			////////////////////////////////////////////////////////////////
@@ -157,43 +164,12 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			struct ReceivedData
 			{
-				ReceivedData( );
+				ReceivedData( Uint8 * p_pData, const SizeType p_DataSize, const Uint16 p_Sequence );
 				~ReceivedData( );
+
 				Uint16		Sequence;
 				Uint8 *		pData;
 				SizeType	DataSize;
-			};
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Struct of the acknowledgement data.
-			///
-			////////////////////////////////////////////////////////////////
-			class AcknowledgementData
-			{
-
-			public:
-
-				////////////////////////////////////////////////////////////////
-				/// \brief Default constructor
-				///
-				////////////////////////////////////////////////////////////////
-				AcknowledgementData( );
-
-				////////////////////////////////////////////////////////////////
-				/// \brief Default constructor
-				///
-				/// \return False if the sequence already is added, else true.
-				///
-				////////////////////////////////////////////////////////////////
-				Bool AddAcknowledgement( const Uint16 p_Sequence );
-
-			private:
-
-				// Private variables
-				static const Uint32		m_SequenceArraySize = 2048;
-				Uint32					m_SequenceBits[ m_SequenceArraySize ];
-				Uint8					m_CurrentBlocks[ 2 ];
-				Mutex					m_Mutex;
 			};
 
 			////////////////////////////////////////////////////////////////
@@ -230,35 +206,32 @@ namespace Bit
 										const Bool p_CloseReliableThread,
 										const Bool p_CloseUserMessageThread );
 
-
 			////////////////////////////////////////////////////////////////
 			/// \brief Send unreliable packet to the server.
 			///
+			/// \param p_PacketType Type of the packet.
 			/// \param p_pData Pointer to the data to send.
 			/// \param p_DataSize Size of the data.
 			///
 			////////////////////////////////////////////////////////////////
-			void SendUnreliable( void * p_pData, const SizeType p_DataSize );
+			void SendUnreliable(const PacketType::eType p_PacketType,
+								void * p_pData, 
+								const SizeType p_DataSize,
+								const bool p_AddSequence,
+								const bool p_AddReliableFlag);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Send reliable packet to the server.
 			///
+			/// \param p_PacketType Type of the packet.
 			/// \param p_pData Pointer to the data to send.
 			/// \param p_DataSize Size of the data.
 			///
 			////////////////////////////////////////////////////////////////
-			void SendReliable( void * p_pData, const SizeType p_DataSize );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Send reliable packet to the server.
-			///
-			/// \param p_PacketType Should be UDP_ALIVE or UDP_RELIABLE_PACKET
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
-			///
-			////////////////////////////////////////////////////////////////
-			void InternalSendReliable( const ePacketType & p_PacketType, void * p_pData, const SizeType p_DataSize );
+			void SendReliable(	const PacketType::eType p_PacketType,
+								void * p_pData,
+								const SizeType p_DataSize,
+								const bool p_AddReliableFlag);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Calculate the new ping.
@@ -270,7 +243,13 @@ namespace Bit
 			/// \brief	Function for adding user messages to the function caller queue.
 			///
 			////////////////////////////////////////////////////////////////
-			void AddHostMessage( ReceivedData * p_ReceivedData );
+			void AddHostMessage(ReceivedData * p_ReceivedData);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief	Function for adding user messages to the function caller queue.
+			///
+			////////////////////////////////////////////////////////////////
+			bool AddEntityUpdateSequence(const Uint16 p_Sequence);
 
 			// Private variables
 			UdpSocket							m_Socket;				///< Udp socket.
@@ -286,7 +265,8 @@ namespace Bit
 			ThreadValue<Timer>					m_LastSendTimer;		///< Time for checking when the last sent reliable packet.
 			ThreadValue<Time>					m_ConnectionTimeout;	///< Ammount of time until the connection timeout.
 			ThreadValue<Uint16>					m_Sequence;				///< The sequence of the next packet being sent.
-			AcknowledgementData					m_AcknowledgementData;	///< Struct of the ack data.
+			ThreadValue<Uint16>					m_EntityUpdateSequence;	///< Last received entitiy update sequence.
+			SequenceManager						m_SequenceManager;		///< Sequence manager.
 			ThreadValue<ReliablePacketMap>		m_ReliableMap;			///< Map of reliable packets.
 			ThreadValue<Time>					m_Ping;					///< Current network ping.
 			TimeList							m_PingList;				///< List of the last pings.

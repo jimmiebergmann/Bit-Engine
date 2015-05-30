@@ -138,11 +138,11 @@ namespace Bit
 				// Send the message
 				if( p_pFilter->IsReliable( ) )
 				{
-					pConnection->SendReliable( reinterpret_cast<void*>( m_Message.data( ) ), m_Message.size( ) );
+					pConnection->SendReliable(PacketType::HostMessage, reinterpret_cast<void*>(m_Message.data()), m_Message.size(), true );
 				}
 				else
 				{
-					pConnection->SendUnreliable( reinterpret_cast<void*>( m_Message.data( ) ), m_Message.size( ) );
+					pConnection->SendUnreliable(PacketType::HostMessage, reinterpret_cast<void*>(m_Message.data()), m_Message.size(), true, true);
 				}
 			}
 

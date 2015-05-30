@@ -35,52 +35,143 @@ namespace Bit
 
 	namespace Net
 	{
+		/*
+			Structure of a packet(+ is mandatory, / is optionally)
+			-------------------------------------------------------------------------
+				+	1 byte packet type.
+				/	2 bytes sequence number.
+				/	1 byte reability status, mandatory if sequence number is set.
+				/	~ Data
+		*/
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Size of the net packet header.
 		///
 		////////////////////////////////////////////////////////////////
-		static const SizeType HeaderSize = 3;
+		static const SizeType BufferSize			= 2048;
+		static const SizeType PacketTypeSize		= 1;
+		static const SizeType SequenceSize			= 2;
+		static const SizeType ReliabilityFlagSize	= 1;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Packet type
+		///
+		////////////////////////////////////////////////////////////////
+		struct PacketType
+		{
+			enum eType
+			{
+				///								| Reliable  |  Has sequence |	Sender	|  Receiver |
+				/// ----------------------------------------------------------------------------------
+				Connect			= 0,	///<	|	No		|	   No		|	Client	|	Server	|
+				Disconnect		= 1,	///<	|	No		|	   No		|	Both	|	Both	|
+				Accept			= 2,	///<	|	No		|	   No 		|	Server	|	Client	|
+				Reject			= 3,	///<	|	No		|	   No 		|	Server	|	Client	|
+				Acknowledgement = 4,	///<	|	No		|	   Yes 		|	Both	|	Both	|
+				Alive			= 5,	///<	|	No		|	   Yes 		|	Both	|	Both	|
+				EntityUpdate	= 6,	///<	|	Both	|	   Yes		|	Server	|	Client	|
+				UserMessage		= 7,	///<	|	Both	|	   Yes		|	Client	|	Server	|
+				HostMessage		= 8		///<	|	Both	|	   Yes		|	Server	|	Client	|
+				/// ---------------------------------------------------------------------------------
+			};
+		};
+
+		///< Packet type count.
+		const SizeType PacketTypeCount = 9;
+
+		///< Packet sizes, excluding data
+		const SizeType ConnectPacketSize = 1;
+		const SizeType DisconnectPacketSize = 1;
+		const SizeType AcceptPacketSize = 1;
+		const SizeType RejectPacketSize = 2;
+		const SizeType AcknowledgementPacketSize = 3;
+		const SizeType AlivePacketSize = 3;
+		const SizeType EntityUpdatePacketSize = 4;
+		const SizeType UserMessagePacketSize = 4;
+		const SizeType HostMessagePacketSize = 4;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Reject type
+		///
+		////////////////////////////////////////////////////////////////
+		struct RejectType
+		{
+			enum eType
+			{
+				Denied = 0,	///< Denied by server.
+				Banned = 1,	///< The client is banned.
+				Full = 2	///< The server is full.
+			};
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Disconnect type
+		///
+		////////////////////////////////////////////////////////////////
+		struct DisconnectType
+		{
+			enum eType
+			{
+				Closed = 0,			///< The client/server closed the connection.
+				Banned = 1,			///< The server banned the client.
+				Kicked = 2,			///< The server kicked the client.
+				LostConnection = 3	///< The connection was lost.
+			};
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Reliability type
+		///
+		////////////////////////////////////////////////////////////////
+		struct ReliabilityType
+		{
+			enum eType
+			{
+				Unreliable = 0,	///< Reliable packet.
+				Reliable = 1	///< Reliable packet.
+			};
+		};
+
+		
+		
+		// OLD!
+		//	|
+		//	|
+		//	v
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Packet structure for, entity update, user, and -host message.
+		///
+		////////////////////////////////////////////////////////////////
+		/*struct Packet
+		{
+		Uint16		Sequence;	///< Packet sequence.
+		SizeType	DataSize;	///< Size of the data.
+		char *		pData;		///< Pointer to the data.
+		};
+		*/
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Packet type enumerator
 		///
 		////////////////////////////////////////////////////////////////
-		enum ePacketType
+		/*enum ePacketType
 		{
-			Syn					= 1, 
-			SynAck				= 2,
-			Sync				= 3,
-			Ack					= 4,
-			Alive				= 5,
-			Close				= 6,
-			Ban					= 7,
-			UnreliablePacket	= 8,
-			ReliablePacket		= 9
+		Syn					= 1,
+		SynAck				= 2,
+		Sync				= 3,
+		Ack					= 4,
+		Alive				= 5,
+		Close				= 6,
+		Ban					= 7,
+		UnreliablePacket	= 8,
+		ReliablePacket		= 9
 		};
-
-		/*
-		// FUTURE STRUCKTURE?
-
-
-		enum ePacketType
-		{
-			Connect				= 1,	//< Unreliable packet.
-			Disconnect			= 2,	//< Unreliable packet.
-			Accept				= 3,	//< Unreliable packet.
-			Reject				= 4,	//< Unreliable packet.
-			Ack					= 5,	//< Unreliable packet.
-			Alive				= 6,	//< Reliable packet.
-			EntityUpdate		= 7,	//< [Un]reliable packet availability.
-			UserMessage			= 8,	//< [Un]reliable packet availability.
-			HostMessage			= 9		//< [Un]reliable packet availability.
-		};
-
 		*/
 
-		
+
 		////////////////////////////////////////////////////////////////
-		/// \brief Message type enumerator
+		/// \brief Message type enumerator (OLD)
 		///
 		////////////////////////////////////////////////////////////////
 		enum eMessageType
@@ -89,16 +180,7 @@ namespace Bit
 			UserMessageType		= 1
 		};
 
-		////////////////////////////////////////////////////////////////
-		/// \brief Packet structure
-		///
-		////////////////////////////////////////////////////////////////
-		struct Packet
-		{
-			Uint16		Sequence;	///< Packet sequence.
-			SizeType	DataSize;	///< Size of the data.
-			char *		pData;		///< Pointer to the data.
-		};
+		
 
 	}
 

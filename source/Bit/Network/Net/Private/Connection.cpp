@@ -122,50 +122,6 @@ namespace Bit
 			delete [ ] pData;
 		}
 
-		// Acknowledgement data struct
-		Connection::AcknowledgementData::AcknowledgementData( )
-		{
-			memset( m_SequenceBits, 0, m_SequenceArraySize * 4 );
-			m_CurrentBlocks[ 0 ] = 0;
-			m_CurrentBlocks[ 1 ] = 1;
-		}
-
-		Bool Connection::AcknowledgementData::AddAcknowledgement( const Uint16 p_Sequence )
-		{
-			const static Uint32 blockSize = 16384;
-			const static Uint32 blockCount = 4;
-
-			// Find the right array and bit index.
-			Uint32 arrayIndex	= static_cast<Uint32>(	p_Sequence ) / 32;
-			Uint32 bitIndex		= static_cast<Uint32>( p_Sequence ) % 32;
-
-			// Check if the bit already is set
-			if( ( m_SequenceBits[ arrayIndex ] >> bitIndex ) & 0x01 )
-			{
-				return false;
-			}
-
-			// Check the block bounding, if we are going to change blocks
-			Uint8 sequenceBlock = static_cast<Uint8>( p_Sequence / blockSize );
-			if( sequenceBlock != m_CurrentBlocks[ 0 ] &&
-				sequenceBlock != m_CurrentBlocks[ 1 ] &&
-				sequenceBlock != ( ( m_CurrentBlocks[ 1 ] + 2 ) % 4 ) )
-			{
-				// Clear the last block.
-				Uint32 * pClearSequence = m_SequenceBits + ( 512 * m_CurrentBlocks[ 0 ]);
-				memset( pClearSequence, 0, m_SequenceArraySize );
-
-				// Move the block index forward.
-				m_CurrentBlocks[ 0 ] = m_CurrentBlocks[ 1 ];
-				m_CurrentBlocks[ 1 ] = ( m_CurrentBlocks[ 1 ] + 1 ) % 4;
-			}
-
-			// Set the current bit to 1.
-			Uint32 bitMask = 1 << bitIndex;
-			m_SequenceBits[ arrayIndex ] = m_SequenceBits[ arrayIndex ] | bitMask;
-			return true;
-		}
-
 		void Connection::StartThreads( Server * p_pServer )
 		{
 			// Set server pointer
@@ -217,7 +173,7 @@ namespace Bit
 							{
 								// Connect packet from client, we should get the packet here if
 								// the client resent the connection packet.
-								case ePacketType::Syn:
+								case PacketType::Connect:
 								{
 									// Make sure that the identifier is right.
 									if (pPacket->DataSize != m_pServer->m_Identifier.size() + 1)
@@ -232,12 +188,12 @@ namespace Bit
 									}
 
 									// Answer the client with a SYNACK packet.
-									pPacket->pData[0] = ePacketType::SynAck;
+									pPacket->pData[0] = PacketType::Accept;
 									m_pServer->m_Socket.Send(pPacket->pData, 1, m_Address, m_Port);
 								}
 								break;
 								// Disconnect packet from client.
-								case ePacketType::Close:
+								case PacketType::Disconnect:
 								{
 									// Destroy the packet.
 									delete pPacket;
@@ -261,7 +217,7 @@ namespace Bit
 								}
 								break;
 								// Alive packet from client.
-								case ePacketType::Alive:
+								case PacketType::Alive:
 								{
 									// Ignore "corrupt" alive packet.
 									if( pPacket->DataSize != 3 )
@@ -274,14 +230,14 @@ namespace Bit
 																static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 2 ] ) << 8 ) );
 
 									// Use the already allocated packet, change the type
-									pPacket->pData[ 0 ] = ePacketType::Ack;
+									pPacket->pData[ 0 ] = PacketType::Acknowledgement;
 
 									// Send the ack packet
 									m_pServer->m_Socket.Send( pPacket->pData, 3, m_Address, m_Port );
 								}
 								break;
 								// ACK packet from client.
-								case ePacketType::Ack:
+								case PacketType::Acknowledgement:
 								{
 									// Ignore "corrupt" ack packet.
 									if( pPacket->DataSize != 3 )
@@ -316,67 +272,41 @@ namespace Bit
 									m_ReliableMap.Mutex.Unlock( );
 								}
 								break;
-								// Unreliable packet from client.
-								case ePacketType::UnreliablePacket:
+								case PacketType::UserMessage:
 								{
-									if( pPacket->DataSize <= HeaderSize + 1 )
+									// Error check the recv size
+									if (pPacket->DataSize <= UserMessagePacketSize)
 									{
-										delete pPacket;
 										continue;
 									}
 
 									// Get the sequence
-									const Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 1 ] ) ) |
-																	static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 2 ] ) << 8 ) );
+									const Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(pPacket->pData[1])) |
+																	static_cast<Uint16>(static_cast<Uint8>(pPacket->pData[2]) << 8));
 
-									// Add the unreliable packet to the received data queue.	
-									ReceivedData * pReceivedData = new ReceivedData(	pPacket->pData + HeaderSize,
-																						pPacket->DataSize - HeaderSize,
-																						sequence );
-									
-									switch( pReceivedData->pData[ 0 ] )
+
+									// Check the reliable flag
+									if (pPacket->pData[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
 									{
-										case eMessageType::UserMessageType:
-										{
-											AddUserMessage( pReceivedData );
-										}
-										break;
-										default:
-											break;
+										// Use the already allocated packet, change the type
+										pPacket->pData[0] = PacketType::Acknowledgement;
+
+										// Send the ack packet
+										m_pServer->m_Socket.Send(pPacket->pData, AcknowledgementPacketSize, m_Address, m_Port);
 									}
-								}
-								break;
-								case ePacketType::ReliablePacket:
-								{
-									// Use the already allocated packet, change the type
-									pPacket->pData[ 0 ] = ePacketType::Ack;
 
-									// Send the ack packet
-									m_pServer->m_Socket.Send( pPacket->pData, 3, m_Address, m_Port );
-
-									// Get the sequence.
-									Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 1 ] ) ) |
-																static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 2 ] ) << 8 ) );
-
-									// Add the unreliable packet to the received data queue if it's not a resent packet.
-									if( m_AcknowledgementData.AddAcknowledgement( sequence ) )
+									// Add the packets sequence to the sequence manager, do not handle the packet
+									// if we've already received a packet with the same sequence.
+									if (m_SequenceManager.AddSequence(sequence))
 									{
-									
-										// Add the unreliable packet to the received data queue.	
-										ReceivedData * pReceivedData = new ReceivedData(	pPacket->pData + HeaderSize,
-																							pPacket->DataSize - HeaderSize,
-																							sequence );
 
-										switch( pReceivedData->pData[ 0 ] )
-										{
-											case eMessageType::UserMessageType:
-											{
-												AddUserMessage( pReceivedData );
-											}
-											break;
-											default:
-												break;
-										}
+										// Add the unreliable packet to the received data queue.	
+										ReceivedData * pReceivedData = new ReceivedData(pPacket->pData + UserMessagePacketSize,
+																						pPacket->DataSize - UserMessagePacketSize,
+																						sequence);
+
+										// Add the host message.
+										AddUserMessage(pReceivedData);
 									}
 								}
 								break;
@@ -518,7 +448,7 @@ namespace Bit
 						// Send alive packet if requred
 						if( lapsedTime >= Seconds( 0.5f ) )
 						{
-							InternalSendReliable( ePacketType::Alive, NULL, 0 );
+							SendReliable( PacketType::Alive, NULL, 0, false );
 						}
 					}
 				}
@@ -637,7 +567,7 @@ namespace Bit
 			if( connected )
 			{
 				// Send close packet.
-				Uint8 buffer = ePacketType::Close;
+				Uint8 buffer = PacketType::Disconnect;
 				m_pServer->m_Socket.Send( &buffer, 1, m_Address, m_Port );
 			}
 				
@@ -692,65 +622,130 @@ namespace Bit
 			m_PingList.clear( );
 		}
 
-		void Connection::SendUnreliable( void * p_pData, const Bit::SizeType p_DataSize )
+		void Connection::SendUnreliable(	const PacketType::eType p_PacketType,
+											void * p_pData,
+											const Bit::SizeType p_DataSize,
+											bool p_AddSequence,
+											const bool p_AddReliableFlag )
 		{
 			// Use memory pool here?
+			// ...
 
-			// Create the packet.
-			const Bit::SizeType packetSize = p_DataSize + HeaderSize;
-			Uint8 * pData = new Uint8[ packetSize ];
-			pData[ 0 ] = ePacketType::UnreliablePacket;
+			// Create the packet. Make space for the sequence in case.
+			const Bit::SizeType packetSize = p_DataSize + PacketTypeSize +
+				(p_AddSequence ? SequenceSize : 0) +
+				(p_AddReliableFlag ? 1 : 0);
 
-			// Get the current sequence
-			m_Sequence.Mutex.Lock( );
-			Bit::Uint16 sequence = Bit::Hton16( m_Sequence.Value );
-			// Increment the sequence
-			m_Sequence.Value++;
-			m_Sequence.Mutex.Unlock( );
 
-			// Add the sequence to the data buffer.
-			memcpy( pData + 1, &sequence, 2 );
+			Uint8 * pBuffer = new Uint8[packetSize];
+			pBuffer[0] = static_cast<Uint8>(p_PacketType);
+
+			// Should we add the sequence?
+			if (p_AddSequence)
+			{
+				// Get the current sequence, and increment it.
+				m_Sequence.Mutex.Lock();
+				Bit::Uint16 sequence = Bit::Hton16(m_Sequence.Value);
+				m_Sequence.Value++;
+				m_Sequence.Mutex.Unlock();
+
+				// Add the sequence to the data buffer.
+				memcpy(pBuffer + 1, &sequence, SequenceSize);
+			}
+
+			// Add the reliable flag
+			if (p_AddReliableFlag)
+			{
+				pBuffer[PacketTypeSize + SequenceSize] = static_cast<Uint8>(ReliabilityType::Unreliable);
+			}
 
 			// Add the data to the new buffer
-			memcpy( pData + HeaderSize, p_pData, p_DataSize );
+			memcpy(pBuffer + (packetSize - p_DataSize), p_pData, p_DataSize);
 
 			// Send the packet.
-			m_pServer->m_Socket.Send( pData, packetSize, m_Address, m_Port );
+			m_pServer->m_Socket.Send(pBuffer, packetSize, m_Address, m_Port);
 
 			// Delete the packet
-			delete [ ] pData;
+			delete[] pBuffer;
 		}
 
-		void Connection::SendReliable( void * p_pData, const Bit::SizeType p_DataSize )
-		{
-			InternalSendReliable( ePacketType::ReliablePacket, p_pData, p_DataSize );
-		}
-
-		void Connection::InternalSendReliable( const ePacketType & p_PacketType, void * p_pData, const SizeType p_DataSize )
+		void Connection::SendReliable(	const PacketType::eType p_PacketType, 
+										void * p_pData,
+										const Bit::SizeType p_DataSize,
+										const bool p_AddReliableFlag)
 		{
 			// Create a new buffer.
-			const SizeType packetSize = p_DataSize + HeaderSize;
-			Uint8 * pData = new Uint8[ packetSize ];
-			pData[ 0 ] = static_cast<Uint8>( p_PacketType );
+			const SizeType packetSize = p_DataSize + PacketTypeSize + SequenceSize + (p_AddReliableFlag ? 1 : 0);
+			Uint8 * pBuffer = new Uint8[packetSize];
+			pBuffer[0] = static_cast<Uint8>(p_PacketType);
+
+			// Get the current sequence, and increment it.
+			m_Sequence.Mutex.Lock();
+			Uint16 currentSequence = m_Sequence.Value;
+			m_Sequence.Value++;
+			m_Sequence.Mutex.Unlock();
+	
+			// Add the sequence to the data buffer.
+			Uint16 sequence = Hton16(currentSequence);
+			memcpy(pBuffer + 1, &sequence, SequenceSize);
+
+			// Add the reliable flag
+			if (p_AddReliableFlag)
+			{
+				pBuffer[PacketTypeSize + SequenceSize] = static_cast<Uint8>(ReliabilityType::Reliable);
+			}
+
+			// Add the data to the buffer
+			memcpy(pBuffer + (packetSize - p_DataSize), p_pData, p_DataSize);
+
+			// Create the reliable packet.
+			ReliablePacket * pReliablePacket = new ReliablePacket;
+			pReliablePacket->pData = pBuffer;
+			pReliablePacket->DataSize = packetSize;
+			pReliablePacket->Sequence = currentSequence;
+			pReliablePacket->Resent = false;
+			pReliablePacket->SendTimer.Start();
+			pReliablePacket->ResendTimer.Start();
+
+			// Add the packet to the reliable map.
+			m_ReliableMap.Mutex.Lock();
+			m_ReliableMap.Value.insert(ReliablePacketPair(currentSequence, pReliablePacket));
+			m_ReliableMap.Mutex.Unlock();
+
+			// Send SYN packet, tell the server that we would like to connect.
+			if (m_pServer->m_Socket.Send(pBuffer, packetSize, m_Address, m_Port) == packetSize)
+			{
+				// Restart the timer
+				m_LastSendTimer.Mutex.Lock();
+				m_LastSendTimer.Value.Start();
+				m_LastSendTimer.Mutex.Unlock();
+			}
+
+
+
+			// Create a new buffer.
+			/*const SizeType packetSize = p_DataSize + HeaderSize;
+			Uint8 * pData = new Uint8[packetSize];
+			pData[0] = static_cast<Uint8>(p_PacketType);
 
 			// Add the sequence to the data buffer.
-			m_Sequence.Mutex.Lock( );
+			m_Sequence.Mutex.Lock();
 			Uint16 currentSequence = m_Sequence.Value;
-			m_Sequence.Mutex.Unlock( );
-							
+			m_Sequence.Mutex.Unlock();
+
 			// Add the sequence to the data buffer.
-			Uint16 sequence = Hton16( currentSequence );
-			memcpy( pData + 1, &sequence, 2 );
-	
+			Uint16 sequence = Hton16(currentSequence);
+			memcpy(pData + 1, &sequence, 2);
+
 			// Increment the sequence
-			m_Sequence.Mutex.Lock( );
+			m_Sequence.Mutex.Lock();
 			m_Sequence.Value++;
-			m_Sequence.Mutex.Unlock( );
+			m_Sequence.Mutex.Unlock();
 
 			// Add the data to the new 
-			if( p_DataSize )
+			if (p_DataSize)
 			{
-				memcpy( pData + HeaderSize, p_pData, p_DataSize );
+				memcpy(pData + HeaderSize, p_pData, p_DataSize);
 			}
 
 			// Create the reliable packet.
@@ -759,22 +754,23 @@ namespace Bit
 			pReliablePacket->DataSize = packetSize;
 			pReliablePacket->Sequence = currentSequence;
 			pReliablePacket->Resent = false;
-			pReliablePacket->SendTimer.Start( );
-			pReliablePacket->ResendTimer.Start( );
+			pReliablePacket->SendTimer.Start();
+			pReliablePacket->ResendTimer.Start();
 
 			// Add the packet to the reliable map.
-			m_ReliableMap.Mutex.Lock( );
-			m_ReliableMap.Value.insert( ReliablePacketPair( currentSequence, pReliablePacket ) );
-			m_ReliableMap.Mutex.Unlock( );
+			m_ReliableMap.Mutex.Lock();
+			m_ReliableMap.Value.insert(ReliablePacketPair(currentSequence, pReliablePacket));
+			m_ReliableMap.Mutex.Unlock();
 
 			// Send SYN packet, tell the server that we would like to connect.
-			if( m_pServer->m_Socket.Send( pData, packetSize, m_Address, m_Port ) == packetSize )
+			if (m_pServer->m_Socket.Send(pData, packetSize, m_Address, m_Port) == packetSize)
 			{
 				// Restart the timer
-				m_LastSendTimer.Mutex.Lock( );
-				m_LastSendTimer.Value.Start( );
-				m_LastSendTimer.Mutex.Unlock( );
+				m_LastSendTimer.Mutex.Lock();
+				m_LastSendTimer.Value.Start();
+				m_LastSendTimer.Mutex.Unlock();
 			}
+			*/
 		}
 
 		void Connection::CalculateNewPing( const Time & p_LapsedTime )
