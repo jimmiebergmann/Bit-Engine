@@ -176,7 +176,7 @@ namespace Bit
 
 			// Reset sequences
 			m_Sequence.Set(0);
-			m_EntityUpdateSequence.Set(0);			
+			m_EntityUpdateSequence.Set(0);
 
 			// Set the connected flag to true.
 			m_Connected.Set(true);
@@ -290,8 +290,8 @@ namespace Bit
 							continue;
 						}
 
-						Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
-													static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
+						Uint16 sequence = Ntoh16(static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
+							static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
 
 						// Use the already allocated packet, change the type
 						buffer[0] = PacketType::Acknowledgement;
@@ -319,8 +319,8 @@ namespace Bit
 						}
 
 						// Get the sequence
-						const Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
-														static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
+						const Uint16 sequence = Ntoh16(static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
+							static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
 
 						// Add the packets sequence to the sequence manager, do not handle the packet
 						// if we've already received a packet with the same sequence.
@@ -556,19 +556,21 @@ namespace Bit
 
 		Bool Client::IsConnected()
 		{
-			m_Connected.Mutex.Lock();
-			Bool connected = m_Connected.Value;
-			m_Connected.Mutex.Unlock();
-			return connected;
+			return m_Connected.Get();
 		}
 
 		Time Client::GetPing()
 		{
-			m_Ping.Mutex.Lock();
-			Time time = m_Ping.Value;
-			m_Ping.Mutex.Unlock();
-			return time;
+			return m_Ping.Get();
 		}
+
+		void Client::OnEntityCreation(Entity * p_pEntity)
+		{
+		}
+
+		/*void Client::OnEntityDestruction(const Uint16 p_EntityId, const std::string p_EntityName)
+		{
+		}*/
 
 		Bool Client::HookHostMessage(HostMessageListener * p_pListener, const std::string & m_MessageName)
 		{
@@ -611,10 +613,7 @@ namespace Bit
 
 		Time Client::TimeSinceLastRecvPacket()
 		{
-			m_LastRecvTimer.Mutex.Lock();
-			Time time = m_LastRecvTimer.Value.GetLapsedTime();
-			m_LastRecvTimer.Mutex.Unlock();
-			return time;
+			return m_LastRecvTimer.Get().GetLapsedTime();
 		}
 
 		// Received data struct
@@ -716,8 +715,8 @@ namespace Bit
 
 			// Create the packet. Make space for the sequence in case.
 			const Bit::SizeType packetSize = p_DataSize + PacketTypeSize +
-				(p_AddSequence ? SequenceSize : 0) +
-				(p_AddReliableFlag ? 1 : 0);
+											(p_AddSequence ? SequenceSize : 0) +
+											(p_AddReliableFlag ? 1 : 0);
 
 
 			Uint8 * pBuffer = new Uint8[packetSize];

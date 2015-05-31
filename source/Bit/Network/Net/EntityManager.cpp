@@ -22,6 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/EntityManager.hpp>
+#include <Bit/System/Vector2.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -328,6 +329,7 @@ namespace Bit
 						Entity * pEntity = pEntityLink->pEntity;
 
 						// Get the varaible pointer
+						VariableBase Entity::* pVariableBase = it2->second;
 						Variable<Uint8> Entity::* pVariable = reinterpret_cast<Variable<Uint8> Entity::*>( it2->second );
 
 						// Get the value size
@@ -341,12 +343,42 @@ namespace Bit
 							continue;
 						}
 
-						// Get the pointer to the value
+						// Get the pointer to the value and the last value.
 						void * pValuePointer = reinterpret_cast<void *>( &((pEntity->*pVariable).m_Value) );
+						//void * pLastValuePointer = reinterpret_cast<void *>(&((pEntity->*pVariable).m_LastValue));
+						
+						// Lock the variable mutex.
+						(pEntity->*pVariableBase).m_Mutex.Lock();
 
-						// Copy the data to the value
-						(pEntity->*pVariable).m_Mutex.Lock( );
-						memcpy( pValuePointer, &(pData[dataPos]), valueSize );
+						// Check if the variable has been set before
+						if ((pEntity->*pVariableBase).m_IsSet)
+						{
+							// copy the value to the last value.
+							memcpy(reinterpret_cast<Uint8 *>(pValuePointer)+valueSize, pValuePointer, valueSize);
+							
+							// Get the varaible pointer
+							//Variable<Vector2f32> Entity::* PTest = reinterpret_cast<Variable<Vector2f32> Entity::*>(it2->second);
+							//(pEntity->*PTest).UpdateLastValue();
+
+							// Copy the data to the value
+							memcpy(pValuePointer, &(pData[dataPos]), valueSize);
+						}
+						else
+						{
+							// Copy the data to the value
+							memcpy(pValuePointer, &(pData[dataPos]), valueSize);
+
+							// Copy the data to the last value, the value and last value need to be the same at the initial phase.
+							memcpy(reinterpret_cast<Uint8 *>(pValuePointer) + valueSize, pValuePointer, valueSize);
+
+							// Set the variable is set flag to true.
+							(pEntity->*pVariableBase).m_IsSet = true;
+						}		
+
+						// Restart the variable timer						
+						(pEntity->*pVariableBase).m_Timer.Start();
+						
+						// Unlock the variable mutex.
 						(pEntity->*pVariable).m_Mutex.Unlock( );
 
 						// Move to the next Id
@@ -361,6 +393,10 @@ namespace Bit
 				delete [ ] pEntityName;
 
 			}
+
+			m_FrameTimer.Stop();
+			m_FrameTime.Set(m_FrameTimer.GetTime().AsSeconds());
+			m_FrameTimer.Start();
 
 			// Succeeded
 			return true;

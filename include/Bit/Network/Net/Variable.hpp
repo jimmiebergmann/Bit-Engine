@@ -26,6 +26,8 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Mutex.hpp>
+#include <Bit/System/ThreadValue.hpp>
+#include <Bit/System/Timer.hpp>
 #include <Bit/Network/Net/Private/EntityChanger.hpp>
 #include <string>
 
@@ -73,10 +75,12 @@ namespace Bit
 		protected:
 
 			// Private variables.
-			const SizeType  m_Size;			///< Size of the varaible.
-			std::string		m_Name;			///< Variable name.
-			Entity *		m_pParent;		///< Parent entity.
-			Bit::Mutex		m_Mutex;		///< Mutex for set/get value.
+			const SizeType		m_Size;			///< Size of the varaible.
+			std::string			m_Name;			///< Variable name.
+			Entity *			m_pParent;		///< Parent entity.
+			Mutex				m_Mutex;		///< Mutex for set/get value.
+			Timer				m_Timer;		///< Timer for interpolation.
+			bool				m_IsSet;		///< Flag for checking if the value has been set.
 
 		};
 
@@ -113,10 +117,18 @@ namespace Bit
 			/// \brief Get value.
 			///
 			////////////////////////////////////////////////////////////////
-			T Get( );
+			T Get( const bool p_Interpolated = false );
+
+			void UpdateLastValue()
+			{
+				Float64 time = m_Timer.GetLapsedTime().AsSeconds();
+				m_LastValue = m_Value + ((m_Value - m_LastValue) * (time * 10.0f /*m_pParent->m_pEntityManager->m_FrameTime.Get()*/));
+			}
 
 			// Public variables
-			T m_Value;	///< Value of the network variable.
+			// DO NOT CHANGE THE ORDER OF THESE VARIABLES
+			T m_Value;		///< Value of the network variable.
+			T m_LastValue;	///< Value of the last network variable, used for interpolation.
 
 		};
 

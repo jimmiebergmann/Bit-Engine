@@ -192,7 +192,7 @@ namespace Bit
 			// Private typedefs
 			typedef std::map<std::string, VariableBase Entity::*>		EntityVariableMap;			///< Map of entity varibles, varaible name as key.
 			typedef std::map<std::string, EntityMetaData*>				EntityMetaDataMap;			///< Map of pointers for creating entities, entity name as key.
-			typedef std::map<Uint16, EntityLink*>						EntityMap;					///< Map of all entities
+			typedef std::map<Uint16, EntityLink*>						EntityMap;					///< Map of all entities, entity id as key.
 			typedef std::map<Entity *, VariableBase *>					ChangedEntityVariableMap;	///< Mapping entities to variables
 			typedef std::map<std::string, ChangedEntityVariableMap *>	ChangedVariablesMap;		///< Set of changed variables
 			typedef std::map<std::string, ChangedVariablesMap *>		ChangedEntitiesMap;			///< Map of changed entities.
@@ -206,9 +206,6 @@ namespace Bit
 			{
 				Entity*(*CreationPointer)();		///< Pointer to function for creating entity.
 				EntityVariableMap EntityVariables;	///< Map of all the variables for this entity.
-
-				// List of all entities of this type here??
-				// .. variable...
 			};
 
 			////////////////////////////////////////////////////////////////
@@ -222,11 +219,13 @@ namespace Bit
 			};
 		
 			// Private variable
-			EntityChanger *		m_pEntityChanger;		///< Poiter to entity changer base class.
-			EntityMetaDataMap	m_EntityMetaDataMap;	///< Map of entity class meta data.
-			ChangedEntitiesMap	m_ChangedEntities;		///< Map of changed entitites
-			EntityMap			m_Entities;				///< Map of all entities.
-			Uint32				m_CurrentId;			///< Temporary solution for incremening the ID.
+			EntityChanger *			m_pEntityChanger;		///< Poiter to entity changer base class.
+			EntityMetaDataMap		m_EntityMetaDataMap;	///< Map of entity class meta data.
+			ChangedEntitiesMap		m_ChangedEntities;		///< Map of changed entitites
+			EntityMap				m_Entities;				///< Map of all entities.
+			Uint32					m_CurrentId;			///< Temporary solution for incremening the ID.
+			ThreadValue<Float64>	m_FrameTime;			///< Frame time of the entitiy update
+			Timer					m_FrameTimer;			///< Timer for calculating the frame time.
 
 		};
 

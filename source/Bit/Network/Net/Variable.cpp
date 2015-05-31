@@ -33,7 +33,8 @@ namespace Bit
 
 		VariableBase::VariableBase( SizeType p_Size ) :
 			m_Size( p_Size ),
-			m_pParent( NULL )
+			m_pParent( NULL ),
+			m_IsSet(false)
 		{
 		}
 
