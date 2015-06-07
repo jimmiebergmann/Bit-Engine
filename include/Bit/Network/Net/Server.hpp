@@ -25,6 +25,7 @@
 #define BIT_NETWORK_NET_SERVER_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Network/Net/ServerList.hpp>
 #include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/Net/Private/Connection.hpp>
@@ -32,6 +33,7 @@
 #include <Bit/Network/Net/HostMessage.hpp>
 #include <Bit/Network/UdpSocket.hpp>
 #include <Bit/Network/TcpListener.hpp>
+#include <Bit/System/MemoryPool.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
 #include <Bit/System/Semaphore.hpp>
@@ -52,10 +54,13 @@ namespace Bit
 		/// \ingroup Network
 		/// \brief Server class.
 		///
-		/// The server system uses both TCP and
-		///	UDP( TCP for connecting and UDP for data).
-		/// This means that you have to open both
-		///	TCP and UDP ports for the port that you are hosting on.
+		/// Technical details.
+		///		- UDP Packets
+		///		- Sending user and host messages(client <---> server communication).
+		///		- Removing dublicate packets.
+		///		- Replicating entity variables from server to client.
+		///		- Resending lost reliable packets.
+		///		- Banning clients
 		///
 		////////////////////////////////////////////////////////////////
 		class BIT_API Server
@@ -164,7 +169,9 @@ namespace Bit
 			Bool Start( const Uint16 p_Port, 
 						const Uint8 p_MaxConnections = 255,
 						const Uint8 p_EntityUpdatesPerSecond = 20,
-						const std::string & p_Identifier = "Bit Engine Network" );
+						const Time & p_LosingConnectionTimeout = Seconds( 3.0f ),
+						const std::string & p_Identifier = "Bit Engine Network",
+						const ServerList & p_ServerList = ServerList::None );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Stop the server.
@@ -221,6 +228,8 @@ namespace Bit
 			Thread								m_MainThread;				///< Thread for handling incoming packets.
 			Thread								m_EntityThread;				///< Thread for sending entity states to users.
 			Thread								m_CleanupThread;			///< Thread for cleaning up connections.
+			Thread								m_ServerListThread;			///< Thread for communicating with server list
+			ThreadValue<ServerList>				m_ServerList;				///< Server list struct.
 			Semaphore							m_CleanupSemaphore;			///< Semaphore for cleanups.
 			ThreadValue<ConnectionList>			m_CleanupConnections;		///< Queue of connections to cleanup.
 			std::string							m_Identifier;				///< Connection identifier string.
@@ -233,7 +242,10 @@ namespace Bit
 			ThreadValue<Bool>					m_Running;					///< Flag for checking if the server is running.
 			ThreadValue<AddressSet>				m_BanSet;					///< Set of banned addresses.
 			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;		///< Map of user message listeners and their message types.
-			
+			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Amount of time until the connection timeout after not receiving any packets.
+			ThreadValue<MemoryPool<Uint8> *>	m_PacketMemoryPool;			///< Memory pool for packets, make less new, copy and delete operations.
+			const SizeType						m_MaxPacketSize;			///< Max size of a packet.
+
 		};
 
 	}

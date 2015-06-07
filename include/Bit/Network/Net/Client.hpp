@@ -110,6 +110,7 @@ namespace Bit
 			eStatus Connect(	const Address & p_Address,
 								const Uint16 p_Port,
 								const Time & p_ConnectionTimeout = Time::Infinite,
+								const Time & p_LosingConnectionTimeout = Seconds(3.0f ),
 								const std::string & p_Identifier = "Bit Engine Network" );
 
 			////////////////////////////////////////////////////////////////
@@ -264,27 +265,27 @@ namespace Bit
 			bool AddEntityUpdateSequence(const Uint16 p_Sequence);
 
 			// Private variables
-			UdpSocket							m_Socket;				///< Udp socket.
-			Uint16								m_Port;					///< Udp and TCP port.
-			Thread								m_Thread;				///< Thread created after the connection is established.
-			Thread								m_TriggerThread;		///< Thread for creating specific triggers.
-			Thread								m_ReliableThread;		///< Thread for checking reliable packets for resend.
-			Thread								m_UserMessageThread;	///< Thread for handling user messages.
-			Address								m_ServerAddress;		///< The server's address.
-			Uint16								m_ServerPort;			///< The server's port.
-			ThreadValue<Bool>					m_Connected;			///< Flag for checking if you are connected.
-			ThreadValue<Timer>					m_LastRecvTimer;		///< Time for checking when the last recv packet.
-			ThreadValue<Timer>					m_LastSendTimer;		///< Time for checking when the last sent reliable packet.
-			ThreadValue<Time>					m_ConnectionTimeout;	///< Ammount of time until the connection timeout.
-			ThreadValue<Uint16>					m_Sequence;				///< The sequence of the next packet being sent.
-			ThreadValue<Uint16>					m_EntityUpdateSequence;	///< Last received entitiy update sequence.
-			SequenceManager						m_SequenceManager;		///< Sequence manager.
-			ThreadValue<ReliablePacketMap>		m_ReliableMap;			///< Map of reliable packets.
-			ThreadValue<Time>					m_Ping;					///< Current network ping.
-			TimeList							m_PingList;				///< List of the last pings.
-			ThreadValue<HostMessageListenerMap>	m_HostMessageListeners;	///< Map of user message listeners and their message types.
-			ThreadValue<ReceivedDataQueue>		m_UserMessages;			///< Queue of user messages
-			Semaphore							m_UserMessageSemaphore;	///< Semaphore for executing user message listeners.
+			UdpSocket							m_Socket;					///< Udp socket.
+			Uint16								m_Port;						///< Udp and TCP port.
+			Thread								m_Thread;					///< Thread created after the connection is established.
+			Thread								m_TriggerThread;			///< Thread for creating specific triggers.
+			Thread								m_ReliableThread;			///< Thread for checking reliable packets for resend.
+			Thread								m_UserMessageThread;		///< Thread for handling user messages.
+			Address								m_ServerAddress;			///< The server's address.
+			Uint16								m_ServerPort;				///< The server's port.
+			ThreadValue<Bool>					m_Connected;				///< Flag for checking if you are connected.
+			ThreadValue<Timer>					m_LastRecvTimer;			///< Time for checking when the last recv packet.
+			ThreadValue<Timer>					m_LastSendTimer;			///< Time for checking when the last sent reliable packet.
+			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Ammount of time without any packets before losing the connection.
+			ThreadValue<Uint16>					m_Sequence;					///< The sequence of the next packet being sent.
+			ThreadValue<Uint16>					m_EntityUpdateSequence;		///< Last received entitiy update sequence.
+			SequenceManager						m_SequenceManager;			///< Sequence manager.
+			ThreadValue<ReliablePacketMap>		m_ReliableMap;				///< Map of reliable packets.
+			ThreadValue<Time>					m_Ping;						///< Current network ping.
+			TimeList							m_PingList;					///< List of the last pings.
+			ThreadValue<HostMessageListenerMap>	m_HostMessageListeners;		///< Map of user message listeners and their message types.
+			ThreadValue<ReceivedDataQueue>		m_UserMessages;				///< Queue of user messages
+			Semaphore							m_UserMessageSemaphore;		///< Semaphore for executing user message listeners.
 
 		};
 

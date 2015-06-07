@@ -40,7 +40,9 @@ namespace Bit
 		Server::Server( ) :
 			m_EntityManager( new ServerEntityChanger( &m_EntityManager ) ),
 			m_MaxConnections( 0 ),
-			m_EntityUpdatesPerSecond( 0 )
+			m_EntityUpdatesPerSecond( 0 ),
+			m_PacketMemoryPool( NULL ),
+			m_MaxPacketSize(2048)
 		{
 	
 		}
@@ -158,7 +160,9 @@ namespace Bit
 		Bool Server::Start( const Uint16 p_Port,
 							const Uint8 p_MaxConnections,
 							const Uint8 p_EntityUpdatesPerSecond,
-							const std::string & p_Identifier)
+							const Time & p_LosingConnectionTimeout,
+							const std::string & p_Identifier,
+							const ServerList & p_ServerList)
 		{
 			// Open the udp socket.
 			if( m_Socket.Open( p_Port ) == false )
@@ -179,8 +183,17 @@ namespace Bit
 				m_FreeUserIds.push( i );
 			}
 
+			// Set the lost connection timeout
+			m_LosingConnectionTimeout.Set( p_LosingConnectionTimeout );
+
 			// Set the identifier
 			m_Identifier = p_Identifier;
+
+			// Set server list
+			m_ServerList.Set(p_ServerList);
+
+			// Create the packet memory pool
+			m_PacketMemoryPool.Set( new MemoryPool<Uint8>( 64 * 64, m_MaxPacketSize, true ) );
 
 			// Start the server thread.
 			m_MainThread.Execute([this]()
@@ -198,107 +211,126 @@ namespace Bit
 				// Receive packets as long as the server is running.
 				while( IsRunning( ) )
 				{
-					// Receive any packet.
-					recvSize = m_Socket.Receive(buffer, BufferSize, address, port, Milliseconds(5));
+					// Get item from memory pool
+					MemoryPool<Uint8>::Item *pItem = m_PacketMemoryPool.Get()->Get();
+					Uint8 * pBuffer = pItem->GetData();
 
-					// Ignore empty packets.
-					if( recvSize <= 0 )
+					// Error check the item and it's data.
+					if (pItem == NULL || pBuffer == NULL)
 					{
+						std::cout << "Bit::Net::Server::Start(): Null memory pool item." << std::endl;
 						continue;
 					}
 
-					// Check if the packet is from any known client
-					Uint64 clientAddress =	static_cast<Uint64>( address.GetAddress( ) ) * 
-											static_cast<Uint64>( port ) +
-											static_cast<Uint64>( port ) ;
+					// Receive a packet.
+					// Loop while the server is running and until we receive a valid packet.
+					while (IsRunning())
+					{
+						if ((recvSize = m_Socket.Receive(pItem->GetData(), m_MaxPacketSize, address, port, Milliseconds(5))) > 0)
+						{
+							break;
+						}
+					}
 
-					m_ConnectionMutex.Lock( );
-					AddressConnectionMap::iterator it = m_AddressConnections.find( clientAddress );
-					if( it != m_AddressConnections.end( ) )
+					// get the client address as an index.
+					Uint64 clientAddress =	static_cast<Uint64>(address.GetAddress()) *
+											static_cast<Uint64>(port) +
+											static_cast<Uint64>(port);
+
+					// Lock the connection mutex.
+					m_ConnectionMutex.Lock();
+
+					// Check if we received a packet from a connected client.
+					AddressConnectionMap::iterator it = m_AddressConnections.find(clientAddress);
+					if (it != m_AddressConnections.end())
 					{
 						// Send the packet to the client thread.
-						it->second->AddRawPacket( buffer, recvSize );
-						m_ConnectionMutex.Unlock( );
+						pItem->SetUsedSize(recvSize);
+						it->second->AddReceivedData(pItem);
+						m_ConnectionMutex.Unlock();
+						continue;
 					}
-					else
+
+					// Use a do while loop with false condition in order to 
+					// jump over and skip code later.
+					do
 					{
-						// This is an unknown client, maybe it's trying to connect.
-						if( buffer[ 0 ] == PacketType::Connect )
+						// This is not a packet from an already connected client,
+						// check if the client is tryin go connect.
+						if (pBuffer[0] == PacketType::Connect)
 						{
 							// Make sure that the identifier is right.
 							if (recvSize != m_Identifier.size() + ConnectPacketSize)
 							{
-								continue;
+								// Go to the return packet label.
+								break;
 							}
-							if (memcmp(buffer + ConnectPacketSize, m_Identifier.data(), m_Identifier.size()) != 0)
+							if (memcmp(pBuffer + ConnectPacketSize, m_Identifier.data(), m_Identifier.size()) != 0)
 							{
-								continue;
+								// Go to the return packet label.
+								break;
 							}
 
 							// Check if the address is banned
-							m_BanSet.Mutex.Lock( );
-							if( m_BanSet.Value.find( address.GetAddress( ) ) != m_BanSet.Value.end( ) )
+							m_BanSet.Mutex.Lock();
+							if (m_BanSet.Value.find(address.GetAddress()) != m_BanSet.Value.end())
 							{
 								// Send ban packet
-								buffer[ 0 ] = PacketType::Reject;
-								buffer[ 1 ] = RejectType::Banned;
-								m_Socket.Send(buffer, RejectPacketSize, address, port);
+								pBuffer[0] = PacketType::Reject;
+								pBuffer[1] = RejectType::Banned;
+								m_Socket.Send(pBuffer, RejectPacketSize, address, port);
 
 								// Unlock the ban set mutex.
-								m_BanSet.Mutex.Unlock( );
+								m_BanSet.Mutex.Unlock();
 
-								// Unlock the connection mutex
-								m_ConnectionMutex.Unlock( );
-								continue;
+								// Go to the return packet label.
+								break;
 							}
-							m_BanSet.Mutex.Unlock( );
+							m_BanSet.Mutex.Unlock();
 
 							// Send Deny packet if the server is full.
-							if( m_AddressConnections.size( ) == m_MaxConnections || m_FreeUserIds.size( ) == 0 )
+							if (m_AddressConnections.size() == m_MaxConnections || m_FreeUserIds.size() == 0)
 							{
-								buffer[0] = PacketType::Reject;
-								buffer[1] = RejectType::Full;
-								m_Socket.Send(buffer, RejectPacketSize, address, port);
-									
-								// Unlock the connection mutex
-								m_ConnectionMutex.Unlock( );
-								continue;
+								pBuffer[0] = PacketType::Reject;
+								pBuffer[1] = RejectType::Full;
+								m_Socket.Send(pBuffer, RejectPacketSize, address, port);
+
+								// Go to the return packet label.
+								break;
 							}
 
 							// Answer the client with a SYNACK packet.
-							buffer[ 0 ] = PacketType::Accept;
-							m_Socket.Send(buffer, AcceptPacketSize, address, port);
+							pBuffer[0] = PacketType::Accept;
+							m_Socket.Send(pBuffer, AcceptPacketSize, address, port);
 
 							// Get a user id for this connection
-							const Uint16 userId = m_FreeUserIds.front( );
-							m_FreeUserIds.pop( );
+							const Uint16 userId = m_FreeUserIds.front();
+							m_FreeUserIds.pop();
 
 							// Create the connection
-							Connection * pConnection = new Connection( address, port, userId );
+							Connection * pConnection = new Connection(address, port, userId, m_LosingConnectionTimeout.Value);
 
 							// Add the client to the address connection map
-							m_AddressConnections.insert( AddressConnectionMapPair( clientAddress, pConnection ) );
+							m_AddressConnections.insert(AddressConnectionMapPair(clientAddress, pConnection));
 
 							// Add the client to the user connection map
-							m_UserConnections.insert( UserConnectionMapPair( userId, pConnection ) );
+							m_UserConnections.insert(UserConnectionMapPair(userId, pConnection));
 
-							// Unlock the connection mutex
-							m_ConnectionMutex.Unlock( );
-						
 							// Start client thread.
-							pConnection->StartThreads( this );
-
+							pConnection->StartThreads(this);
 
 							// Run the on connection function
-							OnConnection( userId );
+							OnConnection(userId);
 						}
-						else
-						{
-							// Unlock the connection mutex
-							m_ConnectionMutex.Unlock( );
-						}
-					}
-				
+						
+					} while (false);
+					
+					// Unlock the connection mutex.
+					m_ConnectionMutex.Unlock();
+
+					// Return the item to the memory pool.
+					m_PacketMemoryPool.Get()->Return(pItem);
+
 				}
 			}
 			);
@@ -423,6 +455,30 @@ namespace Bit
 			}
 			);
 
+			// Execute the event thread
+			m_ServerListThread.Execute([this]()
+			{
+				while (IsRunning())
+				{
+					
+
+					// try to add the server.
+					ServerList::UrlFields fields;
+					fields["maxPlayerCount"] = "16";
+					fields["currentPlayerCount"] = "5";
+					fields["map"] = "Cave";
+					Json::Value response = ServerList::Add(m_ServerList.Get(), fields);
+
+					//Json::Value response = ServerList::Get(m_ServerList.Get());
+
+
+					// Sleep for some time.
+					Sleep(Seconds(10.0f));
+				}
+			}
+			);
+
+
 			// Server is now running
 			return true;
 		}
@@ -443,10 +499,14 @@ namespace Bit
 				m_CleanupSemaphore.Release( );
 				m_CleanupThread.Finish( );
 
+				// Wait for the server list thread
+				m_ServerListThread.Finish();
+
 				// Clean up the cleanup connections
 				m_CleanupConnections.Mutex.Lock( );
 				m_CleanupConnections.Value.clear( );
 				m_CleanupConnections.Mutex.Unlock( );
+
 
 				// Wait for the main thread to finish
 				m_MainThread.Finish( );
@@ -473,6 +533,11 @@ namespace Bit
 				// Unlock the mutex
 				m_ConnectionMutex.Unlock( );
 
+				// Delete the packet memory pool
+				if (m_PacketMemoryPool.Get())
+				{
+					delete m_PacketMemoryPool.Get();
+				}
 
 				// Close the sockets
 				m_Socket.Close( );

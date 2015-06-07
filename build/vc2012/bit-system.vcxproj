@@ -37,6 +37,7 @@
     <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
     <ClInclude Include="..\..\include\Bit\System\MatrixManager.hpp" />
     <ClInclude Include="..\..\include\Bit\System\MemoryLeak.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\MemoryPool.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Mouse.hpp" />
     <ClInclude Include="..\..\include\Bit\System\MouseBase.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Mutex.hpp" />
@@ -70,6 +71,7 @@
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
     <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
+    <None Include="..\..\include\Bit\System\MemoryPool.inl" />
     <None Include="..\..\include\Bit\System\ThreadValue.inl" />
     <None Include="..\..\include\Bit\System\Vector2.inl" />
     <None Include="..\..\include\Bit\System\Vector3.inl" />

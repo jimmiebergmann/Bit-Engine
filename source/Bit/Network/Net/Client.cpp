@@ -1,3 +1,26 @@
+// Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
+//
+// This software is provided 'as-is', without any express or
+// implied warranty. In no event will the authors be held
+// liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute
+// it freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but
+//    is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any
+//    source distribution.
+// ///////////////////////////////////////////////////////////////////////////
+
 #include <Bit/Network/Net/Client.hpp>
 #include <Bit/System/Sleep.hpp>
 #include <Bit/System/Timer.hpp>
@@ -18,7 +41,7 @@ namespace Bit
 			m_Connected(false),
 			m_ServerAddress(0),
 			m_ServerPort(0),
-			m_ConnectionTimeout(Seconds(3.0f)),
+			m_LosingConnectionTimeout(Seconds(3.0f)),
 			m_Sequence(0),
 			m_Ping(p_InitialPing)
 		{
@@ -46,6 +69,7 @@ namespace Bit
 		Client::eStatus Client::Connect(const Address & p_Address,
 			const Uint16 p_Port,
 			const Time & p_ConnectionTimeout,
+			const Time & p_LosingConnectionTimeout,
 			const std::string & p_Identifier)
 		{
 			// make sure to be disconnected.
@@ -177,6 +201,9 @@ namespace Bit
 			// Reset sequences
 			m_Sequence.Set(0);
 			m_EntityUpdateSequence.Set(0);
+
+			// Set lost connection timeout
+			m_LosingConnectionTimeout.Set(p_LosingConnectionTimeout);
 
 			// Set the connected flag to true.
 			m_Connected.Set(true);
@@ -386,7 +413,7 @@ namespace Bit
 					Sleep(Milliseconds(10));
 
 					// Disconnect you've not heard anything from the server in a while.
-					if (TimeSinceLastRecvPacket() >= m_ConnectionTimeout.Value)
+					if (TimeSinceLastRecvPacket() >= m_LosingConnectionTimeout.Get())
 					{
 						InternalDisconnect(true, false, true, true);
 						return;

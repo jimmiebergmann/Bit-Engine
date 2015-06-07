@@ -36,13 +36,14 @@ namespace Bit
 		Connection::Connection( const Address & p_Address,
 								const Uint16 & p_Port,
 								const Uint16 & p_UserId,
+								const Time & p_LosingConnectionTimeout,
 								const Time & p_InitialPing ) :
 			m_pServer( NULL ),
-			m_ConnectionTimeout( Seconds( 3.0f ) ),
 			m_Connected( false ),
 			m_Address( p_Address ),
 			m_Port( p_Port ),
 			m_UserId( p_UserId ),
+			m_LosingConnectionTimeout(p_LosingConnectionTimeout),
 			m_Sequence( 0 ),
 			m_Ping( p_InitialPing )
 		{
@@ -92,20 +93,6 @@ namespace Bit
 					static_cast<Uint64>( m_Port ) ;
 		}
 
-		// Raw packet struct
-		Connection::RawPacket::RawPacket(	Uint8 * p_pData,
-											const SizeType p_DataSize ) :
-			DataSize( p_DataSize )
-		{
-			pData = new Uint8[ p_DataSize ];
-			memcpy( pData, p_pData, p_DataSize );
-		}
-
-		Connection::RawPacket::~RawPacket( )
-		{
-			delete [ ] pData;
-		}
-
 		// received data struct
 		Connection::ReceivedData::ReceivedData( Uint8 * p_pData,
 												const SizeType p_DataSize,
@@ -152,56 +139,53 @@ namespace Bit
 			m_Thread.Execute( [ this ] ( )
 			 {
 					// Pointer to the raw packet to handle.
-					RawPacket * pPacket = NULL;
+					MemoryPool<Uint8>::Item * pItem = NULL;
 
 					// Keep on running as long as the server is running.
 					while( IsConnected( ) )
 					{
 						// Wait for an event
-						m_EventSemaphore.Wait( );
+						m_ReceivedDataSemaphore.Wait();
 
 						// Go throguh the packets.
-						while( ( pPacket = PollRawPacket( ) ) != NULL )
+						while (IsConnected() && (pItem = PollReceivedData()) != NULL)
 						{
+							Uint8 * pData = pItem->GetData();
+							SizeType recvSize = pItem->GetUsedSize();
+
 							// Reset the time for checking last time a packet arrived
 							m_LastRecvTimer.Mutex.Lock( );
 							m_LastRecvTimer.Value.Start( );
 							m_LastRecvTimer.Mutex.Unlock( );
 
 							// Check the packet type
-							switch( pPacket->pData[ 0 ] )
+							switch (pData[0])
 							{
 								// Connect packet from client, we should get the packet here if
 								// the client resent the connection packet.
 								case PacketType::Connect:
 								{
 									// Make sure that the identifier is right.
-									if (pPacket->DataSize != m_pServer->m_Identifier.size() + 1)
+									if (recvSize != m_pServer->m_Identifier.size() + 1)
 									{
-										delete pPacket;
-										continue;
+										break;
 									}
-									if (memcmp(pPacket->pData + 1, m_pServer->m_Identifier.data(), m_pServer->m_Identifier.size()) != 0)
+									if (memcmp(pData + 1, m_pServer->m_Identifier.data(), m_pServer->m_Identifier.size()) != 0)
 									{
-										delete pPacket;
-										continue;
+										break;
 									}
 
 									// Answer the client with a SYNACK packet.
-									pPacket->pData[0] = PacketType::Accept;
-									m_pServer->m_Socket.Send(pPacket->pData, 1, m_Address, m_Port);
+									pData[0] = PacketType::Accept;
+									m_pServer->m_Socket.Send(pData, 1, m_Address, m_Port);
 								}
 								break;
 								// Disconnect packet from client.
 								case PacketType::Disconnect:
 								{
-									// Destroy the packet.
-									delete pPacket;
 
 									// Set the connection flag to false
-									m_Connected.Mutex.Lock( );
-									m_Connected.Value = false;
-									m_Connected.Mutex.Unlock( );
+									m_Connected.Set(false);
 
 									// Add the connection to the cleanup thread.
 									m_pServer->AddConnectionForCleanup( this );
@@ -212,43 +196,41 @@ namespace Bit
 									// Call on disconnect function
 									m_pServer->OnDisconnection( m_UserId );
 
-									// Return, exit the thread
-									return;
+									// break this switch, the connection thread will terminate.
+									break;
 								}
 								break;
 								// Alive packet from client.
 								case PacketType::Alive:
 								{
 									// Ignore "corrupt" alive packet.
-									if( pPacket->DataSize != 3 )
+									if (recvSize != 3)
 									{
-										delete pPacket;
-										continue;
+										break;
 									}
 
-									Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 1 ] ) ) |
-																static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 2 ] ) << 8 ) );
+									Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(pData[1])) |
+																static_cast<Uint16>(static_cast<Uint8>(pData[2]) << 8));
 
 									// Use the already allocated packet, change the type
-									pPacket->pData[ 0 ] = PacketType::Acknowledgement;
+									pData[0] = PacketType::Acknowledgement;
 
 									// Send the ack packet
-									m_pServer->m_Socket.Send( pPacket->pData, 3, m_Address, m_Port );
+									m_pServer->m_Socket.Send(pData, 3, m_Address, m_Port);
 								}
 								break;
 								// ACK packet from client.
 								case PacketType::Acknowledgement:
 								{
 									// Ignore "corrupt" ack packet.
-									if( pPacket->DataSize != 3 )
+									if (recvSize != 3)
 									{
-										delete pPacket;
-										continue;
+										break;
 									}
 
 									// Get the sequence
-									Uint16 sequence = Ntoh16(	static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 1 ] ) ) |
-																static_cast<Uint16>( static_cast<Uint8>( pPacket->pData[ 2 ] ) << 8 ) );
+									Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(pData[1])) |
+																static_cast<Uint16>(static_cast<Uint8>(pData[2]) << 8));
 
 									// Find the sequence in the reliable map
 									m_ReliableMap.Mutex.Lock( );
@@ -275,24 +257,24 @@ namespace Bit
 								case PacketType::UserMessage:
 								{
 									// Error check the recv size
-									if (pPacket->DataSize <= UserMessagePacketSize)
+									if (recvSize <= UserMessagePacketSize)
 									{
-										continue;
+										break;
 									}
 
 									// Get the sequence
-									const Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(pPacket->pData[1])) |
-																	static_cast<Uint16>(static_cast<Uint8>(pPacket->pData[2]) << 8));
+									const Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(pData[1])) |
+																	static_cast<Uint16>(static_cast<Uint8>(pData[2]) << 8));
 
 
 									// Check the reliable flag
-									if (pPacket->pData[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
+									if (pData[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
 									{
 										// Use the already allocated packet, change the type
-										pPacket->pData[0] = PacketType::Acknowledgement;
+										pData[0] = PacketType::Acknowledgement;
 
 										// Send the ack packet
-										m_pServer->m_Socket.Send(pPacket->pData, AcknowledgementPacketSize, m_Address, m_Port);
+										m_pServer->m_Socket.Send(pData, AcknowledgementPacketSize, m_Address, m_Port);
 									}
 
 									// Add the packets sequence to the sequence manager, do not handle the packet
@@ -301,8 +283,8 @@ namespace Bit
 									{
 
 										// Add the unreliable packet to the received data queue.	
-										ReceivedData * pReceivedData = new ReceivedData(pPacket->pData + UserMessagePacketSize,
-																						pPacket->DataSize - UserMessagePacketSize,
+										ReceivedData * pReceivedData = new ReceivedData(pData + UserMessagePacketSize,
+																						recvSize - UserMessagePacketSize,
 																						sequence);
 
 										// Add the host message.
@@ -315,7 +297,7 @@ namespace Bit
 							};
 
 							// Destroy the packet.
-							delete pPacket;
+							m_pServer->m_PacketMemoryPool.Get()->Return(pItem);
 						}
 
 					}
@@ -421,7 +403,7 @@ namespace Bit
 						Sleep( Milliseconds( 10 ) );
 
 						// Disconnect you've not heard anything from the server in a while.
-						if( TimeSinceLastRecvPacket( ) >= m_ConnectionTimeout )
+						if (TimeSinceLastRecvPacket() >= m_LosingConnectionTimeout)
 						{
 							// Set the connection flag to false
 							m_Connected.Mutex.Lock( );
@@ -505,44 +487,37 @@ namespace Bit
 
 		}
 
-		void Connection::AddRawPacket( Uint8 * p_pData, const SizeType p_DataSize )
+		
+		void Connection::AddReceivedData(MemoryPool<Uint8>::Item * p_pItem)
 		{
-			if( p_DataSize == 0 )
-			{
-				return;
-			}
-
-			// Lock the raw packet mutex.
-			m_RawPacketQueue.Mutex.Lock( );
-
-			// Create the queue packet.
-			RawPacket * pPacket = new RawPacket( p_pData, p_DataSize );
-
-			// Push the packet to the raw packet queue.
-			m_RawPacketQueue.Value.push( pPacket );
+			// Lock the received data mutex.
+			m_ReceivedData.Mutex.Lock();
+			
+			// Push the packet to the received data queue.
+			m_ReceivedData.Value.push(p_pItem);
 	
 			// Release the semaphore if this is the very first packet in a while.
-			if(m_RawPacketQueue.Value.size( ) == 1 )
+			if (m_ReceivedData.Value.size() == 1)
 			{
-				m_EventSemaphore.Release( );
+				m_ReceivedDataSemaphore.Release( );
 			}
 
-			m_RawPacketQueue.Mutex.Unlock( );
+			m_ReceivedData.Mutex.Unlock();
 		}
 
-		Connection::RawPacket * Connection::PollRawPacket( )
+		MemoryPool<Uint8>::Item * Connection::PollReceivedData()
 		{
-			RawPacket * pPacket = NULL;
+			MemoryPool<Uint8>::Item * pItem = NULL;
 
-			m_RawPacketQueue.Mutex.Lock( );
-			if( m_RawPacketQueue.Value.size( ) )
+			m_ReceivedData.Mutex.Lock();
+			if (m_ReceivedData.Value.size())
 			{
-				pPacket = m_RawPacketQueue.Value.front( );
-				m_RawPacketQueue.Value.pop( );
+				pItem = m_ReceivedData.Value.front();
+				m_ReceivedData.Value.pop();
 			}
-			m_RawPacketQueue.Mutex.Unlock( );
+			m_ReceivedData.Mutex.Unlock();
 
-			return pPacket;
+			return pItem;
 		}
 
 		Time Connection::TimeSinceLastRecvPacket( )
@@ -574,7 +549,7 @@ namespace Bit
 			// Wait for the threads to finish.
 			if( p_CloseMainThread )
 			{
-				m_EventSemaphore.Release( );
+				m_ReceivedDataSemaphore.Release();
  				m_Thread.Finish( );
 			}
 			if( p_CloseEventThread )
@@ -608,15 +583,14 @@ namespace Bit
 			m_ReliableMap.Value.clear( );
 			m_ReliableMap.Mutex.Unlock( );
 
-			// Clear all the raw packets.
-			m_RawPacketQueue.Mutex.Lock( );
-			while( m_RawPacketQueue.Value.size( ) )
+			// Return all the received data items to the servers memory pool.
+			m_ReceivedData.Mutex.Lock();
+			while (m_ReceivedData.Value.size())
 			{
-				RawPacket * pPacket = m_RawPacketQueue.Value.front( );
-				delete pPacket;
-				m_RawPacketQueue.Value.pop( );
+				m_pServer->m_PacketMemoryPool.Get()->Return(m_ReceivedData.Value.front());
+				m_ReceivedData.Value.pop();
 			}
-			m_RawPacketQueue.Mutex.Unlock( );
+			m_ReceivedData.Mutex.Unlock();
 			
 			// Clear the ping list.
 			m_PingList.clear( );

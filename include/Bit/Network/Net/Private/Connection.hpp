@@ -28,6 +28,7 @@
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/Net/Private/SequenceManager.hpp>
 #include <Bit/Network/UdpSocket.hpp>
+#include <Bit/System/MemoryPool.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
 #include <Bit/System/Semaphore.hpp>
@@ -63,6 +64,7 @@ namespace Bit
 			Connection(	const Address & p_Address, 
 						const Uint16 & p_Port,
 						const Uint16 & p_UserId,
+						const Time & p_LosingConnectionTimeout,
 						const Time & p_InitialPing = Microseconds( 200000 ) );
 		
 			////////////////////////////////////////////////////////////////
@@ -125,19 +127,6 @@ namespace Bit
 			// Private structs
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Raw packet queue for sending data from server to connection.
-			///
-			////////////////////////////////////////////////////////////////
-			struct RawPacket
-			{
-				RawPacket( Uint8 * p_pData, const SizeType p_DataSize );
-				~RawPacket( );
-
-				Uint8 * pData;
-				SizeType DataSize;
-			};
-
-			////////////////////////////////////////////////////////////////
 			/// \brief Received data structure
 			///
 			////////////////////////////////////////////////////////////////
@@ -168,11 +157,11 @@ namespace Bit
 
 			// Private  typedefs
 			//typedef std::queue<ReceivedData*>	ReceivedDataQueue;
-			typedef std::queue<RawPacket*>				RawPacketQueue;
-			typedef std::map<Uint16, ReliablePacket*>	ReliablePacketMap;
-			typedef std::pair<Uint16, ReliablePacket*>	ReliablePacketPair;
-			typedef std::list<Time>						TimeList;
-			typedef std::queue<ReceivedData*>			ReceivedDataQueue;
+			typedef std::queue<MemoryPool<Uint8>::Item*>	ReceiveDataQueue;
+			typedef std::map<Uint16, ReliablePacket*>		ReliablePacketMap;
+			typedef std::pair<Uint16, ReliablePacket*>		ReliablePacketPair;
+			typedef std::list<Time>							TimeList;
+			typedef std::queue<ReceivedData*>				ReceivedDataQueue;
 
 			// Private functions
 
@@ -186,13 +175,13 @@ namespace Bit
 			/// \brief Add raw packet to queue.
 			///
 			////////////////////////////////////////////////////////////////
-			void AddRawPacket( Uint8 * p_pData, const SizeType p_DataSize );
+			void AddReceivedData( MemoryPool<Uint8>::Item * p_pItem );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Poll raw packet from queue.
 			///
 			////////////////////////////////////////////////////////////////
-			RawPacket * PollRawPacket( );
+			MemoryPool<Uint8>::Item * PollReceivedData();
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get the time since last received packet, including heartbeats.
@@ -247,27 +236,27 @@ namespace Bit
 			void AddUserMessage( ReceivedData * p_ReceivedData );
 
 			// Private variables
-			Thread							m_Thread;				///< Thread for handling raw packets.
-			Thread							m_UserMessageThread;	///< Thread for handling user messages.
-			Thread							m_EventThread;			///< Thread for creating specific events.
-			Thread							m_ReliableThread;		///< Thread for checking reliable packets for resend.
-			Server *						m_pServer;				///< Pointer to the server.
-			const Address					m_Address;				///< The clients's address.
-			const Uint16					m_Port;					///< The client's port.
-			const Uint16					m_UserId;				///< The client's user id.
-			Time							m_ConnectionTimeout;	///< Ammount of time until the connection timeout.
-			Semaphore						m_EventSemaphore;		///< Semaphore for the events.
-			ThreadValue<RawPacketQueue>		m_RawPacketQueue;		///< Queue of raw packets.
-			ThreadValue<Bool>				m_Connected;			///< Flag for checking if you are connected.
-			ThreadValue<Timer>				m_LastRecvTimer;		///< Time for checking when the last recv packet.
-			ThreadValue<Timer>				m_LastSendTimer;		///< Time for checking when the last sent packet.
-			ThreadValue<Uint16>				m_Sequence;				///< The sequence of the next packet being sent.
-			SequenceManager					m_SequenceManager;		///< Sequence manager
-			ThreadValue<ReliablePacketMap>	m_ReliableMap;			///< Map of reliable packets.
-			ThreadValue<Time>				m_Ping;					///< Current network ping.
-			TimeList						m_PingList;				///< List of the last pings.
-			ThreadValue<ReceivedDataQueue>	m_UserMessages;			///< Queue of user messages
-			Semaphore						m_UserMessageSemaphore;	///< Semaphore for executing user message listeners.
+			Thread							m_Thread;					///< Thread for handling raw packets.
+			Thread							m_UserMessageThread;		///< Thread for handling user messages.
+			Thread							m_EventThread;				///< Thread for creating specific events.
+			Thread							m_ReliableThread;			///< Thread for checking reliable packets for resend.
+			Server *						m_pServer;					///< Pointer to the server.
+			const Address					m_Address;					///< The clients's address.
+			const Uint16					m_Port;						///< The client's port.
+			const Uint16					m_UserId;					///< The client's user id.
+			Semaphore						m_ReceivedDataSemaphore;	///< Semaphore for received data.
+			ThreadValue<ReceiveDataQueue>	m_ReceivedData;				///< Queue of received data.
+			ThreadValue<Bool>				m_Connected;				///< Flag for checking if you are connected.
+			ThreadValue<Timer>				m_LastRecvTimer;			///< Time for checking when the last recv packet.
+			ThreadValue<Timer>				m_LastSendTimer;			///< Time for checking when the last sent packet.
+			ThreadValue<Uint16>				m_Sequence;					///< The sequence of the next packet being sent.
+			SequenceManager					m_SequenceManager;			///< Sequence manager
+			ThreadValue<ReliablePacketMap>	m_ReliableMap;				///< Map of reliable packets.
+			ThreadValue<Time>				m_Ping;						///< Current network ping.
+			Time							m_LosingConnectionTimeout;	///< Ammount of time without any packets before losing the connection.
+			TimeList						m_PingList;					///< List of the last pings.
+			ThreadValue<ReceivedDataQueue>	m_UserMessages;				///< Queue of user messages
+			Semaphore						m_UserMessageSemaphore;		///< Semaphore for executing user message listeners.
 			
 
 		};
