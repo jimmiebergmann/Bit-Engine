@@ -61,6 +61,10 @@ namespace Bit
 		{
 		}
 
+		void Server::OnServerListUpdate(ServerList::UrlFields & p_UrlFields)
+		{
+		}
+
 		HostRecipientFilter * Server::CreateRecipientFilter( const Bool p_Reliable )
 		{
 			return new HostRecipientFilter( this, p_Reliable );
@@ -458,22 +462,25 @@ namespace Bit
 			// Execute the event thread
 			m_ServerListThread.Execute([this]()
 			{
+				Timer timer;
+				timer.Start();
+
 				while (IsRunning())
 				{
-					
+					// Check if we should add the server to the list.
+					if (timer.GetLapsedTime().AsSeconds() >= 10.0f)
+					{
+						// try to add the server.
+						ServerList::UrlFields fields;
+						OnServerListUpdate(fields);
+						Json::Value response = ServerList::Add(m_ServerList.Get(), fields);
 
-					// try to add the server.
-					ServerList::UrlFields fields;
-					fields["maxPlayerCount"] = "16";
-					fields["currentPlayerCount"] = "5";
-					fields["map"] = "Cave";
-					Json::Value response = ServerList::Add(m_ServerList.Get(), fields);
-
-					//Json::Value response = ServerList::Get(m_ServerList.Get());
-
+						// Restart the timer
+						timer.Start();
+					}
 
 					// Sleep for some time.
-					Sleep(Seconds(10.0f));
+					Sleep(Microseconds(1000));
 				}
 			}
 			);

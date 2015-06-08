@@ -44,27 +44,27 @@ namespace Bit
 			m_Port(0),
 			m_GetPath(""),
 			m_AddPath(""),
-			m_UseServerList(false)
+			m_Enabled(false)
 		{
 		}
 
-		ServerList::ServerList(const std::string & p_Server,
+		ServerList::ServerList(const std::string & p_ServerUrl,
 								const Uint16 p_Port,
 								const std::string & p_GetPath,
 								const std::string & p_AddPath,
-								const bool p_UseServerList) :
-			m_Server(p_Server),
+								const bool p_Enabled) :
+			m_Server(p_ServerUrl),
 			m_Port(p_Port),
 			m_GetPath(p_GetPath),
 			m_AddPath(p_AddPath),
-			m_UseServerList(p_UseServerList)
+			m_Enabled(p_Enabled)
 		{
 		}
 
 		Json::Value ServerList::Get(const ServerList & p_ServerList, const Time & p_Timeout)
 		{
 			// Check if you really want to send a get request.
-			if (p_ServerList.m_UseServerList == false)
+			if (p_ServerList.m_Enabled == false)
 			{
 				return Json::Value::NullValue;
 			}
@@ -93,7 +93,7 @@ namespace Bit
 		Json::Value ServerList::Add(const ServerList & p_ServerList, const UrlFields & p_Fields, const Time & p_Timeout)
 		{
 			// Check if you really want to send a get request.
-			if (p_ServerList.m_UseServerList == false)
+			if (p_ServerList.m_Enabled == false)
 			{
 				return Json::Value::NullValue;
 			}

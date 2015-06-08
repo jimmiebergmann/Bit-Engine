@@ -111,7 +111,15 @@ namespace Bit
 			/// \brief Function to execute when a user disconnects.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void OnDisconnection( const Uint16 p_UserId );
+			virtual void OnDisconnection(const Uint16 p_UserId);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief	Function to execute when the server send an update request to
+			///			the given server list. Fill the url fields with the right parameters
+			///			to the given server list at server startup.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void OnServerListUpdate(ServerList::UrlFields & p_UrlFields);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create recipient filter
