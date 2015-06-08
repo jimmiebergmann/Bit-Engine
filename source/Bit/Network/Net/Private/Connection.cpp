@@ -297,7 +297,9 @@ namespace Bit
 							};
 
 							// Destroy the packet.
-							m_pServer->m_PacketMemoryPool.Get()->Return(pItem);
+							m_pServer->m_PacketMemoryPool.Mutex.Lock();
+							m_pServer->m_PacketMemoryPool.Value->Return(pItem);
+							m_pServer->m_PacketMemoryPool.Mutex.Unlock();
 						}
 
 					}
@@ -585,11 +587,14 @@ namespace Bit
 
 			// Return all the received data items to the servers memory pool.
 			m_ReceivedData.Mutex.Lock();
+			m_pServer->m_PacketMemoryPool.Mutex.Lock();
 			while (m_ReceivedData.Value.size())
 			{
-				m_pServer->m_PacketMemoryPool.Get()->Return(m_ReceivedData.Value.front());
+				m_pServer->m_PacketMemoryPool.Value->Return(m_ReceivedData.Value.front());
+
 				m_ReceivedData.Value.pop();
 			}
+			m_pServer->m_PacketMemoryPool.Mutex.Unlock();
 			m_ReceivedData.Mutex.Unlock();
 			
 			// Clear the ping list.

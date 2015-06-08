@@ -74,6 +74,52 @@ namespace Bit
 			friend class HostRecipientFilter;
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Server type enum
+			///
+			////////////////////////////////////////////////////////////////
+			enum eServerType
+			{
+				Local,	///< Host the server for localhost only.
+				Global	///< Host the server for global hosting, LAN and online hosting.
+			};
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Server properties class
+			///
+			////////////////////////////////////////////////////////////////
+			class Properties
+			{
+
+			public:
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Default constructor.
+				///
+				////////////////////////////////////////////////////////////////
+				Properties();
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Constructor.
+				///
+				////////////////////////////////////////////////////////////////
+				Properties(	const Uint16 p_Port,
+							const Uint8 p_MaxConnections = 255,
+							const Time & p_LosingConnectionTimeout = Seconds(3.0f),
+							const Uint8 p_EntityUpdatesPerSecond = 20,
+							const std::string & p_Identifier = "Bit Engine Network",
+							const ServerList & p_ServerList = ServerList::None );
+
+				// Public variables
+				Uint16			Port;
+				Uint8			MaxConnections;
+				Time			LosingConnectionTimeout;
+				Uint8			EntityUpdatesPerSecond;
+				std::string		Identifier;
+				ServerList		ServerListClass;
+
+			};
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
 			///
 			////////////////////////////////////////////////////////////////
@@ -86,20 +132,7 @@ namespace Bit
 			~Server( );
 
 		protected:
-/*
-			// Protected typdefs
-			////////////////////////////////////////////////////////////////
-			/// \brief Pointer to user message function.
-			///	
-			/// Parameters:
-			///		- Server pointer.
-			///		- User id.
-			///		- Message pointer.
-			///		- Message size.
-			///
-			////////////////////////////////////////////////////////////////
-			typedef void (* UserMessageFunction)(Server *, Uint16, const void *, SizeType );
-*/
+
 			// Function to be overloaded.
 			////////////////////////////////////////////////////////////////
 			/// \brief Function to execute when a user connects.
@@ -174,12 +207,7 @@ namespace Bit
 			/// \return True if succeeded, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			Bool Start( const Uint16 p_Port, 
-						const Uint8 p_MaxConnections = 255,
-						const Uint8 p_EntityUpdatesPerSecond = 20,
-						const Time & p_LosingConnectionTimeout = Seconds( 3.0f ),
-						const std::string & p_Identifier = "Bit Engine Network",
-						const ServerList & p_ServerList = ServerList::None );
+			Bool Start( const Properties & p_Properties );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Stop the server.

@@ -37,6 +37,33 @@ namespace Bit
 	namespace Net
 	{
 
+		// Server properites class
+		Server::Properties::Properties() :
+			Port(0),
+			MaxConnections(255),
+			LosingConnectionTimeout(Seconds(3.0f)),
+			EntityUpdatesPerSecond(20),
+			Identifier("Bit Engine Network"),
+			ServerListClass(ServerList::None)
+		{
+		}
+
+		Server::Properties::Properties(	const Uint16 p_Port,
+										const Uint8 p_MaxConnections,
+										const Time & p_LosingConnectionTimeout,
+										const Uint8 p_EntityUpdatesPerSecond,
+										const std::string & p_Identifier,
+										const ServerList & p_ServerList) :
+			Port(p_Port),
+			MaxConnections(p_MaxConnections),
+			LosingConnectionTimeout(p_LosingConnectionTimeout),
+			EntityUpdatesPerSecond(p_EntityUpdatesPerSecond),
+			Identifier(p_Identifier),
+			ServerListClass(p_ServerList)
+		{
+		}
+
+		// Server class
 		Server::Server( ) :
 			m_EntityManager( new ServerEntityChanger( &m_EntityManager ) ),
 			m_MaxConnections( 0 ),
@@ -161,25 +188,21 @@ namespace Bit
 			m_BanSet.Mutex.Unlock( );
 		}
 
-		Bool Server::Start( const Uint16 p_Port,
-							const Uint8 p_MaxConnections,
-							const Uint8 p_EntityUpdatesPerSecond,
-							const Time & p_LosingConnectionTimeout,
-							const std::string & p_Identifier,
-							const ServerList & p_ServerList)
+
+		Bool Server::Start( const Properties & p_Properties)
 		{
 			// Open the udp socket.
-			if( m_Socket.Open( p_Port ) == false )
+			if (m_Socket.Open(p_Properties.Port) == false)
 			{
 				return false;
 			}
 			m_Socket.SetBlocking( true );
 
 			// Set max connections.
-			m_MaxConnections = p_MaxConnections;
+			m_MaxConnections = p_Properties.MaxConnections;
 
 			// Set entity updates per second
-			m_EntityUpdatesPerSecond = p_EntityUpdatesPerSecond;
+			m_EntityUpdatesPerSecond = p_Properties.EntityUpdatesPerSecond;
 
 			// Add the free user IDs to the queue
 			for( Uint16 i = 0; i < static_cast<Uint16>(m_MaxConnections); i++ )
@@ -188,16 +211,16 @@ namespace Bit
 			}
 
 			// Set the lost connection timeout
-			m_LosingConnectionTimeout.Set( p_LosingConnectionTimeout );
+			m_LosingConnectionTimeout.Set(p_Properties.LosingConnectionTimeout);
 
 			// Set the identifier
-			m_Identifier = p_Identifier;
+			m_Identifier = p_Properties.Identifier;
 
 			// Set server list
-			m_ServerList.Set(p_ServerList);
+			m_ServerList.Set(p_Properties.ServerListClass);
 
 			// Create the packet memory pool
-			m_PacketMemoryPool.Set( new MemoryPool<Uint8>( 64 * 64, m_MaxPacketSize, true ) );
+			m_PacketMemoryPool.Set(new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, m_MaxPacketSize, true));
 
 			// Start the server thread.
 			m_MainThread.Execute([this]()
@@ -216,7 +239,12 @@ namespace Bit
 				while( IsRunning( ) )
 				{
 					// Get item from memory pool
+
+					m_PacketMemoryPool.Mutex.Lock();
 					MemoryPool<Uint8>::Item *pItem = m_PacketMemoryPool.Get()->Get();
+					m_PacketMemoryPool.Mutex.Unlock();
+
+					
 					Uint8 * pBuffer = pItem->GetData();
 
 					// Error check the item and it's data.
@@ -333,8 +361,9 @@ namespace Bit
 					m_ConnectionMutex.Unlock();
 
 					// Return the item to the memory pool.
-					m_PacketMemoryPool.Get()->Return(pItem);
-
+					m_PacketMemoryPool.Mutex.Lock();
+					m_PacketMemoryPool.Value->Return(pItem);
+					m_PacketMemoryPool.Mutex.Unlock();
 				}
 			}
 			);
