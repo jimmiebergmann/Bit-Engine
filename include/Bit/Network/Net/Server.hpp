@@ -102,12 +102,12 @@ namespace Bit
 				/// \brief Constructor.
 				///
 				////////////////////////////////////////////////////////////////
-				Properties(	const Uint16 p_Port,
-							const Uint8 p_MaxConnections = 255,
-							const Time & p_LosingConnectionTimeout = Seconds(3.0f),
-							const Uint8 p_EntityUpdatesPerSecond = 20,
-							const std::string & p_Identifier = "Bit Engine Network",
-							const ServerList & p_ServerList = ServerList::None );
+				Properties(	const Uint16			p_Port,
+							const Uint8				p_MaxConnections = 255,
+							const Time &			p_LosingConnectionTimeout = Seconds(3.0f),
+							const Uint8				p_EntityUpdatesPerSecond = 20,
+							const std::string &		p_Identifier = "Bit Engine Network",
+							const ServerList &		p_ServerList = ServerList::None );
 
 				// Public variables
 				Uint16			Port;
@@ -233,6 +233,24 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			void UnhookUserMessages( );
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Get max connections count
+			///
+			////////////////////////////////////////////////////////////////
+			Uint16 GetHostPort();
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get max connections count
+			///
+			////////////////////////////////////////////////////////////////
+			SizeType GetMaxConnectionsCount();
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get connection count
+			///
+			////////////////////////////////////////////////////////////////
+			SizeType GetConnectionCount();
+
 			// Protected variables
 			EntityManager		m_EntityManager;
 
@@ -261,6 +279,7 @@ namespace Bit
 
 			// Private variables
 			UdpSocket							m_Socket;					///< Udp socket.
+			Uint16								m_Port;						///< Udp socket port.
 			Thread								m_MainThread;				///< Thread for handling incoming packets.
 			Thread								m_EntityThread;				///< Thread for sending entity states to users.
 			Thread								m_CleanupThread;			///< Thread for cleaning up connections.

@@ -24,6 +24,7 @@
 #include <Bit/Network/Net/ServerList.hpp>
 #include <Bit/System/Json/Reader.hpp>
 #include <Bit/Network/Http.hpp>
+#include <Bit/Network/Url.hpp>
 #include <iostream>
 #include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -40,21 +41,21 @@ namespace Bit
 
 		// Server list class
 		ServerList::ServerList() :
-			m_Server(""),
-			m_Port(0),
+			m_ListServerUrl(""),
+			m_ListServerPort(0),
 			m_GetPath(""),
 			m_AddPath(""),
 			m_Enabled(false)
 		{
 		}
 
-		ServerList::ServerList(const std::string & p_ServerUrl,
-								const Uint16 p_Port,
+		ServerList::ServerList(	const std::string & p_ListServerUrl,
+								const Uint16 p_ListServerPort,
 								const std::string & p_GetPath,
 								const std::string & p_AddPath,
 								const bool p_Enabled) :
-			m_Server(p_ServerUrl),
-			m_Port(p_Port),
+			m_ListServerUrl(p_ListServerUrl),
+			m_ListServerPort(p_ListServerPort),
 			m_GetPath(p_GetPath),
 			m_AddPath(p_AddPath),
 			m_Enabled(p_Enabled)
@@ -69,11 +70,11 @@ namespace Bit
 				return Json::Value::NullValue;
 			}
 
-			Http http(p_ServerList.m_Port, p_Timeout);
+			Http http(p_ServerList.m_ListServerPort, p_Timeout);
 			Http::Response response;
 			Http::Request request(Http::Get, p_ServerList.m_GetPath);
-			request.SetField("Host", p_ServerList.m_Server);
-			if (http.SendRequest(request, response, Address(p_ServerList.m_Server)) == false || response.GetStatusCode() != Http::Ok )
+			request.SetField("Host", p_ServerList.m_ListServerUrl);
+			if (http.SendRequest(request, response, Address(p_ServerList.m_ListServerUrl)) == false || response.GetStatusCode() != Http::Ok )
 			{
 				return Json::Value::NullValue;
 			}
@@ -102,18 +103,17 @@ namespace Bit
 
 			std::stringstream ss;
 			ss << p_ServerList.m_AddPath << "?";
-			ss << "name=Jimmie";
-			ss << "&port=1337";
 			for (UrlFields::const_iterator it = p_Fields.begin(); it != p_Fields.end(); it++)
 			{
-				ss << "&" <<  it->first << "=" << it->second;
+				// Add the parameter name
+				ss << "&" << Url::GetBinaryEncodedString(it->first) << "=" << Url::GetBinaryEncodedString(it->second);
 			}
 
-			Http http(p_ServerList.m_Port, p_Timeout);
+			Http http(p_ServerList.m_ListServerPort, p_Timeout);
 			Http::Response response;
 			Http::Request request(Http::Get, ss.str());
-			request.SetField("Host", p_ServerList.m_Server);
-			if (http.SendRequest(request, response, Address(p_ServerList.m_Server)) == false || response.GetStatusCode() != Http::Ok)
+			request.SetField("Host", p_ServerList.m_ListServerUrl);
+			if (http.SendRequest(request, response, Address(p_ServerList.m_ListServerUrl)) == false || response.GetStatusCode() != Http::Ok)
 			{
 				return Json::Value::NullValue;
 			}

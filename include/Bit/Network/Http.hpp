@@ -25,6 +25,7 @@
 #define BIT_NETWORK_HTTP_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Network/TcpSocket.hpp>
 #include <Bit/Network/Address.hpp>
 #include <Bit/System/Time.hpp>
 #include <Bit/System/Mutex.hpp>
@@ -143,10 +144,16 @@ namespace Bit
 			/// \brief Function for setting a field in the http packet.
 			///
 			////////////////////////////////////////////////////////////////
-			void SetField( const std::string & p_Key, const std::string & p_Content );
+			void SetField(const std::string & p_Key, const std::string & p_Content);
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Function for getting a field from the http packet.
+			/// \brief Function for removing a field in the http packet.
+			///
+			////////////////////////////////////////////////////////////////
+			void RemoveField(const std::string & p_Key);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Function for getting a field from the http packet, as lowercase strings.
 			///
 			////////////////////////////////////////////////////////////////
 			const std::string & GetField( const std::string & p_Key ) const;
@@ -364,6 +371,26 @@ namespace Bit
 		static void CreateRequestString( const Request & p_Request, std::stringstream & p_StringStream );
 
 	private:
+
+		// Private functions
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Receive chunked body data
+		///
+		////////////////////////////////////////////////////////////////
+		bool ReceiveChunkedBody(Bit::TcpSocket & p_Tcp, std::string & p_BodyString);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Receive chunked body data
+		///
+		////////////////////////////////////////////////////////////////
+		bool ReceiveContentLengthBody(Bit::TcpSocket & p_Tcp, const SizeType p_ContentSize, std::string & p_BodyString);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Receive chunked body data
+		///
+		////////////////////////////////////////////////////////////////
+		bool ReceiveUnknownLengthBody(Bit::TcpSocket & p_Tcp, std::string & p_BodyString);
 
 		// Private variables
 		Uint16 m_Port;              ///< The port for the connect.

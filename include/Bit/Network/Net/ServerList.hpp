@@ -66,8 +66,8 @@ namespace Bit
 			/// \param p_UseServerList Needs to be true if you want to add/get server list.
 			///
 			////////////////////////////////////////////////////////////////
-			ServerList(	const std::string & p_ServerUrl,
-						const Uint16 p_Port,
+			ServerList(	const std::string & p_ListServerUrl,
+						const Uint16 p_ListServerPort,
 						const std::string & p_GetPath = "/get.php",
 						const std::string & p_AddPath = "/add.php",
 						const bool m_Enabled = true);
@@ -103,8 +103,8 @@ namespace Bit
 		private:
 
 			// Private variables
-			std::string m_Server;
-			Uint16 m_Port;
+			std::string m_ListServerUrl;
+			Uint16 m_ListServerPort;
 			std::string m_GetPath;
 			std::string m_AddPath;
 			bool m_Enabled;			///< used for the Net::Server class.

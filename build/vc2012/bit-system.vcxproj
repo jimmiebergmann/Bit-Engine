@@ -53,6 +53,7 @@
     <ClInclude Include="..\..\include\Bit\System\Sha1.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Sleep.hpp" />
     <ClInclude Include="..\..\include\Bit\System\SmartMutex.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\String.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Thread.hpp" />
     <ClInclude Include="..\..\include\Bit\System\ThreadValue.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Time.hpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="..\..\source\Bit\System\Sha1.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
     <ClCompile Include="..\..\source\Bit\System\SmartMutex.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\String.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Time.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timestep.cpp" />
