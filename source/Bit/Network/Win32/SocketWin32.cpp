@@ -32,6 +32,7 @@ namespace Bit
 	SocketWin32::SocketWin32( ) :
 		SocketBase( )
 	{
+		m_Handle = 0;
 	}
 
 	SocketWin32::SocketWin32( const SocketHandle & p_SocketHandle ) :
@@ -80,6 +81,7 @@ namespace Bit
         if( m_Handle )
 		{
 			closesocket( m_Handle );
+			m_Handle = 0;
 		}
 	}
 

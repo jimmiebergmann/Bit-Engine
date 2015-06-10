@@ -225,9 +225,11 @@ namespace Bit
 	// Request class
 	Http::Request::Request(const eMethod p_Method,
 		const std::string & p_Path,
+		const Uint16 p_RemotePort,
 		const std::string & p_Protocol) :
 		m_Method(p_Method),
 		m_Path(p_Path),
+		m_RemotePort(p_RemotePort ),
 		m_Protocol(p_Protocol)
 	{
 	}
@@ -339,7 +341,7 @@ namespace Bit
 		// Connect to the server
 		Bit::TcpSocket tcp;
 		tcp.SetBlocking(false);
-		if (tcp.Connect(p_Address, m_Port, m_Timeout) == false)
+		if (tcp.Connect(p_Address, m_Port, m_Timeout, p_Request.m_RemotePort) == false)
 		{
 			std::cout << "[Http::SendRequest] Could not connect to the server." << std::endl;
 			return false;

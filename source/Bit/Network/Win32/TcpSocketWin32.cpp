@@ -43,17 +43,49 @@ namespace Bit
 		Disconnect( );
 	}
 
-	Bool TcpSocketWin32::Connect( const Address & p_Address, const Uint16 p_Port, const Time & p_Timeout )
+	Bool TcpSocketWin32::Connect(const Address & p_Address, const Uint16 p_Port, const Time & p_Timeout, const Uint16 p_EndpointPort)
 	{
 		// Create the socket
-		if( ( m_Handle = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )
+		if ((m_Handle = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET)
 		{
 			std::cout << "[TcpSocketLinux::Connect] Can not create the socket. Error: " << GetLastError( ) << std::endl;
 			return false;
 		}
 
-		// Create an object that's holding the host data
+		// Bind the socket to a port
 		sockaddr_in service;
+
+		if (p_EndpointPort != 0)
+		{
+			service.sin_family = AF_INET;
+			service.sin_addr.s_addr = htonl(INADDR_ANY);
+			service.sin_port = htons(static_cast<u_short>(p_EndpointPort));
+
+			/*int reusable = 1;
+			if (setsockopt(m_Handle, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char *>(&reusable), sizeof(int)) != 0)
+			{
+				std::cout << "[TcpSocketWin32::Connect] Can not set reusable socket. Error: " << GetLastError() << std::endl;
+			}*/
+
+
+			const int optVal = 1;
+			const int optLen = sizeof(optVal);
+			int rtn = setsockopt(m_Handle, SOL_SOCKET, SO_REUSEADDR, (const char*)&optVal, optLen);
+			if( rtn != 0 )
+			{
+				std::cout << "[TcpSocketWin32::Connect] Can not set reusable socket. Error: " << GetLastError() << std::endl;
+				return false;
+			}
+
+			// Bind
+			if (bind(m_Handle, reinterpret_cast<const sockaddr *>(&service), sizeof(service)) == SOCKET_ERROR)
+			{
+				std::cout << "[TcpSocketWin32::Connect] Can not bind the socket. Error: " << GetLastError() << std::endl;
+				return false;
+			}
+		}
+		
+		// Create an object that's holding the host data
 		service.sin_family = AF_INET;
 		service.sin_addr.s_addr = htonl( static_cast<u_long>( p_Address.GetAddress( ) ) );
 		service.sin_port = htons( static_cast<u_short>( p_Port ) );
@@ -62,11 +94,6 @@ namespace Bit
 		// Get the blocking status and disable it.
 		Bool blocking = GetBlocking( );
 		SetBlocking( false );
-
-		// Create a FD_SET, and add the m_Handle to the set
-		fd_set fdset;
-		FD_ZERO( &fdset );
-		FD_SET( m_Handle, &fdset );
 
 		// Connect
 		if( connect( m_Handle, ( const sockaddr * )&service, sizeof (sockaddr_in ) ) != 0 )
@@ -94,8 +121,13 @@ namespace Bit
 			= static_cast<long>( p_Timeout.AsMicroseconds( ) % 1000000ULL );
 		}
 
+		// Create a FD_SET, and add the m_Handle to the set
+		fd_set fdset;
+		FD_ZERO(&fdset);
+		FD_SET(m_Handle, &fdset);
+
 		// Select from the set
-		if( select( static_cast<int>( m_Handle ) + 1, NULL, &fdset, NULL, &tv ) > 0 )
+		if (select(static_cast<int>(m_Handle)+1, NULL, &fdset, NULL, &tv) > 0)
 		{
 			// Check if the address is valid.
 			Address address = GetPeerAddress( );
@@ -106,6 +138,9 @@ namespace Bit
 				return true;
 			}
 		}
+
+		DWORD lastError = GetLastError();
+
 		// Failed to connect. Close the socket.
 		Disconnect( );
 
@@ -115,6 +150,8 @@ namespace Bit
 
 	void TcpSocketWin32::Disconnect( )
 	{
+		//shutdown(m_Handle, 2);
+
 		// Close the socket handle.
 		CloseHandle( );
 	}

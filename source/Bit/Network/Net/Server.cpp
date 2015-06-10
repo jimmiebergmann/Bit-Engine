@@ -222,6 +222,9 @@ namespace Bit
 			// Set server list
 			m_ServerList.Set(p_Properties.ServerListClass);
 
+			// Reset the update server list counter
+			m_UpdateServerListCounter.Set(0);
+
 			// Create the packet memory pool
 			m_PacketMemoryPool.Set(new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, m_MaxPacketSize, true));
 
@@ -356,6 +359,13 @@ namespace Bit
 
 							// Run the on connection function
 							OnConnection(userId);
+
+							// Increase the update server list semaphore
+							m_UpdateServerListCounter.Set(m_UpdateServerListCounter.Get() + 1);
+						}
+						else if (pBuffer[0] == '#')
+						{
+							std::cout << "PACKET FROM SERVERLIST" << std::endl;
 						}
 
 					} while (false);
@@ -486,6 +496,9 @@ namespace Bit
 
 					// Unlock the connection mutex
 					m_ConnectionMutex.Unlock();
+
+					// Increase the update server list semaphore
+					m_UpdateServerListCounter.Set(m_UpdateServerListCounter.Get() + 1);
 				}
 
 			}
@@ -505,9 +518,21 @@ namespace Bit
 				// Keep on looping until the server terminate.
 				while (IsRunning())
 				{
+					Uint32 updateCounter = m_UpdateServerListCounter.Get();
+
 					// Check if we should add the server to the list.
-					if (timer.GetLapsedTime().AsSeconds() >= 10.0f)
+					if (timer.GetLapsedTime().AsSeconds() >= 10.0f || updateCounter > 0)
 					{
+						// Reset counter and timer if the update server list counter is set.
+						if (updateCounter)
+						{
+							// Reset the counter
+							m_UpdateServerListCounter.Set(0);
+
+							// Restart the timer
+							timer.Start();
+						}
+
 						// try to add the server.
 						ServerList::UrlFields fields;
 						OnServerListUpdate(fields);
@@ -520,6 +545,9 @@ namespace Bit
 					// Sleep for some time.
 					Sleep(Microseconds(1000));
 				}
+
+				// Remove server from server list
+				response = ServerList::Remove(m_ServerList.Get(), Seconds(2.0f));
 			}
 			);
 

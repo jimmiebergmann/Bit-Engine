@@ -300,6 +300,7 @@ namespace Bit
 			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Amount of time until the connection timeout after not receiving any packets.
 			ThreadValue<MemoryPool<Uint8> *>	m_PacketMemoryPool;			///< Memory pool for packets, make less new, copy and delete operations.
 			const SizeType						m_MaxPacketSize;			///< Max size of a packet.
+			ThreadValue<Uint32>					m_UpdateServerListCounter;	///< Counter for updating the server list.
 
 		};
 

@@ -70,6 +70,7 @@ namespace Bit
 						const Uint16 p_ListServerPort,
 						const std::string & p_GetPath = "/get.php",
 						const std::string & p_AddPath = "/add.php",
+						const std::string & p_RemovePath = "/remove.php",
 						const bool m_Enabled = true);
 
 			////////////////////////////////////////////////////////////////
@@ -86,7 +87,15 @@ namespace Bit
 			/// \return Response from list server, status field if true if succeeded.
 			///
 			////////////////////////////////////////////////////////////////
-			static Json::Value Add(const ServerList & p_ServerList, const UrlFields & p_Fields = NoFields, const Time & p_Timeout = Seconds( 10.0f ));
+			static Json::Value Add(const ServerList & p_ServerList, const UrlFields & p_Fields = NoFields, const Time & p_Timeout = Seconds(10.0f));
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Remove your server from the list
+			///
+			/// \return Response from list server, status field if true if succeeded.
+			///
+			////////////////////////////////////////////////////////////////
+			static Json::Value Remove(const ServerList & p_ServerList, const Time & p_Timeout = Seconds(10.0f));
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Static value for no server list
@@ -107,6 +116,7 @@ namespace Bit
 			Uint16 m_ListServerPort;
 			std::string m_GetPath;
 			std::string m_AddPath;
+			std::string m_RemovePath;
 			bool m_Enabled;			///< used for the Net::Server class.
 
 		};

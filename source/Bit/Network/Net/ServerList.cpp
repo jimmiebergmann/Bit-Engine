@@ -22,6 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/ServerList.hpp>
+#include <Bit/System/String.hpp>
 #include <Bit/System/Json/Reader.hpp>
 #include <Bit/Network/Http.hpp>
 #include <Bit/Network/Url.hpp>
@@ -36,7 +37,7 @@ namespace Bit
 	{
 
 		// Static server list variables
-		const ServerList ServerList::None = ServerList("", 0, "", "", false);
+		const ServerList ServerList::None = ServerList("", 0, "", "", "", false);
 		const ServerList::UrlFields ServerList::NoFields;
 
 		// Server list class
@@ -53,11 +54,13 @@ namespace Bit
 								const Uint16 p_ListServerPort,
 								const std::string & p_GetPath,
 								const std::string & p_AddPath,
+								const std::string & p_RemovePath,
 								const bool p_Enabled) :
 			m_ListServerUrl(p_ListServerUrl),
 			m_ListServerPort(p_ListServerPort),
 			m_GetPath(p_GetPath),
 			m_AddPath(p_AddPath),
+			m_RemovePath(p_RemovePath),
 			m_Enabled(p_Enabled)
 		{
 		}
@@ -99,7 +102,20 @@ namespace Bit
 				return Json::Value::NullValue;
 			}
 
-			// Create the full add path
+			// Error check the fields
+			if (p_Fields.find("name") == p_Fields.end())
+			{
+				std::cout << "[Bit::ServerList::Add] Can not find the field \"name\"" << std::endl;
+				return Json::Value::NullValue;
+			}
+			if (p_Fields.find("port") == p_Fields.end())
+			{
+				std::cout << "[Bit::ServerList::Add] Can not find the field \"port\"" << std::endl;
+				return Json::Value::NullValue;
+			}
+
+			// Get the port as an uint16
+			Uint16 clientPort = static_cast<Uint16>(String::ToInt(p_Fields.find("port")->second));
 
 			std::stringstream ss;
 			ss << p_ServerList.m_AddPath << "?";
@@ -112,6 +128,29 @@ namespace Bit
 			Http http(p_ServerList.m_ListServerPort, p_Timeout);
 			Http::Response response;
 			Http::Request request(Http::Get, ss.str());
+			request.SetField("Host", p_ServerList.m_ListServerUrl);
+			if (http.SendRequest(request, response, Address(p_ServerList.m_ListServerUrl)) == false || response.GetStatusCode() != Http::Ok)
+			{
+				return Json::Value::NullValue;
+			}
+
+			// Parse the response
+			Json::Value jsonResponse;
+			Json::Reader jsonReader;
+			if (jsonReader.Parse(response.GetBody(), jsonResponse) == false)
+			{
+				return Json::Value::NullValue;
+			}
+
+			// Return the json response.
+			return jsonResponse;
+		}
+
+		Json::Value ServerList::Remove(const ServerList & p_ServerList, const Time & p_Timeout)
+		{
+			Http http(p_ServerList.m_ListServerPort, p_Timeout);
+			Http::Response response;
+			Http::Request request(Http::Get, p_ServerList.m_RemovePath);
 			request.SetField("Host", p_ServerList.m_ListServerUrl);
 			if (http.SendRequest(request, response, Address(p_ServerList.m_ListServerUrl)) == false || response.GetStatusCode() != Http::Ok)
 			{

@@ -61,7 +61,10 @@ namespace Bit
 		///		the connection attemp timeouts.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Connect( const Address & p_Address, const Uint16 p_Port, const Time & p_Timeout = Time::Infinite );
+		virtual Bool Connect(	const Address & p_Address,
+								const Uint16 p_Port,
+								const Time & p_Timeout = Time::Infinite,
+								const Uint16 p_EndpointPort = 0 );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Disconnect the socket from the server.

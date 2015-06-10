@@ -186,6 +186,7 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Request(	const eMethod p_Method,
 						const std::string & p_Path = "",
+						const Uint16 p_RemotePort = 0,
 						const std::string & p_Protocol = "HTTP/1.1" );
 
 			////////////////////////////////////////////////////////////////
@@ -229,8 +230,9 @@ namespace Bit
 			// Private variables
 			eMethod m_Method;		///< Method used.
 			std::string m_Path;		///< The request path.
+			Uint16 m_RemotePort;	///< Port used by the client on connection.
 			std::string m_Protocol;	///< Http version, for example: HTTP/1.1
-
+			
 		};
 
 		////////////////////////////////////////////////////////////////
