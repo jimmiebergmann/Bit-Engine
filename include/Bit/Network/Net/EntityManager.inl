@@ -38,9 +38,10 @@ bool EntityManager::LinkEntity( const std::string & p_Key )
 	{
 		return false;
 	}
-	
+
 	// Add to the entity meta data map
 	EntityMetaData * pMetaData = new EntityMetaData;
+	pMetaData->TypeHash = typeid(T).hash_code();
 	pMetaData->CreationPointer = &CreateEntityT<T>;
 	m_EntityMetaDataMap.insert( it, std::pair<std::string, EntityMetaData*>( p_Key, pMetaData ) );
 
@@ -53,11 +54,52 @@ bool EntityManager::LinkEntity( const std::string & p_Key )
 template < typename Type, typename Class>
 bool EntityManager::RegisterVariable(	const std::string & p_Class,
 										const std::string & p_Variable,
-										Variable<Type> Class::* p_Pointer )
+										Variable<Type> Class::* p_pPointer)
 {
 	// Find the meta data and make sure it's doesn't already exists.
-	EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Class );
-	if( it == m_EntityMetaDataMap.end( ) )
+	EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find(p_Class);
+	if (it == m_EntityMetaDataMap.end())
+	{
+		return false;
+	}
+
+	// Get the pointer to the meta data
+	EntityMetaData * pMetadata = it->second;
+
+	// Error check the class type
+	if (pMetadata->TypeHash != typeid(Class).hash_code())
+	{
+		std::cout << __FILE__ << "(" << __LINE__ << "): " << "Mismatching entity class type." << std::endl;
+		return false;
+	}
+
+	// Find the variable in the meta data, make sure it's not already registerd
+	EntityVariableMap::iterator it2 = pMetadata->EntityVariables.find(p_Variable);
+	if (it2 != pMetadata->EntityVariables.end())
+	{
+		return false;
+	}
+
+	// Get the pointer to the varaible
+	VariableBase Entity::*pVariable = reinterpret_cast<VariableBase Entity::*>(p_pPointer);
+
+	// Add the variable
+	pMetadata->EntityVariables.insert(it2, std::pair<std::string, VariableBase Entity::*>(p_Variable, pVariable));
+
+	// Succeeded
+	return true;
+}
+
+
+// Function for registering entity variables.
+template < typename Type, typename Class>
+bool EntityManager::RegisterVariable(	const std::string & p_Class,
+										const std::string & p_Variable,
+										InterpolatedVariable<Type> Class::* p_pPointer)
+{
+	// Find the meta data and make sure it's doesn't already exists.
+	EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find(p_Class);
+	if (it == m_EntityMetaDataMap.end())
 	{
 		return false;
 	}
@@ -66,17 +108,17 @@ bool EntityManager::RegisterVariable(	const std::string & p_Class,
 	EntityMetaData * pMetadata = it->second;
 
 	// Find the variable in the meta data, make sure it's not already registerd
-	EntityVariableMap::iterator it2 = pMetadata->EntityVariables.find( p_Variable );
-	if( it2 != pMetadata->EntityVariables.end( ) )
+	EntityVariableMap::iterator it2 = pMetadata->EntityVariables.find(p_Variable);
+	if (it2 != pMetadata->EntityVariables.end())
 	{
 		return false;
 	}
 
 	// Get the pointer to the varaible
-	VariableBase Entity::*pVariable = reinterpret_cast<VariableBase Entity::*>( p_Pointer );
+	VariableBase Entity::*pVariable = reinterpret_cast<VariableBase Entity::*>(p_pPointer);
 
 	// Add the variable
-	pMetadata->EntityVariables.insert( it2, std::pair<std::string, VariableBase Entity::*>( p_Variable, pVariable ) );
+	pMetadata->EntityVariables.insert(it2, std::pair<std::string, VariableBase Entity::*>(p_Variable, pVariable));
 
 	// Succeeded
 	return true;

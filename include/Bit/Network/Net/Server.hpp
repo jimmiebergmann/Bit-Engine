@@ -105,7 +105,7 @@ namespace Bit
 				Properties(	const Uint16			p_Port,
 							const Uint8				p_MaxConnections = 255,
 							const Time &			p_LosingConnectionTimeout = Seconds(3.0f),
-							const Uint8				p_EntityUpdatesPerSecond = 20,
+							const Uint8				p_EntityUpdatesPerSecond = 22,
 							const std::string &		p_Identifier = "Bit Engine Network",
 							const ServerList &		p_ServerList = ServerList::None );
 

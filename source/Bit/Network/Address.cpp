@@ -39,7 +39,7 @@ namespace Bit
 
 	Address::Address( const Uint8 p_A, const Uint8 p_B, const Uint8 p_C, const Uint8 p_D )
 	{
-		/// Bit swift the adress
+		/// Bit swift the address
 		m_Address = (p_A << 24) | (p_B << 16) | (p_C << 8) | p_D;
 	}
 

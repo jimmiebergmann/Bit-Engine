@@ -231,7 +231,6 @@ namespace Bit
 			// Start the server thread.
 			m_MainThread.Execute([this]()
 			{
-				Uint8 buffer[BufferSize];
 				Address address;
 				Uint16 port = 0;
 				Int16 recvSize = 0;

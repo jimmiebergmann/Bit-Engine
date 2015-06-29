@@ -71,13 +71,14 @@ namespace Bit
 				Alive			= 5,	///<	|	No		|	   Yes 		|	Both	|	Both	|
 				EntityUpdate	= 6,	///<	|	Both	|	   Yes		|	Server	|	Client	|
 				UserMessage		= 7,	///<	|	Both	|	   Yes		|	Client	|	Server	|
-				HostMessage		= 8		///<	|	Both	|	   Yes		|	Server	|	Client	|
+				HostMessage		= 8,	///<	|	Both	|	   Yes		|	Server	|	Client	|
+				Command			= 9		///<	|	Yes		|	   Yes		|	Client	|	Server	|
 				/// ---------------------------------------------------------------------------------
 			};
 		};
 
 		///< Packet type count.
-		const SizeType PacketTypeCount = 9;
+		const SizeType PacketTypeCount = 10;
 
 		///< Packet sizes, excluding data
 		const SizeType ConnectPacketSize = 1;
@@ -89,6 +90,7 @@ namespace Bit
 		const SizeType EntityUpdatePacketSize = 4;
 		const SizeType UserMessagePacketSize = 4;
 		const SizeType HostMessagePacketSize = 4;
+		const SizeType CommandPacketSize = 3;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Reject type
@@ -98,9 +100,9 @@ namespace Bit
 		{
 			enum eType
 			{
-				Denied = 0,	///< Denied by server.
-				Banned = 1,	///< The client is banned.
-				Full = 2	///< The server is full.
+				Denied	= 0,	///< Denied by server.
+				Banned	= 1,	///< The client is banned.
+				Full	= 2		///< The server is full.
 			};
 		};
 
@@ -112,10 +114,10 @@ namespace Bit
 		{
 			enum eType
 			{
-				Closed = 0,			///< The client/server closed the connection.
-				Banned = 1,			///< The server banned the client.
-				Kicked = 2,			///< The server kicked the client.
-				LostConnection = 3	///< The connection was lost.
+				Closed			= 0,	///< The client/server closed the connection.
+				Banned			= 1,	///< The server banned the client.
+				Kicked			= 2,	///< The server kicked the client.
+				LostConnection	= 3		///< The connection was lost.
 			};
 		};
 
@@ -127,48 +129,10 @@ namespace Bit
 		{
 			enum eType
 			{
-				Unreliable = 0,	///< Reliable packet.
-				Reliable = 1	///< Reliable packet.
+				Unreliable	= 0,	///< Reliable packet.
+				Reliable	= 1		///< Reliable packet.
 			};
 		};
-
-		
-		
-		// OLD!
-		//	|
-		//	|
-		//	v
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Packet structure for, entity update, user, and -host message.
-		///
-		////////////////////////////////////////////////////////////////
-		/*struct Packet
-		{
-		Uint16		Sequence;	///< Packet sequence.
-		SizeType	DataSize;	///< Size of the data.
-		char *		pData;		///< Pointer to the data.
-		};
-		*/
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Packet type enumerator
-		///
-		////////////////////////////////////////////////////////////////
-		/*enum ePacketType
-		{
-		Syn					= 1,
-		SynAck				= 2,
-		Sync				= 3,
-		Ack					= 4,
-		Alive				= 5,
-		Close				= 6,
-		Ban					= 7,
-		UnreliablePacket	= 8,
-		ReliablePacket		= 9
-		};
-		*/
-
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Message type enumerator (OLD)
@@ -179,8 +143,6 @@ namespace Bit
 			EntityMessageType	= 0,
 			UserMessageType		= 1
 		};
-
-		
 
 	}
 

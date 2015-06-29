@@ -33,6 +33,8 @@
 #include <vector> 
 #include <map>
 #include <set>
+#include <typeinfo>
+#include <iostream>
 
 namespace Bit
 {
@@ -94,7 +96,22 @@ namespace Bit
 			template < typename Type, typename Class>
 			bool RegisterVariable(	const std::string & p_Class,
 									const std::string & p_Variable,
-									Variable<Type> Class::* p_Pointer );
+									Variable<Type> Class::* p_pPointer);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Register entity interpolated variable.
+			///
+			/// \param p_Class Key of an already linked entity class.
+			/// \param p_Class Key of the entity variable.
+			/// \param p_Pointer Pointer to the interpolated variable.
+			///
+			/// \return Pointer to the created entity, NULL if error.
+			///
+			////////////////////////////////////////////////////////////////
+			template < typename Type, typename Class>
+			bool RegisterVariable(	const std::string & p_Class,
+									const std::string & p_Variable,
+									InterpolatedVariable<Type> Class::* p_pPointer);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Set entity variable by variable name.
@@ -204,6 +221,8 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			struct EntityMetaData
 			{
+
+				size_t TypeHash;
 				Entity*(*CreationPointer)();		///< Pointer to function for creating entity.
 				EntityVariableMap EntityVariables;	///< Map of all the variables for this entity.
 			};

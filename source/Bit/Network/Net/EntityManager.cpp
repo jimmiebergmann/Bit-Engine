@@ -344,14 +344,19 @@ namespace Bit
 						}
 
 						// Get the pointer to the value and the last value.
-						void * pValuePointer = reinterpret_cast<void *>( &((pEntity->*pVariable).m_Value) );
+						void * pValuePointer = reinterpret_cast<void *>(&(pEntity->*pVariable).m_Value);
 						//void * pLastValuePointer = reinterpret_cast<void *>(&((pEntity->*pVariable).m_LastValue));
 						
 						// Lock the variable mutex.
 						(pEntity->*pVariableBase).m_Mutex.Lock();
 
+						// Copy the data to the value
+						(pEntity->*pVariableBase).SetData(&(pData[dataPos]));
+						//memcpy(pValuePointer, &(pData[dataPos]), valueSize);
+
+
 						// Check if the variable has been set before
-						if ((pEntity->*pVariableBase).m_IsSet)
+						/*if ((pEntity->*pVariableBase).m_IsSet)
 						{
 							// copy the value to the last value.
 							memcpy(reinterpret_cast<Uint8 *>(pValuePointer)+valueSize, pValuePointer, valueSize);
@@ -362,21 +367,21 @@ namespace Bit
 
 							// Copy the data to the value
 							memcpy(pValuePointer, &(pData[dataPos]), valueSize);
-						}
-						else
-						{
+						}*/
+						/*else
+						{*/
 							// Copy the data to the value
-							memcpy(pValuePointer, &(pData[dataPos]), valueSize);
-
+							//memcpy(pValuePointer, &(pData[dataPos]), valueSize);
+/*
 							// Copy the data to the last value, the value and last value need to be the same at the initial phase.
 							memcpy(reinterpret_cast<Uint8 *>(pValuePointer) + valueSize, pValuePointer, valueSize);
 
 							// Set the variable is set flag to true.
 							(pEntity->*pVariableBase).m_IsSet = true;
 						}		
-
+						*/
 						// Restart the variable timer						
-						(pEntity->*pVariableBase).m_Timer.Start();
+						//(pEntity->*pVariableBase).m_Timer.Start();
 						
 						// Unlock the variable mutex.
 						(pEntity->*pVariable).m_Mutex.Unlock( );
@@ -530,7 +535,7 @@ namespace Bit
 
 						// Create temporary variable, in order to access the data pointer
 						Variable<Uint8> * pTempVar = reinterpret_cast<Variable<Uint8> *>( pVariable );
-						void * pDataPointer = reinterpret_cast<void *>( &(pTempVar->m_Value ) );
+						void * pDataPointer = reinterpret_cast<void *>( &(pTempVar->m_Value) );
 
 						// copy the data
 						memcpy( &(p_Message[ dataPos ] ), pDataPointer, pVariable->GetSize( ) );

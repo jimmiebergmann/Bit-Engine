@@ -28,8 +28,14 @@
 #include <Bit/System/Mutex.hpp>
 #include <Bit/System/ThreadValue.hpp>
 #include <Bit/System/Timer.hpp>
+#include <Bit/System/Vector2.hpp>
+#include <Bit/System/Vector3.hpp>
 #include <Bit/Network/Net/Private/EntityChanger.hpp>
 #include <string>
+#include <iostream>
+#include <iomanip>
+#include <list>
+#include <type_traits>
 
 namespace Bit
 {
@@ -70,23 +76,29 @@ namespace Bit
 			/// \brief Get name
 			///
 			////////////////////////////////////////////////////////////////
-			const std::string & GetName( ) const;
+			const std::string & GetName() const;
 
 		protected:
+
+			// Protected functions
+			////////////////////////////////////////////////////////////////
+			/// \brief Virtual function for setting the data.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void SetData(const void * p_pData) = 0;
+
 
 			// Private variables.
 			const SizeType		m_Size;			///< Size of the varaible.
 			std::string			m_Name;			///< Variable name.
 			Entity *			m_pParent;		///< Parent entity.
 			Mutex				m_Mutex;		///< Mutex for set/get value.
-			Timer				m_Timer;		///< Timer for interpolation.
-			bool				m_IsSet;		///< Flag for checking if the value has been set.
 
 		};
 
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
-		/// \brief Network address class.
+		/// \brief Entity variable class.
 		///
 		////////////////////////////////////////////////////////////////
 		template <typename T>
@@ -94,6 +106,9 @@ namespace Bit
 		{
 
 		public:
+
+			// Friend classes
+			friend class EntityManager;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
@@ -117,18 +132,78 @@ namespace Bit
 			/// \brief Get value.
 			///
 			////////////////////////////////////////////////////////////////
-			T Get( const bool p_Interpolated = false );
+			T Get();
 
-			void UpdateLastValue()
-			{
-				Float64 time = m_Timer.GetLapsedTime().AsSeconds();
-				m_LastValue = m_Value + ((m_Value - m_LastValue) * (time * 10.0f /*m_pParent->m_pEntityManager->m_FrameTime.Get()*/));
-			}
+		protected:
 
-			// Public variables
-			// DO NOT CHANGE THE ORDER OF THESE VARIABLES
+			// Protected functions
+			////////////////////////////////////////////////////////////////
+			/// \brief Virtual function for setting the data.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void SetData(const void * p_pData);
+
+		private:
+
+			// Private variables
 			T m_Value;		///< Value of the network variable.
-			T m_LastValue;	///< Value of the last network variable, used for interpolation.
+
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \ingroup Network
+		/// \brief Entity interpolated variable class.
+		///
+		////////////////////////////////////////////////////////////////
+		template <typename T>
+		class InterpolatedVariable : public VariableBase
+		{
+
+		public:
+
+			// Friend classes
+			friend class EntityManager;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Default constructor.
+			///
+			////////////////////////////////////////////////////////////////
+			InterpolatedVariable();
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Constructor.
+			///
+			////////////////////////////////////////////////////////////////
+			InterpolatedVariable(const T & p_Value);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set value.
+			///
+			////////////////////////////////////////////////////////////////
+			void Set(const T & p_Value);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get value.
+			///
+			////////////////////////////////////////////////////////////////
+			T Get();
+
+		protected:
+
+			// Protected functions
+			////////////////////////////////////////////////////////////////
+			/// \brief Virtual function for setting the data.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void SetData(const void * p_pData);
+
+		private:
+
+			// Private tpyedefs
+			typedef std::list<T> ValueList;
+
+			// Private variables
+			ValueList	m_Values;		///< Value of the network variable.
 
 		};
 
