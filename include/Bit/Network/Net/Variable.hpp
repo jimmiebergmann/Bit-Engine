@@ -87,8 +87,13 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			virtual void SetData(const void * p_pData) = 0;
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Virtual function for getting the data.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void * GetData( ) = 0;
 
-			// Private variables.
+			// Protected variables.
 			const SizeType		m_Size;			///< Size of the varaible.
 			std::string			m_Name;			///< Variable name.
 			Entity *			m_pParent;		///< Parent entity.
@@ -142,6 +147,12 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			virtual void SetData(const void * p_pData);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Virtual function for getting the data.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void * GetData();
 
 		private:
 
@@ -197,13 +208,38 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			virtual void SetData(const void * p_pData);
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Virtual function for getting the data.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void * GetData();
+
 		private:
 
-			// Private tpyedefs
-			typedef std::list<T> ValueList;
+			// Private structs
+			////////////////////////////////////////////////////////////////
+			/// \brief Snapshot strucutre
+			///
+			////////////////////////////////////////////////////////////////
+			struct Snapshot
+			{
+				Time m_Time;
+				T m_Value;
+			};
+
+			// Private typedef
+			typedef std::list<Snapshot> SnapshotList;
+
+			// Private functions
+			////////////////////////////////////////////////////////////////
+			/// \brief Remove old snapshots, that's being older than the extrapolation time.
+			///
+			////////////////////////////////////////////////////////////////
+			void RemoveOldSnapshots();
 
 			// Private variables
-			ValueList	m_Values;		///< Value of the network variable.
+			SnapshotList	m_Snapshots;	///< Value of the network variable.
+			T				m_LastValue;	///< Server only.
 
 		};
 

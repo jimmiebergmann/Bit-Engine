@@ -79,7 +79,7 @@ namespace Bit
 		Time GetLapsedTime( );
 
 		////////////////////////////////////////////////////////////////
-		/// \return Get system time in nanoseconds since last startup.
+		/// \return Get system time in microseconds since last startup.
 		///
 		////////////////////////////////////////////////////////////////
 		static Uint64 GetSystemTime( );
@@ -89,7 +89,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		// Private variable members
 		////////////////////////////////////////////////////////////////
-		Uint64 m_StartTime;	///< The start time
+		Uint64 m_StartTime;		///< The start time
 		Uint64 m_Time;			///< The the current time.
 
 	};

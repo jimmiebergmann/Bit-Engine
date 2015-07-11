@@ -110,7 +110,9 @@ namespace Bit
 			eStatus Connect(	const Address & p_Address,
 								const Uint16 p_Port,
 								const Time & p_ConnectionTimeout = Time::Infinite,
-								const Time & p_LosingConnectionTimeout = Seconds(3.0f ),
+								const Time & p_LosingConnectionTimeout = Seconds(3.0f),
+								const Time & p_InterpolationTime = Milliseconds(100),
+								const Time & p_ExtrapolationTime = Milliseconds(250),
 								const std::string & p_Identifier = "Bit Engine Network" );
 
 			////////////////////////////////////////////////////////////////

@@ -50,6 +50,7 @@ namespace Bit
 			// Friend classes
 			friend class EntityManager;
 			template <typename T> friend class Variable;
+			template <typename T> friend class InterpolatedVariable;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.

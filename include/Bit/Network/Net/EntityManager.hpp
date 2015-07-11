@@ -59,6 +59,7 @@ namespace Bit
 			friend class ServerEntityChanger;
 			friend class VariableBase;
 			template<typename T> friend class Variable;
+			template<typename T> friend class InterpolatedVariable;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
@@ -71,6 +72,18 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			~EntityManager( );
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set interpolation time.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetInterpolationTime(const Time & p_Time);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set extrapolation time.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetExtrapolationTime(const Time & p_Time);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Link entity to a certain key.
@@ -243,8 +256,8 @@ namespace Bit
 			ChangedEntitiesMap		m_ChangedEntities;		///< Map of changed entitites
 			EntityMap				m_Entities;				///< Map of all entities.
 			Uint32					m_CurrentId;			///< Temporary solution for incremening the ID.
-			ThreadValue<Float64>	m_FrameTime;			///< Frame time of the entitiy update
-			Timer					m_FrameTimer;			///< Timer for calculating the frame time.
+			Time					m_InterpolationTime;	///< Interpolation time(delay).
+			Time					m_ExtrapolationTime;	///< Extrapolation time( for how long we should extra interpolate).
 
 		};
 

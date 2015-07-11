@@ -70,6 +70,8 @@ namespace Bit
 			const Uint16 p_Port,
 			const Time & p_ConnectionTimeout,
 			const Time & p_LosingConnectionTimeout,
+			const Time & p_InterpolationTime,
+			const Time & p_ExtrapolationTime,
 			const std::string & p_Identifier)
 		{
 			// make sure to be disconnected.
@@ -204,6 +206,10 @@ namespace Bit
 
 			// Set lost connection timeout
 			m_LosingConnectionTimeout.Set(p_LosingConnectionTimeout);
+
+			// Set interpolation and extrapolation time.
+			m_EntityManager.SetInterpolationTime(p_InterpolationTime);
+			m_EntityManager.SetExtrapolationTime(p_ExtrapolationTime);
 
 			// Set the connected flag to true.
 			m_Connected.Set(true);

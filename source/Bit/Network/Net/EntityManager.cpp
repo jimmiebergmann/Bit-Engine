@@ -59,6 +59,20 @@ namespace Bit
 			delete m_pEntityChanger;
 		}
 
+		void EntityManager::SetInterpolationTime(const Time & p_Time)
+		{
+			m_InterpolationTime = p_Time;
+		}
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set extrapolation time.
+		///
+		////////////////////////////////////////////////////////////////
+		void EntityManager::SetExtrapolationTime(const Time & p_Time)
+		{
+			m_ExtrapolationTime = p_Time;
+		}
+
 		Entity * EntityManager::CreateEntityByName( const std::string & p_Key )
 		{
 			// Check if we have any creating function for the key value.
@@ -330,10 +344,9 @@ namespace Bit
 
 						// Get the varaible pointer
 						VariableBase Entity::* pVariableBase = it2->second;
-						Variable<Uint8> Entity::* pVariable = reinterpret_cast<Variable<Uint8> Entity::*>( it2->second );
 
 						// Get the value size
-						SizeType valueSize = (pEntity->*pVariable).m_Size;
+						SizeType valueSize = (pEntity->*pVariableBase).m_Size;
 
 						// Make sure that the values size is the same as the data
 						if( valueSize != dataSize )
@@ -342,49 +355,15 @@ namespace Bit
 							dataPos += dataSize;
 							continue;
 						}
-
-						// Get the pointer to the value and the last value.
-						void * pValuePointer = reinterpret_cast<void *>(&(pEntity->*pVariable).m_Value);
-						//void * pLastValuePointer = reinterpret_cast<void *>(&((pEntity->*pVariable).m_LastValue));
 						
 						// Lock the variable mutex.
 						(pEntity->*pVariableBase).m_Mutex.Lock();
 
 						// Copy the data to the value
 						(pEntity->*pVariableBase).SetData(&(pData[dataPos]));
-						//memcpy(pValuePointer, &(pData[dataPos]), valueSize);
-
-
-						// Check if the variable has been set before
-						/*if ((pEntity->*pVariableBase).m_IsSet)
-						{
-							// copy the value to the last value.
-							memcpy(reinterpret_cast<Uint8 *>(pValuePointer)+valueSize, pValuePointer, valueSize);
-							
-							// Get the varaible pointer
-							//Variable<Vector2f32> Entity::* PTest = reinterpret_cast<Variable<Vector2f32> Entity::*>(it2->second);
-							//(pEntity->*PTest).UpdateLastValue();
-
-							// Copy the data to the value
-							memcpy(pValuePointer, &(pData[dataPos]), valueSize);
-						}*/
-						/*else
-						{*/
-							// Copy the data to the value
-							//memcpy(pValuePointer, &(pData[dataPos]), valueSize);
-/*
-							// Copy the data to the last value, the value and last value need to be the same at the initial phase.
-							memcpy(reinterpret_cast<Uint8 *>(pValuePointer) + valueSize, pValuePointer, valueSize);
-
-							// Set the variable is set flag to true.
-							(pEntity->*pVariableBase).m_IsSet = true;
-						}		
-						*/
-						// Restart the variable timer						
-						//(pEntity->*pVariableBase).m_Timer.Start();
 						
 						// Unlock the variable mutex.
-						(pEntity->*pVariable).m_Mutex.Unlock( );
+						(pEntity->*pVariableBase).m_Mutex.Unlock();
 
 						// Move to the next Id
 						dataPos += dataSize;
@@ -398,10 +377,6 @@ namespace Bit
 				delete [ ] pEntityName;
 
 			}
-
-			m_FrameTimer.Stop();
-			m_FrameTime.Set(m_FrameTimer.GetTime().AsSeconds());
-			m_FrameTimer.Start();
 
 			// Succeeded
 			return true;
@@ -524,6 +499,9 @@ namespace Bit
 						// Get the varaible
 						VariableBase * pVariable = it3->second;
 						
+						// Get the variable size
+						const SizeType varSize = pVariable->GetSize();
+						
 						// Add the entity id
 						Uint16 entityId = Hton16( static_cast<Uint16>( pEntity->GetId( ) ) );
 						p_Message.push_back( static_cast<Uint8>( entityId ) );
@@ -531,14 +509,10 @@ namespace Bit
 
 						// Add the data
 						Uint16 dataPos = static_cast<Uint16>( p_Message.size( ) );
-						p_Message.resize( p_Message.size( ) + pVariable->GetSize( ) );
-
-						// Create temporary variable, in order to access the data pointer
-						Variable<Uint8> * pTempVar = reinterpret_cast<Variable<Uint8> *>( pVariable );
-						void * pDataPointer = reinterpret_cast<void *>( &(pTempVar->m_Value) );
+						p_Message.resize(p_Message.size() + varSize);
 
 						// copy the data
-						memcpy( &(p_Message[ dataPos ] ), pDataPointer, pVariable->GetSize( ) );
+						memcpy(&(p_Message[dataPos]), pVariable->GetData( ), varSize);
 					}
 
 					// Set the variable block size
@@ -714,11 +688,8 @@ namespace Bit
 						Uint16 dataPos = static_cast<Uint16>( p_Message.size( ) );
 						p_Message.resize( p_Message.size( ) + dataSize );
 
-						// Create temporary variable, in order to access the data pointer
-						void * pDataPointer = reinterpret_cast<void *>( &(pEntity->*pVariable).m_Value );
-
 						// copy the data
-						memcpy( &(p_Message[ dataPos ] ), pDataPointer, dataSize );
+						memcpy(&(p_Message[dataPos]), (pEntity->*pVariable).GetData( ), dataSize);
 
 						///		std::cout << "\t\t\tData: " << (int)dataSize << std::endl;
 						
