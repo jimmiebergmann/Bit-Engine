@@ -39,7 +39,8 @@ T * Md2File::CreatePositionBuffer(	SizeType & p_BufferSize,
 	Frame * pFrame = m_Frames[ p_FrameIndex ];
 
 	// Calculate the buffer size
-	SizeType bufferSize = static_cast<SizeType>( m_Triangles.size( ) ) * 9;
+	SizeType pointCount = static_cast<SizeType>(m_Triangles.size()) * 3;
+	SizeType bufferSize = pointCount * 3;
 
 	// Error check the buffer size
 	if( bufferSize == 0 )
@@ -48,28 +49,29 @@ T * Md2File::CreatePositionBuffer(	SizeType & p_BufferSize,
 	}
 
 	// Create the buffer
-	T * pBuffer = new T[ bufferSize ];
+	Vector3<T> * pBuffer = new Vector3<T>[pointCount];
 
 	// Go throguh the triangles and calculate the right vertex coordinate
 	SizeType currentPos = 0;
-	for( TriangleVector::size_type t = 0; t < m_Triangles.size( ); t++ )
+	for (TriangleVector::size_type t = 0; t < m_Triangles.size(); t++)
 	{
-		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 2 ] ]->Position.x );
-		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 2 ] ]->Position.y );
-		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 2 ] ]->Position.z );
-		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 1 ] ]->Position.x );
-		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 1 ] ]->Position.y );
-		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 1 ] ]->Position.z );
-		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 0 ] ]->Position.x );
-		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 0 ] ]->Position.y );
-		pBuffer[ currentPos++ ] = static_cast<T>( pFrame->Vertices[ m_Triangles[ t ]->VertexIndex[ 0 ] ]->Position.z );
+		// Go through the vertices.
+		for (Int32 v = 2; v >= 0; v--)
+		{
+
+			/*pBuffer[currentPos++] =	(	static_cast<Vector3<T>>(pFrame->Vertices[m_Triangles[t]->VertexIndex[v]]->Position) *
+										pFrame->Scale) +
+										static_cast<Vector3<T>>(pFrame->Translate );*/
+
+			pBuffer[currentPos++] = static_cast<Vector3<T>>(pFrame->Vertices[m_Triangles[t]->VertexIndex[v]]->Position);
+		}
 	}
 
 	 // Set the buffer size parameter p_BufferSize
 	p_BufferSize = bufferSize;
 
 	// Return the buffer
-	return pBuffer;
+	return reinterpret_cast<T*>(pBuffer);
 }
 
 template <typename T>

@@ -28,83 +28,94 @@
 namespace Bit
 {
 
-	const Time Time::Infinite = Microseconds( 0xFFFFFFFFFFFFFFFFULL );
-	const Time Time::Zero = Microseconds( 0 );
+	const Time Time::Infinite = Microseconds(0xFFFFFFFFFFFFFFFFULL);
+	const Time Time::Zero = Microseconds(0);
 
 
-	Time::Time( ) :
-		m_Microseconds( 0 )
+	Time::Time() :
+		m_Microseconds(0)
 	{
 	}
 
-	Float64 Time::AsSeconds( ) const
+	Float64 Time::AsSeconds() const
 	{
-		return static_cast<Float64>( m_Microseconds ) / 1000000.0f;
+		return static_cast<Float64>(m_Microseconds) / 1000000.0f;
 	}
 
-	Uint64 Time::AsMilliseconds( ) const
+	Uint64 Time::AsMilliseconds() const
 	{
 		return m_Microseconds / 1000ULL;
 	}
 
-	Uint64 Time::AsMicroseconds( ) const
+	Uint64 Time::AsMicroseconds() const
 	{
 		return m_Microseconds;
 	}
 
-	Bool Time::operator == ( const Time & p_Time ) const
+	Bool Time::operator == (const Time & p_Time) const
 	{
 		return m_Microseconds == p_Time.m_Microseconds;
 	}
 
-	Bool Time::operator != ( const Time & p_Time ) const
+	Bool Time::operator != (const Time & p_Time) const
 	{
 		return m_Microseconds != p_Time.m_Microseconds;
 	}
 
-	Bool Time::operator > ( const Time & p_Time ) const
+	Bool Time::operator > (const Time & p_Time) const
 	{
 		return m_Microseconds > p_Time.m_Microseconds;
 	}
 
-	Bool Time::operator < ( const Time & p_Time ) const
+	Bool Time::operator < (const Time & p_Time) const
 	{
-		return m_Microseconds <p_Time.m_Microseconds;
+		return m_Microseconds < p_Time.m_Microseconds;
 	}
 
-	Bool Time::operator >= ( const Time & p_Time ) const
+	Bool Time::operator >= (const Time & p_Time) const
 	{
 		return m_Microseconds >= p_Time.m_Microseconds;
 	}
 
-	Bool Time::operator <= ( const Time & p_Time ) const
+	Bool Time::operator <= (const Time & p_Time) const
 	{
 		return m_Microseconds <= p_Time.m_Microseconds;
 	}
 
-	Time Time::operator + ( const Time & p_Time ) const
+	Time Time::operator + (const Time & p_Time) const
 	{
-		return Time( m_Microseconds + p_Time.m_Microseconds );
+		return Time(m_Microseconds + p_Time.m_Microseconds);
 	}
 
-	Time Time::operator - ( const Time & p_Time ) const
+	Time & Time::operator += (const Time & p_Time)
 	{
-		if( p_Time.m_Microseconds > m_Microseconds )
+		m_Microseconds += p_Time.m_Microseconds;
+		return *this;
+	}
+
+	Time Time::operator - (const Time & p_Time) const
+	{
+		if (p_Time.m_Microseconds > m_Microseconds)
 		{
-			return Time( 0 );
+			return Time(0);
 		}
 
-		return Time( m_Microseconds - p_Time.m_Microseconds );
+		return Time(m_Microseconds - p_Time.m_Microseconds);
 	}
 
-	Time Time::operator * ( const Uint64 & p_Value ) const
+	Time Time::operator * (const Uint64 & p_Value) const
 	{
-		return Time( m_Microseconds * p_Value );
+		return Time(m_Microseconds * p_Value);
 	}
 
-	Time Time::operator / ( const Uint64 & p_Value ) const
+	Time Time::operator / (const Uint64 & p_Value) const
 	{
-		return Time( m_Microseconds / p_Value );
+		return Time(m_Microseconds / p_Value);
+	}
+
+	Time Time::operator % (const Time & p_Time) const
+	{
+		return Time(m_Microseconds % p_Time.m_Microseconds);
 	}
 
 	// Private functions

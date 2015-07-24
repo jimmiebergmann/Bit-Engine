@@ -500,7 +500,7 @@ namespace Bit
 		ss << m_DefaultModelSettings.GetMaxLightCount( );
 		ss >> maxLightCountString;
 
-		static const std::string vertexSource =
+		static const std::string initialPoseVertexSource =
 			"#version 330\n"
 
 			// Matrix uniforms
@@ -549,13 +549,13 @@ namespace Bit
 
 			"}\n";
 
-		if( m_pDefaultModelVertexShaders[ InitialPoseShader ]->CompileFromMemory( vertexSource ) == false )
+		if (m_pDefaultModelVertexShaders[InitialPoseShader]->CompileFromMemory(initialPoseVertexSource) == false)
 		{
 			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile InitialPoseShader vertex shader.\n"; 
 			return false;
 		}
 
-		static const std::string fragmentSource =
+		static const std::string initialPoseFragmentSource =
 			"#version 330\n"
 
 			// Texture uniforms
@@ -614,11 +614,9 @@ namespace Bit
 			// Create final color
 			"	outColor = ambient + diffuse;\n"
 			
-
-			//"	outColor = vec4( 1.0, 1.0, 1.0, 1.0 );\n"
 			"}\n";
 		
-		if( m_pDefaultModelFragmentShader->CompileFromMemory( fragmentSource ) == false )
+		if (m_pDefaultModelFragmentShader->CompileFromMemory(initialPoseFragmentSource) == false)
 		{
 			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile model fragment shader.\n"; 
 			return false;
@@ -627,15 +625,112 @@ namespace Bit
 		
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->AttachShader( *m_pDefaultModelVertexShaders[ InitialPoseShader ] );
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->AttachShader( *m_pDefaultModelFragmentShader );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "position", 0 );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "textureCoord", 1 );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "normal", 2 );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation( "position", ModelVertexData::PositionIndex );
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation("textureCoord", ModelVertexData::TextureCoordIndex);
+		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetAttributeLocation("normal", ModelVertexData::NormalIndex);
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->Link( );
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->Bind( );
-		/*m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform4f( "uColor", 0.0f, 1.0f, 0.0f, 1.0f );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform1i( "uUseTexture", 0 );
-		m_pDefaultShaderPrograms[ InitialPoseShader ]->SetUniform1i( "uUseNormals", 0 );*/
 		m_pDefaultShaderPrograms[ InitialPoseShader ]->Unbind( );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		m_pDefaultModelVertexShaders[VertexAnimationShader] = CreateShader(Bit::ShaderType::Vertex);
+		m_pDefaultShaderPrograms[VertexAnimationShader] = CreateShaderProgram();
+
+		static const std::string vertexAnimationVertexSource =
+			"#version 330\n"
+
+			// Matrix uniforms
+			"uniform mat4 uProjectionMatrix;\n"
+			"uniform mat4 uModelViewMatrix;\n"
+
+			// Light uniforms
+			"uniform int uLightCount;\n"
+			"uniform vec4 uLightPositions[" + maxLightCountString + "];\n"
+
+			// Use flags
+			"uniform int uUseNormals;\n"
+
+			// Animation uniforms
+			"uniform float u_Interpolation;\n"
+
+			// In values
+			"in vec3 position;\n"
+			"in vec3 normal;\n"
+			"in vec2 textureCoord;\n"
+			"in vec3 nextPosition;\n"
+			"in vec3 nextNormal;\n"
+
+			// Out values
+			"out vec2 vTextureCoord;\n"
+			"out vec3 vNormal;\n"
+			"out vec4 vLightPositions[" + maxLightCountString + "];\n"
+
+			// Main function
+			"void main( )\n"
+			"{\n"
+
+			"vec3 interpolatedPosition = position + ( ( nextPosition - position ) * u_Interpolation );\n"
+
+			// Calculate the transformed position
+			"vec4 transformedPosition = uModelViewMatrix * vec4( interpolatedPosition, 1.0 );\n"
+
+			// Set the vertex position
+			"	gl_Position = uProjectionMatrix * transformedPosition;\n"
+
+			// Set the out values
+			"	vTextureCoord = textureCoord;\n"
+			"	vNormal = normalize( vec3( uModelViewMatrix * vec4( normal, 0.0 ) ) );\n"
+
+			// Set the out light source positions
+			"	if( uUseNormals == 1 )\n"
+			"	{\n"
+			"		for( int i = 0; i < " + maxLightCountString + "; i++ )\n"
+			"		{\n"
+			"			vLightPositions[ i ] = uLightPositions[ i ] - ( transformedPosition * uLightPositions[ i ].w );\n"
+			"		}\n"
+			"	}\n"
+
+			"}\n";
+
+		if (m_pDefaultModelVertexShaders[VertexAnimationShader]->CompileFromMemory(vertexAnimationVertexSource) == false)
+		{
+			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile VertexAnimationShader vertex shader.\n";
+			return false;
+		}
+
+
+		m_pDefaultShaderPrograms[VertexAnimationShader]->AttachShader(*m_pDefaultModelVertexShaders[VertexAnimationShader]);
+		m_pDefaultShaderPrograms[VertexAnimationShader]->AttachShader(*m_pDefaultModelFragmentShader);
+		m_pDefaultShaderPrograms[VertexAnimationShader]->SetAttributeLocation("position", ModelVertexData::PositionIndex);
+		m_pDefaultShaderPrograms[VertexAnimationShader]->SetAttributeLocation("textureCoord", ModelVertexData::TextureCoordIndex);
+		m_pDefaultShaderPrograms[VertexAnimationShader]->SetAttributeLocation("normal", ModelVertexData::NormalIndex);
+		m_pDefaultShaderPrograms[VertexAnimationShader]->SetAttributeLocation("nextPosition", ModelVertexData::NextPositionIndex);
+		m_pDefaultShaderPrograms[VertexAnimationShader]->SetAttributeLocation("nextNormal", ModelVertexData::NextNormalIndex);
+		m_pDefaultShaderPrograms[VertexAnimationShader]->Link();
+		/*m_pDefaultShaderPrograms[VertexAnimationShader]->Bind();
+		m_pDefaultShaderPrograms[VertexAnimationShader]->Unbind();*/
+
+
+
+
+
+
+
+
+
 
 		return true;
 	}

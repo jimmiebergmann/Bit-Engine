@@ -34,6 +34,7 @@ namespace Bit
 {
 
 	// Forward declaractions
+	class Model;
 	class Animation;
 	class VertexAnimation;
 	class Bone;
@@ -50,11 +51,14 @@ namespace Bit
 
 	public:
 
+		// Friend classes
+		friend class Model;
+
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor. 
 		///
 		////////////////////////////////////////////////////////////////
-		Skeleton( );
+		Skeleton( Model * p_pModel );
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Destructor. 
@@ -65,7 +69,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \brief Create and add vertex animation.
 		///
-		/// \return Pointer to the created key frame animation
+		/// \return Pointer to the created vertex animation
 		///		if successfully created, else NULL.
 		///
 		////////////////////////////////////////////////////////////////
@@ -117,7 +121,8 @@ namespace Bit
 		//typedef std::vector<Bone *> BoneVector;
 
 		// Private variables
-		AnimationVector m_Animations; ///< Animations of for this skeleton.
+		Model *				m_pParent;		///< Parent class.
+		AnimationVector		m_Animations;	///< Animations of for this skeleton.
 		//BoneVector m_Bones; ///< Bone nodes of this skeleton(bones has children).
 
 	};

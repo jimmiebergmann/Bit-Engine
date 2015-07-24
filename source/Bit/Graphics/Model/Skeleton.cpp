@@ -23,6 +23,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/Model/Skeleton.hpp>
+#include <Bit/Graphics/Model.hpp>
 #include <Bit/Graphics/Model/VertexAnimation.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -30,7 +31,8 @@
 namespace Bit
 {
 
-	Skeleton::Skeleton( )
+	Skeleton::Skeleton(Model * p_pModel) :
+		m_pParent(p_pModel)
 	{
 	}
 
@@ -82,11 +84,19 @@ namespace Bit
 			return false;
 		}
 
-		// Delete the pointer
-		delete m_Animations[ index ];
+		// Remove the animation from the animation from animation state if needed.
+		if (m_pParent && m_pParent->GetAnimationState().m_pAnimation == p_pAnimation)
+		{
+			m_pParent->GetAnimationState().m_pAnimation = NULL;
+			m_pParent->GetAnimationState().m_AnimationIndex = 0;
+		}
 
 		// Erase the animation from the vector
-		m_Animations.erase( m_Animations.begin( ) + index );
+		m_Animations.erase(m_Animations.begin() + index);
+
+		// Delete the pointer
+		delete m_Animations[index];
+
 
 		// Succeeded.
 		return true;
@@ -100,11 +110,18 @@ namespace Bit
 			return false;
 		}
 
-		// Delete the pointer
-		delete m_Animations[ p_Index ];
+		// Remove the animation from the animation from animation state if needed.
+		if (m_pParent && m_pParent->GetAnimationState().m_AnimationIndex == p_Index)
+		{
+			m_pParent->GetAnimationState().m_pAnimation = NULL;
+			m_pParent->GetAnimationState().m_AnimationIndex = 0;
+		}
 
 		// Erase the animation from the vector
 		m_Animations.erase( m_Animations.begin( ) + p_Index );
+
+		// Delete the pointer
+		delete m_Animations[p_Index];
 
 		// Succeeded.
 		return true;

@@ -27,9 +27,11 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/NonCopyable.hpp>
+#include <Bit/Graphics/Drawable.hpp>
 #include <Bit/Graphics/ModelMaterial.hpp>
 #include <Bit/Graphics/Model/ModelVertexData.hpp>
 #include <Bit/Graphics/Model/Skeleton.hpp>
+#include <Bit/Graphics/Model/AnimationState.hpp>
 #include <string>
 
 namespace Bit
@@ -39,6 +41,8 @@ namespace Bit
 	class GraphicDevice;
 	class VertexArray;
 	class ObjFile;
+	class Md2File;
+	class VertexAnimationTrack;
 
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
@@ -68,7 +72,7 @@ namespace Bit
 	/// \see ModelVertexData
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Model : public NonCopyable
+	class BIT_API Model : public Drawable
 	{
 
 	public:
@@ -84,6 +88,12 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		~Model( );
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Draw the model
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Draw(Renderer & p_Renderer);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Load 3D model from a file.
@@ -143,7 +153,13 @@ namespace Bit
 		/// \brief Get animation type.
 		///
 		////////////////////////////////////////////////////////////////
-		Skeleton & GetSkeleton( );
+		Skeleton & GetSkeleton();
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get animation state. You handle the animations via this class.
+		///
+		////////////////////////////////////////////////////////////////
+		AnimationState & GetAnimationState();
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get vertex data.
@@ -170,50 +186,58 @@ namespace Bit
 
 		// Private functions
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Render the initial pose, or "static" model.
+		///
+		/// This function could be used for static model rendering, such as props.
+		///
+		////////////////////////////////////////////////////////////////
+		void RenderInitialPose(Renderer & p_Renderer);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief	Render vertex animation. Uses the AnimationState class from
+		///			the model in order to render the right pose.
+		///
+		////////////////////////////////////////////////////////////////
+		void RenderVertexAnimation(Renderer & p_Renderer);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief	Render skeletal animation. Uses the AnimationState class from
+		///			the model in order to render the right pose.
+		///
+		////////////////////////////////////////////////////////////////
+		void RenderSkeletalAnimation(Renderer & p_Renderer);
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Load md2 frame from md2 file into the model vertex group.
+		///
+		////////////////////////////////////////////////////////////////
+		Bool LoadMd2Frame(	Md2File & p_Md2File,
+							ModelVertexGroup * p_pModelVertexGroup,
+							const SizeType p_FrameIndex,
+							const Bool p_LoadTextureCoords = true,
+							const Bool p_LoadNormals = true,
+							const Bool p_LoadTangents = true,
+							const Bool p_LoadBinormals = true);
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Fix the interpolation for vertex animations.
+		///		   We fix this by adding the keyframes VBOs to each other.
+		///
+		////////////////////////////////////////////////////////////////
+		void FixVertexInterpolation(	VertexAnimationTrack * p_pAnimationTrack,
+										const Bool p_LoadTextureCoords = true,
+										const Bool p_LoadNormals = true,
+										const Bool p_LoadTangents = true,
+										const Bool p_LoadBinormals = true);
+
 		// Private variables
-		const GraphicDevice & m_GraphicDevice;	///< Reference of the parent graphic device.
-		Skeleton m_Skeleton;					///< Skeleton, contains animations of any kind.
-		ModelMaterialVector m_Materials;		///< Materials used by this model.
-		ModelVertexGroup m_VertexGroup;			///< Vertex group of idle static pose.
+		const GraphicDevice &	m_GraphicDevice;	///< Reference of the parent graphic device.
+		Skeleton				m_Skeleton;			///< Skeleton, contains animations of any kind.
+		AnimationState			m_AnimationState;	///< Stores the current animation state.
+		ModelMaterialVector		m_Materials;		///< Materials used by this model.
+		ModelVertexGroup		m_VertexGroup;		///< Vertex group of idle static pose.
 
-		/*
-		// Public enum
-		enum eModelType
-		{
-			Model_None = 1,
-			Model_OBJ = 2
-		};
-
-		// Destructor
-		virtual ~Model( ) { }
-
-		// Virtual public functions
-		virtual BIT_UINT32 ReadFile( const char * p_pFilePath ) = 0;
-		virtual BIT_UINT32 Load( const BIT_UINT32 m_VertexElementBits, const Texture::eFilter * p_pTextureFilters,
-			const BIT_BOOL p_Mipmapping ) = 0;
-		virtual void Unload( ) = 0;
-		virtual void Render( const VertexObject::eRenderMode p_Mode ) = 0;
-
-		// Virtual get functions
-		virtual std::string GetName( ) const = 0;
-		virtual BIT_UINT32 GetVertexGroupCount( ) const = 0;
-		virtual BIT_UINT32 GetTriangleCount( ) const = 0;
-		virtual BIT_UINT32 GetPositionCoordinateCount( ) const = 0;
-		virtual BIT_UINT32 GetTextureCoordinateCount( ) const = 0;
-		virtual BIT_UINT32 GetNormalCoordinateCount( ) const = 0;
-		virtual BIT_UINT32 GetTextureCount( ) const = 0;
-		virtual BIT_UINT32 GetAnimationCount( ) const = 0;
-		virtual BIT_BOOL ContainsRagdoll( ) const = 0;
-
-		// Public inline get functions
-		BIT_INLINE BIT_BOOL IsLoaded( ) { return m_Loaded; }
-		BIT_INLINE eModelType GetType( ) { return m_Type; }
-
-	protected:
-
-		BIT_BOOL m_Loaded;
-		eModelType m_Type;
-		*/
 	};
 
 }

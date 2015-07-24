@@ -22,30 +22,31 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Graphics/Model/VertexKeyFrame.hpp>
-#include <iostream>
+#include <Bit/Graphics/Renderer.hpp>
+#include <Bit/Graphics/Drawable.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
 {
 
-	VertexKeyFrame::VertexKeyFrame( const Time & p_Time ) :
-		m_Time( p_Time )
+
+	Renderer::Renderer(GraphicDevice * p_pGraphicDevice) :
+		m_pGraphicDevice(p_pGraphicDevice )
 	{
 	}
 
-	VertexKeyFrame::~VertexKeyFrame( )
+	Renderer::~Renderer()
 	{
 	}
 
-	const Time & VertexKeyFrame::GetTime( ) const
+	void Renderer::Draw(Drawable & p_Drawable)
 	{
-		return m_Time;
+		p_Drawable.Draw(*this);
 	}
 
-	ModelVertexGroup & VertexKeyFrame::GetVertexGroup( )
+	GraphicDevice * Renderer::GetGraphicDevice() const
 	{
-		return m_VertexGroup;
+		return m_pGraphicDevice;
 	}
 
 }

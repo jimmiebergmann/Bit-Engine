@@ -47,6 +47,8 @@ namespace Bit
 	///		- 1: Texture coordinate
 	///		- 2: Normal
 	///		- 3: Bone
+	///		- 4: Next position;
+	///		- 5: Next texture coordinate
 	///
 	/// \see Model
 	///
@@ -55,6 +57,36 @@ namespace Bit
 	{
 
 	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Default buffer mask enum.
+		///
+		////////////////////////////////////////////////////////////////
+		enum eBufferMask
+		{
+			PositionMask			= 1,
+			TextureCoordMask		= 2,
+			NormalMask				= 4,
+			BoneMask				= 8,
+			NextPositionMask		= 16,
+			NextTextureCoordMask	= 32,
+			NextNormalMask			= 64
+		};
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Default buffer mask indices.
+		///
+		////////////////////////////////////////////////////////////////
+		enum eBufferIndex
+		{
+			PositionIndex			= 0,
+			TextureCoordIndex		= 1,
+			NormalIndex				= 2,
+			BoneIndex				= 3,
+			NextPositionIndex		= 4,
+			NextTextureCoordIndex	= 5,
+			NextNormalIndex			= 6
+		};
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Default constructor. 
@@ -115,13 +147,13 @@ namespace Bit
 		/// \brief Get the vertex buffer at the given index.
 		///
 		////////////////////////////////////////////////////////////////
-		const VertexBuffer * GetVertexBuffer( const SizeType & p_Index ) const;
+		VertexBuffer * GetVertexBuffer( const SizeType & p_Index ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the vertex array.
 		///
 		////////////////////////////////////////////////////////////////
-		const VertexArray * GetVertexArray(  ) const;
+		VertexArray * GetVertexArray(  ) const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get the bitmask
@@ -147,10 +179,10 @@ namespace Bit
 		typedef std::vector<VertexBuffer *> VertexBufferVector;
 
 		// Private varaibles.
-		VertexBufferVector m_VertexBuffers; ///< Vector of vertex buffers.
-		VertexArray * m_pVertexArray;		///< Vertex array with the vertex buffers bound to it.
-		Uint16 m_Bitmask;					///< Bitmask of all the buffers that are bound to the vertex array.
-		ModelMaterial * m_pMaterial;			///< Pointer to the material.
+		VertexBufferVector	m_VertexBuffers;	///< Vector of vertex buffers.
+		VertexArray *		m_pVertexArray;		///< Vertex array with the vertex buffers bound to it.
+		Uint16				m_Bitmask;			///< Bitmask of all the buffers that are bound to the vertex array.
+		ModelMaterial *		m_pMaterial;		///< Pointer to the material.
 
 	};
 

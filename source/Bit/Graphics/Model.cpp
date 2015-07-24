@@ -23,15 +23,23 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/Model.hpp>
+#include <Bit/Graphics/Renderer.hpp>
 #include <Bit/Graphics/GraphicDevice.hpp>
+#include <Bit/Graphics/Texture.hpp>
 #include <Bit/Graphics/VertexBuffer.hpp>
 #include <Bit/Graphics/VertexArray.hpp>
+#include <Bit/Graphics/ShaderProgram.hpp>
 #include <Bit/Graphics/ObjFile.hpp>
 #include <Bit/Graphics/ObjMaterialFile.hpp>
 #include <Bit/Graphics/Md2File.hpp>
+#include <Bit/Graphics/Model/VertexAnimation.hpp>
+#include <Bit/Graphics/Model/VertexAnimationTrack.hpp>
+#include <Bit/Graphics/Model/VertexKeyFrame.hpp>
+#include <sstream>
 #include <iostream>
 #include <algorithm>
 #include <Bit/System/ResourceManager.hpp>
+#include <Bit/System/MatrixManager.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 #if defined( BIT_PLATFORM_WINDOWS )
@@ -41,7 +49,9 @@
 namespace Bit
 {
 	Model::Model( const GraphicDevice & p_GraphicDevice ) :
-		m_GraphicDevice( p_GraphicDevice )
+		m_GraphicDevice( p_GraphicDevice ),
+		m_Skeleton( this ),
+		m_AnimationState( this )
 	{
 	}
 
@@ -53,7 +63,33 @@ namespace Bit
 		}
 	}
 
-	Bool  Model::LoadFromFile(	const std::string & p_Filename,
+	void Model::Draw(Renderer & p_Renderer)
+	{
+		// Check the animation state.
+		if (m_AnimationState.GetState() == AnimationState::Stopped)
+		{
+			RenderInitialPose(p_Renderer);
+		}
+		else
+		{
+			// Error check the animation pointer.
+			if (m_AnimationState.m_pAnimation == NULL)
+			{
+				return;
+			}
+
+			if (m_AnimationState.m_pAnimation->GetType() == Animation::Skeletal)
+			{
+				RenderSkeletalAnimation(p_Renderer);
+			}
+			else if (m_AnimationState.m_pAnimation->GetType() == Animation::PerVertex)
+			{
+				RenderVertexAnimation(p_Renderer);
+			}
+		}
+	}
+
+	Bool Model::LoadFromFile(	const std::string & p_Filename,
 								const Bool p_LoadTextureCoords,
 								const Bool p_LoadNormals,
 								const Bool p_LoadTangents,
@@ -253,10 +289,10 @@ namespace Bit
 					}
 
 					// Add the vertex buffer to the vertex array.
-					pVertexArray->AddVertexBuffer( *pPositionVertexBuffer, 3, DataType::Float32, 0 );
+					pVertexArray->AddVertexBuffer(*pPositionVertexBuffer, 3, DataType::Float32, ModelVertexData::PositionIndex);
 
 					// Add the vertex buffer to the model vertex data class.
-					pModelVertexData->AddVertexBuffer( pPositionVertexBuffer, 0x01 );
+					pModelVertexData->AddVertexBuffer(pPositionVertexBuffer, ModelVertexData::PositionMask);
 					
 					// //////////////////////////////////////////////////////////////////////////////////////
 					// Try to add texture coordinate and normal buffers as well.
@@ -273,10 +309,10 @@ namespace Bit
 							if( pTextureVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
 							{
 								// Add the vertex buffer to the vertex array.
-								pVertexArray->AddVertexBuffer( *pTextureVertexBuffer, 2, DataType::Float32, 1 );
+								pVertexArray->AddVertexBuffer(*pTextureVertexBuffer, 2, DataType::Float32, ModelVertexData::TextureCoordIndex);
 
 								// Add the vertex buffer to the vertex data class.
-								pModelVertexData->AddVertexBuffer( pTextureVertexBuffer, 0x02 );
+								pModelVertexData->AddVertexBuffer(pTextureVertexBuffer, ModelVertexData::TextureCoordMask);
 							}
 
 							// Delete the allocated data
@@ -297,10 +333,10 @@ namespace Bit
 							if( pNormalVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
 							{
 								// Add the vertex buffer to the vertex array.
-								pVertexArray->AddVertexBuffer( *pNormalVertexBuffer, 3, DataType::Float32, 2 );
+								pVertexArray->AddVertexBuffer(*pNormalVertexBuffer, 3, DataType::Float32, ModelVertexData::NormalIndex);
 
 								// Add the vertex buffer to the vertex data class.
-								pModelVertexData->AddVertexBuffer( pNormalVertexBuffer, 0x04 );
+								pModelVertexData->AddVertexBuffer(pNormalVertexBuffer, ModelVertexData::NormalMask);
 							}
 
 							// Delete the allocated data
@@ -352,10 +388,6 @@ namespace Bit
 			}
 		}
 
-
-		// Create the vertex buffer.
-		SizeType bufferSize = 0;
-
 		// Get the first frame
 		if( md2.GetFrameCount( ) == 0 )
 		{
@@ -363,98 +395,50 @@ namespace Bit
 			return false;
 		}
 
-		Float32 * pBufferData = md2.CreatePositionBuffer<Float32>( bufferSize, 0 );
-
-		// Error check the position buffer data
-		if( pBufferData == NULL )
+		// Get the first frame(initial pose)
+		if (LoadMd2Frame(	md2, &m_VertexGroup, 0,
+							p_LoadTextureCoords,
+							p_LoadNormals,
+							p_LoadTangents,
+							p_LoadBinormals) == false)
 		{
-			std::cout << "[Model::LoadFromMd2File] No postiion data were found in the obj file." << std::endl;
+			std::cout << "[Model::LoadFromMd2File] Could not load frame 0." << std::endl;
 			return false;
 		}
 
-		// Load the position vertex buffer
-		VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
-		if( pPositionVertexBuffer->Load( bufferSize * 4, pBufferData ) == false )
+		// Now, let's add all the other keyframes, let's animate!
+
+		// Create an animation. All animations are actually just one.
+		VertexAnimation * pAnimation = m_Skeleton.CreateVertexAnimation();
+
+		// Create an animation track.
+		VertexAnimationTrack * pAnimationTrack = reinterpret_cast<VertexAnimationTrack*>(pAnimation->CreateTrack());
+
+		// Go through the rest of the frames.
+		for (SizeType i = 1; i < md2.GetFrameCount(); i++)
 		{
-			std::cout << "[Model::LoadFromMd2File] Can not load the vertex buffer" << std::endl;
-			return false;
-		}
 
-		// Delete the allocated data
-		delete [ ] pBufferData;
-
-		// Add new model vertex data to the vertex group
-		ModelVertexData * pModelVertexData = m_VertexGroup.AddVertexData( );
-
-		// Error check the vertex model vertex data
-		if( pModelVertexData == NULL )
-		{
-			std::cout << "[Model::LoadFromMd2File] Can not add vertex data to model vertex group." << std::endl;
-			return false;
-		}
+			// Create key frame.
+			VertexKeyFrame * pKeyFrame = reinterpret_cast<VertexKeyFrame*>(pAnimationTrack->CreateKeyFrame(Seconds(static_cast<Float64>(i - 1) / 25.0f)));
 		
-		// Create the vertex array and add it to the vertex data
-		VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray( );
-		pModelVertexData->SetVertexArray( pVertexArray );
-
-		// Set the default(the only material for the model vertex data
-		pModelVertexData->SetMaterial( m_Materials[ 0 ] );
-	
-		// Add the vertex buffer to the vertex array.
-		pVertexArray->AddVertexBuffer( *pPositionVertexBuffer, 3, DataType::Float32, 0 );
-
-		// Add the vertex buffer to the model vertex data class.
-		pModelVertexData->AddVertexBuffer( pPositionVertexBuffer, 0x01 );
-
-		// //////////////////////////////////////////////////////////////////////////////////////
-		// Try to add texture coordinate and normal buffers as well.
-		// Create the texture coordinate buffer from the obj file.
-		if( p_LoadTextureCoords )
-		{
-			pBufferData = md2.CreateTextureCoordBuffer<Float32>( bufferSize );
-
-			// Error check the position buffer data
-			if( pBufferData != NULL )
+			// Load the frame.
+			if (LoadMd2Frame(md2, &(pKeyFrame->GetVertexGroup()), i,
+				p_LoadTextureCoords,
+				p_LoadNormals,
+				p_LoadTangents,
+				p_LoadBinormals) == false)
 			{
-				// Load the position vertex buffer
-				VertexBuffer * pTextureVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
-				if( pTextureVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
-				{
-					// Add the vertex buffer to the vertex array.
-					pVertexArray->AddVertexBuffer( *pTextureVertexBuffer, 2, DataType::Float32, 1 );
-
-					// Add the vertex buffer to the vertex data class.
-					pModelVertexData->AddVertexBuffer( pTextureVertexBuffer, 0x02 );
-				}
-
-				// Delete the allocated data
-				delete [ ] pBufferData;
+				std::cout << "[Model::LoadFromMd2File] Could not load frame " << i << "." << std::endl;
+				return false;
 			}
 		}
 
-		// Create the normal buffer from the obj file.
-		if( p_LoadNormals )
-		{
-			pBufferData = md2.CreateNormalBuffer<Float32>( bufferSize, 0 );
-
-			// Error check the position buffer data
-			if( pBufferData != NULL )
-			{
-				// Load the position vertex buffer
-				VertexBuffer * pNormalVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
-				if( pNormalVertexBuffer->Load( bufferSize * 4, pBufferData ) != false )
-				{
-					// Add the vertex buffer to the vertex array.
-					pVertexArray->AddVertexBuffer( *pNormalVertexBuffer, 3, DataType::Float32, 2 );
-
-					// Add the vertex buffer to the vertex data class.
-					pModelVertexData->AddVertexBuffer( pNormalVertexBuffer, 0x04 );
-				}
-
-				// Delete the allocated data
-				delete [ ] pBufferData;
-			}
-		}
+		// Fix in terpolations
+		FixVertexInterpolation(	pAnimationTrack,
+								p_LoadTextureCoords,
+								p_LoadNormals,
+								p_LoadTangents,
+								p_LoadBinormals);
 
 		// Succeeded
 		return true;
@@ -463,6 +447,11 @@ namespace Bit
 	Skeleton & Model::GetSkeleton( )
 	{
 		return m_Skeleton;
+	}
+
+	AnimationState & Model::GetAnimationState()
+	{
+		return m_AnimationState;
 	}
 
 	ModelVertexGroup & Model::GetVertexGroup( )
@@ -485,6 +474,438 @@ namespace Bit
 
 		// Get the json material value
 		return *m_Materials[ p_Index ];
+	}
+
+	void Model::RenderInitialPose(Renderer & p_Renderer)
+	{
+		// Get const free graphic device
+		GraphicDevice * pGraphicDevice = p_Renderer.GetGraphicDevice();
+
+		// Get the default shader program.
+		ShaderProgram * pShaderProgram = m_GraphicDevice.GetDefaultShaderProgram(GraphicDevice::InitialPoseShader);
+
+		// Error check the shader program.
+		if (pShaderProgram == NULL)
+		{
+			return;
+		}
+
+		// Get the vertex group
+		ModelVertexGroup & vertexGroup = GetVertexGroup();
+
+		// Error check the vertex data.
+		if (vertexGroup.GetVertexDataCount() == 0)
+		{
+			return;
+		}
+
+		// Bind the shader program.
+		pShaderProgram->Bind();
+
+		// Set uniform data.
+		pShaderProgram->SetUniformMatrix4x4f("uProjectionMatrix", MatrixManager::GetProjectionMatrix());
+		pShaderProgram->SetUniformMatrix4x4f("uModelViewMatrix", MatrixManager::GetModelViewMatrix());
+
+		// Set light uniforms
+		GraphicDevice::DefaultModelSettings & modelSettings = pGraphicDevice->GetDefaultModelSettings();
+
+		// Set light count
+		pShaderProgram->SetUniform1i("uLightCount", modelSettings.GetActiveLightCount());
+
+		// Set ambient color
+		const Vector3f32 & ambColor = modelSettings.GetAmbientLight();
+		pShaderProgram->SetUniform3f("uAmbientColor", ambColor.x, ambColor.y, ambColor.z);
+
+		// Go throguh all the lights
+		for (SizeType i = 0; i < modelSettings.GetActiveLightCount(); i++)
+		{
+			std::stringstream positionStream;
+			positionStream << "uLightPositions[" << i << "]";
+			std::stringstream colorStream;
+			colorStream << "uLightColors[" << i << "]";
+
+			const Vector4f32 & pos = modelSettings.GetLight(i).GetPosition();
+			const Vector3f32 & color = modelSettings.GetLight(i).GetColor();
+			pShaderProgram->SetUniform4f(positionStream.str().c_str(), pos.x, pos.y, pos.z, pos.w);
+			pShaderProgram->SetUniform3f(colorStream.str().c_str(), color.x, color.y, color.z);
+		}
+
+		// Go throguh all the vertex data elements.
+		for (SizeType i = 0; i < vertexGroup.GetVertexDataCount(); i++)
+		{
+			// Get the current vertex data.
+			ModelVertexData * vertexData = vertexGroup.GetVertexData(i);
+
+			// Error check the vertex data pointer.
+			if (vertexData == NULL || vertexData->GetVertexArray() == NULL)
+			{
+				continue;
+			}
+
+			//pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
+			if (vertexData->GetBitmask() & ModelVertexData::TextureCoordMask)
+			{
+				pShaderProgram->SetUniform1i("uUseTexture", 1);
+			}
+			else
+			{
+				pShaderProgram->SetUniform1i("uUseTexture", 0);
+			}
+
+			// Set use normals flag.
+			if (vertexData->GetBitmask() & ModelVertexData::NormalMask)
+			{
+				pShaderProgram->SetUniform1i("uUseNormals", 1);
+			}
+			else
+			{
+				pShaderProgram->SetUniform1i("uUseNormals", 0);
+			}
+
+			// Get the model material
+			const ModelMaterial & material = vertexData->GetMaterial();
+
+			// Bind the color texture if any
+			Texture * pTexture = material.GetColorTexture();
+
+			// Bind the texture.
+			if (pTexture)
+			{
+				pTexture->Bind(0);
+			}
+
+			// Render the model.
+			vertexData->GetVertexArray()->Render(PrimitiveMode::Triangles);
+		}
+
+		// Unbind the shader program.
+		pShaderProgram->Unbind();
+	}
+
+	void Model::RenderVertexAnimation(Renderer & p_Renderer)
+	{
+		// Get and set the animation time
+		if (m_AnimationState.m_State == AnimationState::Playing)
+		{
+			m_AnimationState.m_Timer.Stop();
+			m_AnimationState.m_Time += m_AnimationState.m_Timer.GetTime();
+			m_AnimationState.m_Timer.Start();
+		}
+
+		// Get the animation track
+		VertexAnimationTrack * pAnimationTrack = reinterpret_cast<VertexAnimationTrack *>(m_AnimationState.m_pAnimation->GetTrack( 0 ));
+		if (pAnimationTrack == NULL)
+		{
+			return;
+		}
+
+		// Temporary calculate the frame index;
+		SizeType frameIndex = static_cast<SizeType>(m_AnimationState.m_Time.AsSeconds() * m_AnimationState.GetAnimationSpeed( ));
+		frameIndex %= pAnimationTrack->GetKeyFrameCount();
+
+
+		// Get const free graphic device
+		GraphicDevice * pGraphicDevice = p_Renderer.GetGraphicDevice();
+
+		// Get the default shader program.
+		ShaderProgram * pShaderProgram = m_GraphicDevice.GetDefaultShaderProgram(GraphicDevice::VertexAnimationShader);
+
+		// Error check the shader program.
+		if (pShaderProgram == NULL)
+		{
+			return;
+		}
+
+		// Get the frame
+		VertexKeyFrame * pKeyFrame = reinterpret_cast<VertexKeyFrame *>(pAnimationTrack->GetKeyFrame(frameIndex));
+
+		// Get the vertex group
+		ModelVertexGroup & vertexGroup = pKeyFrame->GetVertexGroup();
+
+		// Error check the vertex data.
+		if (vertexGroup.GetVertexDataCount() == 0)
+		{
+			return;
+		}
+
+		// Bind the shader program.
+		pShaderProgram->Bind();
+
+		// Set animation uniform
+		pShaderProgram->SetUniform1f("u_Interpolation", ((m_AnimationState.m_Time * m_AnimationState.GetAnimationSpeed()) % Seconds(1.0f)).AsSeconds());
+
+		
+
+		// Set uniform data.
+		pShaderProgram->SetUniformMatrix4x4f("uProjectionMatrix", MatrixManager::GetProjectionMatrix());
+		pShaderProgram->SetUniformMatrix4x4f("uModelViewMatrix", MatrixManager::GetModelViewMatrix());
+
+		// Set light uniforms
+		GraphicDevice::DefaultModelSettings & modelSettings = pGraphicDevice->GetDefaultModelSettings();
+
+		// Set light count
+		pShaderProgram->SetUniform1i("uLightCount", modelSettings.GetActiveLightCount());
+
+		// Set ambient color
+		const Vector3f32 & ambColor = modelSettings.GetAmbientLight();
+		pShaderProgram->SetUniform3f("uAmbientColor", ambColor.x, ambColor.y, ambColor.z);
+
+		// Go throguh all the lights
+		for (SizeType i = 0; i < modelSettings.GetActiveLightCount(); i++)
+		{
+			std::stringstream positionStream;
+			positionStream << "uLightPositions[" << i << "]";
+			std::stringstream colorStream;
+			colorStream << "uLightColors[" << i << "]";
+
+			const Vector4f32 & pos = modelSettings.GetLight(i).GetPosition();
+			const Vector3f32 & color = modelSettings.GetLight(i).GetColor();
+			pShaderProgram->SetUniform4f(positionStream.str().c_str(), pos.x, pos.y, pos.z, pos.w);
+			pShaderProgram->SetUniform3f(colorStream.str().c_str(), color.x, color.y, color.z);
+		}
+
+		// Go throguh all the vertex data elements.
+		for (SizeType i = 0; i < vertexGroup.GetVertexDataCount(); i++)
+		{
+			// Get the current vertex data.
+			ModelVertexData * vertexData = vertexGroup.GetVertexData(i);
+
+			// Error check the vertex data pointer.
+			if (vertexData == NULL || vertexData->GetVertexArray() == NULL)
+			{
+				continue;
+			}
+
+			//pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
+			if (vertexData->GetBitmask() & ModelVertexData::TextureCoordMask)
+			{
+				pShaderProgram->SetUniform1i("uUseTexture", 1);
+			}
+			else
+			{
+				pShaderProgram->SetUniform1i("uUseTexture", 0);
+			}
+
+			// Set use normals flag.
+			if (vertexData->GetBitmask() & ModelVertexData::NormalMask)
+			{
+				pShaderProgram->SetUniform1i("uUseNormals", 1);
+			}
+			else
+			{
+				pShaderProgram->SetUniform1i("uUseNormals", 0);
+			}
+
+			// Get the model material
+			const ModelMaterial & material = vertexData->GetMaterial();
+
+			// Bind the color texture if any
+			Texture * pTexture = material.GetColorTexture();
+
+			// Bind the texture.
+			if (pTexture)
+			{
+				pTexture->Bind(0);
+			}
+
+			// Render the model.
+			vertexData->GetVertexArray()->Render(PrimitiveMode::Triangles);
+		}
+
+		// Unbind the shader program.
+		pShaderProgram->Unbind();
+
+
+
+	}
+
+	void Model::RenderSkeletalAnimation(Renderer & p_Renderer)
+	{
+	}
+
+	Bool Model::LoadMd2Frame(	Md2File & p_Md2File,
+								ModelVertexGroup * p_pModelVertexGroup,
+								const SizeType p_FrameIndex,
+								const Bool p_LoadTextureCoords,
+								const Bool p_LoadNormals,
+								const Bool p_LoadTangents,
+								const Bool p_LoadBinormals)
+	{
+		if (p_pModelVertexGroup == NULL)
+		{
+			return false;
+		}
+
+		// Create the vertex buffer.
+		SizeType bufferSize = 0;
+
+		Float32 * pBufferData = p_Md2File.CreatePositionBuffer<Float32>(bufferSize, p_FrameIndex);
+
+		// Error check the position buffer data
+		if (pBufferData == NULL)
+		{
+			std::cout << "[Model::LoadFromMd2File] No postiion data were found in the obj file." << std::endl;
+			return false;
+		}
+
+		// Load the position vertex buffer
+		VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer();
+		if (pPositionVertexBuffer->Load(bufferSize * 4, pBufferData) == false)
+		{
+			std::cout << "[Model::LoadFromMd2File] Can not load the vertex buffer" << std::endl;
+			return false;
+		}
+
+		// Delete the allocated data
+		delete[] pBufferData;
+
+		// Add new model vertex data to the vertex group
+		ModelVertexData * pModelVertexData = p_pModelVertexGroup->AddVertexData();
+
+		// Error check the vertex model vertex data
+		if (pModelVertexData == NULL)
+		{
+			std::cout << "[Model::LoadFromMd2File] Can not add vertex data to model vertex group." << std::endl;
+			return false;
+		}
+
+		// Create the vertex array and add it to the vertex data
+		VertexArray * pVertexArray = m_GraphicDevice.CreateVertexArray();
+		pModelVertexData->SetVertexArray(pVertexArray);
+
+		// Set the default(the only material for the model vertex data
+		pModelVertexData->SetMaterial(m_Materials[0]);
+
+		// Add the vertex buffer to the vertex array.
+		pVertexArray->AddVertexBuffer(*pPositionVertexBuffer, 3, DataType::Float32, ModelVertexData::PositionIndex);
+
+		// Add the vertex buffer to the model vertex data class.
+		pModelVertexData->AddVertexBuffer(pPositionVertexBuffer, ModelVertexData::PositionMask);
+
+		// //////////////////////////////////////////////////////////////////////////////////////
+		// Try to add texture coordinate and normal buffers as well.
+		// Create the texture coordinate buffer from the obj file.
+		if (p_LoadTextureCoords)
+		{
+			pBufferData = p_Md2File.CreateTextureCoordBuffer<Float32>(bufferSize);
+
+			// Error check the position buffer data
+			if (pBufferData != NULL)
+			{
+				// Load the position vertex buffer
+				VertexBuffer * pTextureVertexBuffer = m_GraphicDevice.CreateVertexBuffer();
+				if (pTextureVertexBuffer->Load(bufferSize * 4, pBufferData) != false)
+				{
+					// Add the vertex buffer to the vertex array.
+					pVertexArray->AddVertexBuffer(*pTextureVertexBuffer, 2, DataType::Float32, ModelVertexData::TextureCoordIndex);
+
+					// Add the vertex buffer to the vertex data class.
+					pModelVertexData->AddVertexBuffer(pTextureVertexBuffer, ModelVertexData::TextureCoordMask);
+				}
+
+				// Delete the allocated data
+				delete[] pBufferData;
+			}
+		}
+
+		// Create the normal buffer from the obj file.
+		if (p_LoadNormals)
+		{
+			pBufferData = p_Md2File.CreateNormalBuffer<Float32>(bufferSize, p_FrameIndex);
+
+			// Error check the position buffer data
+			if (pBufferData != NULL)
+			{
+				// Load the position vertex buffer
+				VertexBuffer * pNormalVertexBuffer = m_GraphicDevice.CreateVertexBuffer();
+				if (pNormalVertexBuffer->Load(bufferSize * 4, pBufferData) != false)
+				{
+					// Add the vertex buffer to the vertex array.
+					pVertexArray->AddVertexBuffer(*pNormalVertexBuffer, 3, DataType::Float32, ModelVertexData::NormalIndex);
+
+					// Add the vertex buffer to the vertex data class.
+					pModelVertexData->AddVertexBuffer(pNormalVertexBuffer, ModelVertexData::NormalMask);
+				}
+
+				// Delete the allocated data
+				delete[] pBufferData;
+			}
+		}
+
+		return true;
+	}
+
+	void Model::FixVertexInterpolation(	VertexAnimationTrack * p_pAnimationTrack,
+										const Bool p_LoadTextureCoords,
+										const Bool p_LoadNormals,
+										const Bool p_LoadTangents,
+										const Bool p_LoadBinormals)
+	{
+
+		// Go through all the key frames.
+		for (SizeType i = 0; i < p_pAnimationTrack->GetKeyFrameCount() - 1; i++)
+		{
+			// Get current and next frame
+			VertexKeyFrame * pCurrentFrame = reinterpret_cast<VertexKeyFrame *>(p_pAnimationTrack->GetKeyFrame(i));
+			VertexKeyFrame * pNextFrame = reinterpret_cast<VertexKeyFrame *>(p_pAnimationTrack->GetKeyFrame(i + 1));
+
+			// Get needed variables.
+			ModelVertexData * pCurrentVertexData	= pCurrentFrame->GetVertexGroup().GetVertexData(0);
+			VertexArray * pCurrentVertexArray		= pCurrentVertexData->GetVertexArray();
+			ModelVertexData * pNextVertexData		= pNextFrame->GetVertexGroup().GetVertexData(0);
+
+			//pCurrentFrame->GetVertexGroup().GetVertexData(0)->GetVertexBufferCount( )
+
+			// Add all the next frame's VBOs to the current frame,
+			// Only go through the position and normal masks.
+			ModelVertexData::eBufferIndex currentIndex = ModelVertexData::NextPositionIndex;
+			for (SizeType j = 0; j < pNextVertexData->GetVertexBufferCount() && j < 3; j++)
+			{
+				//pCurrentVertexData->AddVertexBuffer(pNextVertexData->GetVertexBuffer(j), currentIndex);
+				pCurrentVertexArray->AddVertexBuffer(*pNextVertexData->GetVertexBuffer(j), 3, DataType::Float32, currentIndex);
+
+				if (j == 0)
+				{
+					currentIndex = ModelVertexData::NextTextureCoordIndex;
+				}
+				else if (j == 1)
+				{
+					currentIndex = ModelVertexData::NextNormalIndex;
+				}
+			}
+		
+		}
+
+		// Add the first frame to the last one.
+		// Get current and next frame
+		VertexKeyFrame * pCurrentFrame = reinterpret_cast<VertexKeyFrame *>(p_pAnimationTrack->GetKeyFrame(p_pAnimationTrack->GetKeyFrameCount() - 1));
+		VertexKeyFrame * pNextFrame = reinterpret_cast<VertexKeyFrame *>(p_pAnimationTrack->GetKeyFrame(0));
+
+		// Get needed variables.
+		ModelVertexData * pCurrentVertexData = pCurrentFrame->GetVertexGroup().GetVertexData(0);
+		VertexArray * pCurrentVertexArray = pCurrentVertexData->GetVertexArray();
+		ModelVertexData * pNextVertexData = pNextFrame->GetVertexGroup().GetVertexData(0);
+
+		//pCurrentFrame->GetVertexGroup().GetVertexData(0)->GetVertexBufferCount( )
+
+		// Add all the next frame's VBOs to the current frame,
+		// Only go through the position and normal masks.
+		ModelVertexData::eBufferIndex currentIndex = ModelVertexData::NextPositionIndex;
+		for (SizeType j = 0; j < pNextVertexData->GetVertexBufferCount() && j < 3; j++)
+		{
+			//pCurrentVertexData->AddVertexBuffer(pNextVertexData->GetVertexBuffer(j), currentIndex);
+			pCurrentVertexArray->AddVertexBuffer(*pNextVertexData->GetVertexBuffer(j), 3, DataType::Float32, currentIndex);
+
+			if (j == 0)
+			{
+				currentIndex = ModelVertexData::NextTextureCoordIndex;
+			}
+			else if (j == 1)
+			{
+				currentIndex = ModelVertexData::NextNormalIndex;
+			}
+		}
+
 	}
 
 }

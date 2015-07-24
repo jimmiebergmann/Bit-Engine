@@ -58,7 +58,7 @@ namespace Bit
 			{
 				pivot = ( min + max ) / 2;
 
-				if( p_Time.AsMicroseconds( ) >= m_KeyFrames[ pivot ]->GetTime( ).AsMicroseconds( ) )
+				if( p_Time >= m_KeyFrames[ pivot ]->GetTime( ) )
 				{
 					min = pivot + 1;
 				}

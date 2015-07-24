@@ -28,7 +28,7 @@
 namespace Bit
 {
 
-	static GLenum g_OpenGLDataTypes[ static_cast<SizeType>( DataType::SizeType ) + 1 ] =
+	static const GLenum g_OpenGLDataTypes[static_cast<SizeType>(DataType::SizeType) + 1] =
 	{
 		/*None		*/ 0,
 		/*Int8		*/ GL_BYTE,
@@ -45,7 +45,7 @@ namespace Bit
 		/*SizeType	*/ 0
 	};
 
-	static SizeType g_OpenGLDataSize[ static_cast<SizeType>( DataType::SizeType ) + 1 ] =
+	static const SizeType g_OpenGLDataSize[static_cast<SizeType>(DataType::SizeType) + 1] =
 	{
 		/*None		*/ 0,
 		/*Int8		*/ sizeof( Int8 ),
@@ -62,7 +62,7 @@ namespace Bit
 		/*SizeType	*/ 0
 	};
 
-	static GLenum g_OpenGLPrimitiveModes[ static_cast<SizeType>( PrimitiveMode::TriangleFan ) + 1 ] =
+	static const GLenum g_OpenGLPrimitiveModes[ static_cast<SizeType>( PrimitiveMode::TriangleFan ) + 1 ] =
 	{
 		/*Points		*/ GL_POINTS,
 		/*Lines			*/ GL_LINES,

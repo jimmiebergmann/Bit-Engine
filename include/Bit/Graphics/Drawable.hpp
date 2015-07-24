@@ -1,7 +1,3 @@
-// ///////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-//
-// This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
 //
@@ -22,57 +18,41 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_MODEL_VERTEX_KEY_FRAME_HPP
-#define BIT_GRAPHICS_MODEL_VERTEX_KEY_FRAME_HPP
+#ifndef BIT_GRAPHICS_DRAWABLE_HPP
+#define BIT_GRAPHICS_DRAWABLE_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Graphics/Model/KeyFrame.hpp>
-#include <Bit/Graphics/Model/ModelVertexData.hpp>
 
 namespace Bit
 {
 
+	// Forward declarations.
+	class Renderer;
+
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Vertex key frame class for 3D models.
-	///
-	/// \see Skeleton
+	/// \brief Drawable base class. 
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexKeyFrame : public KeyFrame
+	class BIT_API Drawable
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor. 
+		/// \brief Virtual destructor
 		///
 		////////////////////////////////////////////////////////////////
-		VertexKeyFrame( const Time & p_Time );
+		~Drawable() { }
+
+		// Friend classes
+		friend class Renderer;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Destructor. 
+		/// \brief Draw any drawable object.
 		///
 		////////////////////////////////////////////////////////////////
-		~VertexKeyFrame( );
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get time. 
-		///
-		////////////////////////////////////////////////////////////////
-		virtual const Time & GetTime( ) const;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Get vertex data.
-		///
-		////////////////////////////////////////////////////////////////
-		ModelVertexGroup & GetVertexGroup();
-
-	private:
-
-		// Private variables
-		Time m_Time;
-		ModelVertexGroup m_VertexGroup;
+		virtual void Draw(Renderer & p_Renderer) = 0;
 
 	};
 

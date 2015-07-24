@@ -37,6 +37,8 @@ namespace Bit
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
 	/// \brief Animation track base class for 3D models.
+	///		   Used for skeletons, in order to animate each bone.
+	///		   Only one track is being used for vertex animations.
 	///
 	/// \see Skeleton
 	///

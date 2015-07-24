@@ -1,7 +1,3 @@
-// ///////////////////////////////////////////////////////////////////////////
-// Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
-//
-// This software is provided 'as-is', without any express or
 // implied warranty. In no event will the authors be held
 // liable for any damages arising from the use of this software.
 //
@@ -22,57 +18,57 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_GRAPHICS_MODEL_VERTEX_KEY_FRAME_HPP
-#define BIT_GRAPHICS_MODEL_VERTEX_KEY_FRAME_HPP
+#ifndef BIT_GRAPHICS_RENDERER_HPP
+#define BIT_GRAPHICS_RENDERER_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Graphics/Model/KeyFrame.hpp>
-#include <Bit/Graphics/Model/ModelVertexData.hpp>
+#include <Bit/NonCopyable.hpp>
 
 namespace Bit
 {
 
+	// Forward declarations
+	class Drawable;
+	class GraphicDevice;
+
 	////////////////////////////////////////////////////////////////
 	/// \ingroup Graphics
-	/// \brief Vertex key frame class for 3D models.
-	///
-	/// \see Skeleton
+	/// \brief Renderer class. 
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API VertexKeyFrame : public KeyFrame
+	class BIT_API Renderer : public NonCopyable
 	{
 
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor. 
+		/// \brief Constructor
 		///
 		////////////////////////////////////////////////////////////////
-		VertexKeyFrame( const Time & p_Time );
+		Renderer(GraphicDevice * p_pGraphicDevice);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Destructor. 
+		/// \brief Destructor
 		///
 		////////////////////////////////////////////////////////////////
-		~VertexKeyFrame( );
+		~Renderer();
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get time. 
+		/// \brief Draw any drawable object.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual const Time & GetTime( ) const;
+		void Draw(Drawable & p_Drawable);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get vertex data.
+		/// \brief Draw any drawable object.
 		///
 		////////////////////////////////////////////////////////////////
-		ModelVertexGroup & GetVertexGroup();
+		GraphicDevice * GetGraphicDevice() const;
 
 	private:
 
 		// Private variables
-		Time m_Time;
-		ModelVertexGroup m_VertexGroup;
+		GraphicDevice *  m_pGraphicDevice;
 
 	};
 

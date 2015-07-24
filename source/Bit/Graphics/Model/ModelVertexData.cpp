@@ -105,12 +105,12 @@ namespace Bit
 		return static_cast<SizeType>( m_VertexBuffers.size( ) );
 	}	
 
-	const VertexBuffer * ModelVertexData::GetVertexBuffer( const SizeType & p_Index ) const
+	VertexBuffer * ModelVertexData::GetVertexBuffer( const SizeType & p_Index ) const
 	{
 		return m_VertexBuffers[ p_Index ];
 	}
 
-	const VertexArray * ModelVertexData::GetVertexArray(  ) const
+	VertexArray * ModelVertexData::GetVertexArray(  ) const
 	{
 		return m_pVertexArray;
 	}

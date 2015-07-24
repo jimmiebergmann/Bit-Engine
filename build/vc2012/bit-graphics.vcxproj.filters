@@ -101,6 +101,11 @@
     <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLPostProcessingBloom.hpp">
       <Filter>OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Renderer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Drawable.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationState.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp">
@@ -165,6 +170,10 @@
     <ClCompile Include="..\..\source\Bit\Graphics\Md2File.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLPostProcessingBloom.cpp">
       <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Renderer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\AnimationState.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

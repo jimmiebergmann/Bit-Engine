@@ -22,176 +22,144 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_SYSTEM_TIME_HPP
-#define BIT_SYSTEM_TIME_HPP
+#ifndef BIT_GRAPHICS_MODEL_ANIMATION_STATE_HPP
+#define BIT_GRAPHICS_MODEL_ANIMATION_STATE_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/Graphics/Model/Animation.hpp>
+#include <Bit/System/Timer.hpp>
 
 namespace Bit
 {
 
+	// Forward declarations.
+	class Model;
+
 	////////////////////////////////////////////////////////////////
-	/// \ingroup System
-	/// \brief Time class
+	/// \ingroup Graphics
+	/// \brief Key frame base class for 3D models.
+	///
+	/// \see Skeleton
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API Time
+	class BIT_API AnimationState
 	{
 
 	public:
 
-		// Friend functions
-		friend BIT_API Time Seconds( const Float64 & );
-		friend BIT_API Time Milliseconds( const Uint64 & );
-		friend BIT_API Time Microseconds( const Uint64 & );
+		// Friend classes
+		friend class Model;
+		friend class Skeleton;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Default constructor.
+		/// \brief State enum.
 		///
 		////////////////////////////////////////////////////////////////
-		Time( );
+		enum eState
+		{
+			Playing,
+			Stopped,
+			Paused
+		};
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the time in seconds.
-		///
-		/// \return Time in seconds as a 64 bit floating point value.
+		/// \brief Constructor.
 		///
 		////////////////////////////////////////////////////////////////
-		Float64 AsSeconds( ) const;
+		AnimationState(Model * p_pModel);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the time in seconds.
-		///
-		/// \return Time in milliseconds as a 64 bit floating point value.
+		/// \brief Play paused or stopped animation.
 		///
 		////////////////////////////////////////////////////////////////
-		Uint64 AsMilliseconds( ) const;
+		void Play();
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Get the time in seconds.
-		///
-		/// \return Time in microseconds as a 64 bit floating point value.
+		/// \brief Play animation.
 		///
 		////////////////////////////////////////////////////////////////
-		Uint64 AsMicroseconds( ) const;
+		void Play(const SizeType p_AnimationIndex, const Time & p_StartTime = Time::Zero);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Value for representing infinite time.
+		/// \brief Stop animation.
 		///
 		////////////////////////////////////////////////////////////////
-		static const Time Infinite;
+		void Stop();
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Value for representing zero time.
+		/// \brief Pause animation.
 		///
 		////////////////////////////////////////////////////////////////
-		static const Time Zero;
+		void Pause();
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Equals to operator
+		/// \brief Set looping.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool operator == ( const Time & p_Time ) const;
+		void SetLooping(const Bool p_Looping);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Equals not to operator
+		/// \brief Set interpolating. Linear if true.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool operator != ( const Time & p_Time ) const;
+		void SetInterpolating(const Bool p_Interpolating);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Greater than operator
+		/// \brief Set animation speed.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool operator > ( const Time & p_Time ) const;
+		void SetAnimationSpeed(const Float32 p_Speed);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Less than operator
+		/// \brief Set current animation time.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool operator < ( const Time & p_Time ) const;
+		void SetTime(const Time & p_Time);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Greater than or equal to operator
+		/// \brief Get looping.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool operator >= ( const Time & p_Time ) const;
+		Bool GetLooping() const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Less than or equal to operator
+		/// \brief Get interpolating. Linear if true.
 		///
 		////////////////////////////////////////////////////////////////
-		Bool operator <= ( const Time & p_Time ) const;
+		Bool GetInterpolating() const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Plus operator, add two time classes together.
+		/// \brief Get current state.
 		///
 		////////////////////////////////////////////////////////////////
-		Time operator + (const Time & p_Time) const;
+		eState GetState() const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Add operator, add time to this time class.
+		/// \brief Get animation speed.
 		///
 		////////////////////////////////////////////////////////////////
-		Time & operator += (const Time & p_Time);
+		Float32 GetAnimationSpeed() const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Minus operator
+		/// \brief Get current state.
 		///
 		////////////////////////////////////////////////////////////////
-		Time operator - ( const Time & p_Time ) const;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Multiply operator
-		///
-		////////////////////////////////////////////////////////////////
-		Time operator * ( const Uint64 & p_Value ) const;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Division operator
-		///
-		////////////////////////////////////////////////////////////////
-		Time operator / (const Uint64 & p_Value) const;
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Modulus operator
-		///
-		////////////////////////////////////////////////////////////////
-		Time operator % (const Time & p_Time) const;
+		Time GetTime() const;
 
 	private:
 
-		// Private functions
-		Time( const Uint64 & p_Microseconds );
-
-		// Private variables
-		Uint64 m_Microseconds;	///< Time in nanoseconds.
+		// Private variables.
+		Model *		m_pParent;			///< Parent class.
+		Animation *	m_pAnimation;		///< Pointer to animation.
+		SizeType	m_AnimationIndex;	///< Animation index.
+		Bool		m_Looping;			///< If the animation should loop.
+		Bool		m_Interpolating;	///< If the animation should be interpolated.
+		eState		m_State;			///< Current state.
+		Float32		m_AnimationSpeed;	///< Animation speed.
+		Time		m_Time;				///< Current animation time.
+		Timer		m_Timer;			///< Animation timer.
 
 	};
-
-	////////////////////////////////////////////////////////////////
-	/// \brief Function for initializing a time class
-	///
-	/// \param p_Seconds Time in seconds.
-	///
-	////////////////////////////////////////////////////////////////
-	BIT_API Time Seconds( const Float64 & p_Seconds );
-
-	////////////////////////////////////////////////////////////////
-	/// \brief Function for initializing a time class
-	///
-	/// \param p_Milliseconds Time in milliseconds.
-	///
-	////////////////////////////////////////////////////////////////
-	BIT_API Time Milliseconds( const Uint64 & p_Milliseconds );
-
-	////////////////////////////////////////////////////////////////
-	/// \brief Function for initializing a time class
-	///
-	/// \param p_Microseconds Time in microseconds.
-	///
-	////////////////////////////////////////////////////////////////
-	BIT_API Time Microseconds( const Uint64 & p_Microseconds );
 
 }
 

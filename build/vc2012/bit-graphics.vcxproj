@@ -171,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Graphics\BmpFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Drawable.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Framebuffer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Image.hpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\ModelMaterial.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ModelRenderer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\Animation.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationState.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationTrack.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\KeyFrame.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Model\ModelVertexData.hpp" />
@@ -205,6 +207,7 @@
     <ClInclude Include="..\..\include\Bit\Graphics\PostProcessingBloom.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\PrimitiveMode.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Renderbuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Renderer.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\Shader.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
     <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
@@ -224,6 +227,7 @@
     <ClCompile Include="..\..\source\Bit\Graphics\Model.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\ModelMaterial.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\ModelRenderer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\AnimationState.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model\ModelVertexData.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model\Skeleton.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimation.cpp" />
@@ -243,6 +247,7 @@
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBuffer.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\PngFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Renderer.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\TextureProperties.cpp" />
     <ClCompile Include="..\..\source\Bit\Graphics\TgaFile.cpp" />
   </ItemGroup>

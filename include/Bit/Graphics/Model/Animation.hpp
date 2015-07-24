@@ -114,7 +114,8 @@ namespace Bit
 		/// \brief Get animation type
 		///
 		////////////////////////////////////////////////////////////////
-		virtual eType GetType( ) = 0;
+		virtual eType GetType() = 0;
+
 	};
 
 }
