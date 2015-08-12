@@ -612,6 +612,8 @@ namespace Bit
 			{
 				// Push mouse move event
 				e.Type = Event::MouseMoved;
+				e.MousePosition.x = static_cast<Int32>(LOWORD(p_LParam));
+				e.MousePosition.y = static_cast<Int32>(HIWORD(p_LParam));
 				m_Events.push( e );
 			}
 			break;
@@ -624,13 +626,10 @@ namespace Bit
 					Event e2;
 					e2.Type = Event::MouseJustPressed;
 					e2.Button = Mouse::Left;
+					e2.MousePosition.x = static_cast<Int32>(LOWORD(p_LParam));
+					e2.MousePosition.y = static_cast<Int32>(HIWORD(p_LParam));
 					m_Events.push( e2 );
 				}
-
-				// Add mouse pressed event
-				/*e.Type = Event::MousePressed;
-				e.Button = Mouse::Left;
-				m_Events.push( e );*/
 
 				// Set the button state
 				m_Mouse.SetCurrentButtonState( Mouse::Left, true );
@@ -646,13 +645,10 @@ namespace Bit
 					Event e2;
 					e2.Type = Event::MouseJustPressed;
 					e2.Button = Mouse::Middle;
+					e2.MousePosition.x = static_cast<Int32>(LOWORD(p_LParam));
+					e2.MousePosition.y = static_cast<Int32>(HIWORD(p_LParam));
 					m_Events.push( e2 );
 				}
-
-				// Add mouse pressed event
-				/*e.Type = Event::MousePressed;
-				e.Button = Mouse::Middle;
-				m_Events.push( e );*/
 
 				// Set the button state
 				m_Mouse.SetCurrentButtonState( Mouse::Middle, true );
@@ -668,13 +664,10 @@ namespace Bit
 					Event e2;
 					e2.Type = Event::MouseJustPressed;
 					e2.Button = Mouse::Right;
+					e2.MousePosition.x = static_cast<Int32>(LOWORD(p_LParam));
+					e2.MousePosition.y = static_cast<Int32>(HIWORD(p_LParam));
 					m_Events.push( e2 );
 				}
-
-				// Add mouse pressed event
-				/*e.Type = Event::MousePressed;
-				e.Button = Mouse::Right;
-				m_Events.push( e );*/
 
 				// Set the button state
 				m_Mouse.SetCurrentButtonState( Mouse::Right, true );
@@ -685,6 +678,8 @@ namespace Bit
 			{
 				e.Type = Event::MouseJustReleased;
 				e.Button = Mouse::Left;
+				e.MousePosition.x = static_cast<Int32>(LOWORD(p_LParam));
+				e.MousePosition.y = static_cast<Int32>(HIWORD(p_LParam));
 				m_Events.push( e );
 
 				// Set the button state
@@ -696,6 +691,8 @@ namespace Bit
 			{
 				e.Type = Event::MouseJustReleased;
 				e.Button = Mouse::Middle;
+				e.MousePosition.x = static_cast<Int32>(LOWORD(p_LParam));
+				e.MousePosition.y = static_cast<Int32>(HIWORD(p_LParam));
 				m_Events.push( e );
 
 				// Set the button state
@@ -707,6 +704,8 @@ namespace Bit
 			{
 				e.Type = Event::MouseJustReleased;
 				e.Button = Mouse::Right;
+				e.MousePosition.x = static_cast<Int32>(LOWORD(p_LParam));
+				e.MousePosition.y = static_cast<Int32>(HIWORD(p_LParam));
 				m_Events.push( e );
 
 				// Set the button state
