@@ -257,6 +257,12 @@ namespace Bit
 		glEnable( GL_TEXTURE_2D );
 	}
 
+	void OpenGLGraphicDeviceWin32::EnableBlending()
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
 	void OpenGLGraphicDeviceWin32::EnableMultisampling( )
 	{
 		glEnable( GL_MULTISAMPLE );
@@ -281,6 +287,11 @@ namespace Bit
 	void OpenGLGraphicDeviceWin32::DisableTexture( )
 	{
 		glDisable( GL_TEXTURE_2D );
+	}
+
+	void OpenGLGraphicDeviceWin32::DisableBlending()
+	{
+		glDisable(GL_BLEND);
 	}
 
 	void OpenGLGraphicDeviceWin32::DisableFaceCulling( )
