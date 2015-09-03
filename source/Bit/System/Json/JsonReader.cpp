@@ -48,6 +48,46 @@ namespace Bit
 			// Store the index of the current position in the input string
 			SizeType position = FindValidCharacter( p_Input, 0 );
 
+
+			if (p_Input[position] == '{')
+			{
+				// Create a root value, set p_Value to this value if the parsing succeeds.
+				Value root(Value::Object);
+
+				// The first value should be an object, read it.
+				if (ReadObject(root, p_Input, ++position) == false)
+				{
+					p_Value.m_Type = Value::Null;
+					return false;
+				}
+
+				// Set the paramter value to the root value
+				p_Value = root;
+				return true;
+			}
+			else if (p_Input[position] == '[')
+			{
+				// Create a root value, set p_Value to this value if the parsing succeeds.
+				Value root(Value::Array);
+
+				// The first value should be an object, read it.
+				if (ReadArray(root, p_Input, ++position) == false)
+				{
+					p_Value.m_Type = Value::Null;
+					return false;
+				}
+
+				// Set the paramter value to the root value
+				p_Value = root;
+				return true;
+			}
+
+			// Failed
+			p_Value.m_Type = Value::Null;
+			return false;
+
+
+			/*
 			// Check if the first character is a '{'
 			if( p_Input[ position ] != '{' )
 			{
@@ -67,9 +107,9 @@ namespace Bit
 
 			// Set the paramter value to the root value
 			p_Value = root;
-
+			
 			// Suceeded
-			return true;
+			return true;*/
 		}
 
 		Bool Reader::ParseFromFile( const std::string & p_Filename, Value & p_Value )

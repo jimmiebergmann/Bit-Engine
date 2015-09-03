@@ -38,16 +38,24 @@ namespace Bit
 
 		Bool Writer::Write( std::string & p_Output, Value & p_Value, Bool p_EnsureRoot )
 		{
-			if( p_Value.m_Type != Value::Object )
+			if (p_Value.m_Type == Value::Object)
 			{
-				return false;
+				// Clear the output string
+				p_Output.clear();
+
+				// This should be an object...
+				return SetObjectString(p_Value, p_Output, 0);
+			}
+			else if (p_Value.m_Type == Value::Array)
+			{
+				// Clear the output string
+				p_Output.clear();
+
+				// This should be an array...
+				return SetArrayString(p_Value, p_Output, 0);
 			}
 
-			// Clear the output string
-			p_Output.clear( );
-
-			// This should be an object...
-			return SetObjectString( p_Value, p_Output, 0 );
+			return false;
 		}
 
 		void Writer::SetKeywordString( const std::string & p_Keyword, std::string & p_Output, const Uint32 & p_Layer ) const
