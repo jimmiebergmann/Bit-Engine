@@ -72,7 +72,8 @@ namespace Bit
 				EntityUpdate	= 6,	///<	|	Both	|	   Yes		|	Server	|	Client	|
 				UserMessage		= 7,	///<	|	Both	|	   Yes		|	Client	|	Server	|
 				HostMessage		= 8,	///<	|	Both	|	   Yes		|	Server	|	Client	|
-				Command			= 9		///<	|	Yes		|	   Yes		|	Client	|	Server	|
+				Command			= 9,	///<	|	Yes		|	   Yes		|	Client	|	Server	|
+				Ping			= 10	///<	|	No		|	   Yes		|	Both	|	Both	|
 				/// ---------------------------------------------------------------------------------
 			};
 		};
@@ -91,6 +92,7 @@ namespace Bit
 		const SizeType UserMessagePacketSize = 4;
 		const SizeType HostMessagePacketSize = 4;
 		const SizeType CommandPacketSize = 3;
+		const SizeType PingPacketSize = 2;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Reject type

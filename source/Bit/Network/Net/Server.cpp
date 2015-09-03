@@ -362,9 +362,11 @@ namespace Bit
 							// Increase the update server list semaphore
 							m_UpdateServerListCounter.Set(m_UpdateServerListCounter.Get() + 1);
 						}
-						else if (pBuffer[0] == '#')
+						// Ping packet.
+						else if (pBuffer[0] == PacketType::Ping && recvSize == PingPacketSize)
 						{
-							std::cout << "PACKET FROM SERVERLIST" << std::endl;
+							// Send back the ping packet.
+							m_Socket.Send(pBuffer, PingPacketSize, address, port);
 						}
 
 					} while (false);

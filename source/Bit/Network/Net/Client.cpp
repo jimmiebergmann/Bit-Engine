@@ -24,6 +24,7 @@
 #include <Bit/Network/Net/Client.hpp>
 #include <Bit/System/Sleep.hpp>
 #include <Bit/System/Timer.hpp>
+#include <Bit/System/Randomizer.hpp>
 #include <iostream>
 #include <Memory>
 #include <Bit/System/MemoryLeak.hpp>
@@ -64,6 +65,69 @@ namespace Bit
 			m_HostMessageListeners.Value.clear();
 			m_HostMessageListeners.Mutex.Unlock();
 
+		}
+
+		Bool Client::PingServer(	const Address & p_ServerAddress,
+									const Uint16 p_ServerPort,
+									Time & p_PingTime,
+									const Time & p_Timeout)
+		{
+			// Open the ping socket
+			UdpSocket udp;
+			if (udp.Open() == false)
+			{
+				return false;
+			}
+
+			// create the ping data.
+			Uint8 pingData[PingPacketSize];
+			const Uint8 sequence = static_cast<Uint16>(RandomizeNumber(0, 255));
+			pingData[0] = PacketType::Ping;
+			pingData[1] = sequence;
+
+			// Send the ping data
+			if (udp.Send(pingData, PingPacketSize, p_ServerAddress, p_ServerPort) != PingPacketSize)
+			{
+				p_PingTime = Time::Zero;
+				return false;
+			}
+
+			// Start a ping timer
+			Timer timer;
+			timer.Start();
+
+			// Receive data.
+			Bool received = false;
+			Time timeout = p_Timeout;
+			while (received == false && p_Timeout != Time::Zero)
+			{
+
+				Address fromAddress;
+				Uint16 fromPort;
+				if (udp.Receive(pingData, PingPacketSize, fromAddress, fromPort, timeout) != PingPacketSize)
+				{
+					timeout = p_Timeout - timer.GetLapsedTime();
+					continue;
+				}
+
+				// Error check port and
+				if (fromAddress != p_ServerAddress || fromPort != p_ServerPort ||
+					pingData[0] != PacketType::Ping || pingData[1] != sequence)
+				{
+					timeout = p_Timeout - timer.GetLapsedTime();
+					continue;
+				}
+
+				// Break the loop, we got out ping.
+				break;
+			}
+
+			// Set the ping time.
+			timer.Stop();
+			p_PingTime = timer.GetTime();
+
+			// Succeeded.
+			return true;
 		}
 
 		Client::eStatus Client::Connect(const Address & p_Address,

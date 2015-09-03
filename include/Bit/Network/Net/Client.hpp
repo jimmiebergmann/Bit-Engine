@@ -85,13 +85,29 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Client( const Uint16 p_Port = 0,
-					const Time & p_InitialPing = Bit::Microseconds( 200000 ) );
+					const Time & p_InitialPing = Microseconds( 200000 ) );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Destructor
 			///
 			////////////////////////////////////////////////////////////////
-			~Client( );
+			~Client();
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Static function for pinging a server.
+			///
+			/// \param p_ServerAddress	Server address.
+			/// \param p_ServerPort		Server port.
+			/// \param p_PingTime		The returned ping time.
+			/// \param p_Timeout		Time until the function timeout.
+			///
+			/// \return true if successfully pinged, else false.
+			///
+			////////////////////////////////////////////////////////////////
+			static Bool PingServer(	const Address & p_ServerAddress,
+									const Uint16 p_ServerPort,
+									Time & p_PingTime,
+									const Time & p_Timeout = Seconds( 3.0f ));
 
 		protected:
 
