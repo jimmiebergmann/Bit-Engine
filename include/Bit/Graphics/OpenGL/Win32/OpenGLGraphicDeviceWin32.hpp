@@ -107,6 +107,15 @@ namespace Bit
 		virtual void MakeCurrent( );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Making this graphic device  NOT to the current one(unbind).
+		///
+		/// This means that you can have multiple graphic devices
+		/// for a single render output, for example a window.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void MakeNotCurrent();
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Present the graphics, swap buffers.
 		///
 		/// Call this function when you want to swap the color buffers.

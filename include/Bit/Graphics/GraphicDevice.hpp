@@ -245,7 +245,16 @@ namespace Bit
 		/// for a single render output, for example a window.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void MakeCurrent( ) = 0;
+		virtual void MakeCurrent() = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Making this graphic device  NOT to the current one(unbind).
+		///
+		/// This means that you can have multiple graphic devices
+		/// for a single render output, for example a window.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void MakeNotCurrent() = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Present the graphics, swap buffers if double-buffering.

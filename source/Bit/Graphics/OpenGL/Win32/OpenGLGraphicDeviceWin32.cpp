@@ -216,9 +216,14 @@ namespace Bit
 		m_DeviceContextHandle = NULL;
 	}
 
-	void OpenGLGraphicDeviceWin32::MakeCurrent( )
+	void OpenGLGraphicDeviceWin32::MakeCurrent()
 	{
-		wglMakeCurrent( m_DeviceContextHandle, m_Context );
+		wglMakeCurrent(m_DeviceContextHandle, m_Context);
+	}
+
+	void OpenGLGraphicDeviceWin32::MakeNotCurrent()
+	{
+		wglMakeCurrent(NULL, NULL);
 	}
 
 	void OpenGLGraphicDeviceWin32::Present( )

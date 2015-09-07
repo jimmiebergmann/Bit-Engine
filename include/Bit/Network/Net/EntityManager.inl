@@ -70,7 +70,7 @@ bool EntityManager::RegisterVariable(	const std::string & p_Class,
 	if (pMetadata->TypeHash != typeid(Class).hash_code())
 	{
 		std::cout << __FILE__ << "(" << __LINE__ << "): " << "Mismatching entity class type." << std::endl;
-		return false;
+		//return false;
 	}
 
 	// Find the variable in the meta data, make sure it's not already registerd

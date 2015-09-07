@@ -232,17 +232,18 @@ namespace Bit
 
 				// Read the entity name 
 				Uint8 entityNameLength = pData[ dataPos++ ];
-				char * pEntityName = new char[ entityNameLength + 1 ];
-				memcpy( pEntityName, pData + dataPos, entityNameLength );
-				pEntityName[ entityNameLength ] = 0;
+				std::string entityName;
+				entityName.assign(reinterpret_cast<char*>(pData + dataPos), entityNameLength);
 
 				// Ignore the entity if the entity name is unknown
-				EntityMetaDataMap::iterator entityIt = m_EntityMetaDataMap.find( std::string( pEntityName ) );
+				EntityMetaDataMap::iterator entityIt = m_EntityMetaDataMap.find( entityName );
 				if( entityIt == m_EntityMetaDataMap.end( ) )
 				{
 					// Move to the next entity
 					dataPos += entityBlockSize - 1 - entityNameLength;
-					std::cout << "Entity manager: Unknown entity: \"" << pEntityName << "\"\n";
+					std::cout << "Entity manager: Unknown entity: \"" << entityName << "\"\n";
+
+					// Continue
 					continue;
 				}
 
@@ -270,24 +271,27 @@ namespace Bit
 					if( variableBlockSize == 0 || variableBlockSize + dataPos > p_MessageSize )
 					{
 						std::cout << "Entity manager: Variable block size error: \"" << variableBlockSize << "\"\n";
+
+						// Return false.
 						return false;
 					}
 
 					// Read the variable name
 					Uint8 variableNameLength = pData[ dataPos++ ];
-					char * pVariableName = new char[ variableNameLength + 1 ];
-					memcpy( pVariableName, pData + dataPos, variableNameLength );
-					pVariableName[ variableNameLength ] = 0;
+					std::string variableName;
+					variableName.assign(reinterpret_cast<char*>(pData + dataPos), variableNameLength);
 
 					// Ignore the varaible if it's unknown
 					EntityMetaData * pMetaData = entityIt->second;
-					EntityVariableMap::iterator variableIt = pMetaData->EntityVariables.find( std::string( pVariableName ) );
+					EntityVariableMap::iterator variableIt = pMetaData->EntityVariables.find( std::string( variableName ) );
 
 					if( variableIt == pMetaData->EntityVariables.end( ) )
 					{
 						// Move to the next entity
 						dataPos += variableBlockSize - 1 - variableNameLength;
-						std::cout << "Entity manager: Unknown entity variable(" << pEntityName << "): \"" << pVariableName << "\"\n";
+						std::cout << "Entity manager: Unknown entity variable(" << entityName << "): \"" << variableName << "\"\n";
+
+						// Continue
 						continue;
 					}
 
@@ -319,6 +323,8 @@ namespace Bit
 						if( entityIt == m_Entities.end( ) )
 						{
 							std::cout << "Entity manager: Unknown id: \"" << entityId << "\"\n";
+
+							// Return false.
 							return false;
 						}
 
@@ -328,14 +334,18 @@ namespace Bit
 						EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( pEntityLink->Class );
 						if( it == m_EntityMetaDataMap.end( ) )
 						{
+
+							// Return false.
 							return false;
 						}
 
 						// Find the entitiy variable
 						EntityMetaData * pMetadata = it->second;
-						EntityVariableMap::iterator it2 = pMetadata->EntityVariables.find( std::string( pVariableName ) );
+						EntityVariableMap::iterator it2 = pMetadata->EntityVariables.find( std::string( variableName ) );
 						if( it2 == pMetadata->EntityVariables.end( ) )
 						{
+
+							// Return false.
 							return false;
 						}
 
@@ -351,8 +361,10 @@ namespace Bit
 						// Make sure that the values size is the same as the data
 						if( valueSize != dataSize )
 						{
-							std::cout << "Entity manager: Unknown size variable(" << pEntityName << ")(" << valueSize << "): \"" << dataSize << "\"\n";
+							std::cout << "Entity manager: Unknown size variable(" << entityName << ")(" << valueSize << "): \"" << dataSize << "\"\n";
 							dataPos += dataSize;
+
+							// Continue
 							continue;
 						}
 						
@@ -368,13 +380,7 @@ namespace Bit
 						// Move to the next Id
 						dataPos += dataSize;
 					}
-
-					// Delete the varaible name pointer
-					delete [ ] pVariableName;
 				}
-
-				// Delete the entitiy name pointer
-				delete [ ] pEntityName;
 
 			}
 
