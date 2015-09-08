@@ -326,10 +326,11 @@ Vector4<T> Matrix4x4<T>::operator * ( const Vector4<T> & p_Vector ) const
 {
 	// Multiply the vector by this matrix.
 	Vector4<T> vector;
-	vector.x = ( m[0] * p_Vector.x ) + ( m[4] * p_Vector.y ) + ( m[8] * p_Vector.z ) + ( m[12] * p_Vector.w );
-	vector.y = ( m[1] * p_Vector.x ) + ( m[5] * p_Vector.y ) + ( m[9] * p_Vector.z ) + ( m[13] * p_Vector.w );
-	vector.z = ( m[2] * p_Vector.x ) + ( m[6] * p_Vector.y ) + ( m[10] * p_Vector.z ) + ( m[14] * p_Vector.w );
-	vector.w = ( m[3] * p_Vector.x ) + ( m[7] * p_Vector.y ) + ( m[11] * p_Vector.z ) + ( m[15] * p_Vector.w );
+
+	vector.x = (m[0] * p_Vector.x) + (m[4] * p_Vector.y) + (m[8] * p_Vector.z) + (m[12] * p_Vector.w);
+	vector.y = (m[1] * p_Vector.x) + (m[5] * p_Vector.y) + (m[9] * p_Vector.z) + (m[13] * p_Vector.w);
+	vector.z = (m[2] * p_Vector.x) + (m[6] * p_Vector.y) + (m[10] * p_Vector.z) + (m[14] * p_Vector.w);
+	vector.w = (m[3] * p_Vector.x) + (m[7] * p_Vector.y) + (m[11] * p_Vector.z) + (m[15] * p_Vector.w);
 
 	// Return the new vector.
 	return vector;
