@@ -135,10 +135,19 @@ namespace Bit
 
 			// Function to be overloaded.
 			////////////////////////////////////////////////////////////////
-			/// \brief Function to execute when a user connects.
+			/// \brief Function to execute when an user is about to connect.
+			///
+			/// \return true to let client connect, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void OnConnection( const Uint16 p_UserId );
+			virtual Bool OnPreConnection(	const Address & p_Address,
+											const Uint16 p_Port);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Function to execute when an user has connected.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void OnPostConnection(const Uint16 p_UserId);
 			
 			////////////////////////////////////////////////////////////////
 			/// \brief Function to execute when a user disconnects.

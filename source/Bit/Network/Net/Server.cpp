@@ -80,7 +80,13 @@ namespace Bit
 			UnhookUserMessages();
 		}
 
-		void Server::OnConnection(const Uint16 p_UserId)
+		Bool Server::OnPreConnection(	const Address & p_Address,
+										const Uint16 p_Port)
+		{
+			return true;
+		}
+
+		void Server::OnPostConnection(const Uint16 p_UserId)
 		{
 		}
 
@@ -336,7 +342,17 @@ namespace Bit
 								break;
 							}
 
-							// Answer the client with a SYNACK packet.
+							// Run the on pre connection function
+							if (OnPreConnection(address, port) == false)
+							{
+								// SEND REJECT MESSAGE HERE PLEASE.
+
+
+								break;
+							}
+
+
+							// Answer the client with an accept packet.
 							pBuffer[0] = PacketType::Accept;
 							m_Socket.Send(pBuffer, AcceptPacketSize, address, port);
 
@@ -356,8 +372,8 @@ namespace Bit
 							// Start client thread.
 							pConnection->StartThreads(this);
 
-							// Run the on connection function
-							OnConnection(userId);
+							// Run the on post connection function
+							OnPostConnection(userId);
 
 							// Increase the update server list semaphore
 							m_UpdateServerListCounter.Set(m_UpdateServerListCounter.Get() + 1);
