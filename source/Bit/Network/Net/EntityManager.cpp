@@ -22,6 +22,7 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/EntityManager.hpp>
+#include <Bit/Network/Net/Client.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -32,8 +33,10 @@ namespace Bit
 	namespace Net
 	{
 
-		EntityManager::EntityManager( EntityChanger * p_pEntityChanger ) :
+		EntityManager::EntityManager(	EntityChanger * p_pEntityChanger,
+										Client * p_pClient) :
 			m_pEntityChanger( p_pEntityChanger ),
+			m_pClient(p_pClient),
 			m_CurrentId( 0 )
 		{
 		}
@@ -75,45 +78,19 @@ namespace Bit
 
 		Entity * EntityManager::CreateEntityByName( const std::string & p_Key )
 		{
-			// Check if we have any creating function for the key value.
-			EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Key );
-			if( it == m_EntityMetaDataMap.end( ) )
+			// Don't allow clients to create entities.
+			if (m_pClient != NULL)
 			{
+				std::cout << "Bit::EntityManager::CreateEntityByName: Clients can't create entities." << std::endl;
 				return NULL;
 			}
 
-			// Create the entity
-			Entity * pEntity = it->second->CreationPointer( );
-
-			// Set id and entity changer
-			pEntity->m_Id = m_CurrentId;
-			pEntity->m_Name = p_Key;
-			pEntity->m_pEntityManager = this;
-
-			// Go through the variables and set the parent(entity)
-			EntityMetaData * pMetadata = it->second;
-			for( EntityVariableMap::iterator it2 = pMetadata->EntityVariables.begin( );
-				 it2 != pMetadata->EntityVariables.end( );
-				 it2++ )
+			Entity * pEntity = CreateEntityAtId(p_Key, m_CurrentId);
+			if (pEntity)
 			{
-				// Get the current variable pointer
-				VariableBase Entity::*pVariable = it2->second;
-				
-				// Set the parent of the variable to the entity.
-				(pEntity->*pVariable).m_Name = it2->first;
-				(pEntity->*pVariable).m_pParent = pEntity;
+				m_CurrentId++;
 			}
 
-			// Create entity link
-			EntityLink * pEntityLink = new EntityLink;
-			pEntityLink->Class = p_Key;
-			pEntityLink->pEntity = pEntity;
-	
-			// Add the entity to the map
-			m_Entities[ m_CurrentId ] = pEntityLink;
-			m_CurrentId++;
-
-			// Return the newly created entity
 			return pEntity;
 		}
 
@@ -322,10 +299,29 @@ namespace Bit
 						EntityMap::iterator entityIt = m_Entities.find( entityId );
 						if( entityIt == m_Entities.end( ) )
 						{
-							std::cout << "Entity manager: Unknown id: \"" << entityId << "\"\n";
+							// Create a new entity.
+							Entity * pNewEntity = CreateEntityAtId(entityName, entityId);
+							if (pNewEntity == false)
+							{
+								std::cout << "Entity manager: Cailed to create new entity \"" << entityName << "\" at id \"" << entityId << "\"\n";
+								return false;
+							}
 
-							// Return false.
-							return false;
+							// Find the entity again
+							entityIt = m_Entities.find(entityId);
+							if (entityIt == m_Entities.end())
+							{
+								std::cout << "Entity manager: Failed to find new entity \"" << entityName << "\" at id \"" << entityId << "\"\n";
+								return false;
+							}
+
+							// Call the on entity creation function
+							if (m_pClient)
+							{
+								m_pClient->OnEntityCreation(pNewEntity);
+							}
+
+							// Continue to add data to the entity.
 						}
 
 						// Check if the vairable exists for the entitiy
@@ -744,6 +740,58 @@ namespace Bit
 			}
 
 			m_ChangedEntities.clear( );
+		}
+
+		Entity * EntityManager::CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id)
+		{
+			// Check if we have any creating function for the key value.
+			EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Key );
+			if( it == m_EntityMetaDataMap.end( ) )
+			{
+				std::cout << "Bit::EntityManager::CreateEntityAtId: Can not find any entity called \"" << p_Key << "\" registred." << std::endl;
+				return NULL;
+			}
+
+			// Make sure that the id isn't already in use
+			if (m_Entities[p_Id])
+			{
+				std::cout << "Bit::EntityManager::CreateEntityAtId: Id already in use." << std::endl;
+				return NULL;
+			}
+
+			// Create the entity
+			Entity * pEntity = it->second->CreationPointer( );
+
+			// Set id and entity changer
+			pEntity->m_Id = p_Id;
+			pEntity->m_Name = p_Key;
+			pEntity->m_pEntityManager = this;
+
+			// Go through the variables and set the parent(entity)
+			EntityMetaData * pMetadata = it->second;
+			for(	EntityVariableMap::iterator it2 = pMetadata->EntityVariables.begin( );
+					it2 != pMetadata->EntityVariables.end( );
+					it2++ )
+			{
+				// Get the current variable pointer
+				VariableBase Entity::*pVariable = it2->second;
+
+				// Set the parent of the variable to the entity.
+				(pEntity->*pVariable).m_Name = it2->first;
+				(pEntity->*pVariable).m_pParent = pEntity;
+			}
+
+			// Create entity link
+			EntityLink * pEntityLink = new EntityLink;
+			pEntityLink->Class = p_Key;
+			pEntityLink->pEntity = pEntity;
+
+			// Add the entity to the map
+			m_Entities[p_Id] = pEntityLink;
+
+			// Return the newly created entity
+			return pEntity;
+
 		}
 
 	}

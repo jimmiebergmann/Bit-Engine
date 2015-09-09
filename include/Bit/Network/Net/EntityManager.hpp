@@ -43,6 +43,7 @@ namespace Bit
 	{
 
 		// Forward declarations
+		class Client;
 		class ServerEntityChanger;
 
 		////////////////////////////////////////////////////////////////
@@ -65,7 +66,8 @@ namespace Bit
 			/// \brief Default constructor.
 			///
 			////////////////////////////////////////////////////////////////
-			EntityManager( EntityChanger * p_pEntityChanger );
+			EntityManager(	EntityChanger * p_pEntityChanger,
+							Client * p_pClient = NULL);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Destructor.
@@ -236,6 +238,7 @@ namespace Bit
 			{
 
 				size_t TypeHash;
+				std::string RawName;
 				Entity*(*CreationPointer)();		///< Pointer to function for creating entity.
 				EntityVariableMap EntityVariables;	///< Map of all the variables for this entity.
 			};
@@ -249,9 +252,24 @@ namespace Bit
 				std::string Class;	///< Name of the entity's class.
 				Entity * pEntity;	///< Pointer to the entity.
 			};
+
+			// Private functions
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Create a new entity at the given id.
+			///		   Make sure to destroy the entity by yourself.
+			///
+			/// \param p_Key Name of the entity, or key value.
+			/// \param p_Id Id for the entity.
+			///
+			/// \return Pointer to the created entity, NULL if error.
+			///
+			////////////////////////////////////////////////////////////////
+			Entity * CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id);
 		
 			// Private variable
-			EntityChanger *			m_pEntityChanger;		///< Poiter to entity changer base class.
+			EntityChanger *			m_pEntityChanger;		///< Poiter to entity changer base class
+			Client *				m_pClient;				///< Null for server owner.
 			EntityMetaDataMap		m_EntityMetaDataMap;	///< Map of entity class meta data.
 			ChangedEntitiesMap		m_ChangedEntities;		///< Map of changed entitites
 			EntityMap				m_Entities;				///< Map of all entities.

@@ -65,7 +65,7 @@ namespace Bit
 
 		// Server class
 		Server::Server() :
-			m_EntityManager(new ServerEntityChanger(&m_EntityManager)),
+			m_EntityManager(new ServerEntityChanger(&m_EntityManager), NULL),
 			m_MaxConnections(0),
 			m_EntityUpdatesPerSecond(0),
 			m_PacketMemoryPool(NULL),

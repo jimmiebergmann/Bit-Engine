@@ -37,7 +37,7 @@ namespace Bit
 
 		Client::Client(const Uint16 p_Port,
 			const Time & p_InitialPing) :
-			m_EntityManager(NULL),
+			m_EntityManager(NULL, this),
 			m_Port(p_Port),
 			m_Connected(false),
 			m_ServerAddress(0),

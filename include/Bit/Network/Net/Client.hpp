@@ -67,6 +67,7 @@ namespace Bit
 			// Friend classes
 			friend class UserMessage;
 			friend class HostMessageListener;
+			friend class EntityManager;
 
 			// Public enums
 			enum eStatus

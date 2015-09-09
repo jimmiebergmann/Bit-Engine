@@ -42,6 +42,7 @@ bool EntityManager::LinkEntity( const std::string & p_Key )
 	// Add to the entity meta data map
 	EntityMetaData * pMetaData = new EntityMetaData;
 	pMetaData->TypeHash = typeid(T).hash_code();
+	pMetaData->RawName = typeid(T).raw_name();
 	pMetaData->CreationPointer = &CreateEntityT<T>;
 	m_EntityMetaDataMap.insert( it, std::pair<std::string, EntityMetaData*>( p_Key, pMetaData ) );
 
@@ -69,7 +70,7 @@ bool EntityManager::RegisterVariable(	const std::string & p_Class,
 	// Error check the class type
 	if (pMetadata->TypeHash != typeid(Class).hash_code())
 	{
-		std::cout << __FILE__ << "(" << __LINE__ << "): " << "Mismatching entity class type." << std::endl;
+		std::cout << __FILE__ << "(" << __LINE__ << "): " << "Mismatching entity class type: " << pMetadata->RawName << "  , expecting  " << typeid(Class).raw_name() << std::endl;
 		//return false;
 	}
 
