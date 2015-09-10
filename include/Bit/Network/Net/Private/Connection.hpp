@@ -64,6 +64,7 @@ namespace Bit
 			Connection(	const Address & p_Address, 
 						const Uint16 & p_Port,
 						const Uint16 & p_UserId,
+						const Bool	p_SendEntityMessages,
 						const Time & p_LosingConnectionTimeout,
 						const Time & p_InitialPing = Microseconds( 200000 ) );
 		
@@ -244,6 +245,7 @@ namespace Bit
 			const Address					m_Address;					///< The clients's address.
 			const Uint16					m_Port;						///< The client's port.
 			const Uint16					m_UserId;					///< The client's user id.
+			ThreadValue<Bool>				m_SendEntityMessages;		///< Whether or not to send entity messages to the client.
 			Semaphore						m_ReceivedDataSemaphore;	///< Semaphore for received data.
 			ThreadValue<ReceiveDataQueue>	m_ReceivedData;				///< Queue of received data.
 			ThreadValue<Bool>				m_Connected;				///< Flag for checking if you are connected.

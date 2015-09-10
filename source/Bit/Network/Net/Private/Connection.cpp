@@ -36,9 +36,11 @@ namespace Bit
 		Connection::Connection( const Address & p_Address,
 								const Uint16 & p_Port,
 								const Uint16 & p_UserId,
+								const Bool	p_SendEntityMessages,
 								const Time & p_LosingConnectionTimeout,
 								const Time & p_InitialPing ) :
 			m_pServer( NULL ),
+			m_SendEntityMessages(p_SendEntityMessages),
 			m_Connected( false ),
 			m_Address( p_Address ),
 			m_Port( p_Port ),

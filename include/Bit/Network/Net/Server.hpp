@@ -260,6 +260,20 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			SizeType GetConnectionCount();
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Whether or not to initialy send entity messages to the clients.
+			///
+			/// You'll have to activate each client for sending entity messages if you disable this at startup.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetDefaultSendEntityMessages(const Bool p_Status);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Whether or not to send entity messages to a specific user.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetSendEntityMessages(const Uint16 p_UserId, const Bool p_Status);
+
 			// Protected variables
 			EntityManager		m_EntityManager;
 
@@ -304,6 +318,7 @@ namespace Bit
 			UserConnectionMap					m_UserConnections;			///< Map of all the connections via their user IDs.
 			Mutex								m_ConnectionMutex;			///< Mutex for the address and user connections.
 			ThreadValue<Bool>					m_Running;					///< Flag for checking if the server is running.
+			ThreadValue<Bool>					m_DefaultSendEntityMessages;///< Default value for new connection, whether or not to send entity messages.
 			ThreadValue<AddressSet>				m_BanSet;					///< Set of banned addresses.
 			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;		///< Map of user message listeners and their message types.
 			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Amount of time until the connection timeout after not receiving any packets.

@@ -49,11 +49,11 @@ namespace Bit
 		}
 
 		Server::Properties::Properties(const Uint16 p_Port,
-			const Uint8 p_MaxConnections,
-			const Time & p_LosingConnectionTimeout,
-			const Uint8 p_EntityUpdatesPerSecond,
-			const std::string & p_Identifier,
-			const ServerList & p_ServerList) :
+										const Uint8 p_MaxConnections,
+										const Time & p_LosingConnectionTimeout,
+										const Uint8 p_EntityUpdatesPerSecond,
+										const std::string & p_Identifier,
+										const ServerList & p_ServerList) :
 			Port(p_Port),
 			MaxConnections(p_MaxConnections),
 			LosingConnectionTimeout(p_LosingConnectionTimeout),
@@ -68,6 +68,7 @@ namespace Bit
 			m_EntityManager(new ServerEntityChanger(&m_EntityManager), NULL),
 			m_MaxConnections(0),
 			m_EntityUpdatesPerSecond(0),
+			m_DefaultSendEntityMessages( true ),
 			m_PacketMemoryPool(NULL),
 			m_MaxPacketSize(2048)
 		{
@@ -269,7 +270,7 @@ namespace Bit
 					// Loop while the server is running and until we receive a valid packet.
 					while (IsRunning())
 					{
-						if ((recvSize = m_Socket.Receive(pItem->GetData(), m_MaxPacketSize, address, port, Milliseconds(5))) > 0)
+						if ((recvSize = m_Socket.Receive(pBuffer, m_MaxPacketSize, address, port, Milliseconds(5))) > 0)
 						{
 							break;
 						}
@@ -361,7 +362,7 @@ namespace Bit
 							m_FreeUserIds.pop();
 
 							// Create the connection
-							Connection * pConnection = new Connection(address, port, userId, m_LosingConnectionTimeout.Value);
+							Connection * pConnection = new Connection(address, port, userId, m_DefaultSendEntityMessages.Get(), m_LosingConnectionTimeout.Value);
 
 							// Add the client to the address connection map
 							m_AddressConnections.insert(AddressConnectionMapPair(clientAddress, pConnection));
@@ -372,8 +373,11 @@ namespace Bit
 							// Start client thread.
 							pConnection->StartThreads(this);
 
-							// Run the on post connection function
+							// Run the on post connection function.
+							// Release the connection mutex as well to let the user send messages and such.
+							m_ConnectionMutex.Unlock();
 							OnPostConnection(userId);
+							m_ConnectionMutex.Lock();
 
 							// Increase the update server list semaphore
 							m_UpdateServerListCounter.Set(m_UpdateServerListCounter.Get() + 1);
@@ -439,7 +443,12 @@ namespace Bit
 							it != m_UserConnections.end();
 							it++)
 						{
-							it->second->SendUnreliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true, true);
+							// Should we send entity messages to this client?
+							if (it->second->m_SendEntityMessages.Get())
+							{
+								// Send unrealiable message.
+								it->second->SendUnreliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true, true);
+							}
 						}
 
 						m_ConnectionMutex.Unlock();
@@ -712,6 +721,28 @@ namespace Bit
 
 			// Return the count.
 			return count;
+		}
+
+		void Server::SetDefaultSendEntityMessages(const Bool p_Status)
+		{
+			m_DefaultSendEntityMessages.Set(p_Status);
+		}
+
+		void Server::SetSendEntityMessages(const Uint16 p_UserId, const Bool p_Status)
+		{
+			// Find the client.
+			m_ConnectionMutex.Lock();
+
+			UserConnectionMap::iterator it = m_UserConnections.find(p_UserId);
+			if (it == m_UserConnections.end())
+			{
+				m_ConnectionMutex.Unlock();
+				return;
+			}
+
+			it->second->m_SendEntityMessages.Set(p_Status);
+
+			m_ConnectionMutex.Unlock();
 		}
 
 		void Server::AddConnectionForCleanup( Connection * p_pConnection )
