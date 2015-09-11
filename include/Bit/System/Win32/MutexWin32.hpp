@@ -26,6 +26,7 @@
 #define BIT_SYSTEM_MUTEX_WIN32_HPP
 
 #include <Bit/Build.hpp>
+#include <string>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Windows.h>
 #undef SetPort
@@ -60,7 +61,7 @@ namespace Bit
 		/// \brief Locking the mutex
 		///
 		////////////////////////////////////////////////////////////////
-		void Lock( );
+		void Lock();
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Unlocking the mutex

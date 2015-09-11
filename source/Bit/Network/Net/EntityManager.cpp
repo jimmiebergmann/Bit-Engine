@@ -23,6 +23,7 @@
 
 #include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/Network/Net/Client.hpp>
+#include <Bit/Network/Net/Server.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
@@ -34,8 +35,10 @@ namespace Bit
 	{
 
 		EntityManager::EntityManager(	EntityChanger * p_pEntityChanger,
+										Server * p_pServer,
 										Client * p_pClient) :
 			m_pEntityChanger( p_pEntityChanger ),
+			m_pServer(p_pServer),
 			m_pClient(p_pClient),
 			m_CurrentId( 0 )
 		{
@@ -43,7 +46,7 @@ namespace Bit
 
 		EntityManager::~EntityManager( )
 		{
-			ClearEntityMessage( );
+			ClearChangedEntities( );
 
 			for( EntityMap::iterator it =  m_Entities.begin( ); it !=  m_Entities.end( ); it++ )
 			{
@@ -96,6 +99,10 @@ namespace Bit
 
 		void EntityManager::DestroyEntity( Entity * p_pEntity, const Bool & p_Unallocate )
 		{
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
 			// Error check the entity pointer
 			if( p_pEntity == NULL )
 			{
@@ -131,11 +138,47 @@ namespace Bit
 			delete linkIt->second;
 			m_Entities.erase( linkIt );
 
+			// Get entity id
+			Uint16 entityId = p_pEntity->GetId();
+
+
 			// Delete the pointer
 			if( p_Unallocate )
 			{
+				// Make sure to set the entity manager to null,
+				// this will make the entity not try to destroy itself through the entity manager.
+				p_pEntity->m_pEntityManager = NULL;
 				delete p_pEntity;
 			}
+
+			// Send destroyed entity packet if this function is called by the server.
+			if (m_pServer)
+			{
+				// Create the destroyed entity data
+				const SizeType destroyedDataSize = 2;
+				Uint8 destroyedData[destroyedDataSize];
+				memcpy(destroyedData, &entityId, destroyedDataSize);
+
+				// Go through the connections
+				m_pServer->m_ConnectionMutex.Lock();
+				{
+					for (	Server::UserConnectionMap::iterator it = m_pServer->m_UserConnections.begin();
+							it != m_pServer->m_UserConnections.end();
+							it++)
+					{
+						it->second->SendReliable(PacketType::EntityDestroyed, destroyedData, destroyedDataSize, true);
+					}
+				}
+				m_pServer->m_ConnectionMutex.Unlock();
+
+				// Remove the entity from the changed entities map if needed.
+
+
+			}
+
+			// Unlock the entity.
+			mutex.Unlock();
+			
 		}
 
 		Entity * EntityManager::GetEntity( const Uint16 p_EntityId )
@@ -151,6 +194,10 @@ namespace Bit
 
 		bool EntityManager::ParseEntityMessage( void * p_pMessage, const SizeType p_MessageSize )
 		{
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
 			/*
 				Message structure:
 				- Entity count(2)
@@ -299,8 +346,11 @@ namespace Bit
 						EntityMap::iterator entityIt = m_Entities.find( entityId );
 						if( entityIt == m_Entities.end( ) )
 						{
-							// Create a new entity.
+							// Create a new entity. Remeber to unlock mutex before, since we use the same mutex in the CreateEntityAtId function.
+							mutex.Unlock();
 							Entity * pNewEntity = CreateEntityAtId(entityName, entityId);
+							mutex.Lock();
+
 							if (pNewEntity == false)
 							{
 								std::cout << "Entity manager: Cailed to create new entity \"" << entityName << "\" at id \"" << entityId << "\"\n";
@@ -380,6 +430,9 @@ namespace Bit
 
 			}
 
+			// Unlock mutex
+			mutex.Unlock();
+
 			// Succeeded
 			return true;
 		}
@@ -388,6 +441,11 @@ namespace Bit
 		Bool EntityManager::CreateEntityMessage(std::vector<Uint8> & p_Message,
 												const Bool p_ClearMessage)
 		{
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
+
 			// Check if any entities were changed
 			if( m_ChangedEntities.size( ) == 0 )
 			{
@@ -530,6 +588,12 @@ namespace Bit
 				p_Message[ eBlockPos + 1 ] = static_cast<Uint8>( eBlockSize >> 8 );
 
 			}
+
+			// Unlock the mutex.
+			mutex.Unlock();
+
+			// Clear the changed entities.
+			ClearChangedEntities();
 			
 			// Succeeded
 			return true;
@@ -538,6 +602,10 @@ namespace Bit
 		Bool EntityManager::CreateFullEntityMessage(	std::vector<Uint8> & p_Message,
 														const Bool p_ClearMessage )
 		{
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
 			/*
 				Message structure:
 				- Entity count(2)
@@ -719,12 +787,19 @@ namespace Bit
 				p_Message[ eBlockPos + 1 ] = static_cast<Uint8>( eBlockSize >> 8 );
 			}
 
+			// Unlock the mutex
+			mutex.Unlock();
+
 			// Succeeded
 			return true;
 		}
 
-		void EntityManager::ClearEntityMessage( )
+		void EntityManager::ClearChangedEntities()
 		{
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
 			for( ChangedEntitiesMap::iterator it = m_ChangedEntities.begin( );
 				 it != m_ChangedEntities.end( );
 				 it++ )
@@ -740,10 +815,16 @@ namespace Bit
 			}
 
 			m_ChangedEntities.clear( );
+
+			mutex.Unlock();
 		}
 
 		Entity * EntityManager::CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id)
 		{
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
 			// Check if we have any creating function for the key value.
 			EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Key );
 			if( it == m_EntityMetaDataMap.end( ) )
@@ -788,6 +869,9 @@ namespace Bit
 
 			// Add the entity to the map
 			m_Entities[p_Id] = pEntityLink;
+
+			// Unlock the mutex
+			mutex.Unlock();
 
 			// Return the newly created entity
 			return pEntity;

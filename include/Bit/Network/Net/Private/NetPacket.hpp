@@ -70,10 +70,11 @@ namespace Bit
 				Acknowledgement = 4,	///<	|	No		|	   Yes 		|	Both	|	Both	|
 				Alive			= 5,	///<	|	No		|	   Yes 		|	Both	|	Both	|
 				EntityUpdate	= 6,	///<	|	Both	|	   Yes		|	Server	|	Client	|
-				UserMessage		= 7,	///<	|	Both	|	   Yes		|	Client	|	Server	|
-				HostMessage		= 8,	///<	|	Both	|	   Yes		|	Server	|	Client	|
-				Command			= 9,	///<	|	Yes		|	   Yes		|	Client	|	Server	|
-				Ping			= 10	///<	|	No		|	   Yes		|	Both	|	Both	|
+				EntityDestroyed = 7,	///<	|	Yes		|	   Yes		|	Server	|	Client	|
+				UserMessage		= 8,	///<	|	Both	|	   Yes		|	Client	|	Server	|
+				HostMessage		= 9,	///<	|	Both	|	   Yes		|	Server	|	Client	|
+				Command			= 10,	///<	|	Yes		|	   Yes		|	Client	|	Server	|
+				Ping			= 11	///<	|	No		|	   Yes		|	Both	|	Both	|
 				/// ---------------------------------------------------------------------------------
 			};
 		};
@@ -89,6 +90,7 @@ namespace Bit
 		const SizeType AcknowledgementPacketSize = 3;
 		const SizeType AlivePacketSize = 3;
 		const SizeType EntityUpdatePacketSize = 4;
+		const SizeType EntityDestroyedPacketSize = 6;
 		const SizeType UserMessagePacketSize = 4;
 		const SizeType HostMessagePacketSize = 4;
 		const SizeType CommandPacketSize = 3;

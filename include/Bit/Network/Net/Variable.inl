@@ -165,7 +165,7 @@ T InterpolatedVariable<T>::Get()
 	// We found a first snapshot
 	if (pFirst == NULL)
 	{
-		return static_cast<T>(0);;
+		return static_cast<T>(0);
 	}
 
 	// Get the last snapshot

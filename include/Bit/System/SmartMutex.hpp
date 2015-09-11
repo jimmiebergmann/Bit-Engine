@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Mutex.hpp>
+#include <string>
 
 namespace Bit
 {
@@ -61,7 +62,7 @@ namespace Bit
 		/// \brief Locking the mutex
 		///
 		////////////////////////////////////////////////////////////////
-		void Lock( );
+		void Lock();
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Unlocking the mutex

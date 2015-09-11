@@ -614,8 +614,8 @@ namespace Bit
 
 			// Create the packet. Make space for the sequence in case.
 			const Bit::SizeType packetSize = p_DataSize + PacketTypeSize +
-				(p_AddSequence ? SequenceSize : 0) +
-				(p_AddReliableFlag ? 1 : 0);
+											(p_AddSequence ? SequenceSize : 0) +
+											(p_AddReliableFlag ? 1 : 0);
 
 
 			Uint8 * pBuffer = new Uint8[packetSize];

@@ -44,6 +44,7 @@ namespace Bit
 
 		// Forward declarations
 		class Client;
+		class Server;
 		class ServerEntityChanger;
 
 		////////////////////////////////////////////////////////////////
@@ -67,7 +68,8 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			EntityManager(	EntityChanger * p_pEntityChanger,
-							Client * p_pClient = NULL);
+							Server * p_pServer,
+							Client * p_pClient);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Destructor.
@@ -145,11 +147,13 @@ namespace Bit
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create a new entity.
-			///		   Make sure to destroy the entity by yourself.
+			///		   Make sure to destroy the entity via the DestroyEntity function.
 			///
 			/// \param p_Key Name of the entity, or key value.
 			///
 			/// \return Pointer to the created entity, NULL if error.
+			///
+			/// \see DestroyEntity
 			///
 			////////////////////////////////////////////////////////////////
 			Entity * CreateEntityByName( const std::string & p_Key );
@@ -213,7 +217,7 @@ namespace Bit
 			/// \brief	Clear the list of all changed entities.
 			///
 			////////////////////////////////////////////////////////////////
-			void ClearEntityMessage( );
+			void ClearChangedEntities();
 
 		private:
 
@@ -270,12 +274,14 @@ namespace Bit
 			// Private variable
 			EntityChanger *			m_pEntityChanger;		///< Poiter to entity changer base class
 			Client *				m_pClient;				///< Null for server owner.
+			Server *				m_pServer;				///< Null for client owner.
 			EntityMetaDataMap		m_EntityMetaDataMap;	///< Map of entity class meta data.
 			ChangedEntitiesMap		m_ChangedEntities;		///< Map of changed entitites
 			EntityMap				m_Entities;				///< Map of all entities.
 			Uint32					m_CurrentId;			///< Temporary solution for incremening the ID.
 			Time					m_InterpolationTime;	///< Interpolation time(delay).
 			Time					m_ExtrapolationTime;	///< Extrapolation time( for how long we should extra interpolate).
+			Mutex					m_Mutex;				///< Mutex for making sure we're not destroying entities at the same time we create entity messages.
 
 		};
 

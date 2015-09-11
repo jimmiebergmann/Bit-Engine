@@ -70,6 +70,7 @@ namespace Bit
 
 			// friend classes
 			friend class Connection;
+			friend class EntityManager;
 			friend class HostMessage;
 			friend class HostRecipientFilter;
 

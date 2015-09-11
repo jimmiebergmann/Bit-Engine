@@ -45,6 +45,10 @@ namespace Bit
 				return;
 			}
 
+			// Lock the entity manager mutex.
+			SmartMutex mutex(m_pEntityManager->m_Mutex);
+			mutex.Lock();
+
 			EntityManager::ChangedEntitiesMap * pChangedEntities = &m_pEntityManager->m_ChangedEntities;
 
 			// Check if the entity already is changed at some pointer, if the entity
@@ -82,7 +86,8 @@ namespace Bit
 				(*pChangedEntityVariables)[ p_pEntity ] = p_pVariableBase;
 			}
 
-		//	std::cout << "Changed server variable. Changed entity size: " << pChangedEntities->size( ) << "  " << pChangedVariables->size( ) << std::endl;
+			// Unlock the mutex.
+			mutex.Unlock();
 		}
 
 	}

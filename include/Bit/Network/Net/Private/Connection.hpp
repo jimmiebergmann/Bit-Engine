@@ -54,6 +54,7 @@ namespace Bit
 
 			// Public friend classes
 			friend class Server;
+			friend class EntityManager;
 			friend class HostMessage;
 			friend class Event;
 

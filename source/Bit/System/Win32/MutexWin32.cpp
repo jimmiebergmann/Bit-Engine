@@ -38,7 +38,7 @@ namespace Bit
 	{
 		CloseHandle( m_Mutex );
 	}
-		
+
 	void MutexWin32::Lock( )
 	{
 		WaitForSingleObject(  m_Mutex, INFINITE );

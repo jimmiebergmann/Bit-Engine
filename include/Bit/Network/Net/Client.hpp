@@ -157,6 +157,14 @@ namespace Bit
 			virtual void OnEntityCreation(Entity * p_pEntity);
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Function to execute when the server destroy an entity.
+			///
+			/// This is the last time you can access the entity pointer before it gets destroyed.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void OnEntityDestroyed(Entity * p_pEntity);
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Function to execute when the server destroyed an entity.
 			///
 			////////////////////////////////////////////////////////////////

@@ -37,7 +37,7 @@ namespace Bit
 
 		Client::Client(const Uint16 p_Port,
 			const Time & p_InitialPing) :
-			m_EntityManager(NULL, this),
+			m_EntityManager(NULL, NULL, this),
 			m_Port(p_Port),
 			m_Connected(false),
 			m_ServerAddress(0),
@@ -81,7 +81,7 @@ namespace Bit
 
 			// create the ping data.
 			Uint8 pingData[PingPacketSize];
-			const Uint8 sequence = static_cast<Uint16>(RandomizeNumber(0, 255));
+			const Uint8 sequence = static_cast<Uint16>(RandomizeNumber(0, 255));	// Create an random sequence.
 			pingData[0] = PacketType::Ping;
 			pingData[1] = sequence;
 
@@ -428,6 +428,40 @@ namespace Bit
 
 					}
 					break;
+					case PacketType::EntityDestroyed:
+					{
+						// Error check the recv size
+						if (recvSize <= EntityDestroyedPacketSize)
+						{
+							continue;
+						}
+
+						// Get the sequence
+						const Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
+														static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
+
+						// Error check the sequence and add it to the sequence manager.
+						if (m_SequenceManager.AddSequence(sequence) == false)
+						{
+							continue;
+						}
+
+
+						// Get entity id
+						Uint16 entityId = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[3])) |
+													static_cast<Uint16>(static_cast<Uint8>(buffer[4]) << 8));
+
+						// Get entity
+						Entity * pEntity = m_EntityManager.GetEntity(entityId);
+
+						// Call entity destroyed function.
+						OnEntityDestroyed(pEntity);
+
+						// Destroy the entity.
+						m_EntityManager.DestroyEntity(pEntity, true);
+
+					}
+					break;
 					case PacketType::HostMessage:
 					{
 						// Error check the recv size
@@ -665,9 +699,9 @@ namespace Bit
 		{
 		}
 
-		/*void Client::OnEntityDestruction(const Uint16 p_EntityId, const std::string p_EntityName)
+		void Client::OnEntityDestroyed(Entity * p_pEntity)
 		{
-		}*/
+		}
 
 		Bool Client::HookHostMessage(HostMessageListener * p_pListener, const std::string & m_MessageName)
 		{
