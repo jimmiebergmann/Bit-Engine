@@ -157,7 +157,8 @@ namespace Bit
 				// Create the destroyed entity data
 				const SizeType destroyedDataSize = 2;
 				Uint8 destroyedData[destroyedDataSize];
-				memcpy(destroyedData, &entityId, destroyedDataSize);
+				Uint16 entityIdNetwork = Hton16( entityId );
+				memcpy(destroyedData, &entityIdNetwork, destroyedDataSize);
 
 				// Go through the connections
 				m_pServer->m_ConnectionMutex.Lock();

@@ -431,9 +431,18 @@ namespace Bit
 					case PacketType::EntityDestroyed:
 					{
 						// Error check the recv size
-						if (recvSize <= EntityDestroyedPacketSize)
+						if (recvSize < EntityDestroyedPacketSize)
 						{
 							continue;
+						}
+
+						if (buffer[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
+						{
+							// Use the already allocated packet, change the type
+							buffer[0] = PacketType::Acknowledgement;
+
+							// Send the ack packet
+							m_Socket.Send(buffer, AcknowledgementPacketSize, m_ServerAddress, m_ServerPort);
 						}
 
 						// Get the sequence
@@ -448,8 +457,8 @@ namespace Bit
 
 
 						// Get entity id
-						Uint16 entityId = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[3])) |
-													static_cast<Uint16>(static_cast<Uint8>(buffer[4]) << 8));
+						Uint16 entityId = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[4])) |
+													static_cast<Uint16>(static_cast<Uint8>(buffer[5]) << 8));
 
 						// Get entity
 						Entity * pEntity = m_EntityManager.GetEntity(entityId);
