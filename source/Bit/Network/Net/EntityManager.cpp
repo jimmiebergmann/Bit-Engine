@@ -26,6 +26,7 @@
 #include <Bit/Network/Net/Server.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <iostream>
+#include <set>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -77,6 +78,40 @@ namespace Bit
 		void EntityManager::SetExtrapolationTime(const Time & p_Time)
 		{
 			m_ExtrapolationTime = p_Time;
+		}
+
+		void EntityManager::TakeSnapshot(const Uint32 p_GroupId)
+		{
+			m_Mutex.Lock();
+
+			
+				
+			for (EntityMap::iterator it = m_Entities.begin(); it != m_Entities.end(); it++)
+			{
+				// Get the entity
+				const std::string & entityName = it->second->Class;
+				Entity * pEntity = it->second->pEntity;
+
+				EntityMetaDataMap::iterator it2 = m_EntityMetaDataMap.find(entityName);
+				if (it2 == m_EntityMetaDataMap.end())
+				{
+					continue;
+				}
+
+
+				// go through the variables
+				EntityVariableMap * pEntityVariableMap = &it2->second->EntityVariables;
+				for (EntityVariableMap::iterator it3 = pEntityVariableMap->begin(); it3 != pEntityVariableMap->end(); it3++)
+				{
+					VariableBase Entity::* pVariableBase = it3->second;
+
+					// set the snapshot data
+					(pEntity->*pVariableBase).SetSnapshotData((pEntity->*pVariableBase).GetData());
+				}
+			}
+				
+
+			m_Mutex.Unlock();
 		}
 
 		Entity * EntityManager::CreateEntityByName( const std::string & p_Key )
@@ -195,10 +230,7 @@ namespace Bit
 
 		bool EntityManager::ParseEntityMessage(const Uint16 p_Sequence, void * p_pMessage, const SizeType p_MessageSize)
 		{
-			// Create a smart mutex.
-			SmartMutex mutex(m_Mutex);
-			mutex.Lock();
-
+			
 			/*
 				Message structure:
 				- Entity count(2)
@@ -221,6 +253,11 @@ namespace Bit
 						- ...
 			*/
 
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
+			std::set<Entity *> newEntities;
 
 			// Error check the parameters
 			if( p_pMessage == NULL || p_MessageSize < 14 )
@@ -366,11 +403,8 @@ namespace Bit
 								return false;
 							}
 
-							// Call the on entity creation function
-							if (m_pClient)
-							{
-								m_pClient->OnEntityCreation(pNewEntity);
-							}
+							// Add the entity to the new entity set.
+							newEntities.insert(pNewEntity);
 
 							// Continue to add data to the entity.
 						}
@@ -434,6 +468,15 @@ namespace Bit
 
 			// Unlock mutex
 			mutex.Unlock();
+
+			// Call the on entity creation function
+			if (m_pClient)
+			{
+				for (std::set<Entity *>::iterator it = newEntities.begin(); it != newEntities.end(); it++)
+				{
+					m_pClient->OnEntityCreation(*it);
+				}
+			}
 
 			// Succeeded
 			return true;

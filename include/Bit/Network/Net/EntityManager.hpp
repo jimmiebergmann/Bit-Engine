@@ -146,6 +146,12 @@ namespace Bit
 								const T & p_Value );
 
 			////////////////////////////////////////////////////////////////
+			/// \brief Take a snapshot for a specific entity group.
+			///
+			////////////////////////////////////////////////////////////////
+			void TakeSnapshot(const Uint32 p_GroupId);
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Create a new entity.
 			///		   Make sure to destroy the entity via the DestroyEntity function.
 			///

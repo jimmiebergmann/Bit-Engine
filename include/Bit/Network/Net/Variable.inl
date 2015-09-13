@@ -56,9 +56,18 @@ void Variable<T>::Set( const T & p_Value )
 template<typename T>
 T Variable<T>::Get()
 {
-	m_Mutex.Lock( );
+	m_Mutex.Lock();
 	T value = m_Value;
-	m_Mutex.Unlock( );
+	m_Mutex.Unlock();
+	return value;
+}
+
+template<typename T>
+T Variable<T>::GetSnapshot()
+{
+	m_Mutex.Lock();
+	T value = m_Snapshot;
+	m_Mutex.Unlock();
 	return value;
 }
 
@@ -71,9 +80,23 @@ void Variable<T>::SetData(const void * p_pData)
 }
 
 template<typename T>
+void Variable<T>::SetSnapshotData(const void * p_pData)
+{
+	m_Mutex.Lock();
+	memcpy(&m_Snapshot, p_pData, m_Size);
+	m_Mutex.Unlock();
+}
+
+template<typename T>
 void * Variable<T>::GetData()
 {
-	return reinterpret_cast<void *>( &m_Value );
+	return reinterpret_cast<void *>(&m_Value);
+}
+
+template<typename T>
+void * Variable<T>::GetSnapshotData()
+{
+	return reinterpret_cast<void *>(&m_Snapshot);
 }
 
 // Interpolated variable class.

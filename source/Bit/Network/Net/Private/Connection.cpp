@@ -95,6 +95,20 @@ namespace Bit
 					static_cast<Uint64>( m_Port ) ;
 		}
 
+		void Connection::AddToGroup(const Uint32 p_GroupIndex)
+		{
+			m_Groups.Mutex.Lock();
+			m_Groups.Value.insert(p_GroupIndex);
+			m_Groups.Mutex.Unlock();
+		}
+
+		void Connection::RemoveFromGroup(const Uint32 p_GroupIndex)
+		{
+			m_Groups.Mutex.Lock();
+			m_Groups.Value.erase(p_GroupIndex);
+			m_Groups.Mutex.Unlock();
+		}
+
 		// received data struct
 		Connection::ReceivedData::ReceivedData( Uint8 * p_pData,
 												const SizeType p_DataSize,

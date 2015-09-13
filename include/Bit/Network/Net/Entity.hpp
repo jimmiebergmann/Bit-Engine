@@ -26,7 +26,9 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Network/Net/Variable.hpp>
+#include <Bit/System/ThreadValue.hpp>
 #include <string>
+#include <set>
 
 namespace Bit
 {
@@ -52,6 +54,9 @@ namespace Bit
 			template <typename T> friend class Variable;
 			template <typename T> friend class InterpolatedVariable;
 
+			// Public typdefs
+			typedef std::set<Uint32> GroupSet;
+
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
 			///
@@ -74,14 +79,33 @@ namespace Bit
 			/// \brief Get entity name.
 			///
 			////////////////////////////////////////////////////////////////
-			const std::string & GetName( ) const;
+			const std::string & GetName() const;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Add entity to group.
+			///
+			////////////////////////////////////////////////////////////////
+			void AddToGroup(const Uint32 p_GroupIndex);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Remove entity from group.
+			///
+			////////////////////////////////////////////////////////////////
+			void RemoveFromGroup(const Uint32 p_GroupIndex);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Att entity to group.
+			///
+			////////////////////////////////////////////////////////////////
+			GroupSet GetGroups();
 
 		private:
 
 			// Private variables
-			Uint16			m_Id;				///< Entity id.
-			std::string		m_Name;				///< Entity name.
-			EntityManager * m_pEntityManager;	///< Entity changer class.
+			Uint16					m_Id;				///< Entity id.
+			std::string				m_Name;				///< Entity name.
+			ThreadValue<GroupSet>	m_Groups;			///< Set of entity groups for this entity.
+			EntityManager *			m_pEntityManager;	///< Entity changer class.
 
 		};
 

@@ -36,6 +36,7 @@
 #include <queue>
 #include <map>
 #include <list>
+#include <set>
 
 namespace Bit
 {
@@ -57,6 +58,9 @@ namespace Bit
 			friend class EntityManager;
 			friend class HostMessage;
 			friend class Event;
+
+			// Public typdefs
+			typedef std::set<Uint32> GroupSet;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
@@ -111,18 +115,17 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			Uint64 GetPackedAddress( ) const;
 
-			/*
 			////////////////////////////////////////////////////////////////
-			/// \brief Receive data from client
-			///
-			/// You have to delete the data in the udp packet by yourself to prevent memory leaks.
-			///
-			/// \param p_Packet Udp packet.
-			///
-			/// \return True if received packet, else false.
+			/// \brief Add entity to group.
 			///
 			////////////////////////////////////////////////////////////////
-			Bit::Bool Receive( Packet & p_Packet );*/
+			void AddToGroup(const Uint32 p_GroupIndex);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Remove entity from group.
+			///
+			////////////////////////////////////////////////////////////////
+			void RemoveFromGroup(const Uint32 p_GroupIndex);
 
 		private:
 
@@ -253,14 +256,14 @@ namespace Bit
 			ThreadValue<Timer>				m_LastRecvTimer;			///< Time for checking when the last recv packet.
 			ThreadValue<Timer>				m_LastSendTimer;			///< Time for checking when the last sent packet.
 			ThreadValue<Uint16>				m_Sequence;					///< The sequence of the next packet being sent.
-			SequenceManager					m_SequenceManager;			///< Sequence manager
+			SequenceManager					m_SequenceManager;			///< Sequence manager.
 			ThreadValue<ReliablePacketMap>	m_ReliableMap;				///< Map of reliable packets.
 			ThreadValue<Time>				m_Ping;						///< Current network ping.
 			Time							m_LosingConnectionTimeout;	///< Ammount of time without any packets before losing the connection.
 			TimeList						m_PingList;					///< List of the last pings.
-			ThreadValue<ReceivedDataQueue>	m_UserMessages;				///< Queue of user messages
+			ThreadValue<ReceivedDataQueue>	m_UserMessages;				///< Queue of user messages.
 			Semaphore						m_UserMessageSemaphore;		///< Semaphore for executing user message listeners.
-			
+			ThreadValue<GroupSet>			m_Groups;					///< Set of entity groups.
 
 		};
 

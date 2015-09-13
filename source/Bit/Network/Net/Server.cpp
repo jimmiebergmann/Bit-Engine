@@ -134,6 +134,54 @@ namespace Bit
 			return true;
 		}
 
+		void Server::AddUserToGroup(const Uint16 p_UserId, const Uint32 p_GroupIndex)
+		{
+			SmartMutex mutex(m_ConnectionMutex);
+			mutex.Lock();
+
+			// Find the user.
+			UserConnectionMap::iterator it = m_UserConnections.find(p_UserId);
+			if (it == m_UserConnections.end())
+			{
+				return;
+			}
+
+			// Add the entity index to the connection.
+			it->second->AddToGroup(p_GroupIndex);
+
+			// Create the entity message
+			std::vector<Uint8> message;
+			if (m_EntityManager.CreateFullEntityMessage(message, false) == false)
+			{
+				return;
+			}
+
+			// Error check the message
+			if (message.size() == 0)
+			{
+				return;
+			}
+
+			// Send realiable message.
+			it->second->SendReliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true);
+		}
+
+		void Server::RemoveUserFromGroup(const Uint16 p_UserId, const Uint32 p_GroupIndex)
+		{
+			SmartMutex mutex(m_ConnectionMutex);
+			mutex.Lock();
+
+			// Find the user.
+			UserConnectionMap::iterator it = m_UserConnections.find(p_UserId);
+			if (it == m_UserConnections.end())
+			{
+				return;
+			}
+
+			// Add the entity index to the connection.
+			it->second->RemoveFromGroup(p_GroupIndex);
+		}
+
 		Bool Server::BanUser(const Uint16 p_UserId, const Time p_Time)
 		{
 			// Find the connection via user id.

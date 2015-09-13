@@ -54,6 +54,30 @@ namespace Bit
 			return m_Name;
 		}
 
+		void Entity::AddToGroup(const Uint32 p_GroupIndex)
+		{
+			m_Groups.Mutex.Lock();
+			m_Groups.Value.insert(p_GroupIndex);
+			m_Groups.Mutex.Unlock();
+		}
+
+		void Entity::RemoveFromGroup(const Uint32 p_GroupIndex)
+		{
+			m_Groups.Mutex.Lock();
+			m_Groups.Value.erase(p_GroupIndex);
+			m_Groups.Mutex.Unlock();
+		}
+
+		Entity::GroupSet Entity::GetGroups()
+		{
+			SmartMutex mutex(m_Groups.Mutex);
+			mutex.Lock();
+
+			GroupSet groupSet(m_Groups.Value);
+
+			return groupSet;
+		}
+
 	}
 
 }
