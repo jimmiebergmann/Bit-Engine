@@ -286,7 +286,7 @@ namespace Bit
 			void AddHostMessage(ReceivedData * p_ReceivedData);
 
 			////////////////////////////////////////////////////////////////
-			/// \brief	Function for adding user messages to the function caller queue.
+			/// \brief	Add entity update sequence, makes sure we're not handling old entity updates.
 			///
 			////////////////////////////////////////////////////////////////
 			bool AddEntityUpdateSequence(const Uint16 p_Sequence);

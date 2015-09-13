@@ -65,7 +65,9 @@ T Variable<T>::Get()
 template<typename T>
 void Variable<T>::SetData(const void * p_pData)
 {
+	m_Mutex.Lock();
 	memcpy(&m_Value, p_pData, m_Size);
+	m_Mutex.Unlock();
 }
 
 template<typename T>
@@ -189,6 +191,8 @@ T InterpolatedVariable<T>::Get()
 template<typename T>
 void InterpolatedVariable<T>::SetData(const void * p_pData)
 {
+	m_Mutex.Lock();
+
 	// Create a new snapshot
 	InterpolatedVariable<T>::Snapshot snapshot;
 	snapshot.m_Time = Microseconds(Timer::GetSystemTime() );
@@ -199,6 +203,8 @@ void InterpolatedVariable<T>::SetData(const void * p_pData)
 
 	// Remove snapshots that are too old
 	RemoveOldSnapshots();
+
+	m_Mutex.Unlock();
 }
 
 template<typename T>

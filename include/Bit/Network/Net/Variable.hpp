@@ -82,6 +82,14 @@ namespace Bit
 
 			// Protected functions
 			////////////////////////////////////////////////////////////////
+			/// \brief Function for setting new sequence.
+			///
+			/// \return true if the new sequence is valid, else false.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool SetNewSequence(const Uint16 p_Sequence);
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Virtual function for setting the data.
 			///
 			////////////////////////////////////////////////////////////////
@@ -98,6 +106,7 @@ namespace Bit
 			std::string			m_Name;			///< Variable name.
 			Entity *			m_pParent;		///< Parent entity.
 			Mutex				m_Mutex;		///< Mutex for set/get value.
+			Uint16				m_LastSequence;	///< Last update sequence.
 
 		};
 

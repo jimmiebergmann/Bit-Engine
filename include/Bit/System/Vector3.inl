@@ -178,10 +178,10 @@ inline Vector3<T> Vector3<T>::Normal( ) const
 {
 	Float64 length = Length( );
 
-	if( bitIsNan( length ) )
+	if (bitIsNan(length) || length == 0.0f )
 	{
 		return Vector3<T>(	static_cast< T >( 0 ),
-								static_cast< T >( 0 ), static_cast< T >( 0 ) );
+							static_cast< T >( 0 ), static_cast< T >( 0 ) );
 	}
 
 	return Vector3<T>(	static_cast<T>(	static_cast<Float64>( x ) / length ),
@@ -194,7 +194,7 @@ inline Vector3<T> & Vector3<T>::Normalize( )
 {
 	T length = static_cast<T>( Length( ) );
 
-	if( bitIsNan( length ) )
+	if (bitIsNan(length) || length == 0.0f)
 	{
 		x = y = z = static_cast< T >( 0 );
 		return *this;

@@ -193,7 +193,7 @@ namespace Bit
 			return it->second->pEntity;
 		}
 
-		bool EntityManager::ParseEntityMessage( void * p_pMessage, const SizeType p_MessageSize )
+		bool EntityManager::ParseEntityMessage(const Uint16 p_Sequence, void * p_pMessage, const SizeType p_MessageSize)
 		{
 			// Create a smart mutex.
 			SmartMutex mutex(m_Mutex);
@@ -414,15 +414,16 @@ namespace Bit
 							// Continue
 							continue;
 						}
-						
-						// Lock the variable mutex.
-						(pEntity->*pVariableBase).m_Mutex.Lock();
+
+						if ((pEntity->*pVariableBase).SetNewSequence(p_Sequence) == false)
+						{
+							dataPos += dataSize;
+
+							continue;
+						}
 
 						// Copy the data to the value
 						(pEntity->*pVariableBase).SetData(&(pData[dataPos]));
-						
-						// Unlock the variable mutex.
-						(pEntity->*pVariableBase).m_Mutex.Unlock();
 
 						// Move to the next Id
 						dataPos += dataSize;

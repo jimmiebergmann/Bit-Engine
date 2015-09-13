@@ -423,7 +423,7 @@ namespace Bit
 						// if we've already received a packet with the same sequence.
 						if (m_SequenceManager.AddSequence(sequence) && AddEntityUpdateSequence(sequence))
 						{
-							m_EntityManager.ParseEntityMessage(buffer + EntityUpdatePacketSize, recvSize - EntityUpdatePacketSize);
+							m_EntityManager.ParseEntityMessage(sequence, buffer + EntityUpdatePacketSize, recvSize - EntityUpdatePacketSize);
 						}
 
 					}

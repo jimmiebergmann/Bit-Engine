@@ -33,7 +33,8 @@ namespace Bit
 
 		VariableBase::VariableBase( SizeType p_Size ) :
 			m_Size( p_Size ),
-			m_pParent( NULL )
+			m_pParent( NULL ),
+			m_LastSequence( 0 )
 		{
 		}
 
@@ -45,6 +46,26 @@ namespace Bit
 		const std::string & VariableBase::GetName( ) const
 		{
 			return m_Name;
+		}
+
+		Bool VariableBase::SetNewSequence(const Uint16 p_Sequence)
+		{
+			// Store the return value for later
+			bool ret = false;
+
+			m_Mutex.Lock();
+
+			// Validate the new sequence.
+			if (p_Sequence >= m_LastSequence ||
+				(m_LastSequence > 49152 && p_Sequence < 16384))
+			{
+				m_LastSequence = p_Sequence;
+				ret = true;
+			}
+			m_Mutex.Unlock();
+
+			// Return the return value.
+			return ret;
 		}
 
 	}

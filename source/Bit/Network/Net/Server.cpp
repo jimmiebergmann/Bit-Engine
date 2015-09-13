@@ -82,7 +82,8 @@ namespace Bit
 		}
 
 		Bool Server::OnPreConnection(	const Address & p_Address,
-										const Uint16 p_Port)
+										const Uint16 p_Port,
+										std::vector<Uint32> & p_EntityGroups)
 		{
 			return true;
 		}
@@ -344,7 +345,8 @@ namespace Bit
 							}
 
 							// Run the on pre connection function
-							if (OnPreConnection(address, port) == false)
+							std::vector<Uint32> groupVector;
+							if (OnPreConnection(address, port, groupVector) == false)
 							{
 								// SEND REJECT MESSAGE HERE PLEASE.
 
@@ -447,7 +449,7 @@ namespace Bit
 							if (it->second->m_SendEntityMessages.Get())
 							{
 								// Send unrealiable message.
-								it->second->SendUnreliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true, true);
+								it->second->SendReliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true);
 							}
 						}
 

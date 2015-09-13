@@ -134,15 +134,20 @@ namespace Bit
 
 		protected:
 
-			// Function to be overloaded.
 			////////////////////////////////////////////////////////////////
 			/// \brief Function to execute when an user is about to connect.
+			///
+			/// \param p_Address Address of the connecting client.
+			/// \param p_Port Port of the connecting client.
+			/// \param p_EntityGroups  Letting you add clients to groups before the connect.
+			///						   Empty vector will result in exposing the client for all groups.
 			///
 			/// \return true to let client connect, else false.
 			///
 			////////////////////////////////////////////////////////////////
 			virtual Bool OnPreConnection(	const Address & p_Address,
-											const Uint16 p_Port);
+											const Uint16 p_Port,
+											std::vector<Uint32> & p_EntityGroups);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Function to execute when an user has connected.

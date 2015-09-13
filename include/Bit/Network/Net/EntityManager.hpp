@@ -184,7 +184,7 @@ namespace Bit
 			/// \return True if succeeded, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			bool ParseEntityMessage( void * p_pMessage, const SizeType p_MessageSize );
+			bool ParseEntityMessage( const Uint16 p_Sequence, void * p_pMessage, const SizeType p_MessageSize );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Create a entity message for a single entity, varaible and Id.
