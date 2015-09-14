@@ -237,7 +237,7 @@ namespace Bit
 		/// \return The angle in degrees between two vectors.
 		///
 		////////////////////////////////////////////////////////////////
-		static Angle AngleBetweenVectors( const Vector3<T> & p_Vector1, const Vector3<T> & p_Vector2 );
+		static Angle AngleBetweenVectors(const Vector3<T> & p_Vector1, const Vector3<T> & p_Vector2);
 
 		////////////////////////////////////////////////////////////////
 		// Public variable members

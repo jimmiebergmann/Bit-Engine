@@ -99,7 +99,7 @@ namespace Bit
 			// Receive data.
 			Bool received = false;
 			Time timeout = p_Timeout;
-			while (received == false && p_Timeout != Time::Zero)
+			while (received == false && timeout != Time::Zero)
 			{
 
 				Address fromAddress;
@@ -118,6 +118,9 @@ namespace Bit
 					continue;
 				}
 
+				// We received our response.
+				received = true;
+
 				// Break the loop, we got out ping.
 				break;
 			}
@@ -127,7 +130,7 @@ namespace Bit
 			p_PingTime = timer.GetTime();
 
 			// Succeeded.
-			return true;
+			return received;
 		}
 
 		Client::eStatus Client::Connect(const Address & p_Address,

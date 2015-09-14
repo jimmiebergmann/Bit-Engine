@@ -257,6 +257,203 @@ inline void Matrix4x4<T>::Translate( const T p_X, const T p_Y, const T p_Z )
 }
 
 template <typename T>
+Float32 Matrix4x4<T>::Inverse()
+{
+	// Get determinant and error check.
+	Float32 det = GetDeterminant();
+	if (det == 0.0f)
+	{
+		return det;
+	}
+
+
+	// Create a new almost inversed matrix.
+	T inv[16];
+
+	inv[0] = m[5] * m[10] * m[15] -
+		m[5] * m[11] * m[14] -
+		m[9] * m[6] * m[15] +
+		m[9] * m[7] * m[14] +
+		m[13] * m[6] * m[11] -
+		m[13] * m[7] * m[10];
+
+	inv[4] = -m[4] * m[10] * m[15] +
+		m[4] * m[11] * m[14] +
+		m[8] * m[6] * m[15] -
+		m[8] * m[7] * m[14] -
+		m[12] * m[6] * m[11] +
+		m[12] * m[7] * m[10];
+
+	inv[8] = m[4] * m[9] * m[15] -
+		m[4] * m[11] * m[13] -
+		m[8] * m[5] * m[15] +
+		m[8] * m[7] * m[13] +
+		m[12] * m[5] * m[11] -
+		m[12] * m[7] * m[9];
+
+	inv[12] = -m[4] * m[9] * m[14] +
+		m[4] * m[10] * m[13] +
+		m[8] * m[5] * m[14] -
+		m[8] * m[6] * m[13] -
+		m[12] * m[5] * m[10] +
+		m[12] * m[6] * m[9];
+
+	inv[1] = -m[1] * m[10] * m[15] +
+		m[1] * m[11] * m[14] +
+		m[9] * m[2] * m[15] -
+		m[9] * m[3] * m[14] -
+		m[13] * m[2] * m[11] +
+		m[13] * m[3] * m[10];
+
+	inv[5] = m[0] * m[10] * m[15] -
+		m[0] * m[11] * m[14] -
+		m[8] * m[2] * m[15] +
+		m[8] * m[3] * m[14] +
+		m[12] * m[2] * m[11] -
+		m[12] * m[3] * m[10];
+
+	inv[9] = -m[0] * m[9] * m[15] +
+		m[0] * m[11] * m[13] +
+		m[8] * m[1] * m[15] -
+		m[8] * m[3] * m[13] -
+		m[12] * m[1] * m[11] +
+		m[12] * m[3] * m[9];
+
+	inv[13] = m[0] * m[9] * m[14] -
+		m[0] * m[10] * m[13] -
+		m[8] * m[1] * m[14] +
+		m[8] * m[2] * m[13] +
+		m[12] * m[1] * m[10] -
+		m[12] * m[2] * m[9];
+
+	inv[2] = m[1] * m[6] * m[15] -
+		m[1] * m[7] * m[14] -
+		m[5] * m[2] * m[15] +
+		m[5] * m[3] * m[14] +
+		m[13] * m[2] * m[7] -
+		m[13] * m[3] * m[6];
+
+	inv[6] = -m[0] * m[6] * m[15] +
+		m[0] * m[7] * m[14] +
+		m[4] * m[2] * m[15] -
+		m[4] * m[3] * m[14] -
+		m[12] * m[2] * m[7] +
+		m[12] * m[3] * m[6];
+
+	inv[10] = m[0] * m[5] * m[15] -
+		m[0] * m[7] * m[13] -
+		m[4] * m[1] * m[15] +
+		m[4] * m[3] * m[13] +
+		m[12] * m[1] * m[7] -
+		m[12] * m[3] * m[5];
+
+	inv[14] = -m[0] * m[5] * m[14] +
+		m[0] * m[6] * m[13] +
+		m[4] * m[1] * m[14] -
+		m[4] * m[2] * m[13] -
+		m[12] * m[1] * m[6] +
+		m[12] * m[2] * m[5];
+
+	inv[3] = -m[1] * m[6] * m[11] +
+		m[1] * m[7] * m[10] +
+		m[5] * m[2] * m[11] -
+		m[5] * m[3] * m[10] -
+		m[9] * m[2] * m[7] +
+		m[9] * m[3] * m[6];
+
+	inv[7] = m[0] * m[6] * m[11] -
+		m[0] * m[7] * m[10] -
+		m[4] * m[2] * m[11] +
+		m[4] * m[3] * m[10] +
+		m[8] * m[2] * m[7] -
+		m[8] * m[3] * m[6];
+
+	inv[11] = -m[0] * m[5] * m[11] +
+		m[0] * m[7] * m[9] +
+		m[4] * m[1] * m[11] -
+		m[4] * m[3] * m[9] -
+		m[8] * m[1] * m[7] +
+		m[8] * m[3] * m[5];
+
+	inv[15] = m[0] * m[5] * m[10] -
+		m[0] * m[6] * m[9] -
+		m[4] * m[1] * m[10] +
+		m[4] * m[2] * m[9] +
+		m[8] * m[1] * m[6] -
+		m[8] * m[2] * m[5];
+
+
+
+
+	// Multiply 1/det with the new matrix
+	Float32 c = 1.0f / det;
+
+	for (SizeType i = 0; i < 16; i++)
+	{
+		m[i] = inv[ i ] * static_cast<T>( c );
+	}
+
+	// return the determinant.
+	return det;
+}
+
+template <typename T>
+Float32 Matrix4x4<T>::GetDeterminant() const
+{
+	return
+		m[3] * m[6] * m[9] * m[12] - m[2] * m[7] * m[9] * m[12] -
+		m[3] * m[5] * m[10] * m[12] + m[1] * m[7] * m[10] * m[12] +
+		m[2] * m[5] * m[11] * m[12] - m[1] * m[6] * m[11] * m[12] -
+		m[3] * m[6] * m[8] * m[13] + m[2] * m[7] * m[8] * m[13] +
+		m[3] * m[4] * m[10] * m[13] - m[0] * m[7] * m[10] * m[13] -
+		m[2] * m[4] * m[11] * m[13] + m[0] * m[6] * m[11] * m[13] +
+		m[3] * m[5] * m[8] * m[14] - m[1] * m[7] * m[8] * m[14] -
+		m[3] * m[4] * m[9] * m[14] + m[0] * m[7] * m[9] * m[14] +
+		m[1] * m[4] * m[11] * m[14] - m[0] * m[5] * m[11] * m[14] -
+		m[2] * m[5] * m[8] * m[15] + m[1] * m[6] * m[8] * m[15] +
+		m[2] * m[4] * m[9] * m[15] - m[0] * m[6] * m[9] * m[15] -
+		m[1] * m[4] * m[10] * m[15] + m[0] * m[5] * m[10] * m[15];
+}
+
+template <typename T>
+Bool Matrix4x4<T>::UnProject(const Vector3f32 p_WindowPosition,
+				const Matrix4x4<T> & p_Matrix,
+				const Int32 p_Viewport[4],
+				Vector3f32 & p_Position)
+{
+	// Transformation matrices
+	Vector4<T> in, out;
+
+	// Calculation for inverting a matrix.
+	Matrix4x4<T> inverse = p_Matrix;
+	if (inverse.Inverse() == 0.0f)
+	{
+		return false;
+	}
+
+	//Transformation of normalized coordinates between -1 and 1
+	in.x = (p_WindowPosition.x - static_cast<Float32>(p_Viewport[0])) / static_cast<Float32>(p_Viewport[2]) * 2.0f - 1.0f;
+	in.y = (p_WindowPosition.y - static_cast<Float32>(p_Viewport[1])) / static_cast<Float32>(p_Viewport[3]) * 2.0f - 1.0f;
+	in.z = 2.0f*p_WindowPosition.z - 1.0f;
+	in.w = 1.0f;
+
+	//Objects coordinates
+	out = inverse * in;
+	if (out.w == 0.0f)
+	{
+		return false;
+	}
+
+
+	out.w = 1.0f / out.w;
+	p_Position.x = out.x * out.w;
+	p_Position.y = out.y * out.w;
+	p_Position.z = out.z * out.w;
+
+	return true;
+}
+
+template <typename T>
 inline Matrix4x4<T> & Matrix4x4<T>::operator = ( const Matrix4x4<T> & p_Mat )
 {
 	for( SizeType i = 0; i < 16; i++ )
