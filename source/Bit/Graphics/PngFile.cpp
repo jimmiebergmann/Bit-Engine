@@ -62,7 +62,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::LoadFromFile] Can not open the file. " << std::endl;
+			std::cout << "[PngFile::LoadFromFile] Can not open the file. " << std::endl;
 			return false;
 		}
 
@@ -176,7 +176,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::SaveToFile] Can not open the file. " << std::endl;
+			std::cout << "[PngFile::SaveToFile] Can not open the file. " << std::endl;
 			return false;
 		}
 
