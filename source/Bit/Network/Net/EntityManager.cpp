@@ -51,6 +51,8 @@ namespace Bit
 
 			for( EntityMap::iterator it =  m_Entities.begin( ); it !=  m_Entities.end( ); it++ )
 			{
+				it->second->pEntity->m_pEntityManager = NULL;
+				delete it->second->pEntity;
 				delete it->second;
 			}
 			m_Entities.clear( );
@@ -818,7 +820,8 @@ namespace Bit
 			}
 
 			// Make sure that the id isn't already in use
-			if (m_Entities[p_Id])
+			EntityMap::iterator it2 = m_Entities.find(p_Id);
+			if (it2 != m_Entities.end())
 			{
 				std::cout << "Bit::EntityManager::CreateEntityAtId: Id already in use." << std::endl;
 				return NULL;
