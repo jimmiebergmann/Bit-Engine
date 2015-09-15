@@ -238,6 +238,7 @@ namespace Bit
 			typedef std::map<Entity *, VariableBase *>					ChangedEntityVariableMap;	///< Mapping entities to variables
 			typedef std::map<std::string, ChangedEntityVariableMap *>	ChangedVariablesMap;		///< Set of changed variables
 			typedef std::map<std::string, ChangedVariablesMap *>		ChangedEntitiesMap;			///< Map of changed entities.
+			typedef std::set<Entity *>									EntitySet;					///< Set of entities.
 			
 			////////////////////////////////////////////////////////////////
 			/// \brief	Entity meta data structure. Holding the entity variables
@@ -276,6 +277,12 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			Entity * CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Delete all the entities in the deletion queue.
+			///
+			////////////////////////////////////////////////////////////////
+			void DeleteEntitiesInDeletionQueue();
 		
 			// Private variable
 			EntityChanger *			m_pEntityChanger;		///< Poiter to entity changer base class
@@ -284,6 +291,7 @@ namespace Bit
 			EntityMetaDataMap		m_EntityMetaDataMap;	///< Map of entity class meta data.
 			ChangedEntitiesMap		m_ChangedEntities;		///< Map of changed entitites
 			EntityMap				m_Entities;				///< Map of all entities.
+			EntitySet				m_EntitiyDeletionQueue;	///< Queue or set of entities to be deleted.
 			Uint32					m_CurrentId;			///< Temporary solution for incremening the ID.
 			Time					m_InterpolationTime;	///< Interpolation time(delay).
 			Time					m_ExtrapolationTime;	///< Extrapolation time( for how long we should extra interpolate).

@@ -53,6 +53,33 @@ namespace Bit
 		return m_Radians;
 	}
 
+	Angle Angle::operator + (const Angle & p_Angle) const
+	{
+		return Radians(m_Radians + p_Angle.m_Radians);
+	}
+
+	Angle & Angle::operator += (const Angle & p_Angle)
+	{
+		m_Radians += p_Angle.m_Radians;
+		return *this;
+	}
+
+	Angle Angle::operator - () const
+	{
+		return Radians(-m_Radians);
+	}
+
+	Angle Angle::operator - (const Angle & p_Angle) const
+	{
+		return Radians(m_Radians - p_Angle.m_Radians);
+	}
+
+	Angle & Angle::operator -= (const Angle & p_Angle)
+	{
+		m_Radians -= p_Angle.m_Radians;
+		return *this;
+	}
+
 	BIT_API Angle Degrees( const Float64 & p_Degrees )
 	{
 		return Angle( p_Degrees * Pi / 180.0f );

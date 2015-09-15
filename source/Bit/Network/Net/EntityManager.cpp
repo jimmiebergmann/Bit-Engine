@@ -144,73 +144,8 @@ namespace Bit
 				return;
 			}
 
-			// Get the entity link
-			EntityMap::iterator linkIt = m_Entities.find( p_pEntity->GetId( ) );
-			if( linkIt == m_Entities.end( ) )
-			{
-				return;
-			}
-
-			// Get the iterator for the entity map
-			EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_pEntity->GetName( ) );
-			if( it == m_EntityMetaDataMap.end( ) )
-			{
-				return;
-			}
-
-			// Go through the variables and remove the parent
-			EntityMetaData * pMetadata = it->second;
-			for( EntityVariableMap::iterator it2 = pMetadata->EntityVariables.begin( );
-				 it2 != pMetadata->EntityVariables.end( );
-				 it2++ )
-			{
-				// Get the current variable pointer
-				VariableBase Entity::*pVariable = it2->second;
-				(p_pEntity->*pVariable).m_pParent = NULL;
-			}
-
-			// Delete and remove the link
-			delete linkIt->second;
-			m_Entities.erase( linkIt );
-
-			// Get entity id
-			Uint16 entityId = p_pEntity->GetId();
-
-
-			// Delete the pointer
-			if( p_Unallocate )
-			{
-				// Make sure to set the entity manager to null,
-				// this will make the entity not try to destroy itself through the entity manager.
-				p_pEntity->m_pEntityManager = NULL;
-				delete p_pEntity;
-			}
-
-			// Send destroyed entity packet if this function is called by the server.
-			if (m_pServer)
-			{
-				// Create the destroyed entity data
-				const SizeType destroyedDataSize = 2;
-				Uint8 destroyedData[destroyedDataSize];
-				Uint16 entityIdNetwork = Hton16( entityId );
-				memcpy(destroyedData, &entityIdNetwork, destroyedDataSize);
-
-				// Go through the connections
-				m_pServer->m_ConnectionMutex.Lock();
-				{
-					for (	Server::UserConnectionMap::iterator it = m_pServer->m_UserConnections.begin();
-							it != m_pServer->m_UserConnections.end();
-							it++)
-					{
-						it->second->SendReliable(PacketType::EntityDestroyed, destroyedData, destroyedDataSize, true);
-					}
-				}
-				m_pServer->m_ConnectionMutex.Unlock();
-
-				// Remove the entity from the changed entities map if needed.
-
-
-			}
+			// Add the entity to the entity deletion queue.
+			m_EntitiyDeletionQueue.insert(p_pEntity);
 
 			// Unlock the entity.
 			mutex.Unlock();
@@ -845,6 +780,7 @@ namespace Bit
 			SmartMutex mutex(m_Mutex);
 			mutex.Lock();
 
+			// Go through the changed entities, and delete them.
 			for( ChangedEntitiesMap::iterator it = m_ChangedEntities.begin( );
 				 it != m_ChangedEntities.end( );
 				 it++ )
@@ -860,6 +796,9 @@ namespace Bit
 			}
 
 			m_ChangedEntities.clear( );
+
+			// Delete entities in the delete queue.
+			DeleteEntitiesInDeletionQueue();
 
 			mutex.Unlock();
 		}
@@ -923,6 +862,84 @@ namespace Bit
 
 		}
 
+		void EntityManager::DeleteEntitiesInDeletionQueue()
+		{
+			// Go throguh the entities in the queue
+			for (EntitySet::iterator dit = m_EntitiyDeletionQueue.begin(); dit != m_EntitiyDeletionQueue.end(); dit++)
+			{
+				Entity * pEntity = *dit;
+
+				// Get the entity link
+				EntityMap::iterator linkIt = m_Entities.find(pEntity->GetId());
+				if (linkIt == m_Entities.end())
+				{
+					continue;
+				}
+
+				// Get the iterator for the entity map
+				EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find(pEntity->GetName());
+				if (it == m_EntityMetaDataMap.end())
+				{
+					continue;
+				}
+
+				// Go through the variables and remove the parent
+				EntityMetaData * pMetadata = it->second;
+				for (EntityVariableMap::iterator it2 = pMetadata->EntityVariables.begin();
+					it2 != pMetadata->EntityVariables.end();
+					it2++)
+				{
+					// Get the current variable pointer
+					VariableBase Entity::*pVariable = it2->second;
+					(pEntity->*pVariable).m_pParent = NULL;
+				}
+
+				// Delete and remove the link
+				delete linkIt->second;
+				m_Entities.erase(linkIt);
+
+				// Get entity id
+				Uint16 entityId = pEntity->GetId();
+
+
+				// Delete the pointer
+				//if (p_Unallocate)
+				{
+					// Make sure to set the entity manager to null,
+					// this will make the entity not try to destroy itself through the entity manager.
+					pEntity->m_pEntityManager = NULL;
+					delete pEntity;
+				}
+
+				// Send destroyed entity packet if this function is called by the server.
+				if (m_pServer)
+				{
+					// Create the destroyed entity data
+					const SizeType destroyedDataSize = 2;
+					Uint8 destroyedData[destroyedDataSize];
+					Uint16 entityIdNetwork = Hton16(entityId);
+					memcpy(destroyedData, &entityIdNetwork, destroyedDataSize);
+
+					// Go through the connections
+					m_pServer->m_ConnectionMutex.Lock();
+					{
+						for (Server::UserConnectionMap::iterator it = m_pServer->m_UserConnections.begin();
+							it != m_pServer->m_UserConnections.end();
+							it++)
+						{
+							it->second->SendReliable(PacketType::EntityDestroyed, destroyedData, destroyedDataSize, true);
+						}
+					}
+					m_pServer->m_ConnectionMutex.Unlock();
+
+				}
+
+			} // End of loop.
+
+			// Clear the queue.
+			m_EntitiyDeletionQueue.clear();
+
+		}
 	}
 
 }
