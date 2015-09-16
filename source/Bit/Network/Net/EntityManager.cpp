@@ -47,7 +47,12 @@ namespace Bit
 
 		EntityManager::~EntityManager( )
 		{
+			// Delete entities in the delete queue.
+			DeleteEntitiesInDeletionQueue();
+
+			// Delete changed entities.
 			ClearChangedEntities( );
+			
 
 			for( EntityMap::iterator it =  m_Entities.begin( ); it !=  m_Entities.end( ); it++ )
 			{
@@ -423,17 +428,7 @@ namespace Bit
 		Bool EntityManager::CreateEntityMessage(std::vector<Uint8> & p_Message,
 												const Bool p_ClearMessage)
 		{
-			// Create a smart mutex.
-			SmartMutex mutex(m_Mutex);
-			mutex.Lock();
-
-
-			// Check if any entities were changed
-			if( m_ChangedEntities.size( ) == 0 )
-			{
-				return false;
-			}
-
+			
 			/*
 				Message structure:
 				- Entity count(2)
@@ -455,6 +450,21 @@ namespace Bit
 							- ...
 						- ...
 			*/
+
+			// Delete entities in the delete queue.
+			DeleteEntitiesInDeletionQueue();
+
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
+			// Check if any entities were changed
+			if( m_ChangedEntities.size( ) == 0 )
+			{
+				return false;
+			}
+
+		
 
 			
 			// Clear the message
@@ -799,9 +809,6 @@ namespace Bit
 
 			m_ChangedEntities.clear( );
 
-			// Delete entities in the delete queue.
-			DeleteEntitiesInDeletionQueue();
-
 			mutex.Unlock();
 		}
 
@@ -867,10 +874,49 @@ namespace Bit
 
 		void EntityManager::DeleteEntitiesInDeletionQueue()
 		{
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
 			// Go throguh the entities in the queue
 			for (EntitySet::iterator dit = m_EntitiyDeletionQueue.begin(); dit != m_EntitiyDeletionQueue.end(); dit++)
 			{
 				Entity * pEntity = *dit;
+
+				std::cout << "EntityManager::DeleteEntitiesInDeletionQueue: Clearing in delete queue : " << pEntity->GetId( ) << std::endl;
+
+				// Remvoe the entity from the changed entity map.
+				// This is not the most efficient way of doing it, but we really have to do this.
+				// Go through the changed entities, and delete them.
+				ChangedEntitiesMap::iterator ceIt = m_ChangedEntities.find(pEntity->GetName());
+				if (ceIt != m_ChangedEntities.end())
+				{
+					for (ChangedVariablesMap::iterator	cvIt = ceIt->second->begin();
+						cvIt != ceIt->second->end();
+						cvIt++)
+					{
+						for (ChangedEntityVariableMap::iterator	cevIt = cvIt->second->begin();
+							cevIt != cvIt->second->end();)
+						{
+							if (cevIt->first == pEntity)
+							{
+								cevIt = cvIt->second->erase(cevIt);
+
+								// break this loop, since we've found the changed variable for this entity.
+								break;
+							}
+							else
+							{
+								++cevIt;
+							}
+						}
+					}
+
+				}	// End of if-statement.
+
+
+
+				// Delete the actual entity.
 
 				// Get the entity link
 				EntityMap::iterator linkIt = m_Entities.find(pEntity->GetId());
@@ -908,9 +954,6 @@ namespace Bit
 				// Delete the pointer
 				//if (p_Unallocate)
 				{
-					// Make sure to set the entity manager to null,
-					// this will make the entity not try to destroy itself through the entity manager.
-					pEntity->m_pEntityManager = NULL;
 					delete pEntity;
 				}
 
@@ -941,6 +984,9 @@ namespace Bit
 
 			// Clear the queue.
 			m_EntitiyDeletionQueue.clear();
+
+			// Unlock the mutex
+			mutex.Unlock();
 
 		}
 	}

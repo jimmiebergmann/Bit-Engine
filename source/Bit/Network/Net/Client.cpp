@@ -465,12 +465,18 @@ namespace Bit
 
 						// Get entity
 						Entity * pEntity = m_EntityManager.GetEntity(entityId);
+						if (pEntity == NULL)
+						{
+							std::cout << "Client::Connect: Trying to destroy NULL entity." << std::endl;
+							continue;
+						}
 
 						// Call entity destroyed function.
 						OnEntityDestroyed(pEntity);
 
 						// Destroy the entity.
 						m_EntityManager.DestroyEntity(pEntity, true);
+
 
 					}
 					break;

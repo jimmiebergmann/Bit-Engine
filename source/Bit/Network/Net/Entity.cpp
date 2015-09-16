@@ -36,14 +36,6 @@ namespace Bit
 		{
 		}
 
-		Entity::~Entity( )
-		{
-			if( m_pEntityManager )
-			{
-				m_pEntityManager->DestroyEntity( this, false );
-			}
-		}
-
 		Uint16 Entity::GetId( ) const
 		{
 			return m_Id;
@@ -76,6 +68,10 @@ namespace Bit
 			GroupSet groupSet(m_Groups.Value);
 
 			return groupSet;
+		}
+
+		Entity::~Entity()
+		{
 		}
 
 	}
