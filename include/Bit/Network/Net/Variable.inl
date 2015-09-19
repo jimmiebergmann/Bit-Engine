@@ -74,7 +74,7 @@ T Variable<T>::GetSnapshot()
 }
 
 template<typename T>
-void Variable<T>::SetData(const void * p_pData)
+void Variable<T>::SetData(const void * p_pData, const Time & p_Time)
 {
 	m_Mutex.Lock();
 	memcpy(&m_Value, p_pData, m_Size);
@@ -256,7 +256,7 @@ T InterpolatedVariable<T>::GetSnapshot()
 }
 
 template<typename T>
-void InterpolatedVariable<T>::SetData(const void * p_pData)
+void InterpolatedVariable<T>::SetData(const void * p_pData, const Time & p_Time)
 {
 	/*m_Mutex.Lock();
 

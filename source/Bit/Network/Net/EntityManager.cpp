@@ -174,6 +174,7 @@ namespace Bit
 			
 			/*
 				Message structure:
+				- Time
 				- Entity count(2)
 					-Entity:
 						- Block size(2)
@@ -201,7 +202,7 @@ namespace Bit
 			std::set<Entity *> newEntities;
 
 			// Error check the parameters
-			if( p_pMessage == NULL || p_MessageSize < 14 )
+			if( p_pMessage == NULL || p_MessageSize < 22 )
 			{
 				return false;
 			}
@@ -209,12 +210,21 @@ namespace Bit
 			// Get the message pointer as an unsigned char pointer
 			Uint8 * pData = reinterpret_cast<Uint8 *>( p_pMessage );
 
-			// Read entity count
-			Uint16 entityCount = Ntoh16(	( static_cast<Uint16>(  pData[ 0 ] ) ) |
-											( static_cast<Uint16>(  pData[ 1 ] ) << 8 ) );
-
+			
 			// Sture the current position in the message
-			Uint16 dataPos = 2;
+			Uint32 dataPos = 8;
+
+			// Read server time
+			Uint64 timeInt = 0;
+			memcpy(&timeInt, pData, sizeof(Uint64));
+			Time time = Microseconds(Ntoh64(timeInt));
+
+			// Read entity count
+			Uint16 entityCount = Ntoh16(	(static_cast<Uint16>(pData[dataPos])) |
+											(static_cast<Uint16>(pData[dataPos + 1]) << 8));
+
+			dataPos += 2;
+			
 
 			// Go throguh the entities
 			for( Uint16 i = 0; i < entityCount; i++ )
@@ -398,7 +408,7 @@ namespace Bit
 						}
 
 						// Copy the data to the value
-						(pEntity->*pVariableBase).SetData(&(pData[dataPos]));
+						(pEntity->*pVariableBase).SetData(&(pData[dataPos]), time);
 
 						// Move to the next Id
 						dataPos += dataSize;
@@ -430,6 +440,7 @@ namespace Bit
 			
 			/*
 				Message structure:
+				- Time
 				- Entity count(2)
 					-Entity:
 						- Block size(2)
@@ -449,6 +460,12 @@ namespace Bit
 							- ...
 						- ...
 			*/
+
+			// This is for server only.
+			if (m_pServer == NULL)
+			{
+				return false;
+			}
 
 			// Delete entities in the delete queue.
 			DeleteEntitiesInDeletionQueue();
@@ -471,6 +488,18 @@ namespace Bit
 			{
 				p_Message.clear();
 			}
+
+			// Add time
+			const Uint64 time = Hton64(m_pServer->GetServerTime().AsMicroseconds());
+
+			p_Message.push_back(static_cast<Uint8>(time));
+			p_Message.push_back(static_cast<Uint8>(time >> 8));
+			p_Message.push_back(static_cast<Uint8>(time >> 16));
+			p_Message.push_back(static_cast<Uint8>(time >> 24));
+			p_Message.push_back(static_cast<Uint8>(time >> 32));
+			p_Message.push_back(static_cast<Uint8>(time >> 40));
+			p_Message.push_back(static_cast<Uint8>(time >> 48));
+			p_Message.push_back(static_cast<Uint8>(time >> 56));
 
 			// Add entity count
 			Uint16 entityCount = Hton16( static_cast<Uint16>( m_ChangedEntities.size( ) ) );
@@ -599,6 +628,7 @@ namespace Bit
 
 			/*
 				Message structure:
+				- Time
 				- Entity count(2)
 					-Entity:
 						- Block size(2)
@@ -624,6 +654,18 @@ namespace Bit
 			{
 				p_Message.clear( );
 			}
+
+			// Add time
+			const Uint64 time = Hton64(m_pServer->GetServerTime().AsMicroseconds());
+
+			p_Message.push_back(static_cast<Uint8>(time));
+			p_Message.push_back(static_cast<Uint8>(time >> 8));
+			p_Message.push_back(static_cast<Uint8>(time >> 16));
+			p_Message.push_back(static_cast<Uint8>(time >> 24));
+			p_Message.push_back(static_cast<Uint8>(time >> 32));
+			p_Message.push_back(static_cast<Uint8>(time >> 40));
+			p_Message.push_back(static_cast<Uint8>(time >> 48));
+			p_Message.push_back(static_cast<Uint8>(time >> 56));
 
 			// Add entity count
 			Uint16 entityCount = Hton16( static_cast<Uint16>( m_EntityMetaDataMap.size( ) ) );

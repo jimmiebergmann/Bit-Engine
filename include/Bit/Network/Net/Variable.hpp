@@ -93,7 +93,7 @@ namespace Bit
 			/// \brief Virtual function for setting the data.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void SetData(const void * p_pData) = 0;
+			virtual void SetData(const void * p_pData, const Time & p_Time) = 0;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virtual function for setting the snapshot data.
@@ -179,7 +179,7 @@ namespace Bit
 			/// \brief Virtual function for setting the data.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void SetData(const void * p_pData);
+			virtual void SetData(const void * p_pData, const Time & p_Time);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virtual function for setting the snapshot data.
@@ -265,7 +265,7 @@ namespace Bit
 			/// \brief Virtual function for setting the data.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void SetData(const void * p_pData);
+			virtual void SetData(const void * p_pData, const Time & p_Time);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virtual function for setting the snapshot data.
