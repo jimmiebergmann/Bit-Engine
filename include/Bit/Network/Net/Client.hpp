@@ -148,7 +148,13 @@ namespace Bit
 			/// \brief Get the current ping.
 			///
 			////////////////////////////////////////////////////////////////
-			Time GetPing( );
+			Time GetPing();
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the current time of the server.
+			///
+			////////////////////////////////////////////////////////////////
+			Time GetServerTime();
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Function to execute when the server created a new entity.
@@ -300,6 +306,8 @@ namespace Bit
 			Thread								m_UserMessageThread;		///< Thread for handling user messages.
 			Address								m_ServerAddress;			///< The server's address.
 			Uint16								m_ServerPort;				///< The server's port.
+			ThreadValue<Time>					m_ServerStartTime;			///< The server's time at the state of connection.
+			ThreadValue<Timer>					m_ServerTimer;				///< Timer for checking how long time ago we connected to the server.
 			ThreadValue<Bool>					m_Connected;				///< Flag for checking if you are connected.
 			ThreadValue<Timer>					m_LastRecvTimer;			///< Time for checking when the last recv packet.
 			ThreadValue<Timer>					m_LastSendTimer;			///< Time for checking when the last sent reliable packet.

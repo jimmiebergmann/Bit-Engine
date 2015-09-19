@@ -24,7 +24,8 @@
 template<typename T>
 Variable<T>::Variable( ) :
 	VariableBase(sizeof(T)),
-	m_Value(static_cast<T>(0))
+	m_Value(static_cast<T>(0)),
+	m_Snapshot(static_cast<T>(0))
 {
 	
 }
@@ -32,7 +33,8 @@ Variable<T>::Variable( ) :
 template<typename T>
 Variable<T>::Variable( const T & p_Value ) :
 	VariableBase(sizeof(T)),
-	m_Value( p_Value )
+	m_Value(p_Value),
+	m_Snapshot(static_cast<T>(m_Value))
 {
 }
 
@@ -94,15 +96,27 @@ void * Variable<T>::GetData()
 }
 
 template<typename T>
+void * Variable<T>::GetData(const Time & p_Time)
+{
+	return reinterpret_cast<void *>(&m_Value);
+}
+
+template<typename T>
 void * Variable<T>::GetSnapshotData()
 {
 	return reinterpret_cast<void *>(&m_Snapshot);
 }
 
+
+
+
+
 // Interpolated variable class.
 template<typename T>
 InterpolatedVariable<T>::InterpolatedVariable() :
-	VariableBase(sizeof(T))
+	VariableBase(sizeof(T)),
+	m_Value(static_cast<T>(0)),
+	m_Snapshot(static_cast<T>(0))
 {
 	static_assert(	std::is_same<Float32, T>::value		||
 					std::is_same<Vector2f32, T>::value	||
@@ -113,7 +127,9 @@ InterpolatedVariable<T>::InterpolatedVariable() :
 
 template<typename T>
 InterpolatedVariable<T>::InterpolatedVariable(const T & p_Value) :
-	VariableBase(sizeof(T))
+	VariableBase(sizeof(T)),
+	m_Value( p_Value ),
+	m_Snapshot(static_cast<T>(p_Value))
 {
 	static_assert(	std::is_same<Float32, T>::value ||
 					std::is_same<Vector2f32, T>::value ||
@@ -124,7 +140,7 @@ InterpolatedVariable<T>::InterpolatedVariable(const T & p_Value) :
 template<typename T>
 void InterpolatedVariable<T>::Set(const T & p_Value)
 {
-	
+	/*
 	// Server only.
 	if (m_pParent &&
 		m_pParent->m_pEntityManager &&
@@ -138,13 +154,32 @@ void InterpolatedVariable<T>::Set(const T & p_Value)
 		// Call the on variable function for the entity changer
 		m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange(m_pParent, this);
 	}
+	*/
+
+	// Set the variable.
+	m_Mutex.Lock();
+	m_Value = p_Value;
+	m_Mutex.Unlock();
+
+	// Call the on variable function for the entity changer
+	if (m_pParent &&
+		m_pParent->m_pEntityManager &&
+		m_pParent->m_pEntityManager->m_pEntityChanger)
+	{
+		m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange(m_pParent, this);
+	}
 }
 
 template<typename T>
 T InterpolatedVariable<T>::Get()
 {
+	m_Mutex.Lock();
+	T value = m_Value;
+	m_Mutex.Unlock();
+	return value;
+
 	// Server only
-	if (m_pParent && m_pParent->m_pEntityManager->m_pEntityChanger)
+	/*if (m_pParent && m_pParent->m_pEntityManager->m_pEntityChanger)
 	{
 		m_Mutex.Lock();
 		T value = m_LastValue;
@@ -208,13 +243,22 @@ T InterpolatedVariable<T>::Get()
 
 
 	//
-	return pFirst->m_Value + ((pLast->m_Value - pFirst->m_Value) * factor);
+	return pFirst->m_Value + ((pLast->m_Value - pFirst->m_Value) * factor);*/
+}
+
+template<typename T>
+T InterpolatedVariable<T>::GetSnapshot()
+{
+	m_Mutex.Lock();
+	T value = m_Snapshot;
+	m_Mutex.Unlock();
+	return value;
 }
 
 template<typename T>
 void InterpolatedVariable<T>::SetData(const void * p_pData)
 {
-	m_Mutex.Lock();
+	/*m_Mutex.Lock();
 
 	// Create a new snapshot
 	InterpolatedVariable<T>::Snapshot snapshot;
@@ -227,15 +271,39 @@ void InterpolatedVariable<T>::SetData(const void * p_pData)
 	// Remove snapshots that are too old
 	RemoveOldSnapshots();
 
+	m_Mutex.Unlock();*/
+	m_Mutex.Lock();
+	memcpy(&m_Value, p_pData, m_Size);
+	m_Mutex.Unlock();
+}
+
+template<typename T>
+void InterpolatedVariable<T>::SetSnapshotData(const void * p_pData)
+{
+	m_Mutex.Lock();
+	memcpy(&m_Snapshot, p_pData, m_Size);
 	m_Mutex.Unlock();
 }
 
 template<typename T>
 void * InterpolatedVariable<T>::GetData()
 {
-	return reinterpret_cast<void *>(&m_LastValue);
+	return reinterpret_cast<void *>(&m_Value);
 }
 
+template<typename T>
+void * InterpolatedVariable<T>::GetData(const Time & p_Time)
+{
+	return reinterpret_cast<void *>(&m_Value);
+}
+
+template<typename T>
+void * InterpolatedVariable<T>::GetSnapshotData()
+{
+	return reinterpret_cast<void *>(&m_Snapshot);
+}
+
+/*
 template<typename T>
 void InterpolatedVariable<T>::RemoveOldSnapshots()
 {
@@ -245,7 +313,7 @@ void InterpolatedVariable<T>::RemoveOldSnapshots()
 	// Get the limit time.
 	Time limitTime =	m_pParent->m_pEntityManager->m_InterpolationTime * 2;/* +
 						m_pParent->m_pEntityManager->m_ExtrapolationTime;*/
-	
+	/*
 	
 
 	// Go throguh all the snapshots
@@ -273,4 +341,4 @@ void InterpolatedVariable<T>::RemoveOldSnapshots()
 
 	//std::cout << m_Snapshots.size()  << std::endl;
 
-}
+}*/

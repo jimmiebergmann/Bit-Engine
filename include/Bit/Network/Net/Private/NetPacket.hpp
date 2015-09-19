@@ -83,9 +83,9 @@ namespace Bit
 		const SizeType PacketTypeCount = 10;
 
 		///< Packet sizes, excluding data
-		const SizeType ConnectPacketSize = 1;
+		const SizeType ConnectPacketSize = 3;
 		const SizeType DisconnectPacketSize = 1;
-		const SizeType AcceptPacketSize = 1;
+		const SizeType AcceptPacketSize = 11;
 		const SizeType RejectPacketSize = 2;
 		const SizeType AcknowledgementPacketSize = 3;
 		const SizeType AlivePacketSize = 3;

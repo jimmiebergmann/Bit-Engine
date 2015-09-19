@@ -87,11 +87,10 @@ namespace Bit
 			m_ExtrapolationTime = p_Time;
 		}
 
-		void EntityManager::TakeSnapshot(const Uint32 p_GroupId)
+		void EntityManager::TakeSnapshot(const Uint32 p_GroupId, const Bit::Time & p_Time)
 		{
 			m_Mutex.Lock();
 
-			
 				
 			for (EntityMap::iterator it = m_Entities.begin(); it != m_Entities.end(); it++)
 			{
@@ -113,7 +112,7 @@ namespace Bit
 					VariableBase Entity::* pVariableBase = it3->second;
 
 					// set the snapshot data
-					(pEntity->*pVariableBase).SetSnapshotData((pEntity->*pVariableBase).GetData());
+					(pEntity->*pVariableBase).SetSnapshotData((pEntity->*pVariableBase).GetData(p_Time - m_InterpolationTime));
 				}
 			}
 				

@@ -148,8 +148,11 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief Take a snapshot for a specific entity group.
 			///
+			/// \param p_GroupId The group to take a snapshot of.
+			/// \param p_Time The time of the snapshot data, this is for interpolated variables only.
+			///
 			////////////////////////////////////////////////////////////////
-			void TakeSnapshot(const Uint32 p_GroupId);
+			void TakeSnapshot(const Uint32 p_GroupId, const Bit::Time & p_Time);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create a new entity.

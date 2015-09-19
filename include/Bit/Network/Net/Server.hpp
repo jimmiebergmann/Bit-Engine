@@ -246,7 +246,13 @@ namespace Bit
 			/// \brief Check if the server is running
 			///
 			////////////////////////////////////////////////////////////////
-			Bool IsRunning( );
+			Bool IsRunning();
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get time time since the server stared.
+			///
+			////////////////////////////////////////////////////////////////
+			Time GetServerTime();
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Add listener to a user message.
@@ -321,6 +327,7 @@ namespace Bit
 			// Private variables
 			UdpSocket							m_Socket;					///< Udp socket.
 			Uint16								m_Port;						///< Udp socket port.
+			ThreadValue<Timer>					m_ServerTimer;				///< The server timer, time size the server started.
 			Thread								m_MainThread;				///< Thread for handling incoming packets.
 			Thread								m_EntityThread;				///< Thread for sending entity states to users.
 			Thread								m_CleanupThread;			///< Thread for cleaning up connections.

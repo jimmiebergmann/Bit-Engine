@@ -171,24 +171,49 @@ namespace Bit
 			Uint16 recvPort = 0;
 			Time timeout = p_ConnectionTimeout;
 			const Time sendTime = Seconds(0.2f); ///< How often to check for received packets.
-			const SizeType connectPacketSize = 1 + p_Identifier.size(); ///< Connect packet length
+			const SizeType connectPacketSize = ConnectPacketSize + p_Identifier.size(); ///< Connect packet length
 			bool recvSynAck = false;
+
+
+			// Create a timer vector
+			std::vector<Timer> timerVector;
+			Timer tempTimer;
+			
+
+			
 
 			// Create a connect packet
 			std::string connectionPacket;
 			connectionPacket.push_back(PacketType::Connect);
+			connectionPacket.push_back('A');
+			connectionPacket.push_back('A');
 			connectionPacket.append(p_Identifier);
 
-			// Start the timer.
-			Timer timer;
-			timer.Start();
+
+
+			// Start the timer for timeout.
+			Timer timeoutTimer;
+			timeoutTimer.Start();
+
+			// Start the timer for roundtime
+			Timer roundTimer;
 
 			// Keep on sending and receiving connect / accept packets.
 			while (timeout.AsMicroseconds() > 0)
 			{
-				// Send SYN packet, tell the server that we would like to connect.
-				buffer[0] = PacketType::Connect;
+				// Add new timer
+				timerVector.push_back(tempTimer);
 
+				// Create "sequence" for the connect message
+				Uint16 connectSequence = Hton16(timerVector.size() - 1);
+
+				connectionPacket[1] = static_cast<Uint8>(connectSequence);
+				connectionPacket[2] = static_cast<Uint8>(connectSequence >> 8);
+
+				// Start round time timer
+				timerVector[timerVector.size() - 1].Start();
+
+				// Send SYN packet, tell the server that we would like to connect.
 				if (m_Socket.Send(connectionPacket.data(), connectionPacket.size(), p_Address, p_Port) != connectPacketSize)
 				{
 					// Error sending connection packet.
@@ -199,7 +224,21 @@ namespace Bit
 				recvSize = m_Socket.Receive(buffer, BufferSize, recvAddress, recvPort, sendTime);
 
 				// Decrease the timeout time
-				timeout = p_ConnectionTimeout - timer.GetLapsedTime();
+				timeout = p_ConnectionTimeout - timeoutTimer.GetLapsedTime();
+
+				// Get "sequence".
+				const Uint16 recvConnectSequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
+															static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
+				
+				// Error check recv size and connection sequence.
+				if (recvSize <= 0 || recvConnectSequence >= static_cast<Uint16>(timerVector.size()))
+				{
+					continue;
+				}
+				
+				// Stop round time timer
+				timerVector[recvConnectSequence].Stop();
+
 
 				// Check the address and port, ignore packets that's not from the host.
 				if (recvAddress != p_Address || recvPort != p_Port)
@@ -208,7 +247,7 @@ namespace Bit
 				}
 
 				// Make sure that we received a packet type byte.
-				if (recvSize < 1)
+				if (recvSize < AcceptPacketSize)
 				{
 					continue;
 				}
@@ -216,6 +255,20 @@ namespace Bit
 				// Check if this is a SYN-ACK packet, the server wants us to connect.
 				if (buffer[0] == PacketType::Accept)
 				{
+					// Get half round time
+					Uint64 roundTimeHalf = timerVector[recvConnectSequence].GetTime().AsMicroseconds() / 2;
+
+					std::cout << timerVector[recvConnectSequence].GetTime().AsMicroseconds() << "   " << roundTimeHalf << std::endl;
+					
+					// Get server time
+					Uint64 serverTime = 0;
+					memcpy(&serverTime, &(buffer[3]), sizeof(Uint64));
+					serverTime = Ntoh64(serverTime) + roundTimeHalf;
+
+					// Set server time and setart server timer.
+					m_ServerStartTime.Get() = Microseconds(serverTime);
+					m_ServerTimer.Get().Start();
+
 					// We now connected, we assume that the server receive the UDP_ACCEPT packet,
 					// resend the packet in client thread if we get another accept packet later.
 					m_ServerAddress = p_Address;
@@ -711,6 +764,19 @@ namespace Bit
 		Time Client::GetPing()
 		{
 			return m_Ping.Get();
+		}
+
+		Time Client::GetServerTime()
+		{
+			Time serverTime;
+
+			m_ServerTimer.Mutex.Lock();
+			serverTime = m_ServerTimer.Value.GetLapsedTime();
+			m_ServerTimer.Mutex.Unlock();
+
+			serverTime += m_ServerStartTime.Get();
+
+			return serverTime;
 		}
 
 		void Client::OnEntityCreation(Entity * p_pEntity)

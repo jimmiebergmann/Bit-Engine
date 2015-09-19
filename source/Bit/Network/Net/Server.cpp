@@ -284,6 +284,9 @@ namespace Bit
 			// Create the packet memory pool
 			m_PacketMemoryPool.Set(new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, m_MaxPacketSize, true));
 
+			// Start the server timer.
+			m_ServerTimer.Get().Start();
+
 			// Start the server thread.
 			m_MainThread.Execute([this]()
 			{
@@ -397,7 +400,9 @@ namespace Bit
 							if (OnPreConnection(address, port, groupVector) == false)
 							{
 								// SEND REJECT MESSAGE HERE PLEASE.
-
+								pBuffer[0] = PacketType::Reject;
+								pBuffer[1] = RejectType::Full;
+								m_Socket.Send(pBuffer, RejectPacketSize, address, port);
 
 								break;
 							}
@@ -405,6 +410,15 @@ namespace Bit
 
 							// Answer the client with an accept packet.
 							pBuffer[0] = PacketType::Accept;
+
+							// Get server time
+							m_ServerTimer.Mutex.Lock();
+							Uint64 serverTime = m_ServerTimer.Value.GetLapsedTime().AsMicroseconds();
+							m_ServerTimer.Mutex.Unlock();
+
+							Uint64 nServerTime = Hton64(serverTime);
+							memcpy(&(pBuffer[3]), &nServerTime, sizeof(Uint64));
+
 							m_Socket.Send(pBuffer, AcceptPacketSize, address, port);
 
 							// Get a user id for this connection
@@ -700,6 +714,17 @@ namespace Bit
 			Bool running = m_Running.Value;
 			m_Running.Mutex.Unlock();
 			return running;
+		}
+
+		Time Server::GetServerTime()
+		{
+			Time serverTime;
+
+			m_ServerTimer.Mutex.Lock();
+			serverTime = m_ServerTimer.Value.GetLapsedTime();
+			m_ServerTimer.Mutex.Unlock();
+
+			return serverTime;
 		}
 
 		Bool Server::HookUserMessage(UserMessageListener * p_pListener, const std::string & m_MessageName)
