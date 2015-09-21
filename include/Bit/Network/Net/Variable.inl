@@ -74,18 +74,10 @@ T Variable<T>::GetSnapshot()
 }
 
 template<typename T>
-void Variable<T>::SetData(const void * p_pData, const Time & p_Time)
+void Variable<T>::TakeSnapshot(const Time & p_Time)
 {
 	m_Mutex.Lock();
-	memcpy(&m_Value, p_pData, m_Size);
-	m_Mutex.Unlock();
-}
-
-template<typename T>
-void Variable<T>::SetSnapshotData(const void * p_pData)
-{
-	m_Mutex.Lock();
-	memcpy(&m_Snapshot, p_pData, m_Size);
+	m_Snapshot = m_Value;
 	m_Mutex.Unlock();
 }
 
@@ -96,16 +88,14 @@ void * Variable<T>::GetData()
 }
 
 template<typename T>
-void * Variable<T>::GetData(const Time & p_Time)
+void Variable<T>::SetData(const void * p_pData, const Time & p_Time, const Time & p_MinimumTime)
 {
-	return reinterpret_cast<void *>(&m_Value);
+	m_Mutex.Lock();
+	memcpy(&m_Value, p_pData, m_Size);
+	m_Mutex.Unlock();
 }
 
-template<typename T>
-void * Variable<T>::GetSnapshotData()
-{
-	return reinterpret_cast<void *>(&m_Snapshot);
-}
+
 
 
 
@@ -115,7 +105,7 @@ void * Variable<T>::GetSnapshotData()
 template<typename T>
 InterpolatedVariable<T>::InterpolatedVariable() :
 	VariableBase(sizeof(T)),
-	m_Value(static_cast<T>(0)),
+	m_LastValue(static_cast<T>(0)),
 	m_Snapshot(static_cast<T>(0))
 {
 	static_assert(	std::is_same<Float32, T>::value		||
@@ -128,7 +118,7 @@ InterpolatedVariable<T>::InterpolatedVariable() :
 template<typename T>
 InterpolatedVariable<T>::InterpolatedVariable(const T & p_Value) :
 	VariableBase(sizeof(T)),
-	m_Value( p_Value ),
+	m_LastValue(p_Value),
 	m_Snapshot(static_cast<T>(p_Value))
 {
 	static_assert(	std::is_same<Float32, T>::value ||
@@ -140,8 +130,8 @@ InterpolatedVariable<T>::InterpolatedVariable(const T & p_Value) :
 template<typename T>
 void InterpolatedVariable<T>::Set(const T & p_Value)
 {
-	/*
 	// Server only.
+	// Call the on variable function for the entity changer
 	if (m_pParent &&
 		m_pParent->m_pEntityManager &&
 		m_pParent->m_pEntityManager->m_pEntityChanger)
@@ -151,21 +141,6 @@ void InterpolatedVariable<T>::Set(const T & p_Value)
 		m_LastValue = p_Value;
 		m_Mutex.Unlock();
 
-		// Call the on variable function for the entity changer
-		m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange(m_pParent, this);
-	}
-	*/
-
-	// Set the variable.
-	m_Mutex.Lock();
-	m_Value = p_Value;
-	m_Mutex.Unlock();
-
-	// Call the on variable function for the entity changer
-	if (m_pParent &&
-		m_pParent->m_pEntityManager &&
-		m_pParent->m_pEntityManager->m_pEntityChanger)
-	{
 		m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange(m_pParent, this);
 	}
 }
@@ -173,82 +148,17 @@ void InterpolatedVariable<T>::Set(const T & p_Value)
 template<typename T>
 T InterpolatedVariable<T>::Get()
 {
+	// Server only.
 	m_Mutex.Lock();
-	T value = m_Value;
+	T value = m_LastValue;
 	m_Mutex.Unlock();
 	return value;
-
-	// Server only
-	/*if (m_pParent && m_pParent->m_pEntityManager->m_pEntityChanger)
-	{
-		m_Mutex.Lock();
-		T value = m_LastValue;
-		m_Mutex.Unlock();
-		return value;
-	}
-
-	// Error check the snapshot count
-	if (m_Snapshots.size() < 2)
-	{
-		return static_cast<T>(0);
-	}
-
-	// Get two snapshots to interpolate between.
-	SnapshotList::iterator firstIt = m_Snapshots.end();
-	InterpolatedVariable<T>::Snapshot * pFirst = NULL;
-	InterpolatedVariable<T>::Snapshot * pLast = NULL;
-
-	// Get the current time.
-	Time clientTime = Microseconds(Timer::GetSystemTime());
-	Time renderTime = clientTime - m_pParent->m_pEntityManager->m_InterpolationTime;
-
-	// Find the first snapshot
-	//int counter = 0;
-	for (SnapshotList::iterator it = m_Snapshots.begin(); it != --m_Snapshots.end(); it++)
-	{
-		// Get the current snapshot
-		InterpolatedVariable<T>::Snapshot * pSnapshot = &(*it);
-
-		if (pSnapshot->m_Time > renderTime)
-		{
-			//std::cout << counter << "    " << (clientTime - m_pParent->m_pEntityManager->m_InterpolationTime).AsMilliseconds() << "   " << (pSnapshot->m_Time - m_pParent->m_pEntityManager->m_InterpolationTime).AsMilliseconds() << std::endl;
-			break;
-		}
-
-		//counter++;
-
-		firstIt = it;
-		pFirst = pSnapshot;
-		
-	}
-
-	// We found a first snapshot
-	if (pFirst == NULL)
-	{
-		return static_cast<T>(0);
-	}
-
-	// Get the last snapshot
-	firstIt++;
-	pLast = &(*firstIt);
-	
-	// Calculate the lerp factor
-	// pFirst->m_Time
-	// pLast->m_Time
-	// clientTime
-	// renderTime
-	Float32 factor = (renderTime - pFirst->m_Time).AsSeconds() / (pLast->m_Time - pFirst->m_Time).AsSeconds();
-
-	//std::cout << factor << std::endl;
-
-
-	//
-	return pFirst->m_Value + ((pLast->m_Value - pFirst->m_Value) * factor);*/
 }
 
 template<typename T>
 T InterpolatedVariable<T>::GetSnapshot()
 {
+	// Client only.
 	m_Mutex.Lock();
 	T value = m_Snapshot;
 	m_Mutex.Unlock();
@@ -256,89 +166,189 @@ T InterpolatedVariable<T>::GetSnapshot()
 }
 
 template<typename T>
-void InterpolatedVariable<T>::SetData(const void * p_pData, const Time & p_Time)
+void InterpolatedVariable<T>::TakeSnapshot(const Time & p_Time)
 {
-	/*m_Mutex.Lock();
-
-	// Create a new snapshot
-	InterpolatedVariable<T>::Snapshot snapshot;
-	snapshot.m_Time = Microseconds(Timer::GetSystemTime() );
-	memcpy(&(snapshot.m_Value), p_pData, m_Size);
-
-	// Add the snapshot to the new list
-	m_Snapshots.push_back(snapshot);
-
-	// Remove snapshots that are too old
-	RemoveOldSnapshots();
-
-	m_Mutex.Unlock();*/
+	// Lock mutex.
 	m_Mutex.Lock();
-	memcpy(&m_Value, p_pData, m_Size);
-	m_Mutex.Unlock();
-}
 
-template<typename T>
-void InterpolatedVariable<T>::SetSnapshotData(const void * p_pData)
-{
-	m_Mutex.Lock();
-	memcpy(&m_Snapshot, p_pData, m_Size);
+	// Is there no values?
+	if (m_Values.size() == 0)
+	{
+		m_Mutex.Unlock();
+		return;
+	}
+
+	// is there just 1 value?
+	if (m_Values.size() == 1)
+	{
+		m_Snapshot = m_Values.front().m_Value;
+		m_Mutex.Unlock();
+		return;
+	}
+
+	// Check if the time is lower than the first item in the list.
+	// Then, return the last value.
+	if (p_Time < m_Values.front().m_Time)
+	{
+		m_Snapshot = m_Values.front().m_Value;
+		m_Mutex.Unlock();
+		return;
+	}
+
+	// Check if the time is larger than the last item in the list.
+	// Then, check if we should extrapolate the value.
+	if (p_Time >= m_Values.back().m_Time)
+	{
+		//std::cout << "Overtime." << std::endl;
+		m_Snapshot = m_Values.back().m_Value;
+		m_Mutex.Unlock();
+		return;
+	}
+
+	Value * pFirstValue = NULL;
+	Value * pLastValue = NULL;
+	Bool foundValues = false;
+
+	// The time is somewhere between the first and last value in the list.
+	// We should find 2 values on each side of the current time, then interpolate.
+	for (ValueList::iterator it = m_Values.begin(); it != std::prev(m_Values.end()); it++)
+	{
+		// Get the next item as well
+		ValueList::iterator itNext = std::next(it);
+		
+		if (p_Time >= (*it).m_Time && p_Time < (*itNext).m_Time)
+		{
+			pFirstValue = &(*it);
+			pLastValue = &(*itNext);
+			foundValues = true;
+			break;
+		}
+	}
+
+	// Check if we actually found any values.
+	if (foundValues == false)
+	{
+		std::cout << "InterpolatedVariable<T>::TakeSnapshot: Could not find any values." << std::endl;
+		m_Mutex.Unlock();
+		return;
+	}
+
+
+	// Calculate interpolation factor.
+	Float32 factor = (p_Time - pFirstValue->m_Time).AsSeconds() / (pLastValue->m_Time - pFirstValue->m_Time).AsSeconds();
+
+	
+
+	// calculate the snapshot.
+	m_Snapshot = pFirstValue->m_Value + ((pLastValue->m_Value - pFirstValue->m_Value) * factor);
+
+	//std::cout << factor << "   " << pFirstValue->m_Time.AsSeconds() << "   " << "   " << pLastValue->m_Time.AsSeconds() << "   " << p_Time.AsSeconds() << "     " << m_Snapshot.x << std::endl;
+
+
+	// Unlock mutex.
 	m_Mutex.Unlock();
 }
 
 template<typename T>
 void * InterpolatedVariable<T>::GetData()
 {
-	return reinterpret_cast<void *>(&m_Value);
+	return reinterpret_cast<void *>(&m_LastValue);
 }
 
 template<typename T>
-void * InterpolatedVariable<T>::GetData(const Time & p_Time)
+void InterpolatedVariable<T>::SetData(const void * p_pData, const Time & p_Time, const Time & p_MinimumTime)
 {
-	return reinterpret_cast<void *>(&m_Value);
-}
+	// Clear old data.
+	ClearOldData(p_MinimumTime);
 
-template<typename T>
-void * InterpolatedVariable<T>::GetSnapshotData()
-{
-	return reinterpret_cast<void *>(&m_Snapshot);
-}
-
-/*
-template<typename T>
-void InterpolatedVariable<T>::RemoveOldSnapshots()
-{
-	Time currentTime = Microseconds(Timer::GetSystemTime() );
-	//m_Time = (CurrentTime - m_StartTime);
-
-	// Get the limit time.
-	Time limitTime =	m_pParent->m_pEntityManager->m_InterpolationTime * 2;/* +
-						m_pParent->m_pEntityManager->m_ExtrapolationTime;*/
-	/*
+	// This is for server only.
+	m_Mutex.Lock();
 	
-
-	// Go throguh all the snapshots
-	for (SnapshotList::iterator it = m_Snapshots.begin(); it != m_Snapshots.end();)
+	// No previcously added values?
+	if (m_Values.size() == 0)
 	{
-		// Get the current snapshot
-		InterpolatedVariable<T>::Snapshot * pSnapshot = &(*it);
 
-		//std::cout << pSnapshot->m_Timer.GetLapsedTime().AsSeconds() << std::endl;
+		Value value;
+		value.m_Time = p_Time - Seconds(1.0f / 22.0f);
+		value.m_InitialFlag = false;
+		memcpy(&(value.m_Value), p_pData, m_Size);
+		m_Values.push_back(value);
 
+		value.m_Time = p_Time;
+		m_Values.push_back(value);
 
-		//std::cout << m_Snapshots.size() << "   " << (limitTime - pSnapshot->m_Time).AsSeconds() << "    ";
+		m_Mutex.Unlock();
+		return;
+	}
 
-		// Check if we should remove the object
-		if (currentTime - pSnapshot->m_Time >= limitTime)
+	// Error check the time, make sure it's larger than the last value added.
+	if (m_Values.size())
+	{
+		if (m_Values.back().m_Time >= p_Time)
 		{
-			it = m_Snapshots.erase(it);
+			m_Mutex.Unlock();
+			return;
+		}
+
+	}
+
+	// Set the intial value, if any, to the current one.
+	if (m_Values.size() && m_Values.front().m_InitialFlag)
+	{
+		Value & frontValue = m_Values.front();
+		//memcpy(&(frontValue.m_Value), p_pData, m_Size);
+		frontValue.m_Time = p_Time - Seconds(1.0f / 22.0f);
+		frontValue.m_InitialFlag = false;
+	}
+
+	// Insert the data in the data queue.
+	Value value;
+	value.m_Time = p_Time;
+	value.m_InitialFlag = false;
+	memcpy(&(value.m_Value), p_pData, m_Size);
+	m_Values.push_back(value);
+
+	// Unlock mutex.
+	m_Mutex.Unlock();
+}
+
+template<typename T>
+void InterpolatedVariable<T>::ClearOldData(const Time & p_MinimumTime)
+{
+	// lock mutex
+	m_Mutex.Lock();
+
+	// Do always store at least 1.
+	if (m_Values.size( ) <= 1)
+	{
+		m_Mutex.Unlock();
+		return;
+	}
+
+	// Go through the items in the list
+	for (ValueList::iterator it = m_Values.begin(); it != std::prev(m_Values.end());)
+	{
+		if ((*it).m_Time <= p_MinimumTime )
+		{
+			it = m_Values.erase(it);
 		}
 		else
 		{
-			++it;
+			break;
 		}
 	}
-	//std::cout << std::endl;
 
-	//std::cout << m_Snapshots.size()  << std::endl;
+	if (m_Values.size() == 1)
+	{
+		// Get back value and check if we should change the value to the initial value.
+		Value & frontValue = m_Values.front();
+		if (frontValue.m_Time <= p_MinimumTime)
+		{
+			frontValue.m_Value = m_Snapshot;
+			frontValue.m_InitialFlag = true;
+		}
+	}
 
-}*/
+	// Unlock mutex.
+	m_Mutex.Unlock();
+}

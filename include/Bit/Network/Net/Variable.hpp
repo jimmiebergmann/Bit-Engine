@@ -33,6 +33,7 @@
 #include <Bit/Network/Net/Private/EntityChanger.hpp>
 #include <string>
 #include <iostream>
+#include <iterator>
 #include <iomanip>
 #include <list>
 #include <type_traits>
@@ -90,34 +91,22 @@ namespace Bit
 			Bool SetNewSequence(const Uint16 p_Sequence);
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for setting the data.
+			/// \brief Virtual function for taking a snapshot.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void SetData(const void * p_pData, const Time & p_Time) = 0;
+			virtual void TakeSnapshot(const Time & p_Time) = 0;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for setting the snapshot data.
-			///
-			////////////////////////////////////////////////////////////////
-			virtual void SetSnapshotData(const void * p_pData) = 0;
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the data.
+			/// \brief Virtual function for getting the "static" data. Not interpoalted one.
 			///
 			////////////////////////////////////////////////////////////////
 			virtual void * GetData() = 0;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the data at a certain time.
+			/// \brief Virtual function for setting the "static" data.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void * GetData(const Time & p_Time) = 0;
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the snapshot data.
-			///
-			////////////////////////////////////////////////////////////////
-			virtual void * GetSnapshotData() = 0;
+			virtual void SetData(const void * p_pData, const Time & p_Time, const Time & p_MinimumTime) = 0;
 
 			// Protected variables.
 			const SizeType		m_Size;			///< Size of the varaible.
@@ -176,35 +165,22 @@ namespace Bit
 
 			// Protected functions
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for setting the data.
+			/// \brief Virtual function for taking a snapshot.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void SetData(const void * p_pData, const Time & p_Time);
+			virtual void TakeSnapshot(const Time & p_Time);
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for setting the snapshot data.
-			///
-			////////////////////////////////////////////////////////////////
-			virtual void SetSnapshotData(const void * p_pData);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the data.
+			/// \brief Virtual function for getting the "static" data. Not interpoalted one.
 			///
 			////////////////////////////////////////////////////////////////
 			virtual void * GetData();
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the data at a certain time.
-			///			This is just like the GetData function.
+			/// \brief Virtual function for setting the "static" data.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void * GetData(const Time & p_Time);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the snapshot data.
-			///
-			////////////////////////////////////////////////////////////////
-			virtual void * GetSnapshotData();
+			virtual void SetData(const void * p_pData, const Time & p_Time, const Time & p_MinimumTime);
 
 		private:
 
@@ -217,6 +193,10 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
 		/// \brief Entity interpolated variable class.
+		///
+		/// Right now, you have to take a snapshot in order to get the interpolated variable to work.
+		/// Get the interpolated data via the GetSnapshot snapshot function after
+		/// callig the TakeSnapshot function via the entity manager.
 		///
 		////////////////////////////////////////////////////////////////
 		template <typename T>
@@ -262,34 +242,22 @@ namespace Bit
 
 			// Protected functions
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for setting the data.
+			/// \brief Virtual function for taking a snapshot.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void SetData(const void * p_pData, const Time & p_Time);
+			virtual void TakeSnapshot(const Time & p_Time);
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for setting the snapshot data.
-			///
-			////////////////////////////////////////////////////////////////
-			virtual void SetSnapshotData(const void * p_pData);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the data.
+			/// \brief Virtual function for getting the "static" data. Not interpoalted one.
 			///
 			////////////////////////////////////////////////////////////////
 			virtual void * GetData();
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the data at a certain time.
+			/// \brief Virtual function for setting the "static" data.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void * GetData(const Time & p_Time);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Virtual function for getting the snapshot data.
-			///
-			////////////////////////////////////////////////////////////////
-			virtual void * GetSnapshotData();
+			virtual void SetData(const void * p_pData, const Time & p_Time, const Time & p_MinimumTime);
 
 		private:
 
@@ -302,23 +270,24 @@ namespace Bit
 			{
 				Time m_Time;
 				T m_Value;
+				Bool m_InitialFlag;	///< This value is an initial value, and should be modified when another value is added.
 			};
 
-			/*
+			
 			// Private typedef
-			typedef std::list<Snapshot> SnapshotList;
+			typedef std::list<Value> ValueList;
 
 			// Private functions
 			////////////////////////////////////////////////////////////////
-			/// \brief Remove old snapshots, that's being older than the extrapolation time.
+			/// \brief Clear old data.
 			///
 			////////////////////////////////////////////////////////////////
-			void RemoveOldSnapshots();
-
+			void ClearOldData(const Time & p_MinimumTime);
+			
 			// Private variables
-			SnapshotList	m_Snapshots;	///< Value of the network variable.*/
-			T				m_Value;	///< Server only.
-			T m_Snapshot;	///< Snapshot value from the last snapshot.
+			ValueList		m_Values;		///< Values of the network variable.
+			T				m_LastValue;	///< Server only.
+			T				m_Snapshot;		///< Snapshot value from the last snapshot.
 
 		};
 

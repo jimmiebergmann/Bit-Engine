@@ -112,7 +112,7 @@ namespace Bit
 					VariableBase Entity::* pVariableBase = it3->second;
 
 					// set the snapshot data
-					(pEntity->*pVariableBase).SetSnapshotData((pEntity->*pVariableBase).GetData(p_Time - m_InterpolationTime));
+					(pEntity->*pVariableBase).TakeSnapshot(p_Time - m_InterpolationTime);
 				}
 			}
 				
@@ -194,6 +194,15 @@ namespace Bit
 							- ...
 						- ...
 			*/
+
+			// This is for clients only.
+			if (m_pClient == NULL)
+			{
+				return false;
+			}
+
+			// Calculate the minimum time for cleaning up old interpolation data.
+			Time minimumTime = m_pClient->GetServerTime() - m_InterpolationTime - m_ExtrapolationTime;
 
 			// Create a smart mutex.
 			SmartMutex mutex(m_Mutex);
@@ -408,7 +417,7 @@ namespace Bit
 						}
 
 						// Copy the data to the value
-						(pEntity->*pVariableBase).SetData(&(pData[dataPos]), time);
+						(pEntity->*pVariableBase).SetData(&(pData[dataPos]), time + m_pClient->GetPing( ), minimumTime);
 
 						// Move to the next Id
 						dataPos += dataSize;
