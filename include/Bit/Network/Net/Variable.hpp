@@ -94,7 +94,7 @@ namespace Bit
 			/// \brief Virtual function for taking a snapshot.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void TakeSnapshot(const Time & p_Time) = 0;
+			virtual void TakeSnapshot(const Time & p_Time, const Time & p_InterpolationTime, const Time & p_ExtrapolationTime) = 0;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virtual function for getting the "static" data. Not interpoalted one.
@@ -107,6 +107,19 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			virtual void SetData(const void * p_pData, const Time & p_Time, const Time & p_MinimumTime) = 0;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Check if this a new value, used for extrapolation in interpolated variable.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual Bool IsNewValue();
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the "new value" flag, used for extrapolation in interpolated variable.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void SetIsNewValue(const Bool p_Status);
+			
 
 			// Protected variables.
 			const SizeType		m_Size;			///< Size of the varaible.
@@ -168,7 +181,7 @@ namespace Bit
 			/// \brief Virtual function for taking a snapshot.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void TakeSnapshot(const Time & p_Time);
+			virtual void TakeSnapshot(const Time & p_Time, const Time & p_InterpolationTime, const Time & p_ExtrapolationTime);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virtual function for getting the "static" data. Not interpoalted one.
@@ -245,7 +258,7 @@ namespace Bit
 			/// \brief Virtual function for taking a snapshot.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void TakeSnapshot(const Time & p_Time);
+			virtual void TakeSnapshot(const Time & p_Time, const Time & p_InterpolationTime, const Time & p_ExtrapolationTime);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virtual function for getting the "static" data. Not interpoalted one.
@@ -258,6 +271,18 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			virtual void SetData(const void * p_pData, const Time & p_Time, const Time & p_MinimumTime);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Check if this a new value, used for extrapolation in interpolated variable.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual Bool IsNewValue();
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the "new value" flag, used for extrapolation in interpolated variable.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void SetIsNewValue(const Bool p_Status);
 
 		private:
 
@@ -288,7 +313,10 @@ namespace Bit
 			ValueList		m_Values;		///< Values of the network variable.
 			T				m_LastValue;	///< Server only.
 			T				m_Snapshot;		///< Snapshot value from the last snapshot.
-
+			Bool			m_NewValue;		///< Is this a new value since the entity manager sent this value to the client?
+			Bool			m_IsSet;		///< Is this value set from the server yet?
+			Time			m_LastExtrapolationTime;	///< 
+			Bool			m_IsExtrapolating;
 		};
 
 		////////////////////////////////////////////////////////////////

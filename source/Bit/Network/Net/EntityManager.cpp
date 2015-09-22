@@ -112,7 +112,7 @@ namespace Bit
 					VariableBase Entity::* pVariableBase = it3->second;
 
 					// set the snapshot data
-					(pEntity->*pVariableBase).TakeSnapshot(p_Time - m_InterpolationTime);
+					(pEntity->*pVariableBase).TakeSnapshot(p_Time - m_InterpolationTime, m_InterpolationTime,  m_ExtrapolationTime);
 				}
 			}
 				
@@ -202,7 +202,8 @@ namespace Bit
 			}
 
 			// Calculate the minimum time for cleaning up old interpolation data.
-			Time minimumTime = m_pClient->GetServerTime() - m_InterpolationTime - m_ExtrapolationTime;
+			Time serverTime = m_pClient->GetServerTime();
+			Time minimumTime = serverTime - m_InterpolationTime - m_ExtrapolationTime;
 
 			// Create a smart mutex.
 			SmartMutex mutex(m_Mutex);
@@ -417,7 +418,7 @@ namespace Bit
 						}
 
 						// Copy the data to the value
-						(pEntity->*pVariableBase).SetData(&(pData[dataPos]), time + m_pClient->GetPing( ), minimumTime);
+						(pEntity->*pVariableBase).SetData(&(pData[dataPos]), time + m_pClient->GetPing(), minimumTime);
 
 						// Move to the next Id
 						dataPos += dataSize;
@@ -841,7 +842,78 @@ namespace Bit
 			// Create a smart mutex.
 			SmartMutex mutex(m_Mutex);
 			mutex.Lock();
+			
+			// Go throguh the changed entities
+			for (ChangedEntitiesMap::iterator	ceIt = m_ChangedEntities.begin();
+												ceIt != m_ChangedEntities.end();)
+			{
+				// Get the pointer to the changed variable map
+				ChangedVariablesMap * pChangedVariablesMap = ceIt->second;
 
+				// Flag for checking if we should remove this item from the changed entities.
+				Bool removedChangedVariable = true;
+
+				// Go throguh the changed variables
+				for (ChangedVariablesMap::iterator	cvIt = pChangedVariablesMap->begin();
+													cvIt != pChangedVariablesMap->end();)
+				{
+					// Flag for checking if we should remove this item from the changed entities.
+					Bool removedChangedEntityVariable = true;
+
+					// Get the pointer to the changed entity variable map
+					ChangedEntityVariableMap * pChangedEntityVariableMap = cvIt->second;
+
+					// Go throguh the changed entity variables.
+					for (ChangedEntityVariableMap::iterator	cevIt = pChangedEntityVariableMap->begin();
+															cevIt != pChangedEntityVariableMap->end();)
+					{
+						// Check if we should keep the variable.
+						if (cevIt->second->IsNewValue() == false)
+						{
+							// Remove the variable
+							cevIt = pChangedEntityVariableMap->erase(cevIt);
+						}
+						else
+						{
+							// increment pointer
+							cevIt->second->SetIsNewValue(false);
+							removedChangedEntityVariable = false;
+							removedChangedVariable = false;
+							++cevIt;
+						}
+					}
+
+					// Should we remove this item?
+					if (removedChangedEntityVariable)
+					{
+						delete pChangedEntityVariableMap;
+						cvIt = pChangedVariablesMap->erase(cvIt);
+					}
+					else
+					{
+						++cvIt;
+					}
+
+				}
+
+
+				// Should we remove this item?
+				if (removedChangedVariable)
+				{
+					delete pChangedVariablesMap;
+					ceIt = m_ChangedEntities.erase(ceIt);
+				}
+				else
+				{
+					++ceIt;
+				}
+
+			}
+
+			
+
+
+			/*
 			// Go through the changed entities, and delete them.
 			for( ChangedEntitiesMap::iterator it = m_ChangedEntities.begin( );
 				 it != m_ChangedEntities.end( );
@@ -852,12 +924,14 @@ namespace Bit
 				 it2 != it->second->end( );
 					 it2++ )
 				{
+
+
 					delete it2->second;
 				}
 				delete it->second;
 			}
 
-			m_ChangedEntities.clear( );
+			m_ChangedEntities.clear( );*/
 
 			mutex.Unlock();
 		}

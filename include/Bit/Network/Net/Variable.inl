@@ -74,7 +74,7 @@ T Variable<T>::GetSnapshot()
 }
 
 template<typename T>
-void Variable<T>::TakeSnapshot(const Time & p_Time)
+void Variable<T>::TakeSnapshot(const Time & p_Time, const Time & p_InterpolationTime, const Time & p_ExtrapolationTime)
 {
 	m_Mutex.Lock();
 	m_Snapshot = m_Value;
@@ -106,7 +106,10 @@ template<typename T>
 InterpolatedVariable<T>::InterpolatedVariable() :
 	VariableBase(sizeof(T)),
 	m_LastValue(static_cast<T>(0)),
-	m_Snapshot(static_cast<T>(0))
+	m_Snapshot(static_cast<T>(0)),
+	m_NewValue(true),
+	m_IsSet(false),
+	m_IsExtrapolating(false)
 {
 	static_assert(	std::is_same<Float32, T>::value		||
 					std::is_same<Vector2f32, T>::value	||
@@ -119,7 +122,10 @@ template<typename T>
 InterpolatedVariable<T>::InterpolatedVariable(const T & p_Value) :
 	VariableBase(sizeof(T)),
 	m_LastValue(p_Value),
-	m_Snapshot(static_cast<T>(p_Value))
+	m_Snapshot(static_cast<T>(p_Value)),
+	m_NewValue(true),
+	m_IsSet(false),
+	m_IsExtrapolating(false)
 {
 	static_assert(	std::is_same<Float32, T>::value ||
 					std::is_same<Vector2f32, T>::value ||
@@ -139,6 +145,7 @@ void InterpolatedVariable<T>::Set(const T & p_Value)
 		// Set the variable.
 		m_Mutex.Lock();
 		m_LastValue = p_Value;
+		m_NewValue = true;
 		m_Mutex.Unlock();
 
 		m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange(m_pParent, this);
@@ -166,71 +173,128 @@ T InterpolatedVariable<T>::GetSnapshot()
 }
 
 template<typename T>
-void InterpolatedVariable<T>::TakeSnapshot(const Time & p_Time)
+void InterpolatedVariable<T>::TakeSnapshot(const Time & p_Time, const Time & p_InterpolationTime, const Time & p_ExtrapolationTime)
 {
 	// Lock mutex.
 	m_Mutex.Lock();
 
-	// Is there no values?
-	if (m_Values.size() == 0)
+	// Is there 0 or 1 values?
+	if (m_Values.size() <= 1)
 	{
+		m_Snapshot = m_LastValue;
 		m_Mutex.Unlock();
 		return;
 	}
 
 	// is there just 1 value?
-	if (m_Values.size() == 1)
+	/*if (m_Values.size() == 1)
 	{
 		m_Snapshot = m_Values.front().m_Value;
 		m_Mutex.Unlock();
 		return;
-	}
+	}*/
 
 	// Check if the time is lower than the first item in the list.
 	// Then, return the last value.
 	if (p_Time < m_Values.front().m_Time)
 	{
+		ValueList::iterator itFirst = m_Values.begin();
+		ValueList::iterator itSecond = std::next(itFirst);
+
+
+		//std::cout << "Not yet: " << m_Values.front().m_Value.x << "    current time: " << p_Time.AsSeconds() << "   time1: " << (*itFirst).m_Time.AsSeconds() << "   time2: " << (*itSecond).m_Time.AsSeconds() << std::endl;
 		m_Snapshot = m_Values.front().m_Value;
 		m_Mutex.Unlock();
 		return;
 	}
 
-	// Check if the time is larger than the last item in the list.
-	// Then, check if we should extrapolate the value.
-	if (p_Time >= m_Values.back().m_Time)
-	{
-		//std::cout << "Overtime." << std::endl;
-		m_Snapshot = m_Values.back().m_Value;
-		m_Mutex.Unlock();
-		return;
-	}
-
+	// Store the values to interpoalte between
 	Value * pFirstValue = NULL;
 	Value * pLastValue = NULL;
-	Bool foundValues = false;
 
-	// The time is somewhere between the first and last value in the list.
-	// We should find 2 values on each side of the current time, then interpolate.
-	for (ValueList::iterator it = m_Values.begin(); it != std::prev(m_Values.end()); it++)
+	// Check if the time is larger than the last item in the list.
+	// Then, check if we should extrapolate the value.
+	if (p_Time >= m_Values.back().m_Time )
 	{
-		// Get the next item as well
-		ValueList::iterator itNext = std::next(it);
-		
-		if (p_Time >= (*it).m_Time && p_Time < (*itNext).m_Time)
+		if (m_Values.back().m_InitialFlag == false)
 		{
-			pFirstValue = &(*it);
-			pLastValue = &(*itNext);
-			foundValues = true;
-			break;
+			m_LastExtrapolationTime = p_Time;
+			m_IsExtrapolating = true;
 		}
-	}
 
-	// Check if we actually found any values.
-	if (foundValues == false)
-	{
-		std::cout << "InterpolatedVariable<T>::TakeSnapshot: Could not find any values." << std::endl;
+	//	std::cout << "Extrapolate. " << std::endl;
+		// have the time exceeded the extrapolation time?
+		/*if (p_Time >= m_Values.back().m_Time + p_ExtrapolationTime)
+		{
+
+			// Set snapshot to max extrapolation time.
+
+			m_Snapshot = m_Values.back().m_Value;
+			m_Mutex.Unlock();
+			return;
+		}
+
+
+		// Extrapolate here
+		ValueList::iterator itLast = std::prev(m_Values.end( ));
+		ValueList::iterator itButOne = std::prev(itLast);
+
+		// Get values to itnerpolate between
+		Value * pFirstValue = &(*itButOne);
+		Value * pLastValue = &(*itLast);
+
+		// Calculate interpolation factor.
+		//Float32 extraFactor = p_ExtrapolationTime.AsSeconds() / p_InterpolationTime.AsSeconds();
+		Float32 factor = ((p_Time - pFirstValue->m_Time).AsSeconds() / (pLastValue->m_Time - pFirstValue->m_Time).AsSeconds());
+
+		// calculate the snapshot.
+		m_Snapshot = pFirstValue->m_Value + ((pLastValue->m_Value - pFirstValue->m_Value) * factor);
+		*/
+
+
+		/*m_Snapshot = m_Values.back().m_Value;
+
+		// Unlock mutex.
 		m_Mutex.Unlock();
-		return;
+		return;*/
+
+
+		ValueList::iterator itLast = std::prev(m_Values.end());
+		ValueList::iterator itLastButOne = std::prev(itLast);
+
+		pFirstValue = &(*itLastButOne);
+		pLastValue = &(*itLast);
+
+	}
+	else
+	{
+
+		// The time is somewhere between the first and last value in the list.
+		// We should find 2 values on each side of the current time, then interpolate.
+		Bool foundValues = false;
+		for (ValueList::iterator it = m_Values.begin(); it != std::prev(m_Values.end()); it++)
+		{
+			// Get the next item as well
+			ValueList::iterator itNext = std::next(it);
+
+			if (p_Time >= (*it).m_Time && p_Time < (*itNext).m_Time)
+			{
+				// Get values to interpoale between.
+				pFirstValue = &(*it);
+				pLastValue = &(*itNext);
+				foundValues = true;
+				break;
+			}
+		}
+
+		// Check if we actually found any values.
+		if (foundValues == false)
+		{
+			std::cout << "InterpolatedVariable<T>::TakeSnapshot: Could not find any values." << std::endl;
+			m_Mutex.Unlock();
+			return;
+		}
+
 	}
 
 
@@ -238,11 +302,20 @@ void InterpolatedVariable<T>::TakeSnapshot(const Time & p_Time)
 	Float32 factor = (p_Time - pFirstValue->m_Time).AsSeconds() / (pLastValue->m_Time - pFirstValue->m_Time).AsSeconds();
 
 	
-
 	// calculate the snapshot.
 	m_Snapshot = pFirstValue->m_Value + ((pLastValue->m_Value - pFirstValue->m_Value) * factor);
 
-	//std::cout << factor << "   " << pFirstValue->m_Time.AsSeconds() << "   " << "   " << pLastValue->m_Time.AsSeconds() << "   " << p_Time.AsSeconds() << "     " << m_Snapshot.x << std::endl;
+	
+	//std::cout << factor << std::endl;// "    " << pFirstValue->m_Value.x << "   " << pLastValue->m_Value.x << "       " << m_Snapshot.x << "    time1: " << p_Time.AsSeconds() << "   time2: " << m_Values.front().m_Time.AsSeconds() << std::endl;
+
+	/*
+	std::cout << "Values: " << m_Values.size() << std::endl;
+	for (ValueList::iterator it = m_Values.begin(); it != m_Values.end(); it++)
+	{
+		std::cout << (*it).m_Value.x << std::endl;
+	}
+
+	std::cout << std::endl;*/
 
 
 	// Unlock mutex.
@@ -264,18 +337,58 @@ void InterpolatedVariable<T>::SetData(const void * p_pData, const Time & p_Time,
 	// This is for server only.
 	m_Mutex.Lock();
 	
+	// Set last value
+	T oldLastValue;
+	
+	if (m_IsSet)
+	{
+		oldLastValue = m_LastValue;
+		memcpy(&m_LastValue, p_pData, m_Size);
+	}
+	else
+	{
+		memcpy(&m_LastValue, p_pData, m_Size);
+		oldLastValue = m_LastValue;
+	}
+	
+	
+
+	//std::cout << "old: " << oldLastValue.x << std::endl;
+
+
+	// The value is set.
+	m_IsSet = true;
+
 	// No previcously added values?
 	if (m_Values.size() == 0)
 	{
+		if (m_IsExtrapolating == false)
+		{
 
-		Value value;
-		value.m_Time = p_Time - Seconds(1.0f / 22.0f);
-		value.m_InitialFlag = false;
-		memcpy(&(value.m_Value), p_pData, m_Size);
-		m_Values.push_back(value);
+			Value value;
+			value.m_InitialFlag = false;
+			value.m_Time = p_Time - Seconds(1.0f / 22.0f);
+			value.m_Value = oldLastValue;
+			m_Values.push_back(value);
 
-		value.m_Time = p_Time;
-		m_Values.push_back(value);
+			value.m_Time = p_Time;
+			value.m_Value = m_LastValue;
+			m_Values.push_back(value);
+		}
+		else
+		{
+			Value value;
+			value.m_InitialFlag = false;
+			value.m_Time = m_LastExtrapolationTime;
+			value.m_Value = m_Snapshot;
+			m_Values.push_back(value);
+
+			value.m_Time = p_Time;
+			value.m_Value = m_LastValue;
+			m_Values.push_back(value);
+
+			m_IsExtrapolating = false;
+		}
 
 		m_Mutex.Unlock();
 		return;
@@ -292,23 +405,71 @@ void InterpolatedVariable<T>::SetData(const void * p_pData, const Time & p_Time,
 
 	}
 
-	// Set the intial value, if any, to the current one.
+/*	// Set the intial value, if any, to the current one.
 	if (m_Values.size() && m_Values.front().m_InitialFlag)
 	{
 		Value & frontValue = m_Values.front();
-		//memcpy(&(frontValue.m_Value), p_pData, m_Size);
 		frontValue.m_Time = p_Time - Seconds(1.0f / 22.0f);
 		frontValue.m_InitialFlag = false;
 	}
+	*/
 
 	// Insert the data in the data queue.
 	Value value;
 	value.m_Time = p_Time;
 	value.m_InitialFlag = false;
-	memcpy(&(value.m_Value), p_pData, m_Size);
+	value.m_Value = m_LastValue;
+
+	// Check if this is a stop value( have we received this value before?)
+	if (value.m_Value == m_Values.back().m_Value)
+	{
+		value.m_InitialFlag = true;
+	}
+	else
+	{
+		// Check if we should modify the back values time.
+		Value & backValue = m_Values.back();
+		if (backValue.m_InitialFlag)
+		{
+			backValue.m_InitialFlag = false;
+			backValue.m_Time = p_Time - Seconds(1.0f / 22.0f);
+		}
+	}
+
+	// Add the new value.
 	m_Values.push_back(value);
 
+	/*
+	ValueList::iterator it = std::prev(std::prev(m_Values.end()));
+
+	Float32 diff = (p_Time - (*it).m_Time).AsSeconds();
+
+	std::cout << "diff: " << diff << std::endl;
+	*/
+
+
 	// Unlock mutex.
+	m_Mutex.Unlock();
+}
+
+
+template<typename T>
+Bool InterpolatedVariable<T>::IsNewValue()
+{
+	// Server only.
+	m_Mutex.Lock();
+	Bool status = m_NewValue;
+	m_Mutex.Unlock();
+	return status;
+}
+
+
+template<typename T>
+void InterpolatedVariable<T>::SetIsNewValue(const Bool p_Status)
+{
+	// Server only.
+	m_Mutex.Lock();
+	m_NewValue = p_Status;
 	m_Mutex.Unlock();
 }
 
@@ -319,14 +480,14 @@ void InterpolatedVariable<T>::ClearOldData(const Time & p_MinimumTime)
 	m_Mutex.Lock();
 
 	// Do always store at least 1.
-	if (m_Values.size( ) <= 1)
+	/*if (m_Values.size( ) <= 1)
 	{
 		m_Mutex.Unlock();
 		return;
 	}
-
+	*/
 	// Go through the items in the list
-	for (ValueList::iterator it = m_Values.begin(); it != std::prev(m_Values.end());)
+	for (ValueList::iterator it = m_Values.begin(); it != /*std::prev(*/m_Values.end()/*)*/;)
 	{
 		if ((*it).m_Time <= p_MinimumTime )
 		{
@@ -338,7 +499,7 @@ void InterpolatedVariable<T>::ClearOldData(const Time & p_MinimumTime)
 		}
 	}
 
-	if (m_Values.size() == 1)
+	/*if (m_Values.size() == 1)
 	{
 		// Get back value and check if we should change the value to the initial value.
 		Value & frontValue = m_Values.front();
@@ -347,7 +508,7 @@ void InterpolatedVariable<T>::ClearOldData(const Time & p_MinimumTime)
 			frontValue.m_Value = m_Snapshot;
 			frontValue.m_InitialFlag = true;
 		}
-	}
+	}´*/
 
 	// Unlock mutex.
 	m_Mutex.Unlock();

@@ -68,6 +68,15 @@ namespace Bit
 			return ret;
 		}
 
+		Bool VariableBase::IsNewValue()
+		{
+			return false;
+		}
+
+		void VariableBase::SetIsNewValue(const Bool p_Status)
+		{
+		}
+
 	}
 
 }
