@@ -111,6 +111,17 @@ namespace Bit
 		Set( p_pBytes, p_Count );
 	}
 
+	void Hash::Set(const Hash & p_Hash)
+	{
+		m_Bytes.clear();
+
+		// Copy the data
+		for (SizeType i = 0; i < p_Hash.m_Bytes.size(); i++)
+		{
+			m_Bytes.push_back(p_Hash.m_Bytes[i]);
+		}
+	}
+
 	void Hash::Set( const std::string & p_String )
 	{
 		m_Bytes.clear( );

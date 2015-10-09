@@ -25,6 +25,7 @@
 #include <Bit/System/Sha1.hpp>
 #include <stdio.h>
 #include <string.h>
+#include <fstream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -138,6 +139,37 @@ namespace Bit
 	void Sha1::Generate( const std::string & p_String )
 	{
 		Generate( reinterpret_cast<const Uint8 *>( &p_String[ 0 ] ), p_String.size( ) ) ;
+	}
+
+	Bool Sha1::GenerateFromFile(const std::string & p_Filename)
+	{
+		// Open the file
+		std::ifstream fin(p_Filename.c_str(), std::ifstream::binary);
+		if (fin.is_open() == false)
+		{
+			return false;
+		}
+
+		// Get file size
+		fin.seekg(0, std::fstream::end);
+		const SizeType fileSize = static_cast<SizeType>(fin.tellg());
+		fin.seekg(0, std::fstream::beg);
+
+		// Create a buffer
+		Uint8 * pBuffer = new Uint8[fileSize];
+
+		// Read the data
+		fin.read(reinterpret_cast<char*>(pBuffer), fileSize);
+
+		// Generate the hash
+		Generate(pBuffer, fileSize);
+
+		// Delete the buffer
+		delete[] pBuffer;
+
+		// Close and return.
+		fin.close();
+		return true;
 	}
 
 	Hash & Sha1::GetHash( )

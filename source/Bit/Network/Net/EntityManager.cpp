@@ -851,14 +851,14 @@ namespace Bit
 				ChangedVariablesMap * pChangedVariablesMap = ceIt->second;
 
 				// Flag for checking if we should remove this item from the changed entities.
-				Bool removedChangedVariable = true;
+				Bool removedChangedEntity = true;
 
 				// Go throguh the changed variables
 				for (ChangedVariablesMap::iterator	cvIt = pChangedVariablesMap->begin();
 													cvIt != pChangedVariablesMap->end();)
 				{
 					// Flag for checking if we should remove this item from the changed entities.
-					Bool removedChangedEntityVariable = true;
+					Bool removedChangedVariableMap = true;
 
 					// Get the pointer to the changed entity variable map
 					ChangedEntityVariableMap * pChangedEntityVariableMap = cvIt->second;
@@ -877,14 +877,14 @@ namespace Bit
 						{
 							// increment pointer
 							cevIt->second->SetIsNewValue(false);
-							removedChangedEntityVariable = false;
-							removedChangedVariable = false;
+							removedChangedEntity = false;
+							removedChangedVariableMap = false;
 							++cevIt;
 						}
 					}
 
 					// Should we remove this item?
-					if (removedChangedEntityVariable)
+					if (removedChangedVariableMap)
 					{
 						delete pChangedEntityVariableMap;
 						cvIt = pChangedVariablesMap->erase(cvIt);
@@ -898,7 +898,7 @@ namespace Bit
 
 
 				// Should we remove this item?
-				if (removedChangedVariable)
+				if (removedChangedEntity)
 				{
 					delete pChangedVariablesMap;
 					ceIt = m_ChangedEntities.erase(ceIt);
@@ -910,10 +910,15 @@ namespace Bit
 
 			}
 
+			// Unlock mutex
+			mutex.Unlock();
 			
-
-
+			// OLD removal code.
 			/*
+			// Create a smart mutex.
+			SmartMutex mutex(m_Mutex);
+			mutex.Lock();
+
 			// Go through the changed entities, and delete them.
 			for( ChangedEntitiesMap::iterator it = m_ChangedEntities.begin( );
 				 it != m_ChangedEntities.end( );
@@ -931,9 +936,11 @@ namespace Bit
 				delete it->second;
 			}
 
-			m_ChangedEntities.clear( );*/
+			m_ChangedEntities.clear( );
+
 
 			mutex.Unlock();
+			*/
 		}
 
 		Entity * EntityManager::CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id)
