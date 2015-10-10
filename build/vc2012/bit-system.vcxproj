@@ -41,6 +41,7 @@
     <ClInclude Include="..\..\include\Bit\System\Mouse.hpp" />
     <ClInclude Include="..\..\include\Bit\System\MouseBase.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Mutex.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Path.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Phys2\Body.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Phys2\Material.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Phys2\Private\Manifold.hpp" />
@@ -89,6 +90,7 @@
     <ClCompile Include="..\..\source\Bit\System\Json\JsonWriter.cpp" />
     <ClCompile Include="..\..\source\Bit\System\MatrixManager.cpp" />
     <ClCompile Include="..\..\source\Bit\System\MemoryLeak.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Path.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Phys2\Body.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Phys2\Material.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Phys2\Private\Manifold.cpp" />

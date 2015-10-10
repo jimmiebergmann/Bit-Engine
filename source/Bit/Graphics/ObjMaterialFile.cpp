@@ -393,37 +393,44 @@ namespace Bit
 			// Texture maps
 			else if( keyword == "map_ka" )
 			{
-				p_Stream >> string;
+				p_Stream.get();
+				std::getline(p_Stream, string);
 				pMaterial->m_AmbientTexture = string;
 			}
 			else if( keyword == "map_kd" )
 			{
-				p_Stream >> string;
+				p_Stream.get();
+				std::getline(p_Stream, string);
 				pMaterial->m_DiffuseTexture = string;
 			}
 			else if( keyword == "map_ks" )
 			{
-				p_Stream >> string;
+				p_Stream.get();
+				std::getline(p_Stream, string);
 				pMaterial->m_SpecularTexture = string;
 			}
 			else if( keyword == "map_ns" )
 			{
-				p_Stream >> string;
+				p_Stream.get();
+				std::getline(p_Stream, string);
 				pMaterial->m_ShininessTexture = string;
 			}
 			else if( keyword == "map_ke" )
 			{
-				p_Stream >> string;
+				p_Stream.get();
+				std::getline(p_Stream, string);
 				pMaterial->m_EmissiveTexture = string;
 			}
 			else if( keyword == "disp" || keyword == "map_disp" )
 			{
-				p_Stream >> string;
+				p_Stream.get();
+				std::getline(p_Stream, string);
 				pMaterial->m_DisplacementTexture = string;
 			}
 			else if( keyword == "bump" || keyword == "map_bump" )
 			{
-				p_Stream >> string;
+				p_Stream.get();
+				std::getline(p_Stream, string);
 				pMaterial->m_BumpTexture = string;
 			}
 

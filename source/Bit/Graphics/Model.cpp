@@ -38,6 +38,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <Bit/System/Path.hpp>
 #include <Bit/System/ResourceManager.hpp>
 #include <Bit/System/MatrixManager.hpp>
 #include <Bit/System/MemoryLeak.hpp>
@@ -162,7 +163,7 @@ namespace Bit
 		ObjMaterialFile objMaterial;
 		
 		if( obj.GetMaterialFilename( ).size( ) &&
-			objMaterial.LoadFromFile( "input/" + obj.GetMaterialFilename( ) ) == true )
+			objMaterial.LoadFromFile(Path::GetDirectory(p_Filename) + "/" + obj.GetMaterialFilename()) == true)
 		{
 			// Get the materials from the OBJ material file
 			for( SizeType i = 0; i < objMaterial.GetMaterialCount( ); i++ )
@@ -189,12 +190,12 @@ namespace Bit
 				}
 
 				// Add color map
-				if( material.GetAmbientTexture( ).size( ) )
+				if (material.GetDiffuseTexture().size())
 				{
-					(*pMaterial)[ "ColorMap" ] = material.GetAmbientTexture( );
+					(*pMaterial)["ColorMap"] = material.GetDiffuseTexture();
 					
 					// add the texture to the material
-					Texture * pTexture = ResourceManager::GetDefault( )->GetTexture( material.GetAmbientTexture( ) );
+					Texture * pTexture = ResourceManager::GetDefault()->GetTexture(material.GetDiffuseTexture());
 					if( pTexture )
 					{
 						pMaterial->SetColorTexture( pTexture );

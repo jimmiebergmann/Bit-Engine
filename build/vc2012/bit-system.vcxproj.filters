@@ -84,6 +84,7 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\System\MemoryPool.hpp" />
     <ClInclude Include="..\..\include\Bit\System\String.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Path.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -160,6 +161,7 @@
       <Filter>Phys2</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\System\String.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Path.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">

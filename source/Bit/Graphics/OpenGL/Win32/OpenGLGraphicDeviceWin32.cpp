@@ -609,6 +609,12 @@ namespace Bit
 			// Create ambient color
 			"	vec4 ambient = vec4( uAmbientColor, 1.0 ) * baseColor;\n"
 	
+			// Ignore fragment if alpha is 0.0
+			"	if (ambient.a == 0.0)\n"
+			"	{\n"
+			"		discard;\n"
+			"	}\n"
+
 			// Create diffuse color
 			"	vec4 diffuse = vec4( 0.0, 0.0f, 0.0f, 1.0 );\n"
 

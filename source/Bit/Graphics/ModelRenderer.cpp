@@ -141,8 +141,14 @@ namespace Bit
 				continue;
 			}
 
+			// Get the model material
+			const ModelMaterial & material = vertexData->GetMaterial();
+
+			// Bind the color texture if any
+			Texture * pTexture = material.GetColorTexture();
+
 			//pShaderProgram->SetUniform4f( "uColor", 1.0f, 1.0f, 1.0f, 1.0f );
-			if( vertexData->GetBitmask( ) & 0x02 )
+			if (vertexData->GetBitmask() & 0x02 && pTexture)
 			{
 				pShaderProgram->SetUniform1i( "uUseTexture", 1 );
 			}
@@ -160,12 +166,6 @@ namespace Bit
 			{
 				pShaderProgram->SetUniform1i( "uUseNormals", 0 );
 			}
-
-			// Get the model material
-			const ModelMaterial & material = vertexData->GetMaterial( );
-
-			// Bind the color texture if any
-			Texture * pTexture = material.GetColorTexture( );
 
 			// Bind the texture.
 			if( pTexture )

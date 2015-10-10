@@ -112,6 +112,7 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
+				std::cout << "ObjFile::CreatePositionBuffer: Not supporting 4 vertice polygons. Triangulate please." << std::endl;
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -163,6 +164,7 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
+				std::cout << "ObjFile::CreatePositionBuffer: Not supporting 4 vertice polygons. Triangulate please." << std::endl;
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -300,6 +302,7 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
+				std::cout << "ObjFile::CreateTextureCoordBuffer: Not supporting 4 vertice polygons. Triangulate please." << std::endl;
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -350,6 +353,7 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
+				std::cout << "ObjFile::CreateTextureCoordBuffer: Not supporting 4 vertice polygons. Triangulate please." << std::endl;
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -486,6 +490,7 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
+				std::cout << "ObjFile::CreateNormalBuffer: Not supporting 4 vertice polygons. Triangulate please." << std::endl;
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -537,6 +542,7 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
+				std::cout << "ObjFile::CreateNormalBuffer: Not supporting 4 vertice polygons. Triangulate please." << std::endl;
 				delete [] pBuffer;
 				return NULL;
 			}
