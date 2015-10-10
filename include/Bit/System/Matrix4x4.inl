@@ -159,6 +159,78 @@ void Matrix4x4<T>::Position( const Vector3<T> & p_Postion )
 }
 
 template <typename T>
+void Matrix4x4<T>::RotateEuler(const Vector3<Angle> & p_Angles)
+{
+	Matrix4x4<T> rotMat;
+	const T sinX = static_cast<T>(Math::Sin(p_Angles.x.AsRadians()));
+	const T cosX = static_cast<T>(Math::Cos(p_Angles.x.AsRadians()));
+
+	const T sinY = static_cast<T>(Math::Sin(p_Angles.y.AsRadians()));
+	const T cosY = static_cast<T>(Math::Cos(p_Angles.y.AsRadians()));
+
+	const T sinZ = static_cast<T>(Math::Sin(p_Angles.z.AsRadians()));
+	const T cosZ = static_cast<T>(Math::Cos(p_Angles.z.AsRadians()));
+
+	rotMat.m[0] = cosY*cosZ;
+	rotMat.m[1] = sinX*sinY*cosZ - cosX*sinZ;
+	rotMat.m[2] = cosX*sinY*cosZ + sinX*sinZ;
+	rotMat.m[3] = 0;
+
+	rotMat.m[4] = cosY*sinZ;
+	rotMat.m[5] = sinX*sinY*sinZ + cosX*cosZ;
+	rotMat.m[6] = cosX*sinY*sinZ - sinX*cosZ;
+	rotMat.m[7] = 0;
+
+	rotMat.m[8] = -sinY;
+	rotMat.m[9] = sinX*cosY;
+	rotMat.m[10] = cosX*cosY;
+	rotMat.m[11] = 0;
+
+	rotMat.m[12] = 0;
+	rotMat.m[13] = 0;
+	rotMat.m[14] = 0;
+	rotMat.m[15] = 1;
+
+	*this = *this * rotMat;
+}
+
+template <typename T>
+void Matrix4x4<T>::RotateQuaternion(const Vector4f32 & p_Quaterinion)
+{
+	Matrix4x4<T> rotMat;
+
+	Float32 xx = p_Quaterinion.x * p_Quaterinion.x;
+	Float32 xy = p_Quaterinion.x * p_Quaterinion.y;
+	Float32 xz = p_Quaterinion.x * p_Quaterinion.z;
+	Float32 xw = p_Quaterinion.x * p_Quaterinion.w;
+
+	Float32 yy = p_Quaterinion.y * p_Quaterinion.y;
+	Float32 yz = p_Quaterinion.y * p_Quaterinion.z;
+	Float32 yw = p_Quaterinion.y * p_Quaterinion.w;
+
+	Float32 zz = p_Quaterinion.z * p_Quaterinion.z;
+	Float32 zw = p_Quaterinion.z * p_Quaterinion.w;
+
+	rotMat.m[0] = 1 - 2 * (yy + zz);
+	rotMat.m[1] = 2 * (xy - zw);
+	rotMat.m[2] = 2 * (xz + yw);
+
+	rotMat.m[4] = 2 * (xy + zw);
+	rotMat.m[5] = 1 - 2 * (xx + zz);
+	rotMat.m[6] = 2 * (yz - xw);
+
+	rotMat.m[8] = 2 * (xz - yw);
+	rotMat.m[9] = 2 * (yz + xw);
+	rotMat.m[10] = 1 - 2 * (xx + yy);
+
+	rotMat.m[3] = rotMat.m[7] = rotMat.m[11] = rotMat.m[12] = rotMat.m[13] = rotMat.m[14] = 0;
+	rotMat.m[15] = 1;
+
+
+	*this = *this * rotMat;
+}
+
+template <typename T>
 void Matrix4x4<T>::RotateX( const T p_Angle )
 {
 	Matrix4x4<T> rotMat;

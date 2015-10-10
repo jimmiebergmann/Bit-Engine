@@ -29,6 +29,7 @@
 #include <Bit/System/Math.hpp>
 #include <Bit/System/Vector3.hpp>
 #include <Bit/System/Vector4.hpp>
+#include <Bit/System/Angle.hpp>
 
 #include <float.h>
 #if defined( BIT_PLATFORM_WIN32 )
@@ -126,12 +127,28 @@ namespace Bit
 		void Position( const Vector3<T> & p_Postion );
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix using euler angles
+		///
+		/// \param p_Angles The angles to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		void RotateEuler(const Vector3<Angle> & p_Angles);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix using a quaterinion
+		///
+		/// \param p_Angles The angles to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		void RotateQuaternion(const Vector4f32 & p_Quaterinion);
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Rotate the matrix about the x-axis.
 		///
 		/// \param p_Angle The angle in degrees to rotate the matrix.
 		///
 		////////////////////////////////////////////////////////////////
-		void RotateX( const T p_Angle );
+		void RotateX(const T p_Angle);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Rotate the matrix about the y-axis.

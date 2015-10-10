@@ -145,6 +145,30 @@ namespace Bit
 										const Float32 p_ZNear, const Float32 p_ZFar );
 		
 		////////////////////////////////////////////////////////////////
+		/// \brief Multiply the current matrix with a new one.
+		///
+		/// \param p_Matrix matrix to multiply with.
+		///
+		////////////////////////////////////////////////////////////////
+		static void Multiply(const Matrix4x4f32 & p_Matrix);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix using euler angles
+		///
+		/// \param p_Angles The angles to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static void RotateEuler(const Vector3<Angle> & p_Angles);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Rotate the matrix using a quaterinion
+		///
+		/// \param p_Angles The angles to rotate the matrix.
+		///
+		////////////////////////////////////////////////////////////////
+		static void RotateQuaternion(const Vector4f32 & p_Quaterinion);
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Rotate the matrix by the X axis.
 		///
 		/// \param p_Angle The angle in degrees to rotate the matrix.
