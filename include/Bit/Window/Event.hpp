@@ -57,6 +57,7 @@ namespace Bit
 			KeyJustPressed,
 			KeyJustReleased,
 			MouseMoved,
+			MouseWheel,
 			MousePressed,
 			MouseJustPressed,
 			MouseJustReleased,
@@ -64,9 +65,10 @@ namespace Bit
 		};
 
 		eEventType		Type;
-		Bit::Vector2i32	Size;
-		Bit::Vector2i32	Position;
-		Bit::Vector2i32	MousePosition;
+		Vector2i32	Size;
+		Vector2i32	Position;
+		Vector2i32	MousePosition;
+		Int32		Wheel;
 		Keyboard::eKey Key;
 		Mouse::eButton Button;
 		Uint16 Character;

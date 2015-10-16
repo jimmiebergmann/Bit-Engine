@@ -67,6 +67,20 @@ namespace Bit
 		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 	}
 
+	Bool OpenGLFramebuffer::CheckForError()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, m_FramebufferObject);
+		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				
+		if (status != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	Bool OpenGLFramebuffer::Attach( const Texture & p_pTexture )
 	{
 		// Cast the texture pointer to an opengl texture
@@ -198,6 +212,48 @@ namespace Bit
 		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
 		// Succeeded
+		return true;
+	}
+
+	Bool OpenGLFramebuffer::SetOutputBuffers(	const eAttachment * p_Attachments,
+												const SizeType * p_AttachmentIndices,
+												const SizeType p_AttachmentCount)
+	{
+		if (p_Attachments == NULL || p_AttachmentCount == 0)
+		{
+			return false;
+		}
+
+		// Create array of GLenums
+		GLenum * pBuffers = new GLenum[p_AttachmentCount];
+
+		// Write the right buffer data
+		for (SizeType i = 0; i < p_AttachmentCount; i++)
+		{
+			if (p_Attachments[i] == Color)
+			{
+				pBuffers[i] = GL_COLOR_ATTACHMENT0_EXT;
+
+				if (p_AttachmentIndices)
+				{
+					pBuffers[i] += p_AttachmentIndices[i];
+				}
+			}
+			else if (p_Attachments[i] == Depth)
+			{
+				pBuffers[i] = GL_DEPTH_ATTACHMENT_EXT;
+			}
+			else if (p_Attachments[i] == DepthStencil)
+			{
+				pBuffers[i] = GL_STENCIL_ATTACHMENT_EXT;
+			}
+		}
+
+		glDrawBuffers(p_AttachmentCount, pBuffers);
+
+		// Delete the buffer enum
+		delete [] pBuffers;
+
 		return true;
 	}
 

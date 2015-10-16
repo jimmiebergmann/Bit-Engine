@@ -373,7 +373,7 @@ namespace Bit
 			receiveSize = tcp.Receive(g_ResponseBuffer, g_ResponseBufferSize);
 
 			// Check if we received any data at all.
-			if (receiveSize == 0)
+			if (receiveSize <= 0)
 			{
 				std::cout << "[Http::SendRequest] Could not receive the header data." << std::endl;
 				return false;

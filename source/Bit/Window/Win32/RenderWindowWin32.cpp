@@ -713,6 +713,14 @@ namespace Bit
 				RemoveMousePressEvent( Mouse::Right );
 			}
 			break;
+			case WM_MOUSEWHEEL:
+			{
+				Int32 delta = static_cast<Int32>(GET_WHEEL_DELTA_WPARAM(p_WParam));
+				e.Type = Event::MouseWheel;
+				e.Wheel = delta / WHEEL_DELTA;
+				m_Events.push(e);
+			}
+			break;
 			default:
 			{
 			}

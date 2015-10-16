@@ -29,6 +29,7 @@
 #include <Bit/System/Version.hpp>
 #include <Bit/Window/RenderWindow.hpp>
 #include <Bit/Graphics/ShaderType.hpp>
+#include <Bit/Graphics/Framebuffer.hpp>
 #include <Bit/System/Vector3.hpp>
 #include <Bit/System/Vector4.hpp>
 
@@ -269,10 +270,19 @@ namespace Bit
 		virtual void Present( ) = 0;
 
 		////////////////////////////////////////////////////////////////
+		/// \brief Clear selected buffer. The selected buffer have to be
+		/// set via the Framebuffer::SetOutputBuffers function.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void Clear(	const Framebuffer::eAttachment & p_Attachment,
+							const SizeType p_Index,
+							const Vector4f32 p_Value) = 0;
+
+		////////////////////////////////////////////////////////////////
 		/// \brief Clearing the render outputs color buffer
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void ClearColor( ) = 0;
+		virtual void ClearColor() = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Clearing the render outputs depth buffer
@@ -281,76 +291,84 @@ namespace Bit
 		virtual void ClearDepth( ) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Enable depth test.
+		/// \brief Enable/disable depth test.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableDepthTest( ) = 0;
+		virtual void SetDepthTestStatus(const Bool p_Enabled) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Enable textures.
+		/// \brief Enable/disable texturing.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableTexture() = 0;
+		virtual void SetTexturingStatus(const Bool p_Enabled) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Enable alpha  blending.
+		/// \brief Enable/disable blending.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableBlending() = 0;
+		virtual void SetBlendingStatus(const Bool p_Enabled) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Enable multisampling
+		/// \brief Enable/disable multisampling.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableMultisampling( ) = 0;
+		virtual void SetMultisamplingStatus(const Bool p_Enabled) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Enable face culling.
+		/// \brief Enable/disable face culling.
 		///
-		/// \param p_FaceCulling Front of back face culling.
+		/// \param p_FaceCulling Used if p_Enabled is true.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableFaceCulling( eCulling p_FaceCulling ) = 0;
+		virtual void SetFaceCullingStatus(const Bool p_Enabled, const eCulling p_FaceCulling = eCulling::BackFace) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Enable smooth lines.
-		///
-		/// For primitive mode Lines and LineStrip.
+		/// \brief Enable/disable smooth lines.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void EnableSmoothLines( ) = 0;
+		virtual void SetSmoothLinesStatus(const Bool p_Enabled) = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Disable depth test.
+		/// \brief Check if depth test is enabled/disabled.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DisableDepthTest( ) = 0;
+		virtual Bool GetDepthTestStatus() = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Disable textures.
+		/// \brief Check if texturing is enabled/disabled.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DisableTexture() = 0;
+		virtual Bool GetTexturingStatus() = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Disable alpha blending.
+		/// \brief Check if blending is enabled/disabled.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DisableBlending() = 0;
+		virtual Bool GetBlendingStatus() = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Disable face culling.
+		/// \brief Check if multisampling is enabled/disabled.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DisableFaceCulling( ) = 0;
+		virtual Bool GetMultisamplingStatus() = 0;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Disable smooth lines.
-		///
-		/// For primitive mode Lines and LineStrip.
+		/// \brief Check if face culling is enabled/disabled.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void DisableSmoothLines( ) = 0;
+		virtual Bool GetFaceCullingStatus() = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get face culling mode.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual eCulling GetFaceCullingMode() = 0;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Check if smooth lines is enabled/disabled.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool GetSmoothLinesStatus() = 0;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Create a framebuffer.

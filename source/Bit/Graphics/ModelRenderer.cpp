@@ -110,7 +110,7 @@ namespace Bit
 
 		// Set ambient color
 		const Vector3f32 & ambColor = modelSettings.GetAmbientLight( );
-		pShaderProgram->SetUniform3f( "uAmbientColor", ambColor.x, ambColor.y, ambColor.z );
+		pShaderProgram->SetUniform3f("uAmbientColor", ambColor.x, ambColor.y, ambColor.z);
 
 		// Go throguh all the lights
 		for( SizeType i = 0; i < modelSettings.GetActiveLightCount( ); i++ )
@@ -167,6 +167,10 @@ namespace Bit
 				pShaderProgram->SetUniform1i( "uUseNormals", 0 );
 			}
 
+			// Set diffuse color
+			Vector4f32 diffuseColor = material.GetDiffuseColor();
+			pShaderProgram->SetUniform4f("uDiffuseColor", diffuseColor.x, diffuseColor.y, diffuseColor.z, diffuseColor.w);
+
 			// Bind the texture.
 			if( pTexture )
 			{
@@ -175,6 +179,13 @@ namespace Bit
 
 			// Render the model.
 			vertexData->GetVertexArray( )->Render( PrimitiveMode::Triangles );
+
+			// Unbind the texture.
+			if (pTexture)
+			{
+				pTexture->Unbind();
+			}
+
 		}
 
 		// Unbind the shader program.

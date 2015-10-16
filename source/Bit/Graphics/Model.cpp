@@ -177,11 +177,18 @@ namespace Bit
 				// Add default properties.
 				(*pMaterial)[ "MaterialName" ] = material.GetName( );
 			
-				// Add color
-				(*pMaterial)[ "Color" ][ "r" ] = material.GetDiffuseColor( ).x;
-				(*pMaterial)[ "Color" ][ "g" ] = material.GetDiffuseColor( ).y;
-				(*pMaterial)[ "Color" ][ "b" ] = material.GetDiffuseColor( ).z;
-				(*pMaterial)[ "Color" ][ "a" ] = material.GetOpticalDensity( );
+				// Add diffuse color
+				Vector4f32 diffuseColor(material.GetDiffuseColor().x,
+										material.GetDiffuseColor().y,
+										material.GetDiffuseColor().z,
+										material.GetOpticalDensity());
+
+				pMaterial->SetDiffuseColor(diffuseColor);
+
+				(*pMaterial)["Color"]["r"] = diffuseColor.x;
+				(*pMaterial)["Color"]["g"] = diffuseColor.y;
+				(*pMaterial)["Color"]["b"] = diffuseColor.z;
+				(*pMaterial)["Color"]["a"] = diffuseColor.w;
 
 				// Add shininess
 				if( material.GetShininess( ) > 0.0f )

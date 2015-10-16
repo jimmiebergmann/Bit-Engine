@@ -76,6 +76,8 @@ extern PFNGLDELETEBUFFERSPROC __glDeleteBuffers;
 extern PFNGLGENBUFFERSPROC __glGenBuffers;
 
 // Framebuffers/renderbuffers, OpenGL 3.0
+extern PFNGLCLEARBUFFERFVPROC __glClearBufferfv;
+extern PFNGLDRAWBUFFERSPROC		__glDrawBuffers;
 extern PFNGLBLITFRAMEBUFFERPROC __glBlitFramebuffer;
 extern PFNGLBINDFRAMEBUFFERPROC __glBindFramebuffer;
 extern PFNGLBINDRENDERBUFFERPROC __glBindRenderbuffer;
@@ -161,6 +163,8 @@ extern PFNGLUNIFORMMATRIX4FVPROC __glUniformMatrix4fv;
 
 // Framebuffers/renderbuffers, OpenGL 3.0
 
+#define glClearBufferfv __glClearBufferfv
+#define glDrawBuffers __glDrawBuffers
 #define glBlitFramebuffer __glBlitFramebuffer
 #define glBindFramebuffer __glBindFramebuffer
 #define glBindRenderbuffer __glBindRenderbuffer

@@ -47,6 +47,8 @@ PFNGLDELETEBUFFERSPROC __glDeleteBuffers = NULL;
 PFNGLGENBUFFERSPROC __glGenBuffers = NULL;
 
 // Framebuffers/renderbuffers, OpenGL 3.0
+PFNGLCLEARBUFFERFVPROC __glClearBufferfv = NULL;
+PFNGLDRAWBUFFERSPROC __glDrawBuffers = NULL;
 PFNGLBLITFRAMEBUFFERPROC __glBlitFramebuffer = NULL;
 PFNGLBINDFRAMEBUFFERPROC __glBindFramebuffer = NULL;
 PFNGLBINDRENDERBUFFERPROC __glBindRenderbuffer = NULL;
@@ -204,8 +206,14 @@ namespace Bit
 			if( BIT_ARB_framebuffer_object )
 			{
 
-				Ret |= ( __glBlitFramebuffer = ( PFNGLBLITFRAMEBUFFERPROC )
-					glGetProcAddress( "glBlitFramebuffer" ) ) == NULL;
+				Ret |= (__glClearBufferfv = (PFNGLCLEARBUFFERFVPROC)
+					glGetProcAddress("glClearBufferfv")) == NULL;
+
+				Ret |= (__glDrawBuffers = (PFNGLDRAWBUFFERSPROC)
+					glGetProcAddress("glDrawBuffers")) == NULL;
+
+				Ret |= (__glBlitFramebuffer = (PFNGLBLITFRAMEBUFFERPROC)
+					glGetProcAddress("glBlitFramebuffer")) == NULL;
 
 				Ret |= ( __glGenerateMipmap = ( PFNGLGENERATEMIPMAPPROC )
 					glGetProcAddress( "glGenerateMipmap" ) ) == NULL;
@@ -246,7 +254,7 @@ namespace Bit
 				Ret |= ( __glTexImage2DMultisample = ( PFNGLTEXIMAGE2DMULTISAMPLEPROC )
 					glGetProcAddress( "glTexImage2DMultisample" ) ) == NULL;
 
-				if( !Ret )
+				if( Ret )
 				{
 					BIT_ARB_framebuffer_object = false;
 				}

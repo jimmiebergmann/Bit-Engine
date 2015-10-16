@@ -34,11 +34,17 @@ namespace Bit
 
 	// Model material class.
 	ModelMaterial::ModelMaterial( ) :
+		m_DiffuseColor( 1.0f, 1.0f, 1.0f, 1.0f ),
 		m_pColorTexture( NULL ),
 		m_pNormalTexture( NULL ),
 		m_pSpecularTexture( NULL ),
 		m_Flags( 0 )
 	{
+	}
+
+	void ModelMaterial::SetDiffuseColor(const Vector4f32 & p_Color)
+	{
+		m_DiffuseColor = p_Color;
 	}
 
 	void ModelMaterial::SetColorTexture( Texture * p_pTexture )
@@ -59,6 +65,11 @@ namespace Bit
 	Texture * ModelMaterial::GetColorTexture( ) const
 	{
 		return m_pColorTexture;
+	}
+
+	const Vector4f32 & ModelMaterial::GetDiffuseColor() const
+	{
+		return m_DiffuseColor;
 	}
 
 	Texture * ModelMaterial::GetNormalTexture( ) const

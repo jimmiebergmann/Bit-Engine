@@ -200,13 +200,20 @@ namespace Bit
 		Float32 GetDeterminant() const;
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Unproject point.
+		/// \brief Unproject screen postion.
 		///
 		////////////////////////////////////////////////////////////////
 		static Bool UnProject(	const Vector3f32 p_WindowPosition,
 								const Matrix4x4<T> & p_Matrix,
 								const Int32 p_Viewport[4],
 								Vector3f32 & p_Position);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Project world prosition.
+		///
+		////////////////////////////////////////////////////////////////
+		static Vector3f32 Project(	const Vector3f32 p_WorldPosition,
+									const Matrix4x4<T> & p_Matrix);
 
 		////////////////////////////////////////////////////////////////
 		// Operators.

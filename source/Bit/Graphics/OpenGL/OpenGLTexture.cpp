@@ -48,12 +48,17 @@ namespace Bit
 		/*SizeType	*/ 0
 	};
 
-	static const GLenum g_OpenGLInternalFormat[ 4 ] =
+	static const GLenum g_OpenGLInternalFormat[4] =
 	{
 		/*1	*/ 	GL_RED,
 		/*2	*/	GL_RG,
 		/*3	*/	GL_RGB,
 		/*4	*/	GL_RGBA,
+	};
+
+	static const GLenum g_OpenGLInternalDepthFormat =
+	{
+		GL_DEPTH_COMPONENT
 	};
 
 
@@ -116,6 +121,13 @@ namespace Bit
 
 		// Get the internal format
 		GLenum internalFormat = g_OpenGLInternalFormat[ p_BytesPerPixel - 1 ];
+		
+		// The internal format should be different for depth textures
+		if (p_Format == Depth)
+		{
+			internalFormat = g_OpenGLInternalDepthFormat;
+		}
+
 
 		// Set the size and format
 		m_Size = p_Size;
@@ -129,6 +141,19 @@ namespace Bit
 		// Get the needed opengl attributes
 		GLenum dataType = g_OpenGLDataTypes[ static_cast<SizeType>( p_Datatype ) ];
 		GLenum format = openGLTextureFormats[ static_cast<SizeType>( p_Format ) ];
+
+		if (p_Datatype == DataType::Float32 )
+		{
+			if (p_Format == ePixelFormat::Rgb)
+			{
+				internalFormat = GL_RGB32F;
+			}
+			else if (p_Format == ePixelFormat::Rgba)
+			{
+				internalFormat = GL_RGBA32F;
+			}
+		}
+
 
 		// Let's create the texture
 		glGenTextures( 1, &m_Id );

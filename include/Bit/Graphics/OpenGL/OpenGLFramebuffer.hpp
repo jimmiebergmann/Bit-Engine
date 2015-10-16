@@ -68,6 +68,12 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		virtual void Unbind( ) const;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Check if the framebuffer contains any errors.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool CheckForError();
+
 		///////////////////////////////////////////////////////////////
 		/// \brief Attach a texture to the framebuffer.
 		///
@@ -81,6 +87,20 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		virtual Bool Attach( const Renderbuffer & p_pRenderBuffer );
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Set output buffers
+		///
+		/// \param p_Attachments Array of buffer attachments.
+		/// \param p_AttachmentIndices Array of attachment indices.
+		/// \param p_AttachmentCount Number of attachments.
+		///
+		/// \return true if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool SetOutputBuffers(	const eAttachment * p_Attachments,
+										const SizeType * p_AttachmentIndices,
+										const SizeType p_AttachmentCount);
 
 		///////////////////////////////////////////////////////////////
 		/// \brief Blit the framebuffer to another.

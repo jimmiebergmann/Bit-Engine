@@ -65,14 +65,20 @@ namespace Bit
 		/// \brief Bind framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Bind( ) const = 0;
+		virtual void Bind() const = 0;
 
 		///////////////////////////////////////////////////////////////
 		/// \brief Unbind framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void Unbind( ) const = 0;
+		virtual void Unbind() const = 0;
 
+		////////////////////////////////////////////////////////////////
+		/// \brief Check if the framebuffer contains any errors.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool CheckForError() = 0;
+		
 		///////////////////////////////////////////////////////////////
 		/// \brief Attach a texture to the framebuffer.
 		///
@@ -85,7 +91,21 @@ namespace Bit
 		/// \brief Attach a render buffer to the framebuffer.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual Bool Attach( const Renderbuffer & p_pRenderBuffer ) = 0;
+		virtual Bool Attach(const Renderbuffer & p_pRenderBuffer) = 0;
+
+		///////////////////////////////////////////////////////////////
+		/// \brief Set output buffers
+		///
+		/// \param p_Attachments Array of buffer attachments.
+		/// \param p_AttachmentIndices Array of attachment indices.
+		/// \param p_AttachmentCount Number of attachments.
+		///
+		/// \return true if succeeded, else false.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual Bool SetOutputBuffers(	const eAttachment * p_Attachments,
+										const SizeType * p_AttachmentIndices,
+										const SizeType p_AttachmentCount) = 0;
 
 		///////////////////////////////////////////////////////////////
 		/// \brief Blit the framebuffer to another.

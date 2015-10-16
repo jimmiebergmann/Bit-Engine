@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Json/Value.hpp>
+#include <Bit/System/Vector4.hpp>
 
 namespace Bit
 {
@@ -68,11 +69,18 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		ModelMaterial( );
 
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Set diffuse color.
+		///
+		////////////////////////////////////////////////////////////////
+		void SetDiffuseColor(const Vector4f32 & p_Color);
+
 		////////////////////////////////////////////////////////////////
 		/// \brief Set color texture.
 		///
 		////////////////////////////////////////////////////////////////
-		void SetColorTexture( Texture * p_pTexture );
+		void SetColorTexture(Texture * p_pTexture);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Set normal texture.
@@ -90,7 +98,13 @@ namespace Bit
 		/// \brief Get color texture.
 		///
 		////////////////////////////////////////////////////////////////
-		Texture * GetColorTexture( ) const;
+		Texture * GetColorTexture() const;
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Get diffuse color.
+		///
+		////////////////////////////////////////////////////////////////
+		const Vector4f32 & GetDiffuseColor() const;
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Get normal texture.
@@ -146,11 +160,12 @@ namespace Bit
 		typedef std::vector<Texture *> TextureVector;
 
 		// Private variables
-		Texture * m_pColorTexture;
-		Texture * m_pNormalTexture;
-		Texture * m_pSpecularTexture;
-		TextureVector m_ExtendedTextures;
-		Uint16 m_Flags;
+		Vector4f32			m_DiffuseColor;
+		Texture *			m_pColorTexture;
+		Texture *			m_pNormalTexture;
+		Texture *			m_pSpecularTexture;
+		TextureVector		m_ExtendedTextures;
+		Uint16				m_Flags;
 
 
 	};

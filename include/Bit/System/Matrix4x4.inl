@@ -526,6 +526,13 @@ Bool Matrix4x4<T>::UnProject(const Vector3f32 p_WindowPosition,
 }
 
 template <typename T>
+Vector3f32 Matrix4x4<T>::Project(	const Vector3f32 p_WorldPosition,
+									const Matrix4x4<T> & p_Matrix)
+{
+	return p_Matrix * p_WorldPosition;
+}
+
+template <typename T>
 inline Matrix4x4<T> & Matrix4x4<T>::operator = ( const Matrix4x4<T> & p_Mat )
 {
 	for( SizeType i = 0; i < 16; i++ )

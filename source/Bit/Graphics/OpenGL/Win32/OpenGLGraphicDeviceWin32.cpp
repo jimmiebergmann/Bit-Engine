@@ -63,17 +63,33 @@ namespace Bit
 		Version( 4, 4 )
 	};
 
-	static GLenum g_OpenGLCulling[ 2 ] =
+	static GLenum g_OpenGLCulling[2] =
 	{
 		/*FrontFace*/	GL_FRONT,
 		/*BackFace*/	GL_BACK
+	};
+
+	static GLenum g_OpenGLAttachments[5] =
+	{
+		0,
+		GL_COLOR,
+		GL_DEPTH,
+		0,
+		GL_STENCIL
 	};
 	
 	OpenGLGraphicDeviceWin32::OpenGLGraphicDeviceWin32( ) :
 		m_Open( false ),
 		m_Version( 0, 0 ),
 		m_DeviceContextHandle( NULL ),
-		m_Context( NULL )
+		m_Context( NULL ),
+		m_DepthTestStatus(false),
+		m_TextuingStatus(false),
+		m_BlendingStatus(false),
+		m_MultisamplingStatus(false),
+		m_FaceCullingStatus(false),
+		m_SmoothLinesStatus(false),
+		m_FaceCullingMode(eCulling::BackFace)
 	{
 		for( SizeType i = 0; i < 3; i++ )
 		{
@@ -171,10 +187,10 @@ namespace Bit
 		m_DeviceContextHandle = p_RenderOutput.GetDeviceContextHandle( );
 
 		// Set default settings.
-		DisableDepthTest( );
-		EnableTexture( );
-		DisableFaceCulling( );
-		DisableSmoothLines( );
+		SetDepthTestStatus(false);
+		SetTexturingStatus(true);
+		SetFaceCullingStatus(false);
+		SetSmoothLinesStatus(false);
 
 		// Set the default values for the texture properties.
 		m_DefaultTextureProperties.SetMagnificationFilter( TextureProperties::Nearest );
@@ -236,9 +252,23 @@ namespace Bit
 		SwapBuffers( m_DeviceContextHandle );
 	}
 
+	void OpenGLGraphicDeviceWin32::Clear(	const Framebuffer::eAttachment & p_Attachment,
+											const SizeType p_Index,
+											const Vector4f32 p_Value)
+	{
+		GLenum buffer = g_OpenGLAttachments[p_Attachment];
+		glClearBufferfv(buffer, p_Index, reinterpret_cast<const GLfloat*>(&p_Value));
+	}
+
 	void OpenGLGraphicDeviceWin32::ClearColor( )
 	{
 		glClear( GL_COLOR_BUFFER_BIT );
+
+
+		/*Bit::Vector4f32 color(1.0, 0.0, 0.0, 1.0);
+
+		glClearBufferfv(GL_COLOR, 0, reinterpret_cast<GLfloat*>(&color));
+		glClearBufferfv(GL_COLOR, 1, reinterpret_cast<GLfloat*>(&color));*/
 	}
 
 	void OpenGLGraphicDeviceWin32::ClearDepth( )
@@ -246,7 +276,139 @@ namespace Bit
 		glClear( GL_DEPTH_BUFFER_BIT );
 	}
 
-	void OpenGLGraphicDeviceWin32::EnableDepthTest( )
+
+	void OpenGLGraphicDeviceWin32::SetDepthTestStatus(const Bool p_Enabled)
+	{
+		m_DepthTestStatus = p_Enabled;
+
+		if (p_Enabled)
+		{
+			glEnable(GL_DEPTH_TEST);
+		}
+		else
+		{
+			glDisable(GL_DEPTH_TEST);
+		}
+	}
+
+	void OpenGLGraphicDeviceWin32::SetTexturingStatus(const Bool p_Enabled)
+	{
+		m_TextuingStatus = p_Enabled;
+
+		// Ignore this function call if the version is 3.x.y or newer.
+		if (m_Version.GetMajor() >= 3)
+		{
+			return;
+		}
+
+		if (p_Enabled)
+		{
+			glEnable(GL_TEXTURE_2D);
+		}
+		else
+		{
+			glDisable(GL_TEXTURE_2D);
+		}
+	}
+
+	void OpenGLGraphicDeviceWin32::SetBlendingStatus(const Bool p_Enabled)
+	{
+		m_BlendingStatus = p_Enabled;
+
+		if (p_Enabled)
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
+		else
+		{
+			glDisable(GL_BLEND);
+		}
+	}
+
+	void OpenGLGraphicDeviceWin32::SetMultisamplingStatus(const Bool p_Enabled)
+	{
+		m_MultisamplingStatus = p_Enabled;
+
+		if (p_Enabled)
+		{
+			glEnable(GL_MULTISAMPLE);
+		}
+		else
+		{
+			glDisable(GL_MULTISAMPLE);
+		}
+	}
+
+	void OpenGLGraphicDeviceWin32::SetFaceCullingStatus(const Bool p_Enabled,
+														const eCulling p_FaceCulling)
+	{
+		m_FaceCullingStatus = p_Enabled;
+
+		if (p_Enabled)
+		{
+			glEnable(GL_CULL_FACE);
+			glCullFace(g_OpenGLCulling[p_FaceCulling]);
+			m_FaceCullingMode = p_FaceCulling;
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+		}		
+	}
+
+	void OpenGLGraphicDeviceWin32::SetSmoothLinesStatus(const Bool p_Enabled)
+	{
+		m_SmoothLinesStatus = p_Enabled;
+
+		if (p_Enabled)
+		{
+			glEnable(GL_LINE_SMOOTH);
+		}
+		else
+		{
+			glDisable(GL_LINE_SMOOTH);
+		}
+	}
+
+	Bool OpenGLGraphicDeviceWin32::GetDepthTestStatus()
+	{
+		return m_DepthTestStatus;
+	}
+
+	Bool OpenGLGraphicDeviceWin32::GetTexturingStatus()
+	{
+		return m_TextuingStatus;
+	}
+
+	Bool OpenGLGraphicDeviceWin32::GetBlendingStatus()
+	{
+		return m_BlendingStatus;
+	}
+
+	Bool OpenGLGraphicDeviceWin32::GetMultisamplingStatus()
+	{
+		return m_MultisamplingStatus;
+	}
+
+	Bool OpenGLGraphicDeviceWin32::GetFaceCullingStatus()
+	{
+		return m_FaceCullingStatus;
+	}
+
+	GraphicDevice::eCulling OpenGLGraphicDeviceWin32::GetFaceCullingMode()
+	{
+		return m_FaceCullingMode;
+	}
+
+	Bool OpenGLGraphicDeviceWin32::GetSmoothLinesStatus()
+	{
+		return m_SmoothLinesStatus;
+	}
+
+
+
+	/*void OpenGLGraphicDeviceWin32::EnableDepthTest( )
 	{
 		glEnable( GL_DEPTH_TEST );
 	}
@@ -308,6 +470,7 @@ namespace Bit
 	{
 		glDisable( GL_LINE_SMOOTH );
 	}
+	*/
 
 	Framebuffer * OpenGLGraphicDeviceWin32::CreateFramebuffer( ) const
 	{
@@ -581,6 +744,7 @@ namespace Bit
 			"uniform int uLightCount;\n"
 			"uniform vec3 uLightColors[" + maxLightCountString + "];\n"
 			"uniform vec3 uAmbientColor;\n"
+			"uniform vec4 uDiffuseColor;\n"
 
 			"uniform mat4 uModelViewMatrix;\n"
 			
@@ -616,7 +780,7 @@ namespace Bit
 			"	}\n"
 
 			// Create diffuse color
-			"	vec4 diffuse = vec4( 0.0, 0.0f, 0.0f, 1.0 );\n"
+			"	vec4 diffuse = uDiffuseColor;\n"
 
 			// Go throguh all the light sources
 			"	if( uUseNormals == 1 )\n"
