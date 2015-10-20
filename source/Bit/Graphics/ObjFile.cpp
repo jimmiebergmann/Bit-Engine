@@ -463,7 +463,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ) );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::LoadFromFile] Can not open the file. " << std::endl;
+			std::cout << "[ObjFile::LoadFromFile] Can not open the file. " << std::endl;
 			return false;
 		}
 
