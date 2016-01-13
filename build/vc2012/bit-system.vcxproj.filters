@@ -85,6 +85,10 @@
     <ClInclude Include="..\..\include\Bit\System\MemoryPool.hpp" />
     <ClInclude Include="..\..\include\Bit\System\String.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Path.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Log.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Private\DefaultLogHandle.hpp">
+      <Filter>Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -162,6 +166,10 @@
     </ClCompile>
     <ClCompile Include="..\..\source\Bit\System\String.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Path.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Log.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Private\DefaultLogHandle.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">
@@ -181,6 +189,9 @@
     </Filter>
     <Filter Include="Phys2\Private">
       <UniqueIdentifier>{48655f83-82a2-4d9e-b226-bcaeeae0c81f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private">
+      <UniqueIdentifier>{185b079a-3045-4968-ba71-4149cb158735}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
