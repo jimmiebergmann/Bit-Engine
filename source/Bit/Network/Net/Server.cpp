@@ -512,6 +512,7 @@ namespace Bit
 							{
 								// Send unrealiable message.
 								it->second->SendReliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true);
+								//std::cout << "Sending entity update to " << it->second->m_UserId << std::endl;
 							}
 						}
 

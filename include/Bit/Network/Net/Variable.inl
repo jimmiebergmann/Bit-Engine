@@ -43,11 +43,13 @@ void Variable<T>::Set( const T & p_Value )
 {
 	// Set the variable.
 	m_Mutex.Lock( );
+	Bool isNewValue = m_Value != p_Value;
 	m_Value = p_Value;
 	m_Mutex.Unlock( );
 
 	// Call the on variable function for the entity changer
-	if (m_pParent &&
+	if (/*isNewValue &&*/
+		m_pParent &&
 		m_pParent->m_pEntityManager &&
 		m_pParent->m_pEntityManager->m_pEntityChanger)
 	{
@@ -144,11 +146,15 @@ void InterpolatedVariable<T>::Set(const T & p_Value)
 	{
 		// Set the variable.
 		m_Mutex.Lock();
+		Bool isNewValue = m_LastValue != p_Value;
 		m_LastValue = p_Value;
 		m_NewValue = true;
 		m_Mutex.Unlock();
 
-		m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange(m_pParent, this);
+		//if (isNewValue)
+		{
+			m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange(m_pParent, this);
+		}
 	}
 }
 
