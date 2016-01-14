@@ -38,6 +38,7 @@ namespace Bit
 	static LogHandle &					g_CurrentLogHandle = g_DefaultLogHandle;
 	static Log::eType					g_CurrentMessageType;
 	static std::stringstream			g_MessageStream;
+	static Bool							g_IsSystemMessage = false;
 
 
 	// Log class
@@ -51,13 +52,25 @@ namespace Bit
 		return g_DefaultLogHandle;
 	}
 
-	LogManager & Log::Start(const Log::eType p_Type)
+	LogManager & Log::New(const Log::eType p_Type)
 	{
 		// Post the old message data.
 		Post();
 
 		// Set the new type
 		g_CurrentMessageType = p_Type;
+
+		return g_LogManagerInstance;
+	}
+
+	LogManager & Log::NewSys(const Log::eType p_Type)
+	{
+		// Post the old message data.
+		Post();
+
+		// Set the new type
+		g_CurrentMessageType = p_Type;
+		g_IsSystemMessage = true;
 
 		return g_LogManagerInstance;
 	}
@@ -78,26 +91,27 @@ namespace Bit
 		}
 
 		// Fire the OnMessage function for the handle.
-		g_CurrentLogHandle.OnMessage(g_MessageStream.str(), g_CurrentMessageType);
+		g_CurrentLogHandle.OnMessage(g_MessageStream.str(), g_CurrentMessageType, g_IsSystemMessage);
 
 		// Also fire the On[eType] function for the handle.
 		switch (g_CurrentMessageType)
 		{
 		case Log::Info:
-			g_CurrentLogHandle.OnInfo(g_MessageStream.str());
+			g_CurrentLogHandle.OnInfo(g_MessageStream.str(), g_IsSystemMessage);
 			break;
 		case Log::Warning:
-			g_CurrentLogHandle.OnWarning(g_MessageStream.str());
+			g_CurrentLogHandle.OnWarning(g_MessageStream.str(), g_IsSystemMessage);
 			break;
 		case Log::Error:
-			g_CurrentLogHandle.OnError(g_MessageStream.str());
+			g_CurrentLogHandle.OnError(g_MessageStream.str(), g_IsSystemMessage);
 			break;
 		default:
 			break;
 		};
 
-		// Reset the type to info
+		// Reset to default flags.
 		g_CurrentMessageType = Log::Info;
+		g_IsSystemMessage = false;
 
 		// Clear the message
 		Clear();
@@ -139,6 +153,9 @@ namespace Bit
 		case Log::End:
 			Log::Post();
 			break;
+		case Log::System:
+			g_IsSystemMessage = true;
+			break;
 		default:
 			break;
 		};
@@ -168,19 +185,19 @@ namespace Bit
 
 
 	// Log handle class
-	void LogHandle::OnMessage(const std::string & p_Message, const Log::eType p_Type)
+	void LogHandle::OnMessage(const std::string & p_Message, const Log::eType p_Type, const Bool p_IsSystemMessage)
 	{
 	}
 
-	void LogHandle::OnInfo(const std::string & p_Message)
+	void LogHandle::OnInfo(const std::string & p_Message, const Bool p_IsSystemMessage)
 	{
 	}
 
-	void LogHandle::OnWarning(const std::string & p_Message)
+	void LogHandle::OnWarning(const std::string & p_Message, const Bool p_IsSystemMessage)
 	{
 	}
 
-	void LogHandle::OnError(const std::string & p_Message)
+	void LogHandle::OnError(const std::string & p_Message, const Bool p_IsSystemMessage)
 	{
 	}
 

@@ -32,18 +32,30 @@ namespace Bit
 	namespace Private
 	{
 
-		void DefaultLogHandle::OnInfo(const std::string & p_Message)
+		void DefaultLogHandle::OnInfo(const std::string & p_Message, const Bool p_IsSystemMessage)
 		{
+			if (p_IsSystemMessage)
+			{
+				std::cout << "System: ";
+			}
 			std::cout << "Info: " << p_Message << std::endl;
 		}
 
-		void DefaultLogHandle::OnWarning(const std::string & p_Message)
+		void DefaultLogHandle::OnWarning(const std::string & p_Message, const Bool p_IsSystemMessage)
 		{
+			if (p_IsSystemMessage)
+			{
+				std::cout << "System: ";
+			}
 			std::cout << "Warning: " << p_Message << std::endl;
 		}
 
-		void DefaultLogHandle::OnError(const std::string & p_Message)
+		void DefaultLogHandle::OnError(const std::string & p_Message, const Bool p_IsSystemMessage)
 		{
+			if (p_IsSystemMessage)
+			{
+				std::cout << "System: ";
+			}
 			std::cout << "Error: " << p_Message << std::endl;
 		}
 

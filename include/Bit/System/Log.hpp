@@ -34,23 +34,23 @@ namespace Bit
 	/*
 	Example 1:
 	--------------------------------------------------------------------------------------
-	Bit::Log::Start() << "This is an info message!" << Bit::Log::End;
+	Bit::Log::New() << "This is an info message!" << Bit::Log::End;
 	--------------------------------------------------------------------------------------
 	
 	Example 2:
 	--------------------------------------------------------------------------------------
-		Bit::Log::Start() << Bit::Log::Error << "This is an error message!" << Bit::Log::End();
+		Bit::Log::New() << Bit::Log::Error << "This is an error message!" << Bit::Log::End();
 	--------------------------------------------------------------------------------------
 
 	Example 3:
 	--------------------------------------------------------------------------------------
-		Bit::Log::Start(Bit::Log::Error) << "This is an error message!" << Bit::Log::End();
+		Bit::Log::New(Bit::Log::Error) << "This is an error message!" << Bit::Log::End();
 	--------------------------------------------------------------------------------------
 
 	Example 4:
 	--------------------------------------------------------------------------------------
 		Bit::Log::SetHandle(MyCustomLogHandle);
-		Bit::Log::Start(Bit::Log::Warning);
+		Bit::Log::New(Bit::Log::Warning);
 		Bit::Log::Get() << "Warning message!";
 		Bit::Log::Post();
 	--------------------------------------------------------------------------------------
@@ -96,6 +96,7 @@ namespace Bit
 		enum eFunction
 		{
 			End,	///< used for posting messages.
+			System	///< Used for setting system message flag.
 		};
 
 		// Static functions
@@ -118,7 +119,16 @@ namespace Bit
 		///			Also, you will get the reference to the log manager.
 		///
 		////////////////////////////////////////////////////////////////
-		static LogManager & Start(const Log::eType p_Type = Log::Info);
+		static LogManager & New(const Log::eType p_Type = Log::Info);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief	Start a new SYSTEM message, this function makes sure to post any old message.
+		///			You can also specify the type of the message.
+		///			Also, you will get the reference to the log manager.
+		///			Use this function instead of the function New for system messages.
+		///
+		////////////////////////////////////////////////////////////////
+		static LogManager & NewSys(const Log::eType p_Type = Log::Info);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief	Get the log manager instance.
@@ -216,25 +226,25 @@ namespace Bit
 		/// \brief Virual function fired at any message posted.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void OnMessage(const std::string & p_Message, const Log::eType p_Type);
+		virtual void OnMessage(const std::string & p_Message, const Log::eType p_Type, const Bool p_IsSystemMessage);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Virual function fired at posted info messages.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void OnInfo(const std::string & p_Message);
+		virtual void OnInfo(const std::string & p_Message, const Bool p_IsSystemMessage);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Virual function fired at posted warning messages.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void OnWarning(const std::string & p_Message);
+		virtual void OnWarning(const std::string & p_Message, const Bool p_IsSystemMessage);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Virual function fired at posted error messages.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void OnError(const std::string & p_Message);
+		virtual void OnError(const std::string & p_Message, const Bool p_IsSystemMessage);
 
 	};
 
