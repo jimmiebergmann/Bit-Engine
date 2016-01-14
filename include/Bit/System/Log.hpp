@@ -34,33 +34,37 @@ namespace Bit
 	/*
 	Example 1:
 	--------------------------------------------------------------------------------------
-	Bit::Log::New() << "This is an info message!" << Bit::Log::End;
+	BitLog::New() << "This is an info message!" << Bit::Log::End;
 	--------------------------------------------------------------------------------------
 	
 	Example 2:
 	--------------------------------------------------------------------------------------
-		Bit::Log::New() << Bit::Log::Error << "This is an error message!" << Bit::Log::End();
+		BitLog::New() << Bit::Log::Error << "This is an error message!" << Bit::Log::End();
 	--------------------------------------------------------------------------------------
 
 	Example 3:
 	--------------------------------------------------------------------------------------
-		Bit::Log::New(Bit::Log::Error) << "This is an error message!" << Bit::Log::End();
+		BitLog::New(Bit::Log::Error) << "This is an error message!" << Bit::Log::End();
 	--------------------------------------------------------------------------------------
 
 	Example 4:
 	--------------------------------------------------------------------------------------
-		Bit::Log::SetHandle(MyCustomLogHandle);
-		Bit::Log::New(Bit::Log::Warning);
-		Bit::Log::Get() << "Warning message!";
-		Bit::Log::Post();
+		BitLog::SetHandle(MyCustomLogHandle);
+		BitLog::New(Bit::Log::Warning);
+		BitLog::Get() << "Warning message!";
+		BitLog::Post();
 	--------------------------------------------------------------------------------------
 	*/
+
+
+	// Macro for setting up log, line and function name from where the log message is done.
+	#define BitLog Bit::Log::SetMetaData(__FILE__, __LINE__, __FUNCTION__); Bit::Log
 
 
 	// Forward declarations
 	class LogHandle;
 	class LogManager;
-
+	struct LogMessage;
 
 	////////////////////////////////////////////////////////////////
 	/// \brief	Log static class, this class makes it much cleaner to post messages.
@@ -96,7 +100,8 @@ namespace Bit
 		enum eFunction
 		{
 			End,	///< used for posting messages.
-			System	///< Used for setting system message flag.
+			Engine,	///< Used for setting system message flag.
+			User	///< Used for setting system message flag.
 		};
 
 		// Static functions
@@ -122,13 +127,13 @@ namespace Bit
 		static LogManager & New(const Log::eType p_Type = Log::Info);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief	Start a new SYSTEM message, this function makes sure to post any old message.
+		/// \brief	Start a new Engine message, this function makes sure to post any old message.
 		///			You can also specify the type of the message.
 		///			Also, you will get the reference to the log manager.
 		///			Use this function instead of the function New for system messages.
 		///
 		////////////////////////////////////////////////////////////////
-		static LogManager & NewSys(const Log::eType p_Type = Log::Info);
+		static LogManager & NewEngine(const Log::eType p_Type = Log::Info);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief	Get the log manager instance.
@@ -153,6 +158,91 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		static eType GetType();
+
+		////////////////////////////////////////////////////////////////
+		/// \brief	Set meta for the log manager.
+		///
+		////////////////////////////////////////////////////////////////
+		static void SetMetaData(const std::string & p_File,
+								const Int32 p_Line,
+								const std::string & p_Function);
+
+	};
+
+
+	////////////////////////////////////////////////////////////////
+	/// \ingroup System
+	/// \brief Log message structure.
+	///
+	/// Used for delivering message data to the LogHandle class.
+	///
+	/// \See Log
+	///
+	////////////////////////////////////////////////////////////////
+	struct LogMessage
+	{
+		////////////////////////////////////////////////////////////////
+		/// \brief Default constructor.
+		///
+		////////////////////////////////////////////////////////////////
+		LogMessage();
+
+		// Public variables.
+		std::string		message;			///< Message data.
+		Log::eType		type;				///< Message type.
+		std::string		file;				///< From what file is the logging being done?
+		Int32			line;				///< At what line is the logging being done?
+		std::string		function;			///< In what file is the logging being done?
+		Bool			isEngineMessage;	///< Is this a system message?
+
+	};
+
+
+	////////////////////////////////////////////////////////////////
+	/// \ingroup System
+	/// \brief Log handleclass.
+	///
+	/// Create your own LogHandle and set it for the Log class, via the SetHandle function.
+	/// The virtual function OnMessage is being fired for all incoming messages.
+	/// The functions OnInfo/OnWarning/OnError are fired depending on the message type(Info by default).
+	///
+	/// \See Log
+	///
+	////////////////////////////////////////////////////////////////
+	class BIT_API LogHandle
+	{
+
+	public:
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Virtual estructor.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual ~LogHandle() { }
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Virual function fired at any message posted.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void OnMessage(const LogMessage & p_Message);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Virual function fired at posted info messages.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void OnInfo(const LogMessage & p_Message);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Virual function fired at posted warning messages.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void OnWarning(const LogMessage & p_Message);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Virual function fired at posted error messages.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void OnError(const LogMessage & p_Message);
 
 	};
 
@@ -199,55 +289,6 @@ namespace Bit
 
 	};
 	
-
-	////////////////////////////////////////////////////////////////
-	/// \ingroup System
-	/// \brief Log handleclass.
-	///
-	/// Create your own LogHandle and set it for the Log class, via the SetHandle function.
-	/// The virtual function OnMessage is being fired for all incoming messages.
-	/// The functions OnInfo/OnWarning/OnError are fired depending on the message type(Info by default).
-	///
-	/// \See Log
-	///
-	////////////////////////////////////////////////////////////////
-	class BIT_API LogHandle
-	{
-
-	public:
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Virtual estructor.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual ~LogHandle() { }
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Virual function fired at any message posted.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual void OnMessage(const std::string & p_Message, const Log::eType p_Type, const Bool p_IsSystemMessage);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Virual function fired at posted info messages.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual void OnInfo(const std::string & p_Message, const Bool p_IsSystemMessage);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Virual function fired at posted warning messages.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual void OnWarning(const std::string & p_Message, const Bool p_IsSystemMessage);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Virual function fired at posted error messages.
-		///
-		////////////////////////////////////////////////////////////////
-		virtual void OnError(const std::string & p_Message, const Bool p_IsSystemMessage);
-
-	};
-
 
 }
 

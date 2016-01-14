@@ -53,19 +53,19 @@ namespace Bit
 			/// \brief Virual function fired at posted info messages.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void OnInfo(const std::string & p_Message, const Bool p_IsSystemMessage);
+			virtual void OnInfo(const LogMessage & p_Message);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virual function fired at posted warning messages.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void OnWarning(const std::string & p_Message, const Bool p_IsSystemMessage);
+			virtual void OnWarning(const LogMessage & p_Message);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Virual function fired at posted error messages.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void OnError(const std::string & p_Message, const Bool p_IsSystemMessage);
+			virtual void OnError(const LogMessage & p_Message);
 
 		};
 

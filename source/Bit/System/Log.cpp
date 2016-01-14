@@ -36,9 +36,8 @@ namespace Bit
 	static LogManager					g_LogManagerInstance;
 	static Private::DefaultLogHandle	g_DefaultLogHandle;
 	static LogHandle &					g_CurrentLogHandle = g_DefaultLogHandle;
-	static Log::eType					g_CurrentMessageType;
+	static LogMessage					g_LogMessage;
 	static std::stringstream			g_MessageStream;
-	static Bool							g_IsSystemMessage = false;
 
 
 	// Log class
@@ -58,19 +57,19 @@ namespace Bit
 		Post();
 
 		// Set the new type
-		g_CurrentMessageType = p_Type;
+		g_LogMessage.type = p_Type;
 
 		return g_LogManagerInstance;
 	}
 
-	LogManager & Log::NewSys(const Log::eType p_Type)
+	LogManager & Log::NewEngine(const Log::eType p_Type)
 	{
 		// Post the old message data.
 		Post();
 
 		// Set the new type
-		g_CurrentMessageType = p_Type;
-		g_IsSystemMessage = true;
+		g_LogMessage.type = p_Type;
+		g_LogMessage.isEngineMessage = true;
 
 		return g_LogManagerInstance;
 	}
@@ -90,28 +89,34 @@ namespace Bit
 			return g_LogManagerInstance;
 		}
 
+		// Set the log message data
+		g_LogMessage.message = g_MessageStream.str();
+
 		// Fire the OnMessage function for the handle.
-		g_CurrentLogHandle.OnMessage(g_MessageStream.str(), g_CurrentMessageType, g_IsSystemMessage);
+		g_CurrentLogHandle.OnMessage(g_LogMessage);
 
 		// Also fire the On[eType] function for the handle.
-		switch (g_CurrentMessageType)
+		switch (g_LogMessage.type)
 		{
 		case Log::Info:
-			g_CurrentLogHandle.OnInfo(g_MessageStream.str(), g_IsSystemMessage);
+			g_CurrentLogHandle.OnInfo(g_LogMessage);
 			break;
 		case Log::Warning:
-			g_CurrentLogHandle.OnWarning(g_MessageStream.str(), g_IsSystemMessage);
+			g_CurrentLogHandle.OnWarning(g_LogMessage);
 			break;
 		case Log::Error:
-			g_CurrentLogHandle.OnError(g_MessageStream.str(), g_IsSystemMessage);
+			g_CurrentLogHandle.OnError(g_LogMessage);
 			break;
 		default:
 			break;
 		};
 
 		// Reset to default flags.
-		g_CurrentMessageType = Log::Info;
-		g_IsSystemMessage = false;
+		g_LogMessage.type = Log::Info;
+		g_LogMessage.isEngineMessage = false;
+		g_LogMessage.file = "";
+		g_LogMessage.line = 0;
+		g_LogMessage.function = "";
 
 		// Clear the message
 		Clear();
@@ -131,7 +136,27 @@ namespace Bit
 	Log::eType Log::GetType()
 	{
 		// Return the log manager instance.
-		return g_CurrentMessageType;
+		return g_LogMessage.type;
+	}
+
+	void Log::SetMetaData(	const std::string & p_File,
+							const Int32 p_Line,
+							const std::string & p_Function)
+	{
+		g_LogMessage.file = p_File;
+		g_LogMessage.line = p_Line;
+		g_LogMessage.function = p_Function;
+	}
+
+	// Log message structure
+	LogMessage::LogMessage() :
+		message(""),
+		type(Log::Info),
+		file(""),
+		line(0),
+		function(""),
+		isEngineMessage(false)
+	{
 	}
 
 
@@ -139,7 +164,7 @@ namespace Bit
 	LogManager & LogManager::operator << (const Log::eType & p_Type)
 	{
 		// Set the message type
-		g_CurrentMessageType = p_Type;
+		g_LogMessage.type = p_Type;
 
 		// Return the log manager instance.
 		return g_LogManagerInstance;
@@ -153,8 +178,11 @@ namespace Bit
 		case Log::End:
 			Log::Post();
 			break;
-		case Log::System:
-			g_IsSystemMessage = true;
+		case Log::Engine:
+			g_LogMessage.isEngineMessage = true;
+			break;
+		case Log::User:
+			g_LogMessage.isEngineMessage = false;
 			break;
 		default:
 			break;
@@ -185,19 +213,19 @@ namespace Bit
 
 
 	// Log handle class
-	void LogHandle::OnMessage(const std::string & p_Message, const Log::eType p_Type, const Bool p_IsSystemMessage)
+	void LogHandle::OnMessage(const LogMessage & p_Message)
 	{
 	}
 
-	void LogHandle::OnInfo(const std::string & p_Message, const Bool p_IsSystemMessage)
+	void LogHandle::OnInfo(const LogMessage & p_Message)
 	{
 	}
 
-	void LogHandle::OnWarning(const std::string & p_Message, const Bool p_IsSystemMessage)
+	void LogHandle::OnWarning(const LogMessage & p_Message)
 	{
 	}
 
-	void LogHandle::OnError(const std::string & p_Message, const Bool p_IsSystemMessage)
+	void LogHandle::OnError(const LogMessage & p_Message)
 	{
 	}
 

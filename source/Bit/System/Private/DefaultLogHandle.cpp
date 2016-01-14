@@ -32,31 +32,61 @@ namespace Bit
 	namespace Private
 	{
 
-		void DefaultLogHandle::OnInfo(const std::string & p_Message, const Bool p_IsSystemMessage)
+		void DefaultLogHandle::OnInfo(const LogMessage & p_Message)
 		{
-			if (p_IsSystemMessage)
+			if (p_Message.isEngineMessage)
 			{
-				std::cout << "System: ";
+				std::cout << "Engine: ";
 			}
-			std::cout << "Info: " << p_Message << std::endl;
+			else
+			{
+				std::cout << "User: ";
+			}
+
+			if (p_Message.function.size())
+			{
+				std::cout << p_Message.function << "(" << p_Message.line << "): ";
+			}
+
+			std::cout << "Info: " << p_Message.message << std::endl;
 		}
 
-		void DefaultLogHandle::OnWarning(const std::string & p_Message, const Bool p_IsSystemMessage)
+		void DefaultLogHandle::OnWarning(const LogMessage & p_Message)
 		{
-			if (p_IsSystemMessage)
+			if (p_Message.isEngineMessage)
 			{
-				std::cout << "System: ";
+				std::cout << "Engine: ";
 			}
-			std::cout << "Warning: " << p_Message << std::endl;
+			else
+			{
+				std::cout << "User: ";
+			}
+
+			if (p_Message.function.size())
+			{
+				std::cout << p_Message.function << "(" << p_Message.line << "): ";
+			}
+
+			std::cout << "Warning: " << p_Message.message << std::endl;
 		}
 
-		void DefaultLogHandle::OnError(const std::string & p_Message, const Bool p_IsSystemMessage)
+		void DefaultLogHandle::OnError(const LogMessage & p_Message)
 		{
-			if (p_IsSystemMessage)
+			if (p_Message.isEngineMessage)
 			{
-				std::cout << "System: ";
+				std::cout << "Engine: ";
 			}
-			std::cout << "Error: " << p_Message << std::endl;
+			else
+			{
+				std::cout << "User: ";
+			}
+
+			if (p_Message.function.size())
+			{
+				std::cout << p_Message.function << "(" << p_Message.line << "): ";
+			}
+
+			std::cout << "Error: " << p_Message.message << std::endl;
 		}
 
 	}
