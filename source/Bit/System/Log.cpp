@@ -35,7 +35,7 @@ namespace Bit
 	// Static variables
 	static LogManager					g_LogManagerInstance;
 	static Private::DefaultLogHandle	g_DefaultLogHandle;
-	static LogHandle &					g_CurrentLogHandle = g_DefaultLogHandle;
+	static LogHandle *					g_CurrentLogHandle = &g_DefaultLogHandle;
 	static LogMessage					g_LogMessage;
 	static std::stringstream			g_MessageStream;
 
@@ -43,7 +43,7 @@ namespace Bit
 	// Log class
 	void Log::SetHandle(LogHandle & p_Handle)
 	{
-		g_CurrentLogHandle = g_DefaultLogHandle;
+		g_CurrentLogHandle = &p_Handle;
 	}
 
 	LogHandle & Log::GetDefaultHandle()
@@ -93,19 +93,19 @@ namespace Bit
 		g_LogMessage.message = g_MessageStream.str();
 
 		// Fire the OnMessage function for the handle.
-		g_CurrentLogHandle.OnMessage(g_LogMessage);
+		g_CurrentLogHandle->OnMessage(g_LogMessage);
 
 		// Also fire the On[eType] function for the handle.
 		switch (g_LogMessage.type)
 		{
 		case Log::Info:
-			g_CurrentLogHandle.OnInfo(g_LogMessage);
+			g_CurrentLogHandle->OnInfo(g_LogMessage);
 			break;
 		case Log::Warning:
-			g_CurrentLogHandle.OnWarning(g_LogMessage);
+			g_CurrentLogHandle->OnWarning(g_LogMessage);
 			break;
 		case Log::Error:
-			g_CurrentLogHandle.OnError(g_LogMessage);
+			g_CurrentLogHandle->OnError(g_LogMessage);
 			break;
 		default:
 			break;
