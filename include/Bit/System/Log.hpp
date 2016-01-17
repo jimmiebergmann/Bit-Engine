@@ -26,6 +26,7 @@
 #define BIT_SYSTEM_LOG_HPP
 
 #include <Bit/Build.hpp>
+#include <Bit/System/Timestamp.hpp>
 #include <string>
 
 namespace Bit
@@ -188,6 +189,7 @@ namespace Bit
 		LogMessage();
 
 		// Public variables.
+		Timestamp		timestamp;			///< Timestamp of the message.
 		std::string		message;			///< Message data.
 		Log::eType		type;				///< Message type.
 		std::string		file;				///< From what file is the logging being done?

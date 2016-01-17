@@ -61,6 +61,7 @@
     <ClInclude Include="..\..\include\Bit\System\ThreadValue.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Time.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Timestamp.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Timestep.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
@@ -109,6 +110,7 @@
     <ClCompile Include="..\..\source\Bit\System\String.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Time.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Timestamp.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Timestep.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Version.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Win32\KeyboardWin32.cpp" />

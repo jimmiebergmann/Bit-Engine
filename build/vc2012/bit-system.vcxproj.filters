@@ -89,6 +89,7 @@
     <ClInclude Include="..\..\include\Bit\System\Private\DefaultLogHandle.hpp">
       <Filter>Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\System\Timestamp.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\Bit\System\Math.inl" />
@@ -170,6 +171,7 @@
     <ClCompile Include="..\..\source\Bit\System\Private\DefaultLogHandle.cpp">
       <Filter>Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\System\Timestamp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">

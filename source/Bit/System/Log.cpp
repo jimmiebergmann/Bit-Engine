@@ -89,8 +89,12 @@ namespace Bit
 			return g_LogManagerInstance;
 		}
 
+
 		// Set the log message data
 		g_LogMessage.message = g_MessageStream.str();
+
+		// Set the timestamp
+		g_LogMessage.timestamp = Timestamp::Now();
 
 		// Fire the OnMessage function for the handle.
 		g_CurrentLogHandle->OnMessage(g_LogMessage);
