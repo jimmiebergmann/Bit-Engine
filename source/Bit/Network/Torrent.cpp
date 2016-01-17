@@ -29,7 +29,7 @@
 #include <Bit/System/Randomizer.hpp>
 #include <Bit/Network/Http.hpp>
 #include <Bit/Network/Socket.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -152,7 +152,7 @@ namespace Bit
 		// Send and receive the request
 		if( http.SendRequest( request, response, Bit::Address( m_Url.GetDomain( ))) == false )
 		{
-			std::cout << "Failed to send request." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Failed to send request." << Log::End;
 			return false;
 		}
 
@@ -173,7 +173,7 @@ namespace Bit
 		Bencode::Value beRoot;
 		if( beReader.Parse( response.GetBody( ), beRoot ) == false )
 		{
-			std::cout << "Failed to parse the response." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Failed to parse the response." << Log::End;
 			return false;
 		}
 
@@ -301,7 +301,7 @@ namespace Bit
 
 		if( beReader.ParseFromFile( p_Filename, beRoot ) == false )
 		{
-			std::cerr << "Could not parse the torrent file." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Could not parse the torrent file." << Log::End;
 			return false;
 		}
 
@@ -359,7 +359,7 @@ namespace Bit
 		// Make sure that the torrent ifo is a dictionary.
 		if( beInfo.GetType( ) != Bencode::Value::Dictionary )
 		{
-			std::cerr << "Could not get the info field" << std::endl;
+			BitLog::NewEngine(Log::Error) << "Could not get the info field" << Log::End;
 			return false;
 		}
 
@@ -367,7 +367,7 @@ namespace Bit
 		Int32 pieceSize = beInfo.Get( "piece length", 0 ).AsInt( );
 		if( pieceSize <= 0 )
 		{
-			std::cerr << "Could get the piece size." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Could get the piece size." << Log::End;
 			return false;
 		}
 		m_PieceSize = pieceSize;
@@ -378,14 +378,14 @@ namespace Bit
 		// Check if there's any data
 		if( pieceData.size( ) == 0  )
 		{
-			std::cerr << "Could get the piece data." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Could get the piece data." << Log::End;
 			return false;
 		}
 
 		// Error check the size
 		if( pieceData.size( ) % 20 != 0  )
 		{
-			std::cerr << "Error in piece data." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Error in piece data." << Log::End;
 			return false;
 		}
 
@@ -422,13 +422,13 @@ namespace Bit
 				// Error check the file variables
 				if( path.size( ) == 0 )
 				{
-					std::cerr << "Error in multifile path." << std::endl;
+					BitLog::NewEngine(Log::Error) << "Error in multifile path." << Log::End;
 					return false;
 				}
 
 				if( length <= 0 )
 				{
-					std::cerr << "Error in multifile length." << std::endl;
+					BitLog::NewEngine(Log::Error) << "Error in multifile length." << Log::End;
 					return false;
 				}
 
@@ -447,13 +447,13 @@ namespace Bit
 			// Error check the file variables
 			if( filename.size( ) == 0 )
 			{
-				std::cerr << "Error in single file name." << std::endl;
+				BitLog::NewEngine(Log::Error) << "Error in single file name." << Log::End;
 				return false;
 			}
 
 			if( length <= 0 )
 			{
-				std::cerr << "Error in single file length." << std::endl;
+				BitLog::NewEngine(Log::Error) << "Error in single file length." << Log::End;
 				return false;
 			}
 
@@ -468,7 +468,7 @@ namespace Bit
 
 		if( beWriter.Write( infoString, beInfo ) == false )
 		{
-			std::cerr << "Could not get the info dictionary string." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Could not get the info dictionary string." << Log::End;
 			return false;
 		}
 

@@ -24,7 +24,7 @@
 
 #include <Bit/Graphics/OpenGL/OpenGLFramebuffer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLRenderbuffer.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -99,7 +99,7 @@ namespace Bit
 			// FIX THIS ERROR CHECK!
 			if( m_ColorAttachmentCount > 15 )
 			{
-				std::cout << "[OpenGLFramebuffer::Attach(Texture)] Attached too many color attachments.\n";
+				BitLog::NewEngine(Log::Error) << "Attached too many color attachments." << Log::End;
 				return false;
 			}
 
@@ -111,7 +111,7 @@ namespace Bit
 		{
 			if( m_DepthAttached )
 			{
-				std::cout << "[OpenGLFramebuffer::Attach(Texture)] Attached too many depth/stencil attachments.\n";
+				BitLog::NewEngine(Log::Error) << "Attached too many depth/stencil attachments." << Log::End;
 				return false;
 			}
 
@@ -138,7 +138,7 @@ namespace Bit
 		{
 			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
-			std::cout << "[OpenGLFramebuffer::Attach(Texture)] Framebuffer error.\n";
+			BitLog::NewEngine(Log::Error) << "Framebuffer error." << Log::End;
 			return false;
 		}
 
@@ -166,7 +166,7 @@ namespace Bit
 			// FIX THIS ERROR CHECK!
 			if( m_ColorAttachmentCount > 15 )
 			{
-				std::cout << "[OpenGLFramebuffer::Attach(Renderbuffer)] Attached too many color attachments.\n";
+				BitLog::NewEngine(Log::Error) << "Attached too many color attachments." << Log::End;
 				return false;
 			}
 
@@ -178,7 +178,7 @@ namespace Bit
 		{
 			if( m_DepthAttached )
 			{
-				std::cout << "[OpenGLFramebuffer::Attach(Renderbuffer)] Attached too many depth/stencil attachments.\n";
+				BitLog::NewEngine(Log::Error) << "Attached too many depth/stencil attachments." << Log::End;
 				return false;
 			}
 
@@ -204,7 +204,7 @@ namespace Bit
 		{
 			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
-			std::cout << "[OpenGLFramebuffer::Attach(Renderbuffer)] Framebuffer error.\n";
+			BitLog::NewEngine(Log::Error) << "Framebuffer error." << Log::End;
 			return false;
 		}
 

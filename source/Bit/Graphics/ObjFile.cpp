@@ -25,7 +25,6 @@
 #include <Bit/Graphics/ObjFile.hpp>
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -463,7 +462,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ) );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[ObjFile::LoadFromFile] Can not open the file. " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
 			return false;
 		}
 
@@ -704,7 +703,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::SaveToFile] Can not open the file. " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
 			return false;
 		}
 

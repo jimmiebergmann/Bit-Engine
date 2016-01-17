@@ -26,7 +26,7 @@
 #include <Bit/System/Json/Reader.hpp>
 #include <Bit/Network/Http.hpp>
 #include <Bit/Network/Url.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -105,12 +105,12 @@ namespace Bit
 			// Error check the fields
 			if (p_Fields.find("name") == p_Fields.end())
 			{
-				std::cout << "[Bit::ServerList::Add] Can not find the field \"name\"" << std::endl;
+				BitLog::NewEngine(Log::Error) << "Can not find the field \"name\"" << Log::End;
 				return Json::Value::NullValue;
 			}
 			if (p_Fields.find("port") == p_Fields.end())
 			{
-				std::cout << "[Bit::ServerList::Add] Can not find the field \"port\"" << std::endl;
+				BitLog::NewEngine(Log::Error) << "Can not find the field \"port\"" << Log::End;
 				return Json::Value::NullValue;
 			}
 

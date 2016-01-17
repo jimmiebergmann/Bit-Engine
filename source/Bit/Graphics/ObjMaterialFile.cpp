@@ -25,7 +25,7 @@
 #include <Bit/Graphics/ObjMaterialFile.hpp>
 #include <fstream>
 #include <sstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <algorithm>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -446,7 +446,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ) );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[ObjMaterialFile::LoadFromFile] Can not open the file. " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
 			return false;
 		}
 
@@ -496,7 +496,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			std::cout << "[ObjMaterialFile::SaveToFile] Can not open the file. " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
 			return false;
 		}
 

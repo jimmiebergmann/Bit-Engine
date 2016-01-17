@@ -29,12 +29,12 @@
 #include <Bit/Network/Net/Variable.hpp>
 #include <Bit/Network/Net/Entity.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
+#include <Bit/System/Log.hpp>
 #include <string>
 #include <vector> 
 #include <map>
 #include <set>
 #include <typeinfo>
-#include <iostream>
 
 namespace Bit
 {

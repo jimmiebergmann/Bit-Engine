@@ -26,7 +26,7 @@
 #include <Bit/Graphics/LodePng/lodepng.h>
 #include <fstream>
 #include <sstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -62,7 +62,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[PngFile::LoadFromFile] Can not open the file. " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
 			return false;
 		}
 
@@ -112,7 +112,7 @@ namespace Bit
 	{
 		if( m_pData == NULL || m_DataSize == 0 )
 		{
-			std::cout << "[PngFile::SaveToStream] No image data." << std::endl;
+			BitLog::NewEngine(Log::Error) << "No image data." << Log::End;
 			return false;
 		}
 
@@ -150,7 +150,7 @@ namespace Bit
 		// Error check the loading
 		if( status || dataVector.size( ) == 0 )
 		{
-			std::cout << "[PngFile::SaveToStream] Failed to decode image: " << lodepng_error_text( status ) << std::endl;
+			BitLog::NewEngine(Log::Error) << "Failed to decode image: " << lodepng_error_text( status ) << Log::End;
 			return false;
 		}
 
@@ -176,7 +176,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			std::cout << "[PngFile::SaveToFile] Can not open the file. " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
 			return false;
 		}
 
@@ -263,14 +263,14 @@ namespace Bit
 		// Error check the loading
 		if( status )
 		{
-			std::cout << "[PngFile::LoadFromByteArray] Failed to decode image: " << lodepng_error_text( status ) << std::endl;
+			BitLog::NewEngine(Log::Error) << "Failed to decode image: " << lodepng_error_text( status ) << Log::End;
 			return false;
 		}
 
 		// Error check the image size
 		if( width == 0 || height == 0 )
 		{
-			std::cout << "[PngFile::LoadFromByteArray] Image size is 0.\n";
+			BitLog::NewEngine(Log::Error) << "Image size is 0." << Log::End;
 			return false;
 		}
 
@@ -283,14 +283,14 @@ namespace Bit
 			(	componentCount != 3 &&
 				componentCount != 4 ) )
 		{
-			std::cout << "[PngFile::LoadFromByteArray] Not a 24 or 32 bit image.\n";
+			BitLog::NewEngine(Log::Error) << "Not a 24 or 32 bit image." << Log::End;
 			return false;
 		}
 
 		// Error check the data vector size
 		if(	dataVector.size( ) != width * height * componentCount )
 		{
-			std::cout << "[PngFile::LoadFromByteArray] The data size is not right.\n";
+			BitLog::NewEngine(Log::Error) << "The data size is not right." << Log::End;
 			return false;
 		}
 

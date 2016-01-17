@@ -23,7 +23,6 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/OpenGL/OpenGLRenderbuffer.hpp>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

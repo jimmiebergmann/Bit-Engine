@@ -27,7 +27,7 @@
 #include <Bit/Audio/WaveFile.hpp>
 #include <algorithm>
 #include <fstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -87,7 +87,7 @@ namespace Bit
 			}
 			else
 			{
-				std::cout << "[OpenALSound::LoadFromBuffer] Mono frequence error.\n";
+				BitLog::NewEngine(Log::Error) << "Mono frequence error" << Log::End;
 				return false;
 			}
 		}
@@ -103,13 +103,13 @@ namespace Bit
 			}
 			else
 			{
-				std::cout << "[OpenALSound::LoadFromBuffer] Stereo frequence error.\n";
+				BitLog::NewEngine(Log::Error) << "Stereo frequence error." << Log::End;
 				return false;
 			}
 		}
 		else
 		{
-			std::cout << "[OpenALSound::LoadFromBuffer] Channel count error.\n";
+			BitLog::NewEngine(Log::Error) << "Channel count error." << Log::End;
 			return false;
 		}
 
@@ -170,12 +170,12 @@ namespace Bit
 		}
 		else if( fileExtension == "OGG" )
 		{
-			std::cout << "[AudioBuffer::LoadFromFile] Not supporting OGG images yet.\n";
+			BitLog::NewEngine(Log::Error) << "Not supporting OGG images yet." << Log::End;
 			return false;
 		}
 
 		// Unknown extension
-		std::cout << "[AudioBuffer::LoadFromFile] Unknow extension: " <<  fileExtension.c_str( ) << std::endl;
+		BitLog::NewEngine(Log::Error) << "Unknow extension: " <<  fileExtension.c_str( ) << Log::End;
 		return false;
 	}
 

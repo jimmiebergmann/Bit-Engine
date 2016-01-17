@@ -25,7 +25,7 @@
 #include <Bit/Network/Win32/TcpSocketWin32.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
 #include <Bit/System/Sleep.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -48,7 +48,7 @@ namespace Bit
 		// Create the socket
 		if ((m_Handle = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET)
 		{
-			std::cout << "[TcpSocketLinux::Connect] Can not create the socket. Error: " << GetLastError( ) << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not create the socket. Error: " << static_cast<Int32>(GetLastError()) << Log::End;
 			return false;
 		}
 
@@ -61,26 +61,19 @@ namespace Bit
 			service.sin_addr.s_addr = htonl(INADDR_ANY);
 			service.sin_port = htons(static_cast<u_short>(p_EndpointPort));
 
-			/*int reusable = 1;
-			if (setsockopt(m_Handle, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char *>(&reusable), sizeof(int)) != 0)
-			{
-				std::cout << "[TcpSocketWin32::Connect] Can not set reusable socket. Error: " << GetLastError() << std::endl;
-			}*/
-
-
 			const int optVal = 1;
 			const int optLen = sizeof(optVal);
 			int rtn = setsockopt(m_Handle, SOL_SOCKET, SO_REUSEADDR, (const char*)&optVal, optLen);
 			if( rtn != 0 )
 			{
-				std::cout << "[TcpSocketWin32::Connect] Can not set reusable socket. Error: " << GetLastError() << std::endl;
+				BitLog::NewEngine(Log::Error) << "Can not set reusable socket. Error: " << static_cast<Int32>(GetLastError()) << Log::End;
 				return false;
 			}
 
 			// Bind
 			if (bind(m_Handle, reinterpret_cast<const sockaddr *>(&service), sizeof(service)) == SOCKET_ERROR)
 			{
-				std::cout << "[TcpSocketWin32::Connect] Can not bind the socket. Error: " << GetLastError() << std::endl;
+				BitLog::NewEngine(Log::Error) << "Can not bind the socket. Error: " << static_cast<Int32>(GetLastError()) << Log::End;
 				return false;
 			}
 		}

@@ -23,7 +23,7 @@
 
 #include <Bit/Network/Win32/SocketWin32.hpp>
 #ifdef BIT_PLATFORM_WINDOWS
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -63,7 +63,7 @@ namespace Bit
 			int result = ioctlsocket( m_Handle, FIONBIO, &blocking);
 			if ( result != NO_ERROR )
 			{
-				std::cout << "[SocketWin32::SetBlocking] Failed to set blocking. Error: " << result << std::endl;
+				BitLog::NewEngine(Log::Error) << "Failed to set blocking. Error: " << result << Log::End;
 				return;
 			}
 
@@ -114,7 +114,7 @@ namespace Bit
 			WSADATA wsaData;
 			if( WSAStartup( MAKEWORD(2,2), &wsaData ) )
 			{
-				std::cout << "[Bit::WinsockInitializer] Failed to initialize winsock." << std::endl;
+				BitLog::NewEngine(Log::Error) << "Failed to initialize winsock." << Log::End;
 			}
 		}
 	};

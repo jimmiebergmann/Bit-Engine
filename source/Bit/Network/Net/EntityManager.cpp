@@ -25,7 +25,7 @@
 #include <Bit/Network/Net/Client.hpp>
 #include <Bit/Network/Net/Server.hpp>
 #include <Bit/System/Vector2.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <set>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -125,7 +125,7 @@ namespace Bit
 			// Don't allow clients to create entities.
 			if (m_pClient != NULL)
 			{
-				std::cout << "Bit::EntityManager::CreateEntityByName: Clients can't create entities." << std::endl;
+				BitLog::NewEngine(Log::Error) << "Clients can't create entities." << Log::End;
 				return NULL;
 			}
 
@@ -249,7 +249,7 @@ namespace Bit
 				// Error check the block size, make sure there's enough data in the message.
 				if( entityBlockSize == 0 || entityBlockSize + dataPos > p_MessageSize )
 				{
-					std::cout << "Entity manager: Entity block size error: \"" << entityBlockSize << "\"\n";
+					BitLog::NewEngine(Log::Error) << "Entity block size error: \"" << entityBlockSize << "\"" << Log::End;
 					return false;
 				}
 
@@ -264,7 +264,7 @@ namespace Bit
 				{
 					// Move to the next entity
 					dataPos += entityBlockSize - 1 - entityNameLength;
-					std::cout << "Entity manager: Unknown entity: \"" << entityName << "\"\n";
+					BitLog::NewEngine(Log::Error) << "Unknown entity: \"" << entityName << "\"" << Log::End;
 
 					// Continue
 					continue;
@@ -293,7 +293,7 @@ namespace Bit
 					// Error check the block size, make sure there's enough data in the message.
 					if( variableBlockSize == 0 || variableBlockSize + dataPos > p_MessageSize )
 					{
-						std::cout << "Entity manager: Variable block size error: \"" << variableBlockSize << "\"\n";
+						BitLog::NewEngine(Log::Error) << "Variable block size error: \"" << variableBlockSize << "\"" << Log::End;
 
 						// Return false.
 						return false;
@@ -312,7 +312,7 @@ namespace Bit
 					{
 						// Move to the next entity
 						dataPos += variableBlockSize - 1 - variableNameLength;
-						std::cout << "Entity manager: Unknown entity variable(" << entityName << "): \"" << variableName << "\"\n";
+						BitLog::NewEngine(Log::Error) << "Unknown entity variable(" << entityName << "): \"" << variableName << "\"" << Log::End;
 
 						// Continue
 						continue;
@@ -352,7 +352,7 @@ namespace Bit
 
 							if (pNewEntity == false)
 							{
-								std::cout << "Entity manager: Cailed to create new entity \"" << entityName << "\" at id \"" << entityId << "\"\n";
+								BitLog::NewEngine(Log::Error) << "Cailed to create new entity \"" << entityName << "\" at id \"" << entityId << "\"" << Log::End;
 								return false;
 							}
 
@@ -360,7 +360,7 @@ namespace Bit
 							entityIt = m_Entities.find(entityId);
 							if (entityIt == m_Entities.end())
 							{
-								std::cout << "Entity manager: Failed to find new entity \"" << entityName << "\" at id \"" << entityId << "\"\n";
+								BitLog::NewEngine(Log::Error) << "Failed to find new entity \"" << entityName << "\" at id \"" << entityId << "\"" << Log::End;
 								return false;
 							}
 
@@ -403,7 +403,7 @@ namespace Bit
 						// Make sure that the values size is the same as the data
 						if( valueSize != dataSize )
 						{
-							std::cout << "Entity manager: Unknown size variable(" << entityName << ")(" << valueSize << "): \"" << dataSize << "\"\n";
+							BitLog::NewEngine(Log::Error) << "Unknown size variable(" << entityName << ")(" << valueSize << "): \"" << dataSize << "\"" << Log::End;
 							dataPos += dataSize;
 
 							// Continue
@@ -953,7 +953,7 @@ namespace Bit
 			EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Key );
 			if( it == m_EntityMetaDataMap.end( ) )
 			{
-				std::cout << "Bit::EntityManager::CreateEntityAtId: Can not find any entity called \"" << p_Key << "\" registred." << std::endl;
+				BitLog::NewEngine(Log::Error) << "Can not find any entity called \"" << p_Key << "\" registred." << Log::End;
 				return NULL;
 			}
 
@@ -961,7 +961,7 @@ namespace Bit
 			EntityMap::iterator it2 = m_Entities.find(p_Id);
 			if (it2 != m_Entities.end())
 			{
-				std::cout << "Bit::EntityManager::CreateEntityAtId: Id already in use." << std::endl;
+				BitLog::NewEngine(Log::Error) << "Id already in use." << Log::End;
 				return NULL;
 			}
 
@@ -1014,7 +1014,7 @@ namespace Bit
 			{
 				Entity * pEntity = *dit;
 
-				std::cout << "EntityManager::DeleteEntitiesInDeletionQueue: Clearing in delete queue : " << pEntity->GetId( ) << std::endl;
+				BitLog::NewEngine(Log::Error) << "Clearing in delete queue : " << pEntity->GetId( ) << Log::End;
 
 				// Remvoe the entity from the changed entity map.
 				// This is not the most efficient way of doing it, but we really have to do this.

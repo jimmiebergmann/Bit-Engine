@@ -23,7 +23,6 @@
 
 #include <Bit/Network/Net/UserMessageDecoder.hpp>
 #include <Bit/Network/Socket.hpp>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

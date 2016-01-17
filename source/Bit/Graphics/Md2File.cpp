@@ -25,7 +25,7 @@
 #include <Bit/Graphics/Md2File.hpp>
 #include <fstream>
 #include <sstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -271,7 +271,7 @@ namespace Bit
 		// Error check the stream size, make sure the header fits.
 		if( streamSize < sizeof( m_Header ) )
 		{
-			std::cout << "[Md2File::LoadFromStream] No valid header were found." << std::endl;
+			BitLog::NewEngine(Log::Error) << "No valid header were found." << Log::End;
 			return false;
 		}
 
@@ -281,29 +281,29 @@ namespace Bit
 		// Error check the data
 		if( m_Header.MagicNumber != 844121161 )
 		{
-			std::cout << "[Md2File::LoadFromStream] Wrong magic number: " << m_Header.MagicNumber << ". Expecting: 844121161 " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Wrong magic number: " << m_Header.MagicNumber << ". Expecting: 844121161." << Log::End;
 			return false;
 		}
 		if( m_Header.Version != 8 )
 		{
-			std::cout << "[Md2File::LoadFromStream] Wrong version: " << m_Header.Version << ". Expecting: 8 " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Wrong version: " << m_Header.Version << ". Expecting: 8 " << Log::End;
 			return false;
 		}
 		if( m_Header.TriangleCount <= 0 || m_Header.TriangleCount >= 65536 )
 		{
-			std::cout << "[Md2File::LoadFromStream] Triagnle count error: " << m_Header.TriangleCount << std::endl;
+			BitLog::NewEngine(Log::Error) << "Triagnle count error: " << m_Header.TriangleCount << Log::End;
 			return false;
 		}
 		if( m_Header.FrameCount <= 0 )
 		{
-			std::cout << "[Md2File::LoadFromStream] Frame count error: " << m_Header.FrameCount << std::endl;
+			BitLog::NewEngine(Log::Error) << "Frame count error: " << m_Header.FrameCount << Log::End;
 			return false;
 		}
 		if( m_Header.OffsetSkins > streamSize		|| m_Header.OffsetTexCoords > streamSize ||
 			m_Header.OffsetTriangles > streamSize	|| m_Header.OffsetFrames > streamSize ||
 			m_Header.OffsetOpenGLCmds > streamSize )
 		{
-			std::cout << "[Md2File::LoadFromStream] Offset error." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Offset error." << Log::End;
 			return false;
 		}
 
@@ -316,7 +316,7 @@ namespace Bit
 
 		if( totalMd2Data > streamSize )
 		{
-			std::cout << "[Md2File::LoadFromStream] Stream size is too small." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Stream size is too small." << Log::End;
 			return false;
 		}
 
@@ -424,7 +424,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::ifstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::LoadFromFile] Can not open the file. " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
 			return false;
 		}
 
@@ -474,7 +474,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::SaveToFile] Can not open the file. " << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
 			return false;
 		}
 

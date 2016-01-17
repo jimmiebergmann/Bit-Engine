@@ -25,7 +25,7 @@
 #include <Bit/Audio/OpenAL/OpenALAudioDevice.hpp>
 #include <Bit/Audio/OpenAL/OpenALSound.hpp>
 #include <Bit/Audio/OpenAL/OpenALSoundBuffer.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -57,14 +57,14 @@ namespace Bit
 		// Open the device
 		if( ( m_pDevice = alcOpenDevice( NULL )) == NULL )
 		{
-			std::cout << "[OpenALAudioDevice::Create] Can not open the device.\n";
+			BitLog::NewEngine(Log::Error) << "Can not open the device." << Log::End;
 			return false;
 		}
 
 		// Create the context
 		if( ( m_pContext = alcCreateContext( m_pDevice, NULL )) == NULL )
 		{
-			std::cout << "[OpenALAudioDevice::Create] Can not create the context.\n";
+			BitLog::NewEngine(Log::Error) << "Can not create the context." << Log::End;
 			return false;
 		}
 

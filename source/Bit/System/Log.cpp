@@ -214,6 +214,96 @@ namespace Bit
 		return g_LogManagerInstance;
 	}
 
+	LogManager & LogManager::operator << (const Int8 & p_Integer)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Integer;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Uint8 & p_Integer)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Integer;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Int16 & p_Integer)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Integer;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Uint16 & p_Integer)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Integer;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Int32 & p_Integer)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Integer;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Uint32 & p_Integer)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Integer;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Int64 & p_Integer)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Integer;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Uint64 & p_Integer)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Integer;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Float32 & p_Float)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Float;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Float64 & p_Float)
+	{
+		// Add string to the stream.
+		g_MessageStream << p_Float;
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
 
 
 	// Log handle class

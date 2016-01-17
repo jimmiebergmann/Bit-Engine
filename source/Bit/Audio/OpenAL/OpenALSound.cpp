@@ -26,7 +26,6 @@
 #include <Bit/Audio/OpenAL/OpenALSoundBuffer.hpp>
 #include <Bit/Audio/WaveFile.hpp>
 #include <algorithm>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

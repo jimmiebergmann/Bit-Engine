@@ -23,7 +23,6 @@
 
 #include <Bit/Network/Net/UserMessage.hpp>
 #include <Bit/Network/Net/Client.hpp>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

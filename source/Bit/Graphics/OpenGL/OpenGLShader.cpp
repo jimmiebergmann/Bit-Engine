@@ -26,7 +26,7 @@
 #include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
 #include <cstring>
 #include <fstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -94,14 +94,14 @@ namespace Bit
 		// Already compiled?
 		if( m_Compiled == true )
 		{
-			std::cout << "[OpenGLShader::Compile] The shader is already compiled.\n";
+			BitLog::NewEngine(Log::Error) << "The shader is already compiled." << Log::End;
 			return false;
 		}
 
 		// Make sure we have a shader source
 		if( p_Memory.length() == 0 )
 		{
-			std::cout << "[OpenGLShader::Compile] No shader source.\n";
+			BitLog::NewEngine(Log::Error) << "No shader source." << Log::End;
 			return false;
 		}
 
@@ -110,7 +110,7 @@ namespace Bit
 		// Might be a silly erorr check. But I'm doing it anyway.
 		if( pTextSource == NULL )
 		{
-			std::cout << "[OpenGLShader::Compile] Silly pointer error!";
+			BitLog::NewEngine(Log::Error) << "Silly pointer error!" << Log::End;
 			return false;
 		}
 
@@ -133,7 +133,7 @@ namespace Bit
 				// Get the error message
 				GLchar * pLog = new GLchar[ logLength ];
 				glGetShaderInfoLog( m_ShaderObject, logLength, &logLength, pLog );
-				std::cout << "[OpenGLShader::Compile] Shader compiler error:" << std::endl << pLog << std::endl;
+				BitLog::NewEngine(Log::Error) << "Shader compiler error:" << pLog << Log::End;
 				delete [ ] pLog;
 			}
 

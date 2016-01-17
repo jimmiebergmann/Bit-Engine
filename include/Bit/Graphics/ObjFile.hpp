@@ -27,7 +27,7 @@
 #include <Bit/System/Vector2.hpp>
 #include <string>
 #include <vector>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 
 // Win32 fix
 #if defined( BIT_PLATFORM_WINDOWS )

@@ -36,7 +36,7 @@
 #include <Bit/Graphics/Model/VertexAnimationTrack.hpp>
 #include <Bit/Graphics/Model/VertexKeyFrame.hpp>
 #include <sstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <algorithm>
 #include <Bit/System/Path.hpp>
 #include <Bit/System/ResourceManager.hpp>
@@ -122,22 +122,22 @@ namespace Bit
 		}
 		else if( fileExtension == "MD3" )
 		{
-			std::cout << "[Model::LoadFromFile] Not supporting MD3 models yet.\n";
+			BitLog::NewEngine(Log::Error) << "Not supporting MD3 models yet." << Log::End;
 			return false;
 		}
 		else if( fileExtension == "MD5" )
 		{
-			std::cout << "[Model::LoadFromFile] Not supporting MD5 models yet.\n";
+			BitLog::NewEngine(Log::Error) << "Not supporting MD5 models yet." << Log::End;
 			return false;
 		}
 		else if( fileExtension == "MDL" )
 		{
-			std::cout << "[Model::LoadFromFile] Not supporting MDL models yet.\n";
+			BitLog::NewEngine(Log::Error) << "Not supporting MDL models yet." << Log::End;
 			return false;
 		}
 
 		// Unknown extension
-		std::cout << "[Model::LoadFromFile] Unknow extension: " <<  fileExtension.c_str( ) << std::endl;
+		BitLog::NewEngine(Log::Error) << "Unknow model extension: " <<  fileExtension.c_str( ) << Log::End;
 		return false;
 	}
 
@@ -155,7 +155,7 @@ namespace Bit
 		ObjFile obj;
 		if( obj.LoadFromFile( p_Filename ) == false )
 		{
-			std::cout << "[Model::LoadFromObjFile] Failed to load OBJ file." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Failed to load OBJ file." << Log::End;
 			return false;
 		}
 
@@ -228,7 +228,7 @@ namespace Bit
 		}
 		else
 		{
-			std::cout << "[Model::LoadFromObjFile] Failed to open OBJ material file." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Failed to open OBJ material file." << Log::End;
 		}
 
 
@@ -257,7 +257,7 @@ namespace Bit
 					// Error check the position buffer data
 					if( pBufferData == NULL )
 					{
-						std::cout << "[Model::LoadFromObjFile] No postiion data were found in the obj file." << std::endl;
+						BitLog::NewEngine(Log::Error) << "No postiion data were found in the obj file." << Log::End;
 						return false;
 					}
 
@@ -265,7 +265,7 @@ namespace Bit
 					VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
 					if( pPositionVertexBuffer->Load( bufferSize * 4, pBufferData ) == false )
 					{
-						std::cout << "[Model::LoadFromObjFile] Can not load the vertex buffer" << std::endl;
+						BitLog::NewEngine(Log::Error) << "Can not load the vertex buffer" << Log::End;
 						return false;
 					}
 
@@ -278,7 +278,7 @@ namespace Bit
 					// Error check the vertex model vertex data
 					if( pModelVertexData == NULL )
 					{
-						std::cout << "[Model::LoadFromObjFile] Can not add vertex data to model vertex group." << std::endl;
+						BitLog::NewEngine(Log::Error) << "Can not add vertex data to model vertex group." << Log::End;
 						return false;
 					}
 		
@@ -371,7 +371,7 @@ namespace Bit
 		Md2File md2;
 		if( md2.LoadFromFile( p_Filename ) == false )
 		{
-			std::cout << "[Model::LoadFromMd2File] Failed to load MD2 file." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Failed to load MD2 file." << Log::End;
 			return false;
 		}
 
@@ -399,7 +399,7 @@ namespace Bit
 		// Get the first frame
 		if( md2.GetFrameCount( ) == 0 )
 		{
-			std::cout << "[Model::LoadFromMd2File] No frames were found." << std::endl;
+			BitLog::NewEngine(Log::Error) << "No frames were found." << Log::End;
 			return false;
 		}
 
@@ -410,7 +410,7 @@ namespace Bit
 							p_LoadTangents,
 							p_LoadBinormals) == false)
 		{
-			std::cout << "[Model::LoadFromMd2File] Could not load frame 0." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Could not load frame 0." << Log::End;
 			return false;
 		}
 
@@ -436,7 +436,7 @@ namespace Bit
 				p_LoadTangents,
 				p_LoadBinormals) == false)
 			{
-				std::cout << "[Model::LoadFromMd2File] Could not load frame " << i << "." << std::endl;
+				BitLog::NewEngine(Log::Error) << "Could not load frame " << i << "." << Log::End;
 				return false;
 			}
 		}
@@ -752,7 +752,7 @@ namespace Bit
 		// Error check the position buffer data
 		if (pBufferData == NULL)
 		{
-			std::cout << "[Model::LoadFromMd2File] No postiion data were found in the obj file." << std::endl;
+			BitLog::NewEngine(Log::Error) << "No postiion data were found in the obj file." << Log::End;
 			return false;
 		}
 
@@ -760,7 +760,7 @@ namespace Bit
 		VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer();
 		if (pPositionVertexBuffer->Load(bufferSize * 4, pBufferData) == false)
 		{
-			std::cout << "[Model::LoadFromMd2File] Can not load the vertex buffer" << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not load the vertex buffer" << Log::End;
 			return false;
 		}
 
@@ -773,7 +773,7 @@ namespace Bit
 		// Error check the vertex model vertex data
 		if (pModelVertexData == NULL)
 		{
-			std::cout << "[Model::LoadFromMd2File] Can not add vertex data to model vertex group." << std::endl;
+			BitLog::NewEngine(Log::Error) << "Can not add vertex data to model vertex group." << Log::End;
 			return false;
 		}
 
