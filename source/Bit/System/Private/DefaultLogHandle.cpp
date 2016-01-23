@@ -34,13 +34,13 @@ namespace Bit
 
 		void DefaultLogHandle::OnInfo(const LogMessage & p_Message)
 		{
-			if (p_Message.isEngineMessage)
+			if (p_Message.user == Log::Client)
 			{
 				std::cout << "Engine: ";
 			}
 			else
 			{
-				std::cout << "User: ";
+				std::cout << "Client: ";
 			}
 
 			if (p_Message.function.size())
@@ -53,13 +53,13 @@ namespace Bit
 
 		void DefaultLogHandle::OnWarning(const LogMessage & p_Message)
 		{
-			if (p_Message.isEngineMessage)
+			if (p_Message.user == Log::Client)
 			{
 				std::cout << "Engine: ";
 			}
 			else
 			{
-				std::cout << "User: ";
+				std::cout << "Client: ";
 			}
 
 			if (p_Message.function.size())
@@ -72,13 +72,13 @@ namespace Bit
 
 		void DefaultLogHandle::OnError(const LogMessage & p_Message)
 		{
-			if (p_Message.isEngineMessage)
+			if (p_Message.user == Log::Client)
 			{
 				std::cout << "Engine: ";
 			}
 			else
 			{
-				std::cout << "User: ";
+				std::cout << "Client: ";
 			}
 
 			if (p_Message.function.size())

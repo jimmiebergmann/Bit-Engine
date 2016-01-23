@@ -122,22 +122,22 @@ namespace Bit
 		}
 		else if( fileExtension == "MD3" )
 		{
-			BitLog::NewEngine(Log::Error) << "Not supporting MD3 models yet." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Not supporting MD3 models yet." );
 			return false;
 		}
 		else if( fileExtension == "MD5" )
 		{
-			BitLog::NewEngine(Log::Error) << "Not supporting MD5 models yet." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Not supporting MD5 models yet." );
 			return false;
 		}
 		else if( fileExtension == "MDL" )
 		{
-			BitLog::NewEngine(Log::Error) << "Not supporting MDL models yet." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Not supporting MDL models yet." );
 			return false;
 		}
 
 		// Unknown extension
-		BitLog::NewEngine(Log::Error) << "Unknow model extension: " <<  fileExtension.c_str( ) << Log::End;
+		BitLog::NewEngine(Log::Error,  "Unknow model extension: %s",fileExtension.c_str( ) );
 		return false;
 	}
 
@@ -155,7 +155,7 @@ namespace Bit
 		ObjFile obj;
 		if( obj.LoadFromFile( p_Filename ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Failed to load OBJ file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Failed to load OBJ file." );
 			return false;
 		}
 
@@ -228,7 +228,7 @@ namespace Bit
 		}
 		else
 		{
-			BitLog::NewEngine(Log::Error) << "Failed to open OBJ material file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Failed to open OBJ material file." );
 		}
 
 
@@ -257,7 +257,7 @@ namespace Bit
 					// Error check the position buffer data
 					if( pBufferData == NULL )
 					{
-						BitLog::NewEngine(Log::Error) << "No postiion data were found in the obj file." << Log::End;
+						BitLog::NewEngine(Log::Error,  "No postiion data were found in the obj file." );
 						return false;
 					}
 
@@ -265,7 +265,7 @@ namespace Bit
 					VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer( );
 					if( pPositionVertexBuffer->Load( bufferSize * 4, pBufferData ) == false )
 					{
-						BitLog::NewEngine(Log::Error) << "Can not load the vertex buffer" << Log::End;
+						BitLog::NewEngine(Log::Error,  "Can not load the vertex buffer" );
 						return false;
 					}
 
@@ -278,7 +278,7 @@ namespace Bit
 					// Error check the vertex model vertex data
 					if( pModelVertexData == NULL )
 					{
-						BitLog::NewEngine(Log::Error) << "Can not add vertex data to model vertex group." << Log::End;
+						BitLog::NewEngine(Log::Error,  "Can not add vertex data to model vertex group." );
 						return false;
 					}
 		
@@ -371,7 +371,7 @@ namespace Bit
 		Md2File md2;
 		if( md2.LoadFromFile( p_Filename ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Failed to load MD2 file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Failed to load MD2 file." );
 			return false;
 		}
 
@@ -399,7 +399,7 @@ namespace Bit
 		// Get the first frame
 		if( md2.GetFrameCount( ) == 0 )
 		{
-			BitLog::NewEngine(Log::Error) << "No frames were found." << Log::End;
+			BitLog::NewEngine(Log::Error,  "No frames were found." );
 			return false;
 		}
 
@@ -410,7 +410,7 @@ namespace Bit
 							p_LoadTangents,
 							p_LoadBinormals) == false)
 		{
-			BitLog::NewEngine(Log::Error) << "Could not load frame 0." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Could not load frame 0." );
 			return false;
 		}
 
@@ -436,7 +436,7 @@ namespace Bit
 				p_LoadTangents,
 				p_LoadBinormals) == false)
 			{
-				BitLog::NewEngine(Log::Error) << "Could not load frame " << i << "." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Could not load frame %i.", i );
 				return false;
 			}
 		}
@@ -752,7 +752,7 @@ namespace Bit
 		// Error check the position buffer data
 		if (pBufferData == NULL)
 		{
-			BitLog::NewEngine(Log::Error) << "No postiion data were found in the obj file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "No postiion data were found in the obj file." );
 			return false;
 		}
 
@@ -760,7 +760,7 @@ namespace Bit
 		VertexBuffer * pPositionVertexBuffer = m_GraphicDevice.CreateVertexBuffer();
 		if (pPositionVertexBuffer->Load(bufferSize * 4, pBufferData) == false)
 		{
-			BitLog::NewEngine(Log::Error) << "Can not load the vertex buffer" << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not load the vertex buffer" );
 			return false;
 		}
 
@@ -773,7 +773,7 @@ namespace Bit
 		// Error check the vertex model vertex data
 		if (pModelVertexData == NULL)
 		{
-			BitLog::NewEngine(Log::Error) << "Can not add vertex data to model vertex group." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not add vertex data to model vertex group." );
 			return false;
 		}
 

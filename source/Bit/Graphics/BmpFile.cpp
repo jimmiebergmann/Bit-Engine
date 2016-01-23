@@ -255,7 +255,7 @@ namespace Bit
 		// Error check the stream size
 		if( streamSize < 54 )
 		{
-			BitLog::NewEngine(Log::Error) << "File size error 1." << Log::End;
+			BitLog::NewEngine(Log::Error,  "File size error 1." );
 			return false;
 		}
 
@@ -282,7 +282,7 @@ namespace Bit
 		if( m_DibHeader.m_PixelDepth != 8 && m_DibHeader.m_PixelDepth != 16 &&
 			m_DibHeader.m_PixelDepth != 24 && m_DibHeader.m_PixelDepth != 32 )
 		{
-			BitLog::NewEngine(Log::Error) << "Not a 8/16/24 or 32 bit image." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Not a 8/16/24 or 32 bit image." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -294,7 +294,7 @@ namespace Bit
 		// Error check the padded data size
 		if( streamSize < paddedDataSize + 54 )
 		{
-			BitLog::NewEngine(Log::Error) << "The expected data size is too large." << Log::End;
+			BitLog::NewEngine(Log::Error,  "The expected data size is too large." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -337,7 +337,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not open the file." );
 			return false;
 		}
 
@@ -373,7 +373,7 @@ namespace Bit
 	{
 		if( m_pData == NULL || m_DataSize == 0 )
 		{
-			BitLog::NewEngine(Log::Error) << "No image data." << Log::End;
+			BitLog::NewEngine(Log::Error,  "No image data." );
 			return false;
 		}
 
@@ -417,7 +417,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not open the file." );
 			return false;
 		}
 

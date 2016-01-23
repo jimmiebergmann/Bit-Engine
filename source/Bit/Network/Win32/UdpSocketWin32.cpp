@@ -52,7 +52,7 @@ namespace Bit
 		// Create the socket
 		if( ( m_Handle = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP ) ) <= 0 )
 		{
-			BitLog::NewEngine(Log::Error) << "Can not create the socket. Error: " << static_cast<Int32>(GetLastError()) << Log::End;
+			BitLog::NewEngine(Log::Error, "Can not create the socket. Error: %i.", static_cast<Int32>(GetLastError()));
 			return false;
 		}
 
@@ -64,7 +64,7 @@ namespace Bit
 
 		if( bind( m_Handle, reinterpret_cast<const sockaddr *>( &service ), sizeof( service ) ) != 0 )
 		{
-			BitLog::NewEngine(Log::Error) << "Can not bind the socket. Error: " << static_cast<Int32>(GetLastError( )) << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not bind the socket. Error: %i.", static_cast<Int32>(GetLastError( )) );
 			Close( );
 			return false;
 		}

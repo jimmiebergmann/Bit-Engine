@@ -152,7 +152,7 @@ namespace Bit
 		// Send and receive the request
 		if( http.SendRequest( request, response, Bit::Address( m_Url.GetDomain( ))) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Failed to send request." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Failed to send request." );
 			return false;
 		}
 
@@ -173,7 +173,7 @@ namespace Bit
 		Bencode::Value beRoot;
 		if( beReader.Parse( response.GetBody( ), beRoot ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Failed to parse the response." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Failed to parse the response." );
 			return false;
 		}
 
@@ -301,7 +301,7 @@ namespace Bit
 
 		if( beReader.ParseFromFile( p_Filename, beRoot ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Could not parse the torrent file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Could not parse the torrent file." );
 			return false;
 		}
 
@@ -359,7 +359,7 @@ namespace Bit
 		// Make sure that the torrent ifo is a dictionary.
 		if( beInfo.GetType( ) != Bencode::Value::Dictionary )
 		{
-			BitLog::NewEngine(Log::Error) << "Could not get the info field" << Log::End;
+			BitLog::NewEngine(Log::Error,  "Could not get the info field" );
 			return false;
 		}
 
@@ -367,7 +367,7 @@ namespace Bit
 		Int32 pieceSize = beInfo.Get( "piece length", 0 ).AsInt( );
 		if( pieceSize <= 0 )
 		{
-			BitLog::NewEngine(Log::Error) << "Could get the piece size." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Could get the piece size." );
 			return false;
 		}
 		m_PieceSize = pieceSize;
@@ -378,14 +378,14 @@ namespace Bit
 		// Check if there's any data
 		if( pieceData.size( ) == 0  )
 		{
-			BitLog::NewEngine(Log::Error) << "Could get the piece data." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Could get the piece data." );
 			return false;
 		}
 
 		// Error check the size
 		if( pieceData.size( ) % 20 != 0  )
 		{
-			BitLog::NewEngine(Log::Error) << "Error in piece data." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Error in piece data." );
 			return false;
 		}
 
@@ -422,13 +422,13 @@ namespace Bit
 				// Error check the file variables
 				if( path.size( ) == 0 )
 				{
-					BitLog::NewEngine(Log::Error) << "Error in multifile path." << Log::End;
+					BitLog::NewEngine(Log::Error,  "Error in multifile path." );
 					return false;
 				}
 
 				if( length <= 0 )
 				{
-					BitLog::NewEngine(Log::Error) << "Error in multifile length." << Log::End;
+					BitLog::NewEngine(Log::Error,  "Error in multifile length." );
 					return false;
 				}
 
@@ -447,13 +447,13 @@ namespace Bit
 			// Error check the file variables
 			if( filename.size( ) == 0 )
 			{
-				BitLog::NewEngine(Log::Error) << "Error in single file name." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Error in single file name." );
 				return false;
 			}
 
 			if( length <= 0 )
 			{
-				BitLog::NewEngine(Log::Error) << "Error in single file length." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Error in single file length." );
 				return false;
 			}
 
@@ -468,7 +468,7 @@ namespace Bit
 
 		if( beWriter.Write( infoString, beInfo ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Could not get the info dictionary string." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Could not get the info dictionary string." );
 			return false;
 		}
 

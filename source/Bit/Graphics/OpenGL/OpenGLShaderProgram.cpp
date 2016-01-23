@@ -55,14 +55,14 @@ namespace Bit
 		// Make sure the shader program is loaded before we attach any shaders.
 		if( m_ProgramID == 0 )
 		{
-			BitLog::NewEngine(Log::Error) << "Shader program was not initialised." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Shader program was not initialised." );
 			return false;
 		}
 
 		// Not supporting more than 2 shaders atm
 		if( m_AttachedShaderCount == 2 )
 		{
-			BitLog::NewEngine(Log::Error) << "Too many shaders attached already: " <<  m_AttachedShaderCount << Log::End;
+			BitLog::NewEngine(Log::Error, "Too many shaders attached already: %i",  m_AttachedShaderCount );
 			return false;
 		}
 
@@ -83,7 +83,7 @@ namespace Bit
 		// Make sure we have attached any shaders at all to the shader program
 		if( m_AttachedShaderCount < 2 )
 		{
-			BitLog::NewEngine(Log::Error) << "Not enough shader objects are attached: " << m_AttachedShaderCount << Log::End;
+			BitLog::NewEngine(Log::Error,  "Not enough shader objects are attached: %i", m_AttachedShaderCount );
 			return false;
 		}
 
@@ -100,7 +100,7 @@ namespace Bit
 		{
 			GLchar * pLog = new GLchar[ logLength ];
 			glGetProgramInfoLog( m_ProgramID, logLength, &logLength, pLog );
-			BitLog::NewEngine(Log::Error) << "Shader link error: " <<  pLog << Log::End;
+			BitLog::NewEngine(Log::Error,  "Shader link error: %s",  pLog );
 			delete [ ] pLog;
 		}
 

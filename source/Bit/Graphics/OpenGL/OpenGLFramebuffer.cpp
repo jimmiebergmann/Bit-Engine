@@ -99,7 +99,7 @@ namespace Bit
 			// FIX THIS ERROR CHECK!
 			if( m_ColorAttachmentCount > 15 )
 			{
-				BitLog::NewEngine(Log::Error) << "Attached too many color attachments." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Attached too many color attachments." );
 				return false;
 			}
 
@@ -111,7 +111,7 @@ namespace Bit
 		{
 			if( m_DepthAttached )
 			{
-				BitLog::NewEngine(Log::Error) << "Attached too many depth/stencil attachments." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Attached too many depth/stencil attachments." );
 				return false;
 			}
 
@@ -138,7 +138,7 @@ namespace Bit
 		{
 			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
-			BitLog::NewEngine(Log::Error) << "Framebuffer error." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Framebuffer error." );
 			return false;
 		}
 
@@ -166,7 +166,7 @@ namespace Bit
 			// FIX THIS ERROR CHECK!
 			if( m_ColorAttachmentCount > 15 )
 			{
-				BitLog::NewEngine(Log::Error) << "Attached too many color attachments." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Attached too many color attachments." );
 				return false;
 			}
 
@@ -178,7 +178,7 @@ namespace Bit
 		{
 			if( m_DepthAttached )
 			{
-				BitLog::NewEngine(Log::Error) << "Attached too many depth/stencil attachments." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Attached too many depth/stencil attachments." );
 				return false;
 			}
 
@@ -204,7 +204,7 @@ namespace Bit
 		{
 			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
-			BitLog::NewEngine(Log::Error) << "Framebuffer error." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Framebuffer error." );
 			return false;
 		}
 

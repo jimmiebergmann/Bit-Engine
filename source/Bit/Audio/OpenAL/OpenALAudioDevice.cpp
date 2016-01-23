@@ -57,14 +57,14 @@ namespace Bit
 		// Open the device
 		if( ( m_pDevice = alcOpenDevice( NULL )) == NULL )
 		{
-			BitLog::NewEngine(Log::Error) << "Can not open the device." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not open the device." );
 			return false;
 		}
 
 		// Create the context
 		if( ( m_pContext = alcCreateContext( m_pDevice, NULL )) == NULL )
 		{
-			BitLog::NewEngine(Log::Error) << "Can not create the context." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not create the context." );
 			return false;
 		}
 

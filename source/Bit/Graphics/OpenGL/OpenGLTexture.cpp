@@ -107,14 +107,14 @@ namespace Bit
 		// Check if the image already is loaded
 		if( m_Loaded )
 		{
-			BitLog::NewEngine(Log::Error) << "Already loaded." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Already loaded." );
 			return false;
 		}
 
 		// Check if the color components per pixel is ok.
 		if( p_BytesPerPixel < 1 || p_BytesPerPixel > 4 )
 		{
-			BitLog::NewEngine(Log::Error) << "Bytes per pixel error." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Bytes per pixel error." );
 			return false;
 		}
 
@@ -188,7 +188,7 @@ namespace Bit
 		Image image;
 		if( image.LoadFromFile( p_Filename ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Can not load the file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not load the file." );
 			return false;
 		}
 
@@ -201,7 +201,7 @@ namespace Bit
 		// Check if the image already is loaded
 		if( m_Loaded )
 		{
-			BitLog::NewEngine(Log::Error) << "Already loaded." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Already loaded." );
 			return false;
 		}
 
@@ -209,7 +209,7 @@ namespace Bit
 		const Uint8 depth = p_Image.GetPixelDepth( );
 		if( depth != 3 && depth != 4)
 		{
-			BitLog::NewEngine(Log::Error) << "Not a 24 or 32 bit image." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Not a 24 or 32 bit image." );
 			return false;
 		}
 

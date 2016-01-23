@@ -176,7 +176,7 @@ namespace Bit
 		// Did the window creation succeed?
 		if( m_WindowHandle == NULL )
 		{
-			BitLog::NewEngine(Log::Error) << "Failed to create window." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Failed to create window." );
 			return false;
 		}
 
@@ -218,19 +218,19 @@ namespace Bit
 		// Release the device context
 		if( m_DeviceContextHandle && !ReleaseDC( m_WindowHandle, m_DeviceContextHandle ))
 		{
-			BitLog::NewEngine(Log::Error) << "Releasing device context failed." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Releasing device context failed." );
 		}
 
 		// Destroy the window
 		if( m_WindowHandle && !DestroyWindow( m_WindowHandle ) )
 		{
-			BitLog::NewEngine(Log::Error) << "Destroying window failed." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Destroying window failed." );
 		}
 
 		// Unregister the window class
 		if ( m_RegisteredWindowClass && !UnregisterClass( m_WindowClassName.c_str( ), Hinstance ) )
 		{
-			BitLog::NewEngine(Log::Error) << "Unregistering class failed." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Unregistering class failed." );
 		}
 
 		// Reset the attributes

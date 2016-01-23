@@ -70,7 +70,7 @@ bool EntityManager::RegisterVariable(	const std::string & p_Class,
 	// Error check the class type
 	if (pMetadata->TypeHash != typeid(Class).hash_code())
 	{
-		BitLog::NewEngine(Log::Error) << "Mismatching entity class type: " << pMetadata->RawName << "  , expecting  " << typeid(Class).raw_name() << Log::End;
+		BitLog::NewEngine(Log::Error,  "Mismatching entity class type: " << pMetadata->RawName << "  , expecting  " << typeid(Class).raw_name() );
 		//return false;
 	}
 

@@ -74,6 +74,7 @@
     <ClInclude Include="..\..\include\Bit\System\Win32\ThreadWin32.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\include\Bit\System\Log.inl" />
     <None Include="..\..\include\Bit\System\Math.inl" />
     <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
     <None Include="..\..\include\Bit\System\MemoryPool.inl" />
@@ -198,7 +199,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../include;../../extlibs/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;BIT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;BIT_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>

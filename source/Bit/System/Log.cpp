@@ -25,6 +25,11 @@
 #include <Bit/System/Log.hpp>
 #include <Bit/System/Private/DefaultLogHandle.hpp>
 #include <sstream>
+#include <memory>
+#include <string>
+#include <cstdio>
+#include <stdio.h>
+
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -32,12 +37,105 @@ namespace Bit
 
 
 
+	// Static functions
+	static std::string StringFormat(const char * p_FormatedString, ...)
+	{
+		if (p_FormatedString == NULL)
+		{
+			return "";
+		}
+
+		int size = strlen(p_FormatedString) * 2 + 50;   // Use a rubric appropriate for your code
+		std::string str;
+		va_list ap;
+		while (1) {     // Maximum two passes on a POSIX system...
+			str.resize(size);
+			va_start(ap, p_FormatedString);
+			int n = vsnprintf((char *)str.data(), size, p_FormatedString, ap);
+			va_end(ap);
+			if (n > -1 && n < size) {  // Everything worked
+				str.resize(n);
+				return str;
+			}
+			if (n > -1)  // Needed size returned
+				size = n + 1;   // For null char
+			else
+				size *= 2;      // Guess at a larger size (OS specific)
+		}
+		return str;
+	}
+
+	static void StringFormat(std::string & p_OutString, const char * p_FormatedString, ...)
+	{
+		if (p_FormatedString == NULL)
+		{
+			return;
+		}
+
+		int size = strlen(p_FormatedString) * 2 + 50;   // Use a rubric appropriate for your code
+		va_list ap;
+		while (1) {     // Maximum two passes on a POSIX system...
+			p_OutString.resize(size);
+			va_start(ap, p_FormatedString);
+			int n = vsnprintf((char *)p_OutString.data(), size, p_FormatedString, ap);
+			va_end(ap);
+			if (n > -1 && n < size) {  // Everything worked
+				p_OutString.resize(n);
+				return;
+			}
+			if (n > -1)  // Needed size returned
+				size = n + 1;   // For null char
+			else
+				size *= 2;      // Guess at a larger size (OS specific)
+		}
+
+	}
+
+
+
 	// Static variables
-	static LogManager					g_LogManagerInstance;
-	static Private::DefaultLogHandle	g_DefaultLogHandle;
+	/*static LogManager					g_LogManagerInstance;
+	
 	static LogHandle *					g_CurrentLogHandle = &g_DefaultLogHandle;
 	static LogMessage					g_LogMessage;
 	static std::stringstream			g_MessageStream;
+	static Mutex						g_Mutex;
+	static Mutex						g_IsLoggingMutex;
+	static Bool							g_IsLogging;*/
+
+	//LogManager			Log::g_LogManagerInstance;
+	static				Private::DefaultLogHandle	g_DefaultLogHandle;
+	LogHandle *			Log::g_CurrentLogHandle = &g_DefaultLogHandle;
+	LogMessage			Log::g_LogMessage;
+	Mutex				Log::g_Mutex;
+	
+
+
+	void Log::StringFormat(const char * p_FormatedString, ...)
+	{
+		if (p_FormatedString == NULL)
+		{
+			return;
+		}
+
+		int size = strlen(p_FormatedString) * 2 + 50;   // Use a rubric appropriate for your code
+		va_list ap;
+		while (1) {     // Maximum two passes on a POSIX system...
+			g_LogMessage.message.resize(size);
+			va_start(ap, p_FormatedString);
+			int n = vsnprintf((char *)g_LogMessage.message.data(), size, p_FormatedString, ap);
+			va_end(ap);
+			if (n > -1 && n < size) {  // Everything worked
+				g_LogMessage.message.resize(n);
+				return;
+			}
+			if (n > -1)  // Needed size returned
+				size = n + 1;   // For null char
+			else
+				size *= 2;      // Guess at a larger size (OS specific)
+		}
+	}
+
 
 
 	// Log class
@@ -50,36 +148,89 @@ namespace Bit
 	{
 		return g_DefaultLogHandle;
 	}
-
-	LogManager & Log::New(const Log::eType p_Type)
+	/*
+	Bool Log::New(const char * p_FormatedString, ...)
 	{
-		// Post the old message data.
-		Post();
+		va_list argptr;
+		va_start(argptr, p_FormatedString);
+		Bool status = New(Info, p_FormatedString, argptr);
+		va_end(argptr);
 
-		// Set the new type
-		g_LogMessage.type = p_Type;
-
-		return g_LogManagerInstance;
+		return status;
 	}
 
-	LogManager & Log::NewEngine(const Log::eType p_Type)
+	Bool Log::New(const eType p_Type, const char * p_FormatedString, ...)
 	{
-		// Post the old message data.
-		Post();
+		va_list argptr;
+		va_start(argptr, p_FormatedString);
 
-		// Set the new type
-		g_LogMessage.type = p_Type;
-		g_LogMessage.isEngineMessage = true;
+		printf(p_FormatedString, argptr);
 
-		return g_LogManagerInstance;
+		std::string message = StringFormat(p_FormatedString, argptr);
+		va_end(argptr);
+
+		
+
+
+		// Ignore message if it's empty
+		if (message.size() == 0)
+		{
+			// Return the log manager instance.
+			return false;
+		}
+
+
+		// Set the log message data
+		g_LogMessage.message = message;
+
+		// Remove lambda text in function name
+
+
+		// Set the timestamp
+		g_LogMessage.timestamp = Timestamp::Now();
+
+		// Fire the OnMessage function for the handle.
+		g_CurrentLogHandle->OnMessage(g_LogMessage);
+
+		// Also fire the On[eType] function for the handle.
+		switch (g_LogMessage.type)
+		{
+		case Log::Info:
+			g_CurrentLogHandle->OnInfo(g_LogMessage);
+			break;
+		case Log::Warning:
+			g_CurrentLogHandle->OnWarning(g_LogMessage);
+			break;
+		case Log::Error:
+			g_CurrentLogHandle->OnError(g_LogMessage);
+			break;
+		default:
+			break;
+		};
+
+		// Reset to default flags.
+		//g_LogMessage.type = Log::Info;
+
+
+		return true;
 	}
 
-	LogManager & Log::Get()
+	Bool Log::NewEngine(const char * p_FormatedString, ...)
 	{
-		// Return the log manager instance.
-		return g_LogManagerInstance;
+		va_list argptr;
+		va_start(argptr, p_FormatedString);
+		Bool status = NewEngine(Info, p_FormatedString, argptr);
+		va_end(argptr);
+
+		return status;
 	}
 
+	Bool Log::NewEngine(const eType p_Type, const char * p_FormatedString, ...)
+	{
+		return true;
+	}*/
+
+	/*
 	LogManager & Log::Post()
 	{
 		// Ignore message if it's empty
@@ -92,6 +243,13 @@ namespace Bit
 
 		// Set the log message data
 		g_LogMessage.message = g_MessageStream.str();
+
+		// Remove lambda text in function name
+		std::size_t lambdaStart = g_LogMessage.function.find('<');
+		if (lambdaStart != std::string::npos)
+		{
+			g_LogMessage.function.resize(lambdaStart);
+		}
 
 		// Set the timestamp
 		g_LogMessage.timestamp = Timestamp::Now();
@@ -125,23 +283,12 @@ namespace Bit
 		// Clear the message
 		Clear();
 
-		// Return the log manager instance.
-		return g_LogManagerInstance;
-	}
-
-	LogManager & Log::Clear()
-	{
-		g_MessageStream.str("");
+		g_Mutex.Unlock();
 
 		// Return the log manager instance.
 		return g_LogManagerInstance;
 	}
-
-	Log::eType Log::GetType()
-	{
-		// Return the log manager instance.
-		return g_LogMessage.type;
-	}
+	*/
 
 	void Log::SetMetaData(	const std::string & p_File,
 							const Int32 p_Line,
@@ -156,14 +303,14 @@ namespace Bit
 	LogMessage::LogMessage() :
 		message(""),
 		type(Log::Info),
+		user(Log::Client),
 		file(""),
 		line(0),
-		function(""),
-		isEngineMessage(false)
+		function("")
 	{
 	}
 
-
+	/*
 	// Log manager class
 	LogManager & LogManager::operator << (const Log::eType & p_Type)
 	{
@@ -196,11 +343,20 @@ namespace Bit
 		return g_LogManagerInstance;
 	}
 
-	LogManager & LogManager::operator << (const char * p_pChars)
+	LogManager & LogManager::operator << (const Int8 * p_pChars)
 	{
 		// Add chars to the stream.
 		g_MessageStream << p_pChars;
-		
+
+		// Return the log manager instance.
+		return g_LogManagerInstance;
+	}
+
+	LogManager & LogManager::operator << (const Uint8 * p_pChars)
+	{
+		// Add chars to the stream.
+		g_MessageStream << p_pChars;
+
 		// Return the log manager instance.
 		return g_LogManagerInstance;
 	}
@@ -303,7 +459,7 @@ namespace Bit
 		// Return the log manager instance.
 		return g_LogManagerInstance;
 	}
-
+	*/
 
 
 	// Log handle class

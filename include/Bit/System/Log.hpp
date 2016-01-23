@@ -27,6 +27,7 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/System/Timestamp.hpp>
+#include <Bit/System/SmartMutex.hpp>
 #include <string>
 
 namespace Bit
@@ -98,11 +99,10 @@ namespace Bit
 		/// \brief Function enum
 		///
 		////////////////////////////////////////////////////////////////
-		enum eFunction
+		enum eUser
 		{
-			End,	///< used for posting messages.
 			Engine,	///< Used for setting system message flag.
-			User	///< Used for setting system message flag.
+			Client	///< Used for setting system message flag.
 		};
 
 		// Static functions
@@ -119,46 +119,24 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		static LogHandle & GetDefaultHandle();
 
-		////////////////////////////////////////////////////////////////
-		/// \brief	Start a new message, this function makes sure to post any old message.
-		///			You can also specify the type of the message.
-		///			Also, you will get the reference to the log manager.
-		///
-		////////////////////////////////////////////////////////////////
-		static LogManager & New(const Log::eType p_Type = Log::Info);
 
-		////////////////////////////////////////////////////////////////
-		/// \brief	Start a new Engine message, this function makes sure to post any old message.
-		///			You can also specify the type of the message.
-		///			Also, you will get the reference to the log manager.
-		///			Use this function instead of the function New for system messages.
-		///
-		////////////////////////////////////////////////////////////////
-		static LogManager & NewEngine(const Log::eType p_Type = Log::Info);
+		/*template <typename ... Ts>
+		static void Test(char *fmt, Ts ... ts)
+		{
+			printf(fmt, ts...);
+		}*/
 
-		////////////////////////////////////////////////////////////////
-		/// \brief	Get the log manager instance.
-		///
-		////////////////////////////////////////////////////////////////
-		static LogManager & Get();
-
-		////////////////////////////////////////////////////////////////
-		/// \brief	End the log message, this will fire the log handle events.
-		///
-		////////////////////////////////////////////////////////////////
-		static LogManager & Post();
-
-		////////////////////////////////////////////////////////////////
-		/// \brief	Clear the log message.
-		///
-		////////////////////////////////////////////////////////////////
-		static LogManager & Clear();
-
-		////////////////////////////////////////////////////////////////
-		/// \brief	Get the current log message type
-		///
-		////////////////////////////////////////////////////////////////
-		static eType GetType();
+		template <typename ... Params>
+		static Bool New(const char * p_FormatedString, Params ... p_Params);
+		template <typename ... Params>
+		static Bool New(const eType p_Type, const char * p_FormatedString, Params ... p_Params);
+		template <typename ... Params>
+		static Bool New(const eType p_Type, const eUser p_User, const char * p_FormatedString, Params ... p_Params);
+		template <typename ... Params>
+		static Bool NewEngine(const char * p_FormatedString, Params ... p_Params);
+		template <typename ... Params>
+		static Bool NewEngine(const eType p_Type, const char * p_FormatedString, Params ... p_Params);
+		
 
 		////////////////////////////////////////////////////////////////
 		/// \brief	Set meta for the log manager.
@@ -167,6 +145,22 @@ namespace Bit
 		static void SetMetaData(const std::string & p_File,
 								const Int32 p_Line,
 								const std::string & p_Function);
+
+	private:
+
+		// Private functions
+
+		////////////////////////////////////////////////////////////////
+		/// \brief	Format a string into a message for the log message class.
+		///
+		////////////////////////////////////////////////////////////////
+		static void StringFormat(const char * p_FormatedString, ...);
+
+		// Private variables
+		static LogManager					g_LogManagerInstance;
+		static LogHandle *					g_CurrentLogHandle;
+		static LogMessage					g_LogMessage;
+		static Mutex						g_Mutex;
 
 	};
 
@@ -192,10 +186,10 @@ namespace Bit
 		Timestamp		timestamp;			///< Timestamp of the message.
 		std::string		message;			///< Message data.
 		Log::eType		type;				///< Message type.
+		Log::eUser		user;				///< User type.
 		std::string		file;				///< From what file is the logging being done?
 		Int32			line;				///< At what line is the logging being done?
 		std::string		function;			///< In what file is the logging being done?
-		Bool			isEngineMessage;	///< Is this a system message?
 
 	};
 
@@ -258,7 +252,7 @@ namespace Bit
 	/// Use the log manager via the class Log, this class contains functions for getting,starting and posting messages for the log manager.
 	///
 	////////////////////////////////////////////////////////////////
-	class BIT_API LogManager
+	/*class BIT_API LogManager
 	{
 
 	public:
@@ -281,7 +275,13 @@ namespace Bit
 		/// \brief Operation for adding an array of chars to the log message.
 		///
 		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const char * p_pChars);
+		LogManager & operator << (const Int8 * p_pChars);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Operation for adding an array of chars to the log message.
+		///
+		////////////////////////////////////////////////////////////////
+		LogManager & operator << (const Uint8 * p_pChars);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Operation for adding a string log message.
@@ -349,7 +349,12 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		LogManager & operator << (const Float64 & p_Integer);
 
-	};
+	};*/
+
+	////////////////////////////////////////////////////////////////
+	// Include the inline file.
+	////////////////////////////////////////////////////////////////
+	#include <Bit/System/Log.inl>
 	
 
 }

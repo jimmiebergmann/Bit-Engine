@@ -48,7 +48,7 @@ namespace Bit
 		// Create the socket
 		if ((m_Handle = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET)
 		{
-			BitLog::NewEngine(Log::Error) << "Can not create the socket. Error: " << static_cast<Int32>(GetLastError()) << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not create the socket. Error: %i", static_cast<Int32>(GetLastError()) );
 			return false;
 		}
 
@@ -66,14 +66,14 @@ namespace Bit
 			int rtn = setsockopt(m_Handle, SOL_SOCKET, SO_REUSEADDR, (const char*)&optVal, optLen);
 			if( rtn != 0 )
 			{
-				BitLog::NewEngine(Log::Error) << "Can not set reusable socket. Error: " << static_cast<Int32>(GetLastError()) << Log::End;
+				BitLog::NewEngine(Log::Error,  "Can not set reusable socket. Error: %i", static_cast<Int32>(GetLastError()) );
 				return false;
 			}
 
 			// Bind
 			if (bind(m_Handle, reinterpret_cast<const sockaddr *>(&service), sizeof(service)) == SOCKET_ERROR)
 			{
-				BitLog::NewEngine(Log::Error) << "Can not bind the socket. Error: " << static_cast<Int32>(GetLastError()) << Log::End;
+				BitLog::NewEngine(Log::Error,  "Can not bind the socket. Error: %i", static_cast<Int32>(GetLastError()) );
 				return false;
 			}
 		}

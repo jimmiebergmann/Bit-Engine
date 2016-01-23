@@ -63,7 +63,7 @@ namespace Bit
 			int result = ioctlsocket( m_Handle, FIONBIO, &blocking);
 			if ( result != NO_ERROR )
 			{
-				BitLog::NewEngine(Log::Error) << "Failed to set blocking. Error: " << result << Log::End;
+				BitLog::NewEngine(Log::Error, "Failed to set blocking. Error: %i", result);
 				return;
 			}
 
@@ -114,7 +114,7 @@ namespace Bit
 			WSADATA wsaData;
 			if( WSAStartup( MAKEWORD(2,2), &wsaData ) )
 			{
-				BitLog::NewEngine(Log::Error) << "Failed to initialize winsock." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Failed to initialize winsock." );
 			}
 		}
 	};

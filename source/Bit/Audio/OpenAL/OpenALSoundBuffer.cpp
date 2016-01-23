@@ -87,7 +87,7 @@ namespace Bit
 			}
 			else
 			{
-				BitLog::NewEngine(Log::Error) << "Mono frequence error" << Log::End;
+				BitLog::NewEngine(Log::Error,  "Mono frequence error" );
 				return false;
 			}
 		}
@@ -103,13 +103,13 @@ namespace Bit
 			}
 			else
 			{
-				BitLog::NewEngine(Log::Error) << "Stereo frequence error." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Stereo frequence error." );
 				return false;
 			}
 		}
 		else
 		{
-			BitLog::NewEngine(Log::Error) << "Channel count error." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Channel count error." );
 			return false;
 		}
 
@@ -170,12 +170,12 @@ namespace Bit
 		}
 		else if( fileExtension == "OGG" )
 		{
-			BitLog::NewEngine(Log::Error) << "Not supporting OGG images yet." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Not supporting OGG images yet." );
 			return false;
 		}
 
 		// Unknown extension
-		BitLog::NewEngine(Log::Error) << "Unknow extension: " <<  fileExtension.c_str( ) << Log::End;
+		BitLog::NewEngine(Log::Error,  "Unknow extension: %s", fileExtension.c_str( ) );
 		return false;
 	}
 

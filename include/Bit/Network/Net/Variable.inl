@@ -296,7 +296,7 @@ void InterpolatedVariable<T>::TakeSnapshot(const Time & p_Time, const Time & p_I
 		// Check if we actually found any values.
 		if (foundValues == false)
 		{
-			BitLog::NewEngine(Log::Error) << "Could not find any values." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Could not find any values." );
 			m_Mutex.Unlock();
 			return;
 		}

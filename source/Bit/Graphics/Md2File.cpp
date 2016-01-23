@@ -271,7 +271,7 @@ namespace Bit
 		// Error check the stream size, make sure the header fits.
 		if( streamSize < sizeof( m_Header ) )
 		{
-			BitLog::NewEngine(Log::Error) << "No valid header were found." << Log::End;
+			BitLog::NewEngine(Log::Error,  "No valid header were found." );
 			return false;
 		}
 
@@ -281,29 +281,29 @@ namespace Bit
 		// Error check the data
 		if( m_Header.MagicNumber != 844121161 )
 		{
-			BitLog::NewEngine(Log::Error) << "Wrong magic number: " << m_Header.MagicNumber << ". Expecting: 844121161." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Wrong magic number: %i . Expecting: 844121161.", m_Header.MagicNumber );
 			return false;
 		}
 		if( m_Header.Version != 8 )
 		{
-			BitLog::NewEngine(Log::Error) << "Wrong version: " << m_Header.Version << ". Expecting: 8 " << Log::End;
+			BitLog::NewEngine(Log::Error,  "Wrong version: %i. Expecting: 8 ", m_Header.Version  );
 			return false;
 		}
 		if( m_Header.TriangleCount <= 0 || m_Header.TriangleCount >= 65536 )
 		{
-			BitLog::NewEngine(Log::Error) << "Triagnle count error: " << m_Header.TriangleCount << Log::End;
+			BitLog::NewEngine(Log::Error,  "Triagnle count error: %i", m_Header.TriangleCount );
 			return false;
 		}
 		if( m_Header.FrameCount <= 0 )
 		{
-			BitLog::NewEngine(Log::Error) << "Frame count error: " << m_Header.FrameCount << Log::End;
+			BitLog::NewEngine(Log::Error,  "Frame count error: %i", m_Header.FrameCount );
 			return false;
 		}
 		if( m_Header.OffsetSkins > streamSize		|| m_Header.OffsetTexCoords > streamSize ||
 			m_Header.OffsetTriangles > streamSize	|| m_Header.OffsetFrames > streamSize ||
 			m_Header.OffsetOpenGLCmds > streamSize )
 		{
-			BitLog::NewEngine(Log::Error) << "Offset error." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Offset error." );
 			return false;
 		}
 
@@ -316,7 +316,7 @@ namespace Bit
 
 		if( totalMd2Data > streamSize )
 		{
-			BitLog::NewEngine(Log::Error) << "Stream size is too small." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Stream size is too small." );
 			return false;
 		}
 
@@ -424,7 +424,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::ifstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not open the file." );
 			return false;
 		}
 
@@ -474,7 +474,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error) << "Can not open the file." << Log::End;
+			BitLog::NewEngine(Log::Error,  "Can not open the file." );
 			return false;
 		}
 

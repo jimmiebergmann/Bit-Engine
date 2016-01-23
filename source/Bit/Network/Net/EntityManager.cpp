@@ -125,7 +125,7 @@ namespace Bit
 			// Don't allow clients to create entities.
 			if (m_pClient != NULL)
 			{
-				BitLog::NewEngine(Log::Error) << "Clients can't create entities." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Clients can't create entities." );
 				return NULL;
 			}
 
@@ -249,7 +249,7 @@ namespace Bit
 				// Error check the block size, make sure there's enough data in the message.
 				if( entityBlockSize == 0 || entityBlockSize + dataPos > p_MessageSize )
 				{
-					BitLog::NewEngine(Log::Error) << "Entity block size error: \"" << entityBlockSize << "\"" << Log::End;
+					BitLog::NewEngine(Log::Error, "Entity block size error: \"%i\".", entityBlockSize);
 					return false;
 				}
 
@@ -264,7 +264,7 @@ namespace Bit
 				{
 					// Move to the next entity
 					dataPos += entityBlockSize - 1 - entityNameLength;
-					BitLog::NewEngine(Log::Error) << "Unknown entity: \"" << entityName << "\"" << Log::End;
+					BitLog::NewEngine(Log::Error,  "Unknown entity: \"%s\"",entityName.c_str() );
 
 					// Continue
 					continue;
@@ -293,7 +293,7 @@ namespace Bit
 					// Error check the block size, make sure there's enough data in the message.
 					if( variableBlockSize == 0 || variableBlockSize + dataPos > p_MessageSize )
 					{
-						BitLog::NewEngine(Log::Error) << "Variable block size error: \"" << variableBlockSize << "\"" << Log::End;
+						BitLog::NewEngine(Log::Error,  "Variable block size error: \"%i\"", variableBlockSize);
 
 						// Return false.
 						return false;
@@ -312,7 +312,7 @@ namespace Bit
 					{
 						// Move to the next entity
 						dataPos += variableBlockSize - 1 - variableNameLength;
-						BitLog::NewEngine(Log::Error) << "Unknown entity variable(" << entityName << "): \"" << variableName << "\"" << Log::End;
+						BitLog::NewEngine(Log::Error, "Unknown entity variable(%s): \"%s\"" ,entityName.c_str(), variableName.c_str());
 
 						// Continue
 						continue;
@@ -352,7 +352,7 @@ namespace Bit
 
 							if (pNewEntity == false)
 							{
-								BitLog::NewEngine(Log::Error) << "Cailed to create new entity \"" << entityName << "\" at id \"" << entityId << "\"" << Log::End;
+								BitLog::NewEngine(Log::Error, "Failed to create new entity \"%s\" at id %i", entityName, entityId);
 								return false;
 							}
 
@@ -360,7 +360,7 @@ namespace Bit
 							entityIt = m_Entities.find(entityId);
 							if (entityIt == m_Entities.end())
 							{
-								BitLog::NewEngine(Log::Error) << "Failed to find new entity \"" << entityName << "\" at id \"" << entityId << "\"" << Log::End;
+								BitLog::NewEngine(Log::Error, "Failed to find new entity \"%s\" at id %i", entityName, entityId);
 								return false;
 							}
 
@@ -403,7 +403,7 @@ namespace Bit
 						// Make sure that the values size is the same as the data
 						if( valueSize != dataSize )
 						{
-							BitLog::NewEngine(Log::Error) << "Unknown size variable(" << entityName << ")(" << valueSize << "): \"" << dataSize << "\"" << Log::End;
+							BitLog::NewEngine(Log::Error, "Unknown size variable(%s)(%i): \"%i\"", entityName, valueSize, dataSize);
 							dataPos += dataSize;
 
 							// Continue
@@ -953,7 +953,7 @@ namespace Bit
 			EntityMetaDataMap::iterator it = m_EntityMetaDataMap.find( p_Key );
 			if( it == m_EntityMetaDataMap.end( ) )
 			{
-				BitLog::NewEngine(Log::Error) << "Can not find any entity called \"" << p_Key << "\" registred." << Log::End;
+				BitLog::NewEngine(Log::Error, "Can not find any entity called \"%s\" registred.", p_Key.c_str());
 				return NULL;
 			}
 
@@ -961,7 +961,7 @@ namespace Bit
 			EntityMap::iterator it2 = m_Entities.find(p_Id);
 			if (it2 != m_Entities.end())
 			{
-				BitLog::NewEngine(Log::Error) << "Id already in use." << Log::End;
+				BitLog::NewEngine(Log::Error,  "Id already in use." );
 				return NULL;
 			}
 
@@ -1014,7 +1014,7 @@ namespace Bit
 			{
 				Entity * pEntity = *dit;
 
-				BitLog::NewEngine(Log::Error) << "Clearing in delete queue : " << pEntity->GetId( ) << Log::End;
+				BitLog::NewEngine(Log::Error,  "Clearing in delete queue: %i.", pEntity->GetId( ) );
 
 				// Remvoe the entity from the changed entity map.
 				// This is not the most efficient way of doing it, but we really have to do this.
