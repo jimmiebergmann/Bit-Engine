@@ -36,25 +36,12 @@ namespace Bit
 	/*
 	Example 1:
 	--------------------------------------------------------------------------------------
-	BitLog::New() << "This is an info message!" << Bit::Log::End;
+	BitLog::New("This is an info message!");
 	--------------------------------------------------------------------------------------
-	
+
 	Example 2:
 	--------------------------------------------------------------------------------------
-		BitLog::New() << Bit::Log::Error << "This is an error message!" << Bit::Log::End();
-	--------------------------------------------------------------------------------------
-
-	Example 3:
-	--------------------------------------------------------------------------------------
-		BitLog::New(Bit::Log::Error) << "This is an error message!" << Bit::Log::End();
-	--------------------------------------------------------------------------------------
-
-	Example 4:
-	--------------------------------------------------------------------------------------
-		BitLog::SetHandle(MyCustomLogHandle);
-		BitLog::New(Bit::Log::Warning);
-		BitLog::Get() << "Warning message!";
-		BitLog::Post();
+		BitLog::New(Bit::Log::Error, "This is an error message!");
 	--------------------------------------------------------------------------------------
 	*/
 
@@ -65,7 +52,6 @@ namespace Bit
 
 	// Forward declarations
 	class LogHandle;
-	class LogManager;
 	struct LogMessage;
 
 	////////////////////////////////////////////////////////////////
@@ -119,25 +105,41 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		static LogHandle & GetDefaultHandle();
 
-
-		/*template <typename ... Ts>
-		static void Test(char *fmt, Ts ... ts)
-		{
-			printf(fmt, ts...);
-		}*/
-
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a new client info message.
+		///
+		////////////////////////////////////////////////////////////////
 		template <typename ... Params>
 		static Bool New(const char * p_FormatedString, Params ... p_Params);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a new client message.
+		///
+		////////////////////////////////////////////////////////////////
 		template <typename ... Params>
 		static Bool New(const eType p_Type, const char * p_FormatedString, Params ... p_Params);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a new message.
+		///
+		////////////////////////////////////////////////////////////////
 		template <typename ... Params>
 		static Bool New(const eType p_Type, const eUser p_User, const char * p_FormatedString, Params ... p_Params);
+		
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a new engine info message.
+		///
+		////////////////////////////////////////////////////////////////
 		template <typename ... Params>
 		static Bool NewEngine(const char * p_FormatedString, Params ... p_Params);
+		
+		////////////////////////////////////////////////////////////////
+		/// \brief Create a new engine message.
+		///
+		////////////////////////////////////////////////////////////////
 		template <typename ... Params>
 		static Bool NewEngine(const eType p_Type, const char * p_FormatedString, Params ... p_Params);
 		
-
 		////////////////////////////////////////////////////////////////
 		/// \brief	Set meta for the log manager.
 		///
@@ -157,7 +159,6 @@ namespace Bit
 		static void StringFormat(const char * p_FormatedString, ...);
 
 		// Private variables
-		static LogManager					g_LogManagerInstance;
 		static LogHandle *					g_CurrentLogHandle;
 		static LogMessage					g_LogMessage;
 		static Mutex						g_Mutex;
@@ -242,114 +243,6 @@ namespace Bit
 
 	};
 
-
-	////////////////////////////////////////////////////////////////
-	/// \ingroup System
-	/// \brief Log manager class. Call the operations of this class to add data to the log message.
-	/// Post the log message by using the << operation with eSpecial::Endl as parameter,
-	/// which will fire the overloaded LogHandle function OnMessage and OnInfo/OnWarning/OnError.
-	///
-	/// Use the log manager via the class Log, this class contains functions for getting,starting and posting messages for the log manager.
-	///
-	////////////////////////////////////////////////////////////////
-	/*class BIT_API LogManager
-	{
-
-	public:
-
-		// Public operations
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for setting the message type of the message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Log::eType & p_Type);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for firing special functions.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Log::eFunction & p_Func);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an array of chars to the log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Int8 * p_pChars);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an array of chars to the log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Uint8 * p_pChars);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding a string log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const std::string & p_String);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 8 bit integer to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Int8 & p_Integer);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 8 bit unsigned integer to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Uint8 & p_Integer);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 16 bit integer to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Int16 & p_Integer);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 16 bit unsigned integer to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Uint16 & p_Integer);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 32 bit integer to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Int32 & p_Integer);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 32 bit unsigned integer to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Uint32 & p_Integer);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 64 bit integer to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Int64 & p_Integer);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 64 bit unsigned integer to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Uint64 & p_Integer);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 32 bit ufloating point to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Float32 & p_Integer);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Operation for adding an 64 bit ufloating point to log message.
-		///
-		////////////////////////////////////////////////////////////////
-		LogManager & operator << (const Float64 & p_Integer);
-
-	};*/
 
 	////////////////////////////////////////////////////////////////
 	// Include the inline file.
