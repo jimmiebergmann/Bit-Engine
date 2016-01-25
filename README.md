@@ -19,7 +19,10 @@ Installation
 ```sh
 git clone https://github.com/jimmiebergmann/Bit-Engine.git
 ```
-**Windows:** Open and build the Visual Studio 2012 solution.
+**Windows:**
+Open and build the <u>latest</u> Visual C++ solution
+under build/vc[year].
+<u>Example: build/vc2015</u>.
 
 **Linux:**
 ```sh
