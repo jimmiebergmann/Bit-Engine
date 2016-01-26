@@ -94,14 +94,14 @@ namespace Bit
 		// Already compiled?
 		if( m_Compiled == true )
 		{
-			BitLog::NewEngine(Log::Error,  "The shader is already compiled." );
+			bitLogGraErr(  "The shader is already compiled." );
 			return false;
 		}
 
 		// Make sure we have a shader source
 		if( p_Memory.length() == 0 )
 		{
-			BitLog::NewEngine(Log::Error,  "No shader source." );
+			bitLogGraErr(  "No shader source." );
 			return false;
 		}
 
@@ -110,7 +110,7 @@ namespace Bit
 		// Might be a silly erorr check. But I'm doing it anyway.
 		if( pTextSource == NULL )
 		{
-			BitLog::NewEngine(Log::Error,  "Silly pointer error!" );
+			bitLogGraErr(  "Silly pointer error!" );
 			return false;
 		}
 
@@ -133,7 +133,7 @@ namespace Bit
 				// Get the error message
 				GLchar * pLog = new GLchar[ logLength ];
 				glGetShaderInfoLog( m_ShaderObject, logLength, &logLength, pLog );
-				BitLog::NewEngine(Log::Error,  "Shader compiler error: %s", pLog );
+				bitLogGraErr(  "Shader compiler error: " << pLog );
 				delete [ ] pLog;
 			}
 

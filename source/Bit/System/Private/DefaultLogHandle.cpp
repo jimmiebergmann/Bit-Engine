@@ -32,61 +32,9 @@ namespace Bit
 	namespace Private
 	{
 
-		void DefaultLogHandle::OnInfo(const LogMessage & p_Message)
+		void DefaultLogHandle::OnMessage(const LogMessage & p_Message)
 		{
-			if (p_Message.user == Log::Client)
-			{
-				std::cout << "Engine: ";
-			}
-			else
-			{
-				std::cout << "Client: ";
-			}
-
-			if (p_Message.function.size())
-			{
-				std::cout << p_Message.function << "(" << p_Message.line << "): ";
-			}
-
-			std::cout << "Info: " << p_Message.message << std::endl;
-		}
-
-		void DefaultLogHandle::OnWarning(const LogMessage & p_Message)
-		{
-			if (p_Message.user == Log::Client)
-			{
-				std::cout << "Engine: ";
-			}
-			else
-			{
-				std::cout << "Client: ";
-			}
-
-			if (p_Message.function.size())
-			{
-				std::cout << p_Message.function << "(" << p_Message.line << "): ";
-			}
-
-			std::cout << "Warning: " << p_Message.message << std::endl;
-		}
-
-		void DefaultLogHandle::OnError(const LogMessage & p_Message)
-		{
-			if (p_Message.user == Log::Client)
-			{
-				std::cout << "Engine: ";
-			}
-			else
-			{
-				std::cout << "Client: ";
-			}
-
-			if (p_Message.function.size())
-			{
-				std::cout << p_Message.function << "(" << p_Message.line << "): ";
-			}
-
-			std::cout << "Error: " << p_Message.message << std::endl;
+			std::cout <<  p_Message.message << std::endl;
 		}
 
 	}

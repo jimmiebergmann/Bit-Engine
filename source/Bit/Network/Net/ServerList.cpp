@@ -105,12 +105,12 @@ namespace Bit
 			// Error check the fields
 			if (p_Fields.find("name") == p_Fields.end())
 			{
-				BitLog::NewEngine(Log::Error,  "Can not find the field \"name\"" );
+				bitLogNetErr(  "Can not find the field \"name\"" );
 				return Json::Value::NullValue;
 			}
 			if (p_Fields.find("port") == p_Fields.end())
 			{
-				BitLog::NewEngine(Log::Error,  "Can not find the field \"port\"" );
+				bitLogNetErr(  "Can not find the field \"port\"" );
 				return Json::Value::NullValue;
 			}
 

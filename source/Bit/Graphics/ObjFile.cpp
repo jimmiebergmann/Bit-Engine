@@ -462,7 +462,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ) );
 		if( fin.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not open the file." );
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 
@@ -703,7 +703,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not open the file." );
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 

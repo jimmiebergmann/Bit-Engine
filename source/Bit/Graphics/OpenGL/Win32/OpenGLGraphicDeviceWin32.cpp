@@ -127,14 +127,14 @@ namespace Bit
 		// Make sure that the GD is not already open.
 		if( m_Open == true )
 		{
-			BitLog::NewEngine(Log::Error,  "The graphic device is already loaded." );
+			bitLogGraErr(  "The graphic device is already loaded." );
 			return false;
 		}
 
 		// Make sure that the render output is loaded
 		if( p_RenderOutput.IsOpen( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "The render output is not loaded." );
+			bitLogGraErr(  "The render output is not loaded." );
 			return false;
 		}
 
@@ -165,7 +165,7 @@ namespace Bit
 		// Bind the OpenGL extensions
 		if( OpenGL::BindOpenGLExtensions( contextVersion.GetMajor( ), contextVersion.GetMinor( ) ) != true )
 		{
-			BitLog::NewEngine(Log::Error,  "Binding opengl extensions failed." );
+			bitLogGraErr(  "Binding opengl extensions failed." );
 			return false;
 		}
 
@@ -175,7 +175,7 @@ namespace Bit
 		// Load default shaders
 		if( LoadDefaultShaders( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Failed to load default shaders." );
+			bitLogGraErr(  "Failed to load default shaders." );
 		}
 
 		// Set the default viewport to the window's size
@@ -215,13 +215,13 @@ namespace Bit
 			// Release the context from the current thread
 			if( !wglMakeCurrent( NULL, NULL ) )
 			{
-				BitLog::NewEngine(Log::Error,  "Can not release the context." );
+				bitLogGraErr(  "Can not release the context." );
 			}
 
 			// Delete the context
 			if( !wglDeleteContext( m_Context ))
 			{
-				BitLog::NewEngine(Log::Error,  "Can not delete the context." );
+				bitLogGraErr(  "Can not delete the context." );
 			}
 
 			m_Context = NULL;
@@ -596,12 +596,12 @@ namespace Bit
 
 		if((PixelFormat = ChoosePixelFormat( p_RenderOutput.GetDeviceContextHandle( ), &PFD ) ) == 0)
 		{
-			BitLog::NewEngine(Log::Error,  "Can not choose pixel format." );
+			bitLogGraErr(  "Can not choose pixel format." );
 			return false;
 		}
 		if( ( SetPixelFormat( p_RenderOutput.GetDeviceContextHandle( ), PixelFormat, &PFD ) ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not set pixel format." );
+			bitLogGraErr(  "Can not set pixel format." );
 			return false;
 		}
 
@@ -611,7 +611,7 @@ namespace Bit
 
 		if( temporaryContext == NULL )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not create a regular OpenGL context." );
+			bitLogGraErr(  "Can not create a regular OpenGL context." );
 			return false;
 		}
 
@@ -632,7 +632,7 @@ namespace Bit
 		PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
 		if((wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress( "wglCreateContextAttribsARB" )) == NULL )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not get the function for creating the context." );
+			bitLogGraErr(  "Can not get the function for creating the context." );
 			return false;
 		}
 
@@ -730,7 +730,7 @@ namespace Bit
 
 		if (m_pDefaultModelVertexShaders[InitialPoseShader]->CompileFromMemory(initialPoseVertexSource) == false)
 		{
-			BitLog::NewEngine(Log::Error,  "Failed to compile InitialPoseShader vertex shader." );
+			bitLogGraErr(  "Failed to compile InitialPoseShader vertex shader." );
 			return false;
 		}
 
@@ -804,7 +804,7 @@ namespace Bit
 		
 		if (m_pDefaultModelFragmentShader->CompileFromMemory(initialPoseFragmentSource) == false)
 		{
-			BitLog::NewEngine(Log::Error,  "Failed to compile model fragment shader." );
+			bitLogGraErr(  "Failed to compile model fragment shader." );
 			return false;
 		}
 
@@ -893,7 +893,7 @@ namespace Bit
 
 		if (m_pDefaultModelVertexShaders[VertexAnimationShader]->CompileFromMemory(vertexAnimationVertexSource) == false)
 		{
-			BitLog::NewEngine(Log::Error,  "Failed to compile VertexAnimationShader vertex shader." );
+			bitLogGraErr(  "Failed to compile VertexAnimationShader vertex shader." );
 			return false;
 		}
 

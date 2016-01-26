@@ -112,7 +112,7 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
-				BitLog::NewEngine(Log::Error,  "Not supporting 4 vertice polygons. Triangulate please." );
+				bitLogGraErr(  "Not supporting 4 vertice polygons. Triangulate please." );
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -136,7 +136,7 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 				// Return an error message if this vertex index is too high.
 				if( vertexIndex >= object.m_Vertices.size( ) )
 				{
-					BitLog::NewEngine(Log::Error, "Flat vertex index error: %i", vertexIndex);
+					bitLogGraErr( "Flat vertex index error: " << vertexIndex);
 				
 					// Error, return NULL.
 					delete [] pBuffer;
@@ -164,7 +164,7 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
-				BitLog::NewEngine(Log::Error,  "Not supporting 4 vertice polygons. Triangulate please." );
+				bitLogGraErr(  "Not supporting 4 vertice polygons. Triangulate please." );
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -188,7 +188,7 @@ T * ObjFile::CreatePositionBuffer(	SizeType & p_BufferSize,
 				// Return an error message if this vertex index is too high.
 				if( vertexIndex >= object.m_Vertices.size( ) )
 				{
-					BitLog::NewEngine(Log::Error, "Smooth vertex index error: %i", vertexIndex);
+					bitLogGraErr( "Smooth vertex index error: " << vertexIndex);
 				
 					// Error, return NULL.
 					delete [] pBuffer;
@@ -302,7 +302,7 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
-				BitLog::NewEngine(Log::Error,  "Not supporting 4 vertice polygons. Triangulate please." );
+				bitLogGraErr(  "Not supporting 4 vertice polygons. Triangulate please." );
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -326,7 +326,7 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 				// Return an error message if this vertex index is too high.
 				if( coordIndex >= object.m_TextureCoords.size( ) )
 				{
-					BitLog::NewEngine(Log::Error, "Flat vertex index error: %i", coordIndex);
+					bitLogGraErr( "Flat vertex index error: " << coordIndex);
 				
 					// Error, return NULL.
 					delete [] pBuffer;
@@ -353,7 +353,7 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
-				BitLog::NewEngine(Log::Error,  "Not supporting 4 vertice polygons. Triangulate please." );
+				bitLogGraErr(  "Not supporting 4 vertice polygons. Triangulate please." );
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -377,7 +377,7 @@ T * ObjFile::CreateTextureCoordBuffer(	SizeType & p_BufferSize,
 				// Return an error message if this vertex index is too high.
 				if( coordIndex >= object.m_TextureCoords.size( ) )
 				{
-					BitLog::NewEngine(Log::Error, "Smooth vertex index error: %i", coordIndex);
+					bitLogGraErr( "Smooth vertex index error: " << coordIndex);
 				
 					// Error, return NULL.
 					delete [] pBuffer;
@@ -490,7 +490,7 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
-				BitLog::NewEngine(Log::Error,  "Not supporting 4 vertice polygons. Triangulate please." );
+				bitLogGraErr(  "Not supporting 4 vertice polygons. Triangulate please." );
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -514,7 +514,7 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 				// Return an error message if this vertex index is too high.
 				if( normalIndex >= object.m_Normals.size( ) )
 				{
-					BitLog::NewEngine(Log::Error, "Flat vertex index error: %i", normalIndex);
+					bitLogGraErr( "Flat vertex index error: " << normalIndex);
 				
 					// Error, return NULL.
 					delete [] pBuffer;
@@ -542,7 +542,7 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 			// Error check the face. Make sure it's triangular.
 			if( face.m_FaceCorners.size( ) != 3 )
 			{
-				BitLog::NewEngine(Log::Error,  "Not supporting 4 vertice polygons. Triangulate please." );
+				bitLogGraErr(  "Not supporting 4 vertice polygons. Triangulate please." );
 				delete [] pBuffer;
 				return NULL;
 			}
@@ -566,7 +566,7 @@ T * ObjFile::CreateNormalBuffer(	SizeType & p_BufferSize,
 				// Return an error message if this vertex index is too high.
 				if( normalIndex >= object.m_Normals.size( ) )
 				{
-					BitLog::NewEngine(Log::Error, "Smooth vertex index error: %i", normalIndex);
+					bitLogGraErr( "Smooth vertex index error: " << normalIndex);
 				
 					// Error, return NULL.
 					delete [] pBuffer;

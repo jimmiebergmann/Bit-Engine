@@ -62,7 +62,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not open the file." );
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 
@@ -112,7 +112,7 @@ namespace Bit
 	{
 		if( m_pData == NULL || m_DataSize == 0 )
 		{
-			BitLog::NewEngine(Log::Error,  "No image data." );
+			bitLogGraErr(  "No image data." );
 			return false;
 		}
 
@@ -150,7 +150,7 @@ namespace Bit
 		// Error check the loading
 		if( status || dataVector.size( ) == 0 )
 		{
-			BitLog::NewEngine(Log::Error, "Failed to decode image: %s", lodepng_error_text(status));
+			bitLogGraErr( "Failed to decode image: " << lodepng_error_text(status));
 			return false;
 		}
 
@@ -176,7 +176,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not open the file." );
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 
@@ -263,14 +263,14 @@ namespace Bit
 		// Error check the loading
 		if( status )
 		{
-			BitLog::NewEngine(Log::Error, "Failed to decode image: %s", lodepng_error_text(status));
+			bitLogGraErr( "Failed to decode image: " << lodepng_error_text(status));
 			return false;
 		}
 
 		// Error check the image size
 		if( width == 0 || height == 0 )
 		{
-			BitLog::NewEngine(Log::Error,  "Image size is 0." );
+			bitLogGraErr(  "Image size is 0." );
 			return false;
 		}
 
@@ -283,14 +283,14 @@ namespace Bit
 			(	componentCount != 3 &&
 				componentCount != 4 ) )
 		{
-			BitLog::NewEngine(Log::Error,  "Not a 24 or 32 bit image." );
+			bitLogGraErr(  "Not a 24 or 32 bit image." );
 			return false;
 		}
 
 		// Error check the data vector size
 		if(	dataVector.size( ) != width * height * componentCount )
 		{
-			BitLog::NewEngine(Log::Error,  "The data size is not right." );
+			bitLogGraErr(  "The data size is not right." );
 			return false;
 		}
 

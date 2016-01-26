@@ -263,7 +263,7 @@ namespace Bit
 		// Error check the stream size
 		if( fileSize < 18 )
 		{
-			BitLog::NewEngine(Log::Error,  "Missing header field." );
+			bitLogGraErr(  "Missing header field." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -290,7 +290,7 @@ namespace Bit
 			m_Header.m_ImageSpec.m_PixelDepth != 24 &&
 			m_Header.m_ImageSpec.m_PixelDepth != 32 )
 		{
-			BitLog::NewEngine(Log::Error, "Not supporting %i bit pixel depth.", (int)m_Header.m_ImageSpec.m_PixelDepth );
+			bitLogGraErr( "Not supporting " << (int)m_Header.m_ImageSpec.m_PixelDepth << " bit pixel depth."  );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -299,14 +299,14 @@ namespace Bit
 		if( m_Header.GetImageType( ) != UncompressedTrueColorImage &&
 			m_Header.GetImageType( ) != UncompressedGrayscaleImage )
 		{
-			BitLog::NewEngine(Log::Error,  "Not supporting color mapped or compressed images." );
+			bitLogGraErr(  "Not supporting color mapped or compressed images." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
 
 		if(	m_Header.GetImageType( ) == UncompressedGrayscaleImage && m_Header.m_ImageSpec.m_PixelDepth != 8 )
 		{
-			BitLog::NewEngine(Log::Error,  "Not supporting non 8 bit grayscale iamges." );
+			bitLogGraErr(  "Not supporting non 8 bit grayscale iamges." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -328,7 +328,7 @@ namespace Bit
 			// Check if the data fits in the file
 			if( fileSize < m_DataSize + 18 )
 			{
-				BitLog::NewEngine(Log::Error,  "The expected data size is too large." );
+				bitLogGraErr(  "The expected data size is too large." );
 				p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 				return false;
 			}
@@ -367,7 +367,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not open the file." );
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 
@@ -404,7 +404,7 @@ namespace Bit
 		// Error check the data
 		if( m_pData == NULL || m_DataSize == 0 )
 		{
-			BitLog::NewEngine(Log::Error,  "No image data." );
+			bitLogGraErr(  "No image data." );
 			return false;
 		}
 
@@ -503,7 +503,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not open the file." );
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 

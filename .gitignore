@@ -20,6 +20,7 @@ bin
 *.pdb
 *.sdf
 *.opensdf
+*.opendb
 *.layout
 *.cbTemp
 *.depend

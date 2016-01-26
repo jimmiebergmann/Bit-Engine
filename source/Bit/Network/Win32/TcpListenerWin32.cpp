@@ -55,7 +55,7 @@ namespace Bit
 		SocketHandle socketHandle;
 		if( ( socketHandle = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) <= 0 )
 		{
-			BitLog::NewEngine(Log::Error, "Can not create the socket. Error: %i.", static_cast<Int32>(GetLastError()));
+			bitLogNetErr( "Can not create the socket. Error: " << static_cast<Int32>(GetLastError()));
 			return false;
 		}
 		m_Socket.SetHandle( socketHandle );
@@ -69,7 +69,7 @@ namespace Bit
 		// Bind
 		if( bind( m_Socket.GetHandle( ), reinterpret_cast<const sockaddr *>( &service ), sizeof( service ) ) != 0 )
 		{
-			BitLog::NewEngine(Log::Error, "Can not bind the socket. Error: %i.", static_cast<Int32>(GetLastError()));
+			bitLogNetErr( "Can not bind the socket. Error: " << static_cast<Int32>(GetLastError()));
 			Stop( );
 			return false;
 		}
@@ -92,7 +92,7 @@ namespace Bit
 		// Listen for incomming clients
 		if( listen( m_Socket.GetHandle( ), SOMAXCONN ) != 0 )
 		{
-			BitLog::NewEngine(Log::Error, "Can not listen for clients. Error: %i.", static_cast<Int32>(GetLastError()));
+			bitLogNetErr( "Can not listen for clients. Error: " << static_cast<Int32>(GetLastError()));
 			return false;
 		}
 
@@ -100,7 +100,7 @@ namespace Bit
 		SocketHandle acceptSocket = 0;
 		if( ( acceptSocket = accept( m_Socket.GetHandle( ), NULL, NULL ) ) == -1 )
 		{
-			BitLog::NewEngine(Log::Error, "Can not accept the client. Error: %i.", static_cast<Int32>(GetLastError()));
+			bitLogNetErr( "Can not accept the client. Error: " << static_cast<Int32>(GetLastError()));
 			return false;
 		}
 

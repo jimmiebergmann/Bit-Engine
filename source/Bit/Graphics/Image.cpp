@@ -140,12 +140,12 @@ namespace Bit
 		}
 		else if( fileExtension == "JPG" )
 		{
-			BitLog::NewEngine(Log::Error,  "Not supporting JPG images yet." );
+			bitLogGraErr(  "Not supporting JPG images yet." );
 			return false;
 		}
 
 		// Unknown extension
-		BitLog::NewEngine(Log::Error,  "Unknow extension: %s", fileExtension.c_str( ) );
+		bitLogGraErr(  "Unknow extension: " << fileExtension );
 		return false;
 	}
 
@@ -161,7 +161,7 @@ namespace Bit
 		// Get the image type
 		if( tga.GetHeader( ).GetImageType( ) != TgaFile::UncompressedTrueColorImage )
 		{
-			BitLog::NewEngine(Log::Error,  "Not an uncompressed true color image." );
+			bitLogGraErr(  "Not an uncompressed true color image." );
 			delete tga.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -171,7 +171,7 @@ namespace Bit
 
 		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			BitLog::NewEngine(Log::Error,  "Wrong pixel depth format: %i bytes.", (Int32)m_PixelDepth );
+			bitLogGraErr(  "Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes."  );
 			delete tga.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -215,7 +215,7 @@ namespace Bit
 		// Get the image type
 		if( bmp.GetDibHeader( ).GetCompression( ) != BmpFile::NoCompression )
 		{
-			BitLog::NewEngine(Log::Error,  "Not an uncompressed true color image." );
+			bitLogGraErr(  "Not an uncompressed true color image." );
 			delete bmp.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -225,7 +225,7 @@ namespace Bit
 
 		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			BitLog::NewEngine(Log::Error, "Wrong pixel depth format: %i bytes.", (Int32)m_PixelDepth);
+			bitLogGraErr( "Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes." );
 			delete bmp.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -270,7 +270,7 @@ namespace Bit
 
 		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			BitLog::NewEngine(Log::Error, "Wrong pixel depth format: %i bytes.", (Int32)m_PixelDepth);
+			bitLogGraErr( "Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes." );
 			delete png.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -388,7 +388,7 @@ namespace Bit
 		// Make sure we have any data to swap
 		if( m_pData == NULL )
 		{
-			BitLog::NewEngine(Log::Error,  "Image not containing any data." );
+			bitLogGraErr(  "Image not containing any data." );
 			return;
 		}
 
@@ -409,7 +409,7 @@ namespace Bit
 		// Make sure we have any data to swap
 		if( m_pData == NULL )
 		{
-			BitLog::NewEngine(Log::Error,  "Image not containing any data." );
+			bitLogGraErr(  "Image not containing any data." );
 			return;
 		}
 

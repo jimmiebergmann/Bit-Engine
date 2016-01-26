@@ -258,7 +258,7 @@ namespace Bit
 					// Get half round time
 					Uint64 roundTimeHalf = timerVector[recvConnectSequence].GetTime().AsMicroseconds() / 2;
 
-					BitLog::NewEngine(Log::Error, "%i   %i", timerVector[recvConnectSequence].GetTime().AsMicroseconds() );
+					//bitLogNetErr( "%i   %i", timerVector[recvConnectSequence].GetTime().AsMicroseconds() );
 					
 					// Get server time
 					Uint64 serverTime = 0;
@@ -520,7 +520,7 @@ namespace Bit
 						Entity * pEntity = m_EntityManager.GetEntity(entityId);
 						if (pEntity == NULL)
 						{
-							BitLog::NewEngine(Log::Error,  "Trying to destroy NULL entity." );
+							bitLogNetErr(  "Trying to destroy NULL entity." );
 							continue;
 						}
 

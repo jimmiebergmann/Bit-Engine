@@ -76,7 +76,7 @@ namespace Bit
 			{
 				if( m_pGraphicDevice == NULL )
 				{
-					BitLog::NewEngine(Log::Error,  "No attached graphic device." );
+					bitLogSysErr( "No attached graphic device." );
 					return NULL;
 				}
 

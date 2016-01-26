@@ -284,7 +284,7 @@ namespace Bit
 		// Error check the stream size
 		if( fileSize < 44 )
 		{
-			BitLog::NewEngine(Log::Error,  "Wrong file size" );
+			bitLogAudErr( "Wrong file size" );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -298,7 +298,7 @@ namespace Bit
 		if(	m_RiffHeader.m_ChunkId[ 0 ] != 'R' || m_RiffHeader.m_ChunkId[ 1 ] != 'I' ||
 			m_RiffHeader.m_ChunkId[ 2 ] != 'F' || m_RiffHeader.m_ChunkId[ 3 ] != 'F' )
 		{
-			BitLog::NewEngine(Log::Error,  "No RIFF header were found." );
+			bitLogAudErr( "No RIFF header were found." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -306,7 +306,7 @@ namespace Bit
 		if(	m_RiffHeader.m_Format[ 0 ] != 'W' || m_RiffHeader.m_Format[ 1 ] != 'A' ||
 			m_RiffHeader.m_Format[ 2 ] != 'V' || m_RiffHeader.m_Format[ 3 ] != 'E' )
 		{
-			BitLog::NewEngine(Log::Error,  "No WAVE field were found.." );
+			bitLogAudErr( "No WAVE field were found.." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -325,14 +325,14 @@ namespace Bit
 		if(	m_FmtChunk.m_SubChunkId[ 0 ] != 'f' || m_FmtChunk.m_SubChunkId[ 1 ] != 'm' ||
 			m_FmtChunk.m_SubChunkId[ 2 ] != 't' || m_FmtChunk.m_SubChunkId[ 3 ] != ' ' )
 		{
-			BitLog::NewEngine(Log::Error,  "No FMT chunk were found." );
+			bitLogAudErr( "No FMT chunk were found." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
 
 		if( m_FmtChunk.m_AudioFormat != 1 )
 		{
-			BitLog::NewEngine(Log::Error,  "No PCM WAVE file." );
+			bitLogAudErr( "No PCM WAVE file." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -348,7 +348,7 @@ namespace Bit
 		if(	m_DataChunk.m_SubChunkId[ 0 ] != 'd' || m_DataChunk.m_SubChunkId[ 1 ] != 'a' ||
 			m_DataChunk.m_SubChunkId[ 2 ] != 't' || m_DataChunk.m_SubChunkId[ 3 ] != 'a' )
 		{
-			BitLog::NewEngine(Log::Error,  "No data chunk were found." );
+			bitLogAudErr( "No data chunk were found." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -356,7 +356,7 @@ namespace Bit
 		if( m_DataChunk.m_SubChunkSize == 0 ||
 			m_DataChunk.m_SubChunkSize + m_FmtChunk.m_SubChunkSize + 28 > fileSize )
 		{
-			BitLog::NewEngine(Log::Error,  "Error in data size." );
+			bitLogAudErr( "Error in data size." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -386,7 +386,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not open the file." );
+			bitLogAudErr( "Can not open the file." );
 			return false;
 		}
 
@@ -497,7 +497,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			BitLog::NewEngine(Log::Error,  "Can not open the file." );
+			bitLogAudErr( "Can not open the file." );
 			return false;
 		}
 

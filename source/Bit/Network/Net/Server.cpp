@@ -314,7 +314,7 @@ namespace Bit
 					// Error check the item and it's data.
 					if (pItem == NULL || pBuffer == NULL)
 					{
-						BitLog::NewEngine(Log::Error,  "Null memory pool item." );
+						bitLogNetErr(  "Null memory pool item." );
 						continue;
 					}
 

@@ -343,14 +343,14 @@ namespace Bit
 		tcp.SetBlocking(false);
 		if (tcp.Connect(p_Address, m_Port, m_Timeout, p_Request.m_RemotePort) == false)
 		{
-			BitLog::NewEngine(Log::Error,  "Could not connect to the server." );
+			bitLogNetErr(  "Could not connect to the server." );
 			return false;
 		}
 
 		// Send the request
 		if (tcp.Send(reinterpret_cast<const void *>(requestSs.str().c_str()), requestSize) != requestSize)
 		{
-			BitLog::NewEngine(Log::Error,  "Could not send the request." );
+			bitLogNetErr(  "Could not send the request." );
 			return false;
 		}
 
@@ -375,7 +375,7 @@ namespace Bit
 			// Check if we received any data at all.
 			if (receiveSize <= 0)
 			{
-				BitLog::NewEngine(Log::Error,  "Could not receive the header data." );
+				bitLogNetErr(  "Could not receive the header data." );
 				return false;
 			}
 
@@ -416,7 +416,7 @@ namespace Bit
 				{
 					if (ParseBodyProtocolLine(headerLine, p_Response) == false)
 					{
-						BitLog::NewEngine(Log::Error,  "Could not parse the protocol." );
+						bitLogNetErr(  "Could not parse the protocol." );
 						return false;
 					}
 
@@ -425,7 +425,7 @@ namespace Bit
 				}
 				else if (ParseBodyLine(headerLine, p_Response) == false)
 				{
-					BitLog::NewEngine(Log::Error,  "Could not parse the body data." );
+					bitLogNetErr(  "Could not parse the body data." );
 					return false;
 				}
 			}
@@ -435,7 +435,7 @@ namespace Bit
 		if (headerComplete == false)
 		{
 			// Disconnect and return false
-			BitLog::NewEngine(Log::Error,  "Could not receive the entire header." );
+			bitLogNetErr(  "Could not receive the entire header." );
 			tcp.Disconnect();
 			return false;
 

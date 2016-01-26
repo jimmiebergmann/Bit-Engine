@@ -26,43 +26,121 @@
 #define BIT_SYSTEM_LOG_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/System/Timestamp.hpp>
-#include <Bit/System/SmartMutex.hpp>
-#include <string>
+#include <Bit/System/Private/LogManager.hpp>
+
+/// Main macro for logging. pass the Bit::Log::eType of the message, and then the message itself.
+/// The following macros are thread safe.
+/// CAUTION: The message actually is supposed to be in the format: << data << more data << "This is a string".
+/// Example of usage:
+///		bitLog(Bit::Log::Error, MY_CHANNEL_NUMBER, "This is an error, id: " << 123 );
+#define bitLog(type, channel, message) \
+	Bit::Private::LogManager::Start(type, channel, __FILE__, __LINE__, __FUNCTION__); \
+	Bit::Private::LogManager::GetStream() << message; \
+	Bit::Private::LogManager::End();
+
+
+// Macros for logging Errors, Warnings and Info. Just pass the message for respective macro.
+#define bitLogErr(channel, message)		bitLog( Bit::Log::Error,	channel, message)
+#define bitLogWarn(channel, message)	bitLog( Bit::Log::Warning,	channel, message)
+#define bitLogInfo(channel, message)	bitLog( Bit::Log::Info,		message)
+
+#ifdef BIT_BUILD_DEBUG
+// Macro for loggin Debug messages, only for debug profile.
+#define bitLogDebug(channel, message)	bitLog( Bit::Log::Debug,	channel, message)
+#else
+#define bitLogDebug(message)
+#endif
+
+
+// Audio library logging macros
+#define bitLogAud(type, message)	bitLog( type,				Bit::Log::Audio, message)
+#define bitLogAudErr(message)		bitLog( Bit::Log::Error,	Bit::Log::Audio, message)
+#define bitLogAudWarn(message)		bitLog( Bit::Log::Warning,	Bit::Log::Audio, message)
+#define bitLogAudInfo(message)		bitLog( Bit::Log::Info,		Bit::Log::Audio)
+
+#ifdef BIT_BUILD_DEBUG
+// Macro for loggin Audio Debug messages, only for debug profile.
+#define bitLogAudDebug(message) bitLog( Bit::Log::Debug,	Bit::Log::Audio, message)
+#else
+#define bitLogAudDebug(message)
+#endif
+
+
+// Graphics library logging macros
+#define bitLogGra(type, message)	bitLog( type,				Bit::Log::Graphics, message)
+#define bitLogGraErr(message)		bitLog( Bit::Log::Error,	Bit::Log::Graphics, message)
+#define bitLogGraWarn(message)		bitLog( Bit::Log::Warning,	Bit::Log::Graphics, message)
+#define bitLogGraInfo(message)		bitLog( Bit::Log::Info,		Bit::Log::Graphics)
+
+#ifdef BIT_BUILD_DEBUG
+// Macro for loggin Graphics Debug messages, only for debug profile.
+#define bitLogGraDebug(message)		bitLog( Bit::Log::Debug,	Bit::Log::Graphics, message)
+#else
+#define bitLogGraDebug(message)
+#endif
+
+
+// Network library logging macros
+#define bitLogNet(type, message)	bitLog( type,				Bit::Log::Network, message)
+#define bitLogNetErr(message)		bitLog( Bit::Log::Error,	Bit::Log::Network, message)
+#define bitLogNetWarn(message)		bitLog( Bit::Log::Warning,	Bit::Log::Network, message)
+#define bitLogNetInfo(message)		bitLog( Bit::Log::Info,		Bit::Log::Network)
+
+#ifdef BIT_BUILD_DEBUG
+// Macro for loggin Network Debug messages, only for debug profile.
+#define bitLogNetDebug(message)		bitLog( Bit::Log::Debug,	Bit::Log::Network, message)
+#else
+#define bitLogNetDebug(message)
+#endif
+
+
+// System library logging macros
+#define bitLogSys(type, message)	bitLog( type,				Bit::Log::System, message)
+#define bitLogSysErr(message)		bitLog( Bit::Log::Error,	Bit::Log::System, message)
+#define bitLogSysWarn(message)		bitLog( Bit::Log::Warning,	Bit::Log::System, message)
+#define bitLogSysInfo(message)		bitLog( Bit::Log::Info,		Bit::Log::System)
+
+#ifdef BIT_BUILD_DEBUG
+// Macro for loggin System Debug messages, only for debug profile.
+#define bitLogSysDebug(message)		bitLog( Bit::Log::Debug,	Bit::Log::System, message)
+#else
+#define bitLogSysDebug(message)
+#endif
+
+
+// Window library logging macros
+#define bitLogWnd(type, message)	bitLog( type,				Bit::Log::Window, message)
+#define bitLogWndErr(message)		bitLog( Bit::Log::Error,	Bit::Log::Window, message)
+#define bitLogWndWarn(message)		bitLog( Bit::Log::Warning,	Bit::Log::Window, message)
+#define bitLogWndInfo(message)		bitLog( Bit::Log::Info,		Bit::Log::Window)
+
+#ifdef BIT_BUILD_DEBUG
+// Macro for loggin Window Debug messages, only for debug profile.
+#define bitLogWndDebug(message)		bitLog( Bit::Log::Debug,	Bit::Log::Window, message)
+#else
+#define bitLogWndDebug(message)
+#endif
+
 
 namespace Bit
 {
 
-	/*
-	Example 1:
-	--------------------------------------------------------------------------------------
-	BitLog::New("This is an info message!");
-	--------------------------------------------------------------------------------------
-
-	Example 2:
-	--------------------------------------------------------------------------------------
-		BitLog::New(Bit::Log::Error, "This is an error message!");
-	--------------------------------------------------------------------------------------
-	*/
-
-
-	// Macro for setting up log, line and function name from where the log message is done.
-	#define BitLog Bit::Log::SetMetaData(__FILE__, __LINE__, __FUNCTION__); Bit::Log
-
-
-	// Forward declarations
-	class LogHandle;
-	struct LogMessage;
+	
+	/// Example 1:
+	/// --------------------------------------------------------------------------------------
+	///	   bitLogNetInfo("This is a network info message nr. " << 123 );
+	/// --------------------------------------------------------------------------------------
+	///
+	/// Example 2:
+	/// --------------------------------------------------------------------------------------
+	///	   bitLogErr( "This is an error message!");
+	/// --------------------------------------------------------------------------------------
+	
 
 	////////////////////////////////////////////////////////////////
-	/// \brief	Log static class, this class makes it much cleaner to post messages.
-	///			See examples at the top.
+	/// \brief	Log static class.
 	///
-	/// Set the message type with the enums Info/Waring/Error. The type are restored to the default
-	/// type(Info) at message posting.
-	///
-	/// Set the output log handle with the SetHandle function. The default handle will print every single message in the program console.
-	/// You can get the default handle via the GetDefaultHandle function.
+	/// Use the macros to post messages.
 	///
 	////////////////////////////////////////////////////////////////
 	class BIT_API Log
@@ -71,24 +149,31 @@ namespace Bit
 	public:
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Type enum
+		/// \brief Message type enum
 		///
 		////////////////////////////////////////////////////////////////
 		enum eType
 		{
-			Info,		///< Used for setting the current message as an info message
-			Warning,	///< Used for setting the current message as aa warning message.
-			Error		///< Used for setting the current message as an error message.
+			Error,		///< Error message type.
+			Warning,	///< Warning message type.
+			Info,		///< Info message type.
+			Debug		///< Debug message type.
 		};
 
+
 		////////////////////////////////////////////////////////////////
-		/// \brief Function enum
+		/// \brief Channel enum.
 		///
 		////////////////////////////////////////////////////////////////
-		enum eUser
+		enum eChannel
 		{
-			Engine,	///< Used for setting system message flag.
-			Client	///< Used for setting system message flag.
+			Unspecified,
+			Audio,
+			Graphics,
+			Network,
+			System,
+			Window,
+			Reserved
 		};
 
 		// Static functions
@@ -104,64 +189,6 @@ namespace Bit
 		///
 		////////////////////////////////////////////////////////////////
 		static LogHandle & GetDefaultHandle();
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Create a new client info message.
-		///
-		////////////////////////////////////////////////////////////////
-		template <typename ... Params>
-		static Bool New(const char * p_FormatedString, Params ... p_Params);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Create a new client message.
-		///
-		////////////////////////////////////////////////////////////////
-		template <typename ... Params>
-		static Bool New(const eType p_Type, const char * p_FormatedString, Params ... p_Params);
-
-		////////////////////////////////////////////////////////////////
-		/// \brief Create a new message.
-		///
-		////////////////////////////////////////////////////////////////
-		template <typename ... Params>
-		static Bool New(const eType p_Type, const eUser p_User, const char * p_FormatedString, Params ... p_Params);
-		
-		////////////////////////////////////////////////////////////////
-		/// \brief Create a new engine info message.
-		///
-		////////////////////////////////////////////////////////////////
-		template <typename ... Params>
-		static Bool NewEngine(const char * p_FormatedString, Params ... p_Params);
-		
-		////////////////////////////////////////////////////////////////
-		/// \brief Create a new engine message.
-		///
-		////////////////////////////////////////////////////////////////
-		template <typename ... Params>
-		static Bool NewEngine(const eType p_Type, const char * p_FormatedString, Params ... p_Params);
-		
-		////////////////////////////////////////////////////////////////
-		/// \brief	Set meta for the log manager.
-		///
-		////////////////////////////////////////////////////////////////
-		static void SetMetaData(const std::string & p_File,
-								const Int32 p_Line,
-								const std::string & p_Function);
-
-	private:
-
-		// Private functions
-
-		////////////////////////////////////////////////////////////////
-		/// \brief	Format a string into a message for the log message class.
-		///
-		////////////////////////////////////////////////////////////////
-		static void StringFormat(const char * p_FormatedString, ...);
-
-		// Private variables
-		static LogHandle *					g_CurrentLogHandle;
-		static LogMessage					g_LogMessage;
-		static Mutex						g_Mutex;
 
 	};
 
@@ -187,7 +214,7 @@ namespace Bit
 		Timestamp		timestamp;			///< Timestamp of the message.
 		std::string		message;			///< Message data.
 		Log::eType		type;				///< Message type.
-		Log::eUser		user;				///< User type.
+		Uint32			channel;			///< Message channel.
 		std::string		file;				///< From what file is the logging being done?
 		Int32			line;				///< At what line is the logging being done?
 		std::string		function;			///< In what file is the logging being done?
@@ -224,10 +251,10 @@ namespace Bit
 		virtual void OnMessage(const LogMessage & p_Message);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virual function fired at posted info messages.
+		/// \brief Virual function fired at posted error messages.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void OnInfo(const LogMessage & p_Message);
+		virtual void OnError(const LogMessage & p_Message);
 
 		////////////////////////////////////////////////////////////////
 		/// \brief Virual function fired at posted warning messages.
@@ -236,19 +263,18 @@ namespace Bit
 		virtual void OnWarning(const LogMessage & p_Message);
 
 		////////////////////////////////////////////////////////////////
-		/// \brief Virual function fired at posted error messages.
+		/// \brief Virual function fired at posted info messages.
 		///
 		////////////////////////////////////////////////////////////////
-		virtual void OnError(const LogMessage & p_Message);
+		virtual void OnInfo(const LogMessage & p_Message);
+
+		////////////////////////////////////////////////////////////////
+		/// \brief Virual function fired at posted debug messages.
+		///
+		////////////////////////////////////////////////////////////////
+		virtual void OnDebug(const LogMessage & p_Message);
 
 	};
-
-
-	////////////////////////////////////////////////////////////////
-	// Include the inline file.
-	////////////////////////////////////////////////////////////////
-	#include <Bit/System/Log.inl>
-	
 
 }
 
