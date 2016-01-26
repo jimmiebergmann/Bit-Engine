@@ -23,7 +23,6 @@
 
 #include <Bit/Network/Net/HostMessage.hpp>
 #include <Bit/Network/Net/Server.hpp>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

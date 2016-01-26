@@ -25,7 +25,7 @@
 #include <Bit/Graphics/Md2File.hpp>
 #include <fstream>
 #include <sstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -271,7 +271,7 @@ namespace Bit
 		// Error check the stream size, make sure the header fits.
 		if( streamSize < sizeof( m_Header ) )
 		{
-			std::cout << "[Md2File::LoadFromStream] No valid header were found." << std::endl;
+			bitLogGraErr(  "No valid header were found." );
 			return false;
 		}
 
@@ -281,29 +281,29 @@ namespace Bit
 		// Error check the data
 		if( m_Header.MagicNumber != 844121161 )
 		{
-			std::cout << "[Md2File::LoadFromStream] Wrong magic number: " << m_Header.MagicNumber << ". Expecting: 844121161 " << std::endl;
+			bitLogGraErr(  "Wrong magic number: " << m_Header.MagicNumber << ". Expecting: 844121161."  );
 			return false;
 		}
 		if( m_Header.Version != 8 )
 		{
-			std::cout << "[Md2File::LoadFromStream] Wrong version: " << m_Header.Version << ". Expecting: 8 " << std::endl;
+			bitLogGraErr(  "Wrong version: " << m_Header.Version << ". Expecting: 8."   );
 			return false;
 		}
 		if( m_Header.TriangleCount <= 0 || m_Header.TriangleCount >= 65536 )
 		{
-			std::cout << "[Md2File::LoadFromStream] Triagnle count error: " << m_Header.TriangleCount << std::endl;
+			bitLogGraErr(  "Triagnle count error: " << m_Header.TriangleCount );
 			return false;
 		}
 		if( m_Header.FrameCount <= 0 )
 		{
-			std::cout << "[Md2File::LoadFromStream] Frame count error: " << m_Header.FrameCount << std::endl;
+			bitLogGraErr(  "Frame count error: " << m_Header.FrameCount );
 			return false;
 		}
 		if( m_Header.OffsetSkins > streamSize		|| m_Header.OffsetTexCoords > streamSize ||
 			m_Header.OffsetTriangles > streamSize	|| m_Header.OffsetFrames > streamSize ||
 			m_Header.OffsetOpenGLCmds > streamSize )
 		{
-			std::cout << "[Md2File::LoadFromStream] Offset error." << std::endl;
+			bitLogGraErr(  "Offset error." );
 			return false;
 		}
 
@@ -316,7 +316,7 @@ namespace Bit
 
 		if( totalMd2Data > streamSize )
 		{
-			std::cout << "[Md2File::LoadFromStream] Stream size is too small." << std::endl;
+			bitLogGraErr(  "Stream size is too small." );
 			return false;
 		}
 
@@ -424,7 +424,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::ifstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::LoadFromFile] Can not open the file. " << std::endl;
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 
@@ -474,7 +474,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::SaveToFile] Can not open the file. " << std::endl;
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 

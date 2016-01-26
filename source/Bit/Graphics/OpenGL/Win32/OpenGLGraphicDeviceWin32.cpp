@@ -35,7 +35,7 @@
 #include <Bit/Graphics/Model.hpp>
 #include <Bit/Graphics/ModelRenderer.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLModelRenderer.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <sstream>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -127,14 +127,14 @@ namespace Bit
 		// Make sure that the GD is not already open.
 		if( m_Open == true )
 		{
-			std::cout << "[OpenGL::BindOpenGLExtensions] The graphic device is already loaded.\n";
+			bitLogGraErr(  "The graphic device is already loaded." );
 			return false;
 		}
 
 		// Make sure that the render output is loaded
 		if( p_RenderOutput.IsOpen( ) == false )
 		{
-			std::cout << "[OpenGL::BindOpenGLExtensions] The render output is not loaded.\n";
+			bitLogGraErr(  "The render output is not loaded." );
 			return false;
 		}
 
@@ -165,7 +165,7 @@ namespace Bit
 		// Bind the OpenGL extensions
 		if( OpenGL::BindOpenGLExtensions( contextVersion.GetMajor( ), contextVersion.GetMinor( ) ) != true )
 		{
-			std::cout << "[OpenGLGraphicDeviceWin32::Open] Binding opengl extensions failed.\n";
+			bitLogGraErr(  "Binding opengl extensions failed." );
 			return false;
 		}
 
@@ -175,7 +175,7 @@ namespace Bit
 		// Load default shaders
 		if( LoadDefaultShaders( ) == false )
 		{
-			std::cout << "[OpenGLGraphicDeviceWin32::Open] Warning: Failed to load default shaders.\n";
+			bitLogGraErr(  "Failed to load default shaders." );
 		}
 
 		// Set the default viewport to the window's size
@@ -215,13 +215,13 @@ namespace Bit
 			// Release the context from the current thread
 			if( !wglMakeCurrent( NULL, NULL ) )
 			{
-				std::cout << "[OpenGLGraphicDeviceWin32::Close] Can not release the context.\n";
+				bitLogGraErr(  "Can not release the context." );
 			}
 
 			// Delete the context
 			if( !wglDeleteContext( m_Context ))
 			{
-				std::cout << "[OpenGLGraphicDeviceWin32::Close] Can not delete the context.\n";
+				bitLogGraErr(  "Can not delete the context." );
 			}
 
 			m_Context = NULL;
@@ -596,12 +596,12 @@ namespace Bit
 
 		if((PixelFormat = ChoosePixelFormat( p_RenderOutput.GetDeviceContextHandle( ), &PFD ) ) == 0)
 		{
-			std::cout<< "[OpenGLGraphicDeviceWin32::Open] Can not choose pixel format.\n";
+			bitLogGraErr(  "Can not choose pixel format." );
 			return false;
 		}
 		if( ( SetPixelFormat( p_RenderOutput.GetDeviceContextHandle( ), PixelFormat, &PFD ) ) == false )
 		{
-			std::cout<<  "[OpenGLGraphicDeviceWin32::Open] Can not set pixel format.\n";
+			bitLogGraErr(  "Can not set pixel format." );
 			return false;
 		}
 
@@ -611,7 +611,7 @@ namespace Bit
 
 		if( temporaryContext == NULL )
 		{
-			std::cout << "[OpenGLGraphicDeviceWin32::Open] Can not create a regular OpenGL context.\n";
+			bitLogGraErr(  "Can not create a regular OpenGL context." );
 			return false;
 		}
 
@@ -632,7 +632,7 @@ namespace Bit
 		PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
 		if((wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress( "wglCreateContextAttribsARB" )) == NULL )
 		{
-			std::cout << "[OpenGLGraphicDeviceWin32::Open] Can not get the function for creating the context.\n";
+			bitLogGraErr(  "Can not get the function for creating the context." );
 			return false;
 		}
 
@@ -730,7 +730,7 @@ namespace Bit
 
 		if (m_pDefaultModelVertexShaders[InitialPoseShader]->CompileFromMemory(initialPoseVertexSource) == false)
 		{
-			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile InitialPoseShader vertex shader.\n"; 
+			bitLogGraErr(  "Failed to compile InitialPoseShader vertex shader." );
 			return false;
 		}
 
@@ -804,7 +804,7 @@ namespace Bit
 		
 		if (m_pDefaultModelFragmentShader->CompileFromMemory(initialPoseFragmentSource) == false)
 		{
-			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile model fragment shader.\n"; 
+			bitLogGraErr(  "Failed to compile model fragment shader." );
 			return false;
 		}
 
@@ -893,7 +893,7 @@ namespace Bit
 
 		if (m_pDefaultModelVertexShaders[VertexAnimationShader]->CompileFromMemory(vertexAnimationVertexSource) == false)
 		{
-			std::cout << "[OpenGLGraphicDeviceWin32::LoadDefaultShaders] Failed to compile VertexAnimationShader vertex shader.\n";
+			bitLogGraErr(  "Failed to compile VertexAnimationShader vertex shader." );
 			return false;
 		}
 

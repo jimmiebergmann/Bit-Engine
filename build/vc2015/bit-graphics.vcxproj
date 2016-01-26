@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Dynamic Debug|Win32">
+      <Configuration>Dynamic Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dynamic Release|Win32">
+      <Configuration>Dynamic Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Debug|Win32">
+      <Configuration>Static Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Static Release|Win32">
+      <Configuration>Static Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3773E6DD-764B-4109-9D38-09D3B50B975B}</ProjectGuid>
+    <RootNamespace>bitgraphics</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
+    <OutDir>$(SolutionDir)..\..\lib\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-graphics\Static_Debug\</IntDir>
+    <TargetName>$(ProjectName)-s-d</TargetName>
+    <IncludePath>../../include;../../source/Bit/Graphics/LodePng;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;../../extlibs/libs/Freetype;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
+    <OutDir>$(SolutionDir)..\..\lib\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-graphics\Static_Release\</IntDir>
+    <IncludePath>../../include;../../source/Bit/Graphics/LodePng;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)-s</TargetName>
+    <LibraryPath>../../lib;../../extlibs/libs/Freetype;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
+    <OutDir>$(SolutionDir)..\..\lib\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-graphics\Dynamic_Debug\</IntDir>
+    <TargetName>$(ProjectName)-d</TargetName>
+    <IncludePath>../../include;../../source/Bit/Graphics/LodePng;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;../../extlibs/libs/Freetype;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
+    <OutDir>$(SolutionDir)..\..\lib\</OutDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-graphics\Dynamic_Release\</IntDir>
+    <IncludePath>../../include;../../source/Bit/Graphics/LodePng;../../extlibs/include/Freetype;$(IncludePath)</IncludePath>
+    <LibraryPath>../../lib;../../extlibs/libs/Freetype;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../include;../../extlibs/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;BIT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>../../include;../../extlibs/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;BIT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../include;../../extlibs/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;BIT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>bit-system-s-d.lib;opengl32.lib;freetype250_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>../../include;../../extlibs/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;BIT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>bit-system-s.lib;opengl32.lib;freetype250.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="bit-system.vcxproj">
+      <Project>{dbc0da24-68c8-4dc8-a2ec-ce562d4def6b}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="bit-window.vcxproj">
+      <Project>{e4b131dc-b097-47ef-8b3f-64c43e945c89}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Graphics\BmpFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Drawable.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Framebuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Image.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Md2File.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ModelMaterial.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ModelRenderer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\Animation.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationState.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationTrack.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\KeyFrame.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\ModelVertexData.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\Skeleton.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimation.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimationTrack.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexKeyFrame.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ObjFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ObjMaterialFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLFramebuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLGraphicDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLModelRenderer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLPostProcessingBloom.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLRenderbuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShader.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShaderProgram.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLTexture.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexArray.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexBuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\PngFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\PostProcessing.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\PostProcessingBloom.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\PrimitiveMode.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Renderbuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Renderer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Shader.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Texture.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\TextureProperties.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\TgaFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\VertexArray.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\VertexBuffer.hpp" />
+    <ClInclude Include="..\..\source\Bit\Graphics\LodePng\lodepng.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Graphics\BmpFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Image.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\LodePng\lodepng.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Md2File.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ModelMaterial.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ModelRenderer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\AnimationState.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\ModelVertexData.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\Skeleton.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimation.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimationTrack.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexKeyFrame.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ObjFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ObjMaterialFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLFramebuffer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLModelRenderer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLPostProcessingBloom.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLRenderbuffer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShaderProgram.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLTexture.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBuffer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\PngFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Renderer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\TextureProperties.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\TgaFile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\Bit\Graphics\Md2File.inl" />
+    <None Include="..\..\include\Bit\Graphics\ObjFile.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

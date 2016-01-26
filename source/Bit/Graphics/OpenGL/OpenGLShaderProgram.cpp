@@ -24,7 +24,7 @@
 
 #include <Bit/Graphics/OpenGL/OpenGLShaderProgram.hpp>
 #include <Bit/Graphics/OpenGL/OpenGLShader.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -55,16 +55,14 @@ namespace Bit
 		// Make sure the shader program is loaded before we attach any shaders.
 		if( m_ProgramID == 0 )
 		{
-			std::cout << "[OpenGLShaderProgram::AttachShaders] "
-				"Shader program was not initialised\n";
+			bitLogGraErr(  "Shader program was not initialised." );
 			return false;
 		}
 
 		// Not supporting more than 2 shaders atm
 		if( m_AttachedShaderCount == 2 )
 		{
-			std::cout << "[OpenGLShaderProgram::AttachShaders] "
-				"Too many shaders attached already: " <<  m_AttachedShaderCount << std::endl;
+			bitLogGraErr( "Too many shaders attached already: " << m_AttachedShaderCount );
 			return false;
 		}
 
@@ -85,8 +83,7 @@ namespace Bit
 		// Make sure we have attached any shaders at all to the shader program
 		if( m_AttachedShaderCount < 2 )
 		{
-			std::cout << "[OpenGLShaderProgram::Link] "
-				"Not enough shader objects are attached: " << m_AttachedShaderCount << std::endl;
+			bitLogGraErr(  "Not enough shader objects are attached: " << m_AttachedShaderCount );
 			return false;
 		}
 
@@ -103,7 +100,7 @@ namespace Bit
 		{
 			GLchar * pLog = new GLchar[ logLength ];
 			glGetProgramInfoLog( m_ProgramID, logLength, &logLength, pLog );
-			std::cout << "[OpenGLShaderProgram::Link] Message: " <<  pLog << std::endl;
+			bitLogGraErr(  "Shader link error: " <<  pLog );
 			delete [ ] pLog;
 		}
 

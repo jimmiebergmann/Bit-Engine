@@ -25,7 +25,7 @@
 #include <Bit/Network/Http.hpp>
 #include <Bit/System/SmartMutex.hpp>
 #include <algorithm>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 // Undefine the SetPort definition for win32 platform
@@ -343,14 +343,14 @@ namespace Bit
 		tcp.SetBlocking(false);
 		if (tcp.Connect(p_Address, m_Port, m_Timeout, p_Request.m_RemotePort) == false)
 		{
-			std::cout << "[Http::SendRequest] Could not connect to the server." << std::endl;
+			bitLogNetErr(  "Could not connect to the server." );
 			return false;
 		}
 
 		// Send the request
 		if (tcp.Send(reinterpret_cast<const void *>(requestSs.str().c_str()), requestSize) != requestSize)
 		{
-			std::cout << "[Http::SendRequest] Could not send the request." << std::endl;
+			bitLogNetErr(  "Could not send the request." );
 			return false;
 		}
 
@@ -375,7 +375,7 @@ namespace Bit
 			// Check if we received any data at all.
 			if (receiveSize <= 0)
 			{
-				std::cout << "[Http::SendRequest] Could not receive the header data." << std::endl;
+				bitLogNetErr(  "Could not receive the header data." );
 				return false;
 			}
 
@@ -416,7 +416,7 @@ namespace Bit
 				{
 					if (ParseBodyProtocolLine(headerLine, p_Response) == false)
 					{
-						std::cout << "[Http::SendRequest] Could not parse the protocol." << std::endl;
+						bitLogNetErr(  "Could not parse the protocol." );
 						return false;
 					}
 
@@ -425,7 +425,7 @@ namespace Bit
 				}
 				else if (ParseBodyLine(headerLine, p_Response) == false)
 				{
-					std::cout << "[Http::SendRequest] Could not parse the body data." << std::endl;
+					bitLogNetErr(  "Could not parse the body data." );
 					return false;
 				}
 			}
@@ -435,7 +435,7 @@ namespace Bit
 		if (headerComplete == false)
 		{
 			// Disconnect and return false
-			std::cout << "[Http::SendRequest] Could not receive the entire header." << std::endl;
+			bitLogNetErr(  "Could not receive the entire header." );
 			tcp.Disconnect();
 			return false;
 
@@ -472,59 +472,6 @@ namespace Bit
 
 		// Succeeded
 		return true;
-
-
-		/*
-		// Make sure to copy the rest of the "header data" to the body.
-		p_Response.m_Body.append(headerData.begin() + currentDataPosition + 2, headerData.end());
-
-		// Get the expected size of the body if possible
-		const std::string sizeString = p_Response.GetField("Content-Length");
-		const SizeType contentSize = sizeString.size() ? atoi(sizeString.c_str()) : 0;
-
-		// Set the file size, to let the client find out about the progress.
-		// Also, set the downloaded size(Rest data from header packet).
-		m_Mutex.Lock();
-		m_DownloadedSize += static_cast<Uint64>(p_Response.m_Body.size());
-		m_FileSize = static_cast<Uint64>(contentSize);
-		m_Mutex.Unlock();
-
-		// Download the rest of the data(the body data)
-		while (true)
-		{
-			// Finish the download if we've download the entire file.
-			if (contentSize && p_Response.m_Body.size() == contentSize)
-			{
-				return true;
-			}
-
-			// Receive body data.
-			receiveSize = tcp.Receive(g_ResponseBuffer, g_ResponseBufferSize);
-
-			// Break if the packet is invalid.( or lost connection )
-			if (receiveSize <= 0)
-			{
-				// The content size is known and the file is not fully downloaded yet, we lost the connection.
-				if (contentSize)
-				{
-					return false;
-				}
-
-				// Else, we either lost the connection or the download is finished.
-				// It's hard to tell when the content's size is unknown to us.
-				return true;
-			}
-
-			// Append the body data.
-			p_Response.m_Body.append(reinterpret_cast<char*>(g_ResponseBuffer), receiveSize);
-
-			// Increase the downloaded size.
-			m_Mutex.Lock();
-			m_DownloadedSize += static_cast<Uint64>(receiveSize);
-			m_Mutex.Unlock();
-		}*/
-
-		
 	}
 
 	Uint64 Http::GetFileSize()

@@ -25,7 +25,7 @@
 #include <Bit/Graphics/TgaFile.hpp>
 #include <fstream>
 #include <sstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -263,7 +263,7 @@ namespace Bit
 		// Error check the stream size
 		if( fileSize < 18 )
 		{
-			std::cout << "[TgaFile::LoadFromStream] Missing header field." << std::endl;
+			bitLogGraErr(  "Missing header field." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -290,8 +290,7 @@ namespace Bit
 			m_Header.m_ImageSpec.m_PixelDepth != 24 &&
 			m_Header.m_ImageSpec.m_PixelDepth != 32 )
 		{
-			std::cout	<< "[TgaFile::LoadFromStream] Not supporting "
-						<< (int)m_Header.m_ImageSpec.m_PixelDepth << " bit pixel depth." << std::endl;
+			bitLogGraErr( "Not supporting " << (int)m_Header.m_ImageSpec.m_PixelDepth << " bit pixel depth."  );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -300,14 +299,14 @@ namespace Bit
 		if( m_Header.GetImageType( ) != UncompressedTrueColorImage &&
 			m_Header.GetImageType( ) != UncompressedGrayscaleImage )
 		{
-			std::cout	<< "[TgaFile::LoadFromStream] Not supporting color mapped or compressed images." << std::endl;
+			bitLogGraErr(  "Not supporting color mapped or compressed images." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
 
 		if(	m_Header.GetImageType( ) == UncompressedGrayscaleImage && m_Header.m_ImageSpec.m_PixelDepth != 8 )
 		{
-			std::cout	<< "[TgaFile::LoadFromStream] Not supporting non 8 bit grayscale iamges." << std::endl;
+			bitLogGraErr(  "Not supporting non 8 bit grayscale iamges." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -329,7 +328,7 @@ namespace Bit
 			// Check if the data fits in the file
 			if( fileSize < m_DataSize + 18 )
 			{
-				std::cout << "[TgaFile::LoadFromStream] The expected data size is too large." << std::endl;
+				bitLogGraErr(  "The expected data size is too large." );
 				p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 				return false;
 			}
@@ -368,7 +367,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[TgaFile::LoadFromFile] Can not open the file. " << std::endl;
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 
@@ -405,7 +404,7 @@ namespace Bit
 		// Error check the data
 		if( m_pData == NULL || m_DataSize == 0 )
 		{
-			std::cout << "[TgaFile::SaveToStream] No image data." << std::endl;
+			bitLogGraErr(  "No image data." );
 			return false;
 		}
 
@@ -504,7 +503,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			std::cout << "[WaveFile::SaveToFile] Can not open the file. " << std::endl;
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 

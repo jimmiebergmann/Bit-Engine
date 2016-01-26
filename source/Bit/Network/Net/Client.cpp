@@ -25,7 +25,7 @@
 #include <Bit/System/Sleep.hpp>
 #include <Bit/System/Timer.hpp>
 #include <Bit/System/Randomizer.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Memory>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -81,7 +81,7 @@ namespace Bit
 
 			// create the ping data.
 			Uint8 pingData[PingPacketSize];
-			const Uint8 sequence = static_cast<Uint16>(RandomizeNumber(0, 255));	// Create an random sequence.
+			const Uint8 sequence = static_cast<Uint8>(RandomizeNumber(0, 255));	// Create an random sequence.
 			pingData[0] = PacketType::Ping;
 			pingData[1] = sequence;
 
@@ -258,7 +258,7 @@ namespace Bit
 					// Get half round time
 					Uint64 roundTimeHalf = timerVector[recvConnectSequence].GetTime().AsMicroseconds() / 2;
 
-					std::cout << timerVector[recvConnectSequence].GetTime().AsMicroseconds() << "   " << roundTimeHalf << std::endl;
+					//bitLogNetErr( "%i   %i", timerVector[recvConnectSequence].GetTime().AsMicroseconds() );
 					
 					// Get server time
 					Uint64 serverTime = 0;
@@ -520,7 +520,7 @@ namespace Bit
 						Entity * pEntity = m_EntityManager.GetEntity(entityId);
 						if (pEntity == NULL)
 						{
-							std::cout << "Client::Connect: Trying to destroy NULL entity." << std::endl;
+							bitLogNetErr(  "Trying to destroy NULL entity." );
 							continue;
 						}
 

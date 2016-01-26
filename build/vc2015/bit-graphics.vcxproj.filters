@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="OpenGL">
+      <UniqueIdentifier>{829fdd21-0e8c-494e-8409-4276fa35c773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGL\Win32">
+      <UniqueIdentifier>{cd202676-2ece-4610-9698-0b4cd7c4b5ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadePng">
+      <UniqueIdentifier>{c1a761eb-3c97-49f6-869a-9a6f656a9dae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{b28e9cb9-b74c-44b4-b10e-c2efe1913897}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Graphics\GraphicDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGL.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLGraphicDevice.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.hpp">
+      <Filter>OpenGL\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Shader.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ShaderProgram.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShader.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLShaderProgram.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\PrimitiveMode.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ShaderType.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Image.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Texture.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLTexture.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\BmpFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\TgaFile.hpp" />
+    <ClInclude Include="..\..\source\Bit\Graphics\LodePng\lodepng.h">
+      <Filter>LoadePng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\PngFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Framebuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLFramebuffer.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\VertexArray.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\VertexBuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexArray.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLVertexBuffer.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Renderbuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLRenderbuffer.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\ObjFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ModelRenderer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\ModelVertexData.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\Animation.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\Skeleton.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimation.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationTrack.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexAnimationTrack.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\KeyFrame.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\VertexKeyFrame.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLModelRenderer.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\ModelMaterial.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\ObjMaterialFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\TextureProperties.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Md2File.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\PostProcessing.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\PostProcessingBloom.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\OpenGL\OpenGLPostProcessingBloom.hpp">
+      <Filter>OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Graphics\Renderer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Drawable.hpp" />
+    <ClInclude Include="..\..\include\Bit\Graphics\Model\AnimationState.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGL.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\Win32\OpenGLGraphicDeviceWin32.cpp">
+      <Filter>OpenGL\Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShader.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLShaderProgram.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Image.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLTexture.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\BmpFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\TgaFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\LodePng\lodepng.cpp">
+      <Filter>LoadePng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\PngFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLFramebuffer.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexArray.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLVertexBuffer.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLRenderbuffer.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\ObjFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ModelRenderer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\ModelVertexData.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\Skeleton.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimation.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexAnimationTrack.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\VertexKeyFrame.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLModelRenderer.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\ModelMaterial.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\ObjMaterialFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\GraphicDevice.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\TextureProperties.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Md2File.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\OpenGL\OpenGLPostProcessingBloom.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Graphics\Renderer.cpp" />
+    <ClCompile Include="..\..\source\Bit\Graphics\Model\AnimationState.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\Bit\Graphics\ObjFile.inl" />
+    <None Include="..\..\include\Bit\Graphics\Md2File.inl" />
+  </ItemGroup>
+</Project>

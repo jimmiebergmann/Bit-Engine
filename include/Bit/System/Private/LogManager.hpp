@@ -22,15 +22,19 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#ifndef BIT_SYSTEM_PRIVATE_DEFAULT_LOG_HPP
-#define BIT_SYSTEM_PRIVATE_DEFAULT_LOG_HPP
+#ifndef BIT_SYSTEM_PRIVATE_LOG_MANAGER_HPP
+#define BIT_SYSTEM_PRIVATE_LOG_MANAGER_HPP
 
-#include <Bit/System/Log.hpp>
 #include <Bit/Build.hpp>
+#include <Bit/System/Timestamp.hpp>
 #include <string>
+#include <sstream>
 
 namespace Bit
 {
+
+	// Forward declarations
+	class LogHandle;
 
 	namespace Private
 	{
@@ -39,23 +43,49 @@ namespace Bit
 		/// \ingroup System
 		/// \brief Default log handle class.
 		///
-		/// This log handle will post all messages to the program console.
-		///
-		/// \See LogHandle
+		/// Private log class.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API DefaultLogHandle : public LogHandle
+		class BIT_API LogManager
 		{
 
 		public:
 
+
 			////////////////////////////////////////////////////////////////
-			/// \brief Virual function fired at posted messages.
+			/// \brief	Start a new log entry.
+			///			Set meta for the log manager.
 			///
 			////////////////////////////////////////////////////////////////
-			virtual void OnMessage(const LogMessage & p_Message);
+			static void Start(	const Uint32 p_Type,
+										const Uint32 p_Channel,
+										const std::string & p_File,
+										const Int32 p_Line,
+										const std::string & p_Function);
 
+			////////////////////////////////////////////////////////////////
+			/// \brief	Get the data stream for setting messages.
+			///
+			////////////////////////////////////////////////////////////////
+			static std::stringstream & GetStream();
 
+			////////////////////////////////////////////////////////////////
+			/// \brief	Post message entry.
+			///
+			////////////////////////////////////////////////////////////////
+			static void End();
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Set the log handle.
+			///
+			////////////////////////////////////////////////////////////////
+			static void SetHandle(LogHandle & p_Handle);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the default handle.
+			///
+			////////////////////////////////////////////////////////////////
+			static LogHandle & GetDefaultHandle();
 
 		};
 

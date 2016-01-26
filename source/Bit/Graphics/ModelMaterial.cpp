@@ -23,7 +23,6 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Graphics/ModelMaterial.hpp>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

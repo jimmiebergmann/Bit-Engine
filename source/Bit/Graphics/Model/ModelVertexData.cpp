@@ -25,7 +25,6 @@
 #include <Bit/Graphics/Model/ModelVertexData.hpp>
 #include <Bit/Graphics/VertexBuffer.hpp>
 #include <Bit/Graphics/VertexArray.hpp>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

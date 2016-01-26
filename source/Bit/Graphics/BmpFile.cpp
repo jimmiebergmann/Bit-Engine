@@ -25,7 +25,7 @@
 #include <Bit/Graphics/BmpFile.hpp>
 #include <fstream>
 #include <sstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <string.h>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -255,7 +255,7 @@ namespace Bit
 		// Error check the stream size
 		if( streamSize < 54 )
 		{
-			std::cout << "[BmpFile::LoadFromStream] File size error 1.\n";
+			bitLogGraErr(  "File size error 1." );
 			return false;
 		}
 
@@ -282,7 +282,7 @@ namespace Bit
 		if( m_DibHeader.m_PixelDepth != 8 && m_DibHeader.m_PixelDepth != 16 &&
 			m_DibHeader.m_PixelDepth != 24 && m_DibHeader.m_PixelDepth != 32 )
 		{
-			std::cout << "[BmpFile::LoadFromStream] Not a 8/16/24 or 32 bit image.\n";
+			bitLogGraErr(  "Not a 8/16/24 or 32 bit image." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -294,7 +294,7 @@ namespace Bit
 		// Error check the padded data size
 		if( streamSize < paddedDataSize + 54 )
 		{
-			std::cout << "[BmpFile::LoadFromStream] The expected data size is too large." << std::endl;
+			bitLogGraErr(  "The expected data size is too large." );
 			p_Stream.seekg( 0, std::fstream::beg ); // Go back to the begining of the stream
 			return false;
 		}
@@ -337,7 +337,7 @@ namespace Bit
 		std::ifstream fin( p_Filename.c_str( ), std::fstream::binary );
 		if( fin.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::LoadFromFile] Can not open the file. " << std::endl;
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 
@@ -373,7 +373,7 @@ namespace Bit
 	{
 		if( m_pData == NULL || m_DataSize == 0 )
 		{
-			std::cout << "[BmpFile::SaveToStream] No image data." << std::endl;
+			bitLogGraErr(  "No image data." );
 			return false;
 		}
 
@@ -417,7 +417,7 @@ namespace Bit
 		std::ofstream fout( p_Filename.c_str( ), std::fstream::binary );
 		if( fout.is_open( ) == false )
 		{
-			std::cout << "[BmpFile::SaveToFile] Can not open the file. " << std::endl;
+			bitLogGraErr(  "Can not open the file." );
 			return false;
 		}
 

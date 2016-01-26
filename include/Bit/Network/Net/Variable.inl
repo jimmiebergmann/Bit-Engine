@@ -296,7 +296,7 @@ void InterpolatedVariable<T>::TakeSnapshot(const Time & p_Time, const Time & p_I
 		// Check if we actually found any values.
 		if (foundValues == false)
 		{
-			std::cout << "InterpolatedVariable<T>::TakeSnapshot: Could not find any values." << std::endl;
+			bitLogNetErr(  "Could not find any values." );
 			m_Mutex.Unlock();
 			return;
 		}

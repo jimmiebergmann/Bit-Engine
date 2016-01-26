@@ -24,7 +24,6 @@
 
 #include <Bit/Graphics/Model/VertexAnimation.hpp>
 #include <Bit/Graphics/Model/VertexAnimationTrack.hpp>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

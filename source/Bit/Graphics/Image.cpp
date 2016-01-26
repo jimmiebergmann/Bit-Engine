@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <fstream>
 #include <cstring>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -140,12 +140,12 @@ namespace Bit
 		}
 		else if( fileExtension == "JPG" )
 		{
-			std::cout << "[Image::LoadFromFile] Not supporting JPG images yet.\n";
+			bitLogGraErr(  "Not supporting JPG images yet." );
 			return false;
 		}
 
 		// Unknown extension
-		std::cout << "[Image::LoadFromFile] Unknow extension: " <<  fileExtension.c_str( ) << std::endl;
+		bitLogGraErr(  "Unknow extension: " << fileExtension );
 		return false;
 	}
 
@@ -161,7 +161,7 @@ namespace Bit
 		// Get the image type
 		if( tga.GetHeader( ).GetImageType( ) != TgaFile::UncompressedTrueColorImage )
 		{
-			std::cout << "[Image::LoadFromTgaFile] Not an uncompressed true color image.\n";
+			bitLogGraErr(  "Not an uncompressed true color image." );
 			delete tga.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -171,7 +171,7 @@ namespace Bit
 
 		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			std::cout << "[Bit::Image::LoadFromTgaFile] Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes.\n";
+			bitLogGraErr(  "Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes."  );
 			delete tga.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -215,7 +215,7 @@ namespace Bit
 		// Get the image type
 		if( bmp.GetDibHeader( ).GetCompression( ) != BmpFile::NoCompression )
 		{
-			std::cout << "[Bit::Image::LoadFromBmpFile] Not an uncompressed true color image.\n";
+			bitLogGraErr(  "Not an uncompressed true color image." );
 			delete bmp.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -225,7 +225,7 @@ namespace Bit
 
 		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			std::cout << "[Bit::Image::LoadFromBmpFile] Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes.\n";
+			bitLogGraErr( "Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes." );
 			delete bmp.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -270,7 +270,7 @@ namespace Bit
 
 		if( m_PixelDepth != 3 && m_PixelDepth != 4 )
 		{
-			std::cout << "[Bit::Image::LoadFromPngFile] Wrong pixel depth format: " << m_PixelDepth << " bytes.\n";
+			bitLogGraErr( "Wrong pixel depth format: " << (Int32)m_PixelDepth << " bytes." );
 			delete png.GetData( ); // Delete the data by hand
 			return false;
 		}
@@ -388,8 +388,7 @@ namespace Bit
 		// Make sure we have any data to swap
 		if( m_pData == NULL )
 		{
-			std::cout << "[Image::BgrToRgb] <ERROR> "
-				"Image not containing any data.\n";
+			bitLogGraErr(  "Image not containing any data." );
 			return;
 		}
 
@@ -410,7 +409,7 @@ namespace Bit
 		// Make sure we have any data to swap
 		if( m_pData == NULL )
 		{
-			std::cout << "[Image::BgraToRgba] Image not containing any data.\n";
+			bitLogGraErr(  "Image not containing any data." );
 			return;
 		}
 

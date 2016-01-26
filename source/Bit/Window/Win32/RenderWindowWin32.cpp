@@ -24,7 +24,7 @@
 
 #include <Bit/Window/Win32/RenderWindowWin32.hpp>
 #include <sstream>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 #ifdef BIT_PLATFORM_WINDOWS
@@ -176,7 +176,7 @@ namespace Bit
 		// Did the window creation succeed?
 		if( m_WindowHandle == NULL )
 		{
-			std::cout << "[RenderWindowWin32::Create] Failed to create window.\n";
+			bitLogWndErr( "Failed to create window." );
 			return false;
 		}
 
@@ -218,19 +218,19 @@ namespace Bit
 		// Release the device context
 		if( m_DeviceContextHandle && !ReleaseDC( m_WindowHandle, m_DeviceContextHandle ))
 		{
-			std::cout << "[RenderWindowWin32::Destroy] Releasing device context failed.\n";
+			bitLogWndErr( "Releasing device context failed." );
 		}
 
 		// Destroy the window
 		if( m_WindowHandle && !DestroyWindow( m_WindowHandle ) )
 		{
-			std::cout << "[RenderWindowWin32::Destroy] Destroying window failed.\n";
+			bitLogWndErr( "Destroying window failed." );
 		}
 
 		// Unregister the window class
 		if ( m_RegisteredWindowClass && !UnregisterClass( m_WindowClassName.c_str( ), Hinstance ) )
 		{
-			std::cout << "[RenderWindowWin32::Destroy] Unregistering class failed.\n";
+			bitLogWndErr( "Unregistering class failed." );
 		}
 
 		// Reset the attributes

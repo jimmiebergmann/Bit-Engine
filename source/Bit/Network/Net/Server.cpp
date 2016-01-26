@@ -28,7 +28,7 @@
 #include <Bit/System/Timer.hpp>
 #include <Bit/System/Timestep.hpp>
 #include <Bit/System/SmartMutex.hpp>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -314,7 +314,7 @@ namespace Bit
 					// Error check the item and it's data.
 					if (pItem == NULL || pBuffer == NULL)
 					{
-						std::cout << "Bit::Net::Server::Start(): Null memory pool item." << std::endl;
+						bitLogNetErr(  "Null memory pool item." );
 						continue;
 					}
 
@@ -512,7 +512,6 @@ namespace Bit
 							{
 								// Send unrealiable message.
 								it->second->SendReliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true);
-								//std::cout << "Sending entity update to " << it->second->m_UserId << std::endl;
 							}
 						}
 

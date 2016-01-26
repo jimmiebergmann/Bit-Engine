@@ -23,7 +23,6 @@
 
 #include <Bit/Network/Net/Private/ServerEntityChanger.hpp>
 #include <Bit/Network/Net/EntityManager.hpp>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

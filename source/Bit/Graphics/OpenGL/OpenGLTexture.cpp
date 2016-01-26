@@ -24,8 +24,7 @@
 
 #include <Bit/Graphics/OpenGL/OpenGLTexture.hpp>
 #include <Bit/Graphics/Image.hpp>
-
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -108,14 +107,14 @@ namespace Bit
 		// Check if the image already is loaded
 		if( m_Loaded )
 		{
-			std::cout << "[OpenGLTexture::LoadFromMemory] Already loaded.\n";
+			bitLogGraErr(  "Already loaded." );
 			return false;
 		}
 
 		// Check if the color components per pixel is ok.
 		if( p_BytesPerPixel < 1 || p_BytesPerPixel > 4 )
 		{
-			std::cout << "[OpenGLTexture::LoadFromMemory] Bytes per pixel error.\n";
+			bitLogGraErr(  "Bytes per pixel error." );
 			return false;
 		}
 
@@ -189,7 +188,7 @@ namespace Bit
 		Image image;
 		if( image.LoadFromFile( p_Filename ) == false )
 		{
-			std::cout << "[OpenGLTexture::LoadFromFile] Can not load the file\n";
+			bitLogGraErr(  "Can not load the file." );
 			return false;
 		}
 
@@ -202,7 +201,7 @@ namespace Bit
 		// Check if the image already is loaded
 		if( m_Loaded )
 		{
-			std::cout << "[OpenGLTexture::LoadFromImage] Already loaded.\n";
+			bitLogGraErr(  "Already loaded." );
 			return false;
 		}
 
@@ -210,7 +209,7 @@ namespace Bit
 		const Uint8 depth = p_Image.GetPixelDepth( );
 		if( depth != 3 && depth != 4)
 		{
-			std::cout << "[OpenGLTexture::LoadFromImage] Not a 24 or 32 bit image.\n";
+			bitLogGraErr(  "Not a 24 or 32 bit image." );
 			return false;
 		}
 

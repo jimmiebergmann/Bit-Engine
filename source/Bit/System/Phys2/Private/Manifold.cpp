@@ -26,7 +26,6 @@
 #include <Bit/System/Phys2/Body.hpp>
 #include <algorithm>
 #include <limits>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 #define Proj( a, b ) a + b

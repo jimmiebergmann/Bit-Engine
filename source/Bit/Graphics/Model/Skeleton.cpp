@@ -25,7 +25,6 @@
 #include <Bit/Graphics/Model/Skeleton.hpp>
 #include <Bit/Graphics/Model.hpp>
 #include <Bit/Graphics/Model/VertexAnimation.hpp>
-#include <iostream>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit

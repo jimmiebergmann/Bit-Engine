@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Dynamic Debug|Win32">
       <Configuration>Dynamic Debug</Configuration>
@@ -18,135 +18,34 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\include\Bit\Build.hpp" />
-    <ClInclude Include="..\..\include\Bit\NonCopyable.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Angle.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Bencode.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Bencode\Reader.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Bencode\Value.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Bencode\Writer.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Hash.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Json.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Json\Reader.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Json\Value.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Json\Writer.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Keyboard.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\KeyboardBase.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Log.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Math.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Matrix4x4.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\MatrixManager.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\MemoryLeak.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\MemoryPool.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Mouse.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\MouseBase.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Mutex.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Path.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Phys2\Body.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Phys2\Material.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Phys2\Private\Manifold.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Phys2\Scene.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Phys2\Shape.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Private\DefaultLogHandle.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\ResourceManager.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\ResourceManager\DefaultResourceManager.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Semaphore.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Sha1.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Sleep.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\SmartMutex.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\String.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Thread.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\ThreadValue.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Time.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Timer.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Timestamp.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Timestep.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Vector2.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Vector3.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Vector4.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Version.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Win32\KeyboardWin32.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Win32\MouseWin32.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Win32\MutexWin32.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Win32\SemaphoreWin32.hpp" />
-    <ClInclude Include="..\..\include\Bit\System\Win32\ThreadWin32.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\include\Bit\System\Log.inl" />
-    <None Include="..\..\include\Bit\System\Math.inl" />
-    <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
-    <None Include="..\..\include\Bit\System\MemoryPool.inl" />
-    <None Include="..\..\include\Bit\System\ThreadValue.inl" />
-    <None Include="..\..\include\Bit\System\Vector2.inl" />
-    <None Include="..\..\include\Bit\System\Vector3.inl" />
-    <None Include="..\..\include\Bit\System\Vector4.inl" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\source\Bit\System\Angle.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Bencode\BencodeReader.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Bencode\BencodeValue.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Bencode\BencodeWriter.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Hash.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Json\JsonReader.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Json\JsonValue.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Json\JsonWriter.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Log.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\MatrixManager.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\MemoryLeak.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Path.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Phys2\Body.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Phys2\Material.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Phys2\Private\Manifold.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Phys2\Scene.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Phys2\Shape.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Private\DefaultLogHandle.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\ResourceManager.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\ResourceManager\DefaultResourceManager.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Sha1.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Sleep.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\SmartMutex.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\String.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Time.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Timer.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Timestamp.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Timestep.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Version.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Win32\KeyboardWin32.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Win32\MouseWin32.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Win32\MutexWin32.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Win32\SemaphoreWin32.cpp" />
-    <ClCompile Include="..\..\source\Bit\System\Win32\ThreadWin32.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{DBC0DA24-68C8-4DC8-A2EC-CE562D4DEF6B}</ProjectGuid>
-    <RootNamespace>bitsystem</RootNamespace>
+    <ProjectGuid>{1B04F253-D860-43B5-B721-C4917A3D7002}</ProjectGuid>
+    <RootNamespace>bitnetwork</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -170,28 +69,28 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
-    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Static_Debug\</IntDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-network\Static_Debug\</IntDir>
     <TargetName>$(ProjectName)-s-d</TargetName>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
-    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Static_Release\</IntDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-network\Static_Release\</IntDir>
     <TargetName>$(ProjectName)-s</TargetName>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
-    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Dynamic_Debug\</IntDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-network\Dynamic_Debug\</IntDir>
     <TargetName>$(ProjectName)-d</TargetName>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
-    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Dynamic_Release\</IntDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-network\Dynamic_Release\</IntDir>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -199,14 +98,13 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../include;../../extlibs/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;BIT_STATIC;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;BIT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
@@ -223,7 +121,6 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName).lib</OutputFile>
@@ -240,12 +137,10 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>bit-network-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>bit-system-s-d.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
-      <ImportLibrary>$(TargetDir)$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
@@ -259,13 +154,95 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>bit-network-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>bit-system-s.lib;wsock32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Network\Address.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Http.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Client.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Entity.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\EntityManager.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Private\Connection.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Private\SequenceManager.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Private\ServerEntityChanger.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\HostMessageDecoder.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\HostMessageListener.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\HostRecipientFilter.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\HostMessage.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\ServerList.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessage.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageDecoder.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageListener.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Variable.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Ntp.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\NtpTimestamp.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Packet.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Private\SocketBase.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Socket.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\SocketSelector.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Torrent.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Url.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Win32\SocketWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Win32\TcpListenerWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Win32\TcpSocketWin32.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Win32\UdpSocketWin32.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Http.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Client.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Entity.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\EntityManager.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\Connection.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\EntityChanger.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\NetPacket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\SequenceManager.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\ServerEntityChanger.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\HostMessageDecoder.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\HostMessageListener.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\HostRecipientFilter.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Server.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\HostMessage.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\ServerList.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessage.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageDecoder.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageListener.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Variable.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Ntp.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\NtpTimestamp.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Packet.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Private\SocketBase.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Private\TcpListenerBase.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Private\TcpSocketBase.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Private\UdpSocketBase.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Socket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\SocketHandle.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\SocketSelector.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\TcpListener.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\TcpSocket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Torrent.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\UdpSocket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Url.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Win32\SocketWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Win32\TcpListenerWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Win32\TcpSocketWin32.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Win32\UdpSocketWin32.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="bit-system.vcxproj">
+      <Project>{dbc0da24-68c8-4dc8-a2ec-ce562d4def6b}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\Bit\Network\Net\EntityManager.inl" />
+    <None Include="..\..\include\Bit\Network\Net\Variable.inl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Dynamic Debug|Win32">
       <Configuration>Dynamic Debug</Configuration>
@@ -49,6 +49,7 @@
     <ClInclude Include="..\..\include\Bit\System\Phys2\Scene.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Phys2\Shape.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Private\DefaultLogHandle.hpp" />
+    <ClInclude Include="..\..\include\Bit\System\Private\LogManager.hpp" />
     <ClInclude Include="..\..\include\Bit\System\Randomizer.hpp" />
     <ClInclude Include="..\..\include\Bit\System\ResourceManager.hpp" />
     <ClInclude Include="..\..\include\Bit\System\ResourceManager\DefaultResourceManager.hpp" />
@@ -74,7 +75,6 @@
     <ClInclude Include="..\..\include\Bit\System\Win32\ThreadWin32.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\include\Bit\System\Log.inl" />
     <None Include="..\..\include\Bit\System\Math.inl" />
     <None Include="..\..\include\Bit\System\Matrix4x4.inl" />
     <None Include="..\..\include\Bit\System\MemoryPool.inl" />
@@ -102,6 +102,7 @@
     <ClCompile Include="..\..\source\Bit\System\Phys2\Scene.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Phys2\Shape.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Private\DefaultLogHandle.cpp" />
+    <ClCompile Include="..\..\source\Bit\System\Private\LogManager.cpp" />
     <ClCompile Include="..\..\source\Bit\System\Randomizer.cpp" />
     <ClCompile Include="..\..\source\Bit\System\ResourceManager.cpp" />
     <ClCompile Include="..\..\source\Bit\System\ResourceManager\DefaultResourceManager.cpp" />
@@ -124,29 +125,30 @@
     <ProjectGuid>{DBC0DA24-68C8-4DC8-A2EC-CE562D4DEF6B}</ProjectGuid>
     <RootNamespace>bitsystem</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -170,28 +172,28 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
-    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Static_Debug\</IntDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-system\Static_Debug\</IntDir>
     <TargetName>$(ProjectName)-s-d</TargetName>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
-    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Static_Release\</IntDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-system\Static_Release\</IntDir>
     <TargetName>$(ProjectName)-s</TargetName>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Debug|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
-    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Dynamic_Debug\</IntDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-system\Dynamic_Debug\</IntDir>
     <TargetName>$(ProjectName)-d</TargetName>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dynamic Release|Win32'">
     <OutDir>$(SolutionDir)..\..\lib\</OutDir>
-    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2012\bit-system\Dynamic_Release\</IntDir>
+    <IntDir>$(SolutionDir)..\..\obj\Windows\32\vc2015\bit-system\Dynamic_Release\</IntDir>
     <IncludePath>../../include;$(IncludePath)</IncludePath>
     <LibraryPath>../../lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>

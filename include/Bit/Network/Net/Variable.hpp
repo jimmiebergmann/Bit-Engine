@@ -32,7 +32,7 @@
 #include <Bit/System/Vector3.hpp>
 #include <Bit/Network/Net/Private/EntityChanger.hpp>
 #include <string>
-#include <iostream>
+#include <Bit/System/Log.hpp>
 #include <iterator>
 #include <iomanip>
 #include <list>

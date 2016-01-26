@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="OpenAL">
+      <UniqueIdentifier>{339727b7-5004-495f-b565-fc9f19f5208c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Bit\Audio\AudioDevice.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenALAudioDevice.hpp">
+      <Filter>OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenAL.hpp">
+      <Filter>OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Audio\Sound.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\WaveFile.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenALSound.hpp">
+      <Filter>OpenAL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Audio\SoundBuffer.hpp" />
+    <ClInclude Include="..\..\include\Bit\Audio\OpenAL\OpenALSoundBuffer.hpp">
+      <Filter>OpenAL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALAudioDevice.cpp">
+      <Filter>OpenAL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Audio\WaveFile.cpp" />
+    <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALSound.cpp">
+      <Filter>OpenAL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Audio\OpenAL\OpenALSoundBuffer.cpp">
+      <Filter>OpenAL</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
