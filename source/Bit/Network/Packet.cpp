@@ -32,13 +32,13 @@ namespace Bit
 	{
 	}
 
-	Packet::Packet( const void * p_pData, const SizeType p_Size )
+	/*Packet::Packet( const void * p_pData, const SizeType p_Size )
 	{
 	}
 
 	void Packet::Set( const void * p_pData, const SizeType p_Size )
 	{
-	}
+	}*/
 
 	void Packet::Clear( )
 	{

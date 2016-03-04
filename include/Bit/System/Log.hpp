@@ -39,10 +39,10 @@
 	Bit::Private::LogManager::End();
 
 
-// Macros for logging Errors, Warnings and Info. Just pass the message for respective macro.
+// Macros for logging Errors, Warnings and Info. Just pass the message for respective macro, and the channel.
 #define bitLogErr(channel, message)		bitLog( Bit::Log::Error,	channel, message)
 #define bitLogWarn(channel, message)	bitLog( Bit::Log::Warning,	channel, message)
-#define bitLogInfo(channel, message)	bitLog( Bit::Log::Info,		message)
+#define bitLogInfo(channel, message)	bitLog( Bit::Log::Info,		channel, message)
 
 #ifdef BIT_BUILD_DEBUG
 // Macro for loggin Debug messages, only for debug profile.

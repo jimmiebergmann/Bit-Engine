@@ -24,6 +24,7 @@
 
 #include <Bit/System/Private/LogManager.hpp>
 #include <Bit/System/Log.hpp>
+#include <Bit/System/Private/DefaultLogHandle.hpp>
 #include <Bit/System/SmartMutex.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
@@ -34,11 +35,11 @@ namespace Bit
 	{
 
 		// Static data
-		static std::stringstream	g_MessageStream;
-		static LogMessage			g_Message;
-		static Mutex				g_Mutex;
-		static LogHandle			g_DefaultLogHandle;
-		static LogHandle *			g_CurrentLogHandle = &g_DefaultLogHandle;
+		static std::stringstream			g_MessageStream;
+		static LogMessage					g_Message;
+		static Mutex						g_Mutex;
+		static Private::DefaultLogHandle	g_DefaultLogHandle;
+		static LogHandle *					g_CurrentLogHandle = &g_DefaultLogHandle;
 
 
 		// Log manager class
