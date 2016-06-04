@@ -31,6 +31,7 @@
 ////////////////////////////////////////////////////////////////
 #ifdef BIT_PLATFORM_WINDOWS
 	#include <windows.h>
+	#include <iostream>
 #elif defined( BIT_PLATFORM_LINUX )
 	#include <sys/time.h>
 #endif
@@ -52,6 +53,7 @@ namespace Bit
 	void Timer::Stop( )
 	{
 		Uint64 CurrentTime = GetSystemTime( );
+
 		m_Time = ( CurrentTime - m_StartTime );
 	}
 
@@ -71,13 +73,14 @@ namespace Bit
 		// Windows implementation.
 		#ifdef BIT_PLATFORM_WINDOWS
 
-			static Int64 counter = 0;
-			static Int64 frequency = 0;
+			Int64 counter = 0;
+			Int64 frequency = 0;
 
 			QueryPerformanceCounter( (LARGE_INTEGER*)&counter );
 			QueryPerformanceFrequency( (LARGE_INTEGER*)&frequency );
 
-			return ( counter * 1000000 ) / frequency;
+			Float64 timeFloat = (static_cast<Float64>(counter) * 1000000.0f ) / static_cast<Float64>(frequency);
+			return static_cast<Uint64>(timeFloat);
 
 		// Linux implementation.
 		#elif defined( BIT_PLATFORM_LINUX )

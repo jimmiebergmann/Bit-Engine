@@ -421,7 +421,8 @@ namespace Bit
 						Sleep( Milliseconds( 10 ) );
 
 						// Disconnect you've not heard anything from the server in a while.
-						if (TimeSinceLastRecvPacket() >= m_LosingConnectionTimeout)
+						const Bit::Time timesinceLastPacket = TimeSinceLastRecvPacket();
+						if (timesinceLastPacket >= m_LosingConnectionTimeout)
 						{
 							// Set the connection flag to false
 							m_Connected.Mutex.Lock( );
