@@ -70,9 +70,6 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\SequenceManager.cpp">
       <Filter>Net\Private</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\Bit\Network\Net\ServerList.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -162,9 +159,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\SequenceManager.hpp">
       <Filter>Net\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\ServerList.hpp">
-      <Filter>Net</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

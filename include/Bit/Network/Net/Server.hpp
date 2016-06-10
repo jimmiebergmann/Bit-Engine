@@ -25,7 +25,6 @@
 #define BIT_NETWORK_NET_SERVER_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Net/ServerList.hpp>
 #include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/Net/Private/Connection.hpp>
@@ -102,21 +101,29 @@ namespace Bit
 				////////////////////////////////////////////////////////////////
 				/// \brief Constructor.
 				///
+				/// \param p_Port Hosting port.
+				/// \param p_MaxConnections Maximum number of connected clients at the same time.
+				/// \param p_LosingConnectionTimeout Amount of time without any contact with client until timeout.
+				/// \param p_EntityUpdatesPerSecond Entitiy updates per second, 22 is good. Can't be greater than p_MaxEntityUpdatesPerSecond.
+				/// \param p_MaxEntityUpdatesPerSecond Maximum of entity updates per second, too high will result in more memory usage.
+				/// \param p_Identifier Identifier used at connection, like a plain text password.
+				/// \param p_ServerList Serverlist echo class.... THIS WILL BE REMOVED.............
+				///
 				////////////////////////////////////////////////////////////////
 				Properties(	const Uint16			p_Port,
 							const Uint8				p_MaxConnections = 255,
 							const Time &			p_LosingConnectionTimeout = Seconds(3.0f),
 							const Uint8				p_EntityUpdatesPerSecond = 22,
-							const std::string &		p_Identifier = "Bit Engine Network",
-							const ServerList &		p_ServerList = ServerList::None );
+							const Uint8				p_MaxEntityUpdatesPerSecond = 30,
+							const std::string &		p_Identifier = "Bit Engine Network" );
 
 				// Public variables
 				Uint16			Port;
 				Uint8			MaxConnections;
 				Time			LosingConnectionTimeout;
 				Uint8			EntityUpdatesPerSecond;
+				Uint8			MaxEntityUpdatesPerSecond;
 				std::string		Identifier;
-				ServerList		ServerListClass;
 
 			};
 
@@ -160,14 +167,6 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			virtual void OnDisconnection(const Uint16 p_UserId);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief	Function to execute when the server send an update request to
-			///			the given server list. Fill the url fields with the right parameters
-			///			to the given server list at server startup.
-			///
-			////////////////////////////////////////////////////////////////
-			virtual void OnServerListUpdate(ServerList::UrlFields & p_UrlFields);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create recipient filter
@@ -331,13 +330,12 @@ namespace Bit
 			Thread								m_MainThread;				///< Thread for handling incoming packets.
 			Thread								m_EntityThread;				///< Thread for sending entity states to users.
 			Thread								m_CleanupThread;			///< Thread for cleaning up connections.
-			Thread								m_ServerListThread;			///< Thread for communicating with server list
-			ThreadValue<ServerList>				m_ServerList;				///< Server list struct.
 			Semaphore							m_CleanupSemaphore;			///< Semaphore for cleanups.
 			ThreadValue<ConnectionList>			m_CleanupConnections;		///< Queue of connections to cleanup.
 			std::string							m_Identifier;				///< Connection identifier string.
 			Uint8								m_MaxConnections;			///< Maximum amount of connections.
-			Uint8								m_EntityUpdatesPerSecond;	///< Number of updates per second for the entities.
+			Uint8								m_DefaultEntityTicks;		///< Number of updates per second for the entities.
+			Uint8								m_MaxEntityTicks;			///< Maximum number of updates per second for the entities.
 			FreeUserIdMap						m_FreeUserIds;				///< Queue of free user Ids.
 			AddressConnectionMap				m_AddressConnections;		///< Map of all the connections via their addresses.
 			UserConnectionMap					m_UserConnections;			///< Map of all the connections via their user IDs.
@@ -349,7 +347,6 @@ namespace Bit
 			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Amount of time until the connection timeout after not receiving any packets.
 			ThreadValue<MemoryPool<Uint8> *>	m_PacketMemoryPool;			///< Memory pool for packets, make less new, copy and delete operations.
 			const SizeType						m_MaxPacketSize;			///< Max size of a packet.
-			ThreadValue<Uint32>					m_UpdateServerListCounter;	///< Counter for updating the server list.
 
 		};
 

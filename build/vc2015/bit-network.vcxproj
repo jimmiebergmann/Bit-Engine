@@ -174,7 +174,6 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\HostRecipientFilter.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\HostMessage.cpp" />
-    <ClCompile Include="..\..\source\Bit\Network\Net\ServerList.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\UserMessage.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageDecoder.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageListener.cpp" />
@@ -208,7 +207,6 @@
     <ClInclude Include="..\..\include\Bit\Network\Net\HostRecipientFilter.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Server.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\HostMessage.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Net\ServerList.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\UserMessage.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageDecoder.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageListener.hpp" />

@@ -43,8 +43,7 @@ namespace Bit
 			MaxConnections(255),
 			LosingConnectionTimeout(Seconds(3.0f)),
 			EntityUpdatesPerSecond(20),
-			Identifier("Bit Engine Network"),
-			ServerListClass(ServerList::None)
+			Identifier("Bit Engine Network")
 		{
 		}
 
@@ -52,14 +51,14 @@ namespace Bit
 										const Uint8 p_MaxConnections,
 										const Time & p_LosingConnectionTimeout,
 										const Uint8 p_EntityUpdatesPerSecond,
-										const std::string & p_Identifier,
-										const ServerList & p_ServerList) :
+										const Uint8 p_MaxEntityUpdatesPerSecond,
+										const std::string & p_Identifier) :
 			Port(p_Port),
 			MaxConnections(p_MaxConnections),
 			LosingConnectionTimeout(p_LosingConnectionTimeout),
 			EntityUpdatesPerSecond(p_EntityUpdatesPerSecond),
-			Identifier(p_Identifier),
-			ServerListClass(p_ServerList)
+			MaxEntityUpdatesPerSecond(p_MaxEntityUpdatesPerSecond),
+			Identifier(p_Identifier)
 		{
 		}
 
@@ -67,7 +66,8 @@ namespace Bit
 		Server::Server() :
 			m_EntityManager(new ServerEntityChanger(&m_EntityManager), this, NULL),
 			m_MaxConnections(0),
-			m_EntityUpdatesPerSecond(0),
+			m_DefaultEntityTicks(0),
+			m_MaxEntityTicks(0),
 			m_DefaultSendEntityMessages( true ),
 			m_PacketMemoryPool(NULL),
 			m_MaxPacketSize(2048)
@@ -93,10 +93,6 @@ namespace Bit
 		}
 
 		void Server::OnDisconnection(const Uint16 p_UserId)
-		{
-		}
-
-		void Server::OnServerListUpdate(ServerList::UrlFields & p_UrlFields)
 		{
 		}
 
@@ -261,7 +257,8 @@ namespace Bit
 			m_MaxConnections = p_Properties.MaxConnections;
 
 			// Set entity updates per second
-			m_EntityUpdatesPerSecond = p_Properties.EntityUpdatesPerSecond;
+			m_DefaultEntityTicks = p_Properties.EntityUpdatesPerSecond;
+			m_MaxEntityTicks = p_Properties.MaxEntityUpdatesPerSecond;
 
 			// Add the free user IDs to the queue
 			for (Uint16 i = 0; i < static_cast<Uint16>(m_MaxConnections); i++)
@@ -274,12 +271,6 @@ namespace Bit
 
 			// Set the identifier
 			m_Identifier = p_Properties.Identifier;
-
-			// Set server list
-			m_ServerList.Set(p_Properties.ServerListClass);
-
-			// Reset the update server list counter
-			m_UpdateServerListCounter.Set(0);
 
 			// Create the packet memory pool
 			m_PacketMemoryPool.Set(new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, m_MaxPacketSize, true));
@@ -442,9 +433,6 @@ namespace Bit
 							m_ConnectionMutex.Unlock();
 							OnPostConnection(userId);
 							m_ConnectionMutex.Lock();
-
-							// Increase the update server list semaphore
-							m_UpdateServerListCounter.Set(m_UpdateServerListCounter.Get() + 1);
 						}
 						// Ping packet.
 						else if (pBuffer[0] == PacketType::Ping && recvSize == PingPacketSize)
@@ -475,14 +463,14 @@ namespace Bit
 				// Run the 
 				while (IsRunning())
 				{
-					if (m_EntityUpdatesPerSecond == 0)
+					if (m_DefaultEntityTicks == 0)
 					{
 						Sleep(Microseconds(1000));
 						continue;
 					}
 
 					// Calculate the timestep time
-					Time time = Seconds(1.0f / static_cast<Float32>(m_EntityUpdatesPerSecond));
+					Time time = Seconds(1.0f / static_cast<Float32>(m_DefaultEntityTicks));
 
 					// Execute the timestep
 					timestep.Execute(time, [this]()
@@ -586,58 +574,8 @@ namespace Bit
 
 					// Unlock the connection mutex
 					m_ConnectionMutex.Unlock();
-
-					// Increase the update server list semaphore
-					m_UpdateServerListCounter.Set(m_UpdateServerListCounter.Get() + 1);
 				}
 
-			}
-			);
-
-			// Execute the event thread
-			m_ServerListThread.Execute([this]()
-			{
-				Timer timer;
-				timer.Start();
-
-				// Initially add the server to the server list
-				ServerList::UrlFields fields;
-				OnServerListUpdate(fields);
-				Json::Value response = ServerList::Add(m_ServerList.Get(), fields);
-
-				// Keep on looping until the server terminate.
-				while (IsRunning())
-				{
-					Uint32 updateCounter = m_UpdateServerListCounter.Get();
-
-					// Check if we should add the server to the list.
-					if (timer.GetLapsedTime().AsSeconds() >= 10.0f || updateCounter > 0)
-					{
-						// Reset counter and timer if the update server list counter is set.
-						if (updateCounter)
-						{
-							// Reset the counter
-							m_UpdateServerListCounter.Set(0);
-
-							// Restart the timer
-							timer.Start();
-						}
-
-						// try to add the server.
-						ServerList::UrlFields fields;
-						OnServerListUpdate(fields);
-						Json::Value response = ServerList::Add(m_ServerList.Get(), fields);
-
-						// Restart the timer
-						timer.Start();
-					}
-
-					// Sleep for some time.
-					Sleep(Microseconds(1000));
-				}
-
-				// Remove server from server list
-				response = ServerList::Remove(m_ServerList.Get(), Seconds(2.0f));
 			}
 			);
 
@@ -661,9 +599,6 @@ namespace Bit
 				// Wait for the cleanup thread to finish
 				m_CleanupSemaphore.Release();
 				m_CleanupThread.Finish();
-
-				// Wait for the server list thread
-				m_ServerListThread.Finish();
 
 				// Clean up the cleanup connections
 				m_CleanupConnections.Mutex.Lock();
