@@ -31,7 +31,6 @@
 ////////////////////////////////////////////////////////////////
 #ifdef BIT_PLATFORM_WINDOWS
 	#include <windows.h>
-	#include <iostream>
 #elif defined( BIT_PLATFORM_LINUX )
 	#include <sys/time.h>
 #endif
