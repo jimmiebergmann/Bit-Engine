@@ -50,10 +50,11 @@ void Variable<T>::Set( const T & p_Value )
 	// Call the on variable function for the entity changer
 	if (/*isNewValue &&*/
 		m_pParent &&
-		m_pParent->m_pEntityManager &&
-		m_pParent->m_pEntityManager->m_pEntityChanger)
+		m_pParent->m_pEntityManager/* &&
+		m_pParent->m_pEntityManager->m_pEntityChanger*/)
 	{
-		m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange( m_pParent, this );
+		m_pEntityManager->AddChangedVariable(m_pParent, this);
+		//m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange( m_pParent, this );
 	}
 }
 

@@ -332,6 +332,15 @@ namespace Bit
 			// Private functions
 
 			////////////////////////////////////////////////////////////////
+			/// \brief This function is being called when a network variable is changed.
+			///
+			/// \param p_pEntity Pointer to entitiy
+			/// \param p_VariableBase Pointer to variable base class.
+			///
+			////////////////////////////////////////////////////////////////
+			void OnVariableChange(Entity * p_pEntity, VariableBase * p_VariableBase);
+
+			////////////////////////////////////////////////////////////////
 			/// \brief Create a new entity at the given id.
 			///		   Make sure to destroy the entity by yourself.
 			///

@@ -932,6 +932,10 @@ namespace Bit
 			mutex.Unlock();
 		}
 
+		void EntityManager::OnVariableChange(Entity * p_pEntity, VariableBase * p_VariableBase)
+		{
+		}
+
 		Entity * EntityManager::CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id)
 		{
 			// Create a smart mutex.

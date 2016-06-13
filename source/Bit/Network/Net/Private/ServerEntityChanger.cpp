@@ -44,10 +44,8 @@ namespace Bit
 				return;
 			}
 
-
-
-
-			
+			// Add changed variable
+			//m_pEntityManager->AddChangedVariable(p_pEntity, p_pVariableBase);
 
 			/*
 			// Lock the entity manager mutex.
