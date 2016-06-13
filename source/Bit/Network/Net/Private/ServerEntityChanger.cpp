@@ -44,6 +44,12 @@ namespace Bit
 				return;
 			}
 
+
+
+
+			
+
+			/*
 			// Lock the entity manager mutex.
 			SmartMutex mutex(m_pEntityManager->m_Mutex);
 			mutex.Lock();
@@ -87,7 +93,10 @@ namespace Bit
 
 			// Unlock the mutex.
 			mutex.Unlock();
+			*/
+
 		}
+
 
 	}
 

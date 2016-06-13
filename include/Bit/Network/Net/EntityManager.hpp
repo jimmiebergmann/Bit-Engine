@@ -34,6 +34,7 @@
 #include <vector> 
 #include <map>
 #include <set>
+#include <queue>
 #include <typeinfo>
 
 namespace Bit
@@ -51,7 +52,68 @@ namespace Bit
 		/// \ingroup Network
 		/// \brief Entity manager class.
 		///
+		/// Supports up to 65536 entities, 256 variables each.
+		///
+		/// There are 3 types of entity messages:
+		///		1 - New entities.
+		///		2 - Removed entities.
+		///		3 - Updated entities.
+		/// 
+		/// Structure of each message type:
+		///		1 - New entities:
+		///			- Time(8)
+		///			- Entity count(2)
+		///			* Entity;
+		///				- Name length(1)
+		///				- Name(...)
+		///				- Entity Id(2)
+		///				- Variable count(1)
+		///				* Variable:
+		///					- Name length(1)
+		///					- Name(...)
+		///					- Variable Id(1)
+		///					- Data size(1)
+		///					- Data(..)
+		///
+		///		2 - Removed entities:
+		///			- Time(8)
+		///			- Entity count(2)
+		///			* Entity:
+		///				- Entity Id(2)
+		///
+		///		3 - Updated entitie:
+		///			- Time(8)
+		///			- variable count(1)
+		///			* Variable:
+		///				- Entity Id(2)
+		///				- Variable Id(1)
+		///				- Data size(1)
+		///				- Data(..)
+		///
 		////////////////////////////////////////////////////////////////
+		/*
+		Message structure:
+		- Time
+		- Entity count(2)
+		-Entity:
+		- Block size(2)
+		- Name length(1)
+		- Name(...)
+		- Variable count(2)
+		- Variable:
+		- Block Size (2)
+		- Name length (1)
+		- Name (...)
+		- ID count (2)
+		- Data size (1)
+		- Data:
+		- ID	(2)
+		- Data	(..)
+		- ...
+		- ...
+		- ...
+		*/
+		
 		class BIT_API EntityManager
 		{
 
@@ -299,6 +361,45 @@ namespace Bit
 			Time					m_InterpolationTime;	///< Interpolation time(delay).
 			Time					m_ExtrapolationTime;	///< Extrapolation time( for how long we should extra interpolate).
 			Mutex					m_Mutex;				///< Mutex for making sure we're not destroying entities at the same time we create entity messages.
+
+			/// NEW!
+
+			/*
+				typedef std::map<std::string, VariableBase Entity::*>		EntityVariableMap;			///< Map of entity varibles, varaible name as key.
+				typedef std::map<std::string, EntityMetaData*>				EntityMetaDataMap;			///< Map of pointers for creating entities, entity name as key.
+				typedef std::map<Uint16, EntityLink*>						EntityMap;					///< Map of all entities, entity id as key.
+				typedef std::map<Entity *, VariableBase *>					ChangedEntityVariableMap;	///< Mapping entities to variables
+				typedef std::map<std::string, ChangedEntityVariableMap *>	ChangedVariablesMap;		///< Set of changed variables
+				typedef std::map<std::string, ChangedVariablesMap *>		ChangedEntitiesMap;			///< Map of changed entities.
+				typedef std::set<Entity *>									EntitySet;					///< Set of entities.
+			*/
+
+			struct ChangedVariableStruct
+			{
+				VariableBase Entity::* pVariableBase;
+				Entity * pEntity;
+			};
+
+			//typedef std::map< std::pair<Uint16, Uint8>, ChangedVariableStruct> ChangeVariableEntityPairMap; ///< Pair of var and entity id to link them, struct.
+			typedef std::map< Uint16, ChangedVariableStruct> ChangeVariableMap;						///< Changed Id, struct
+			typedef std::map<Uint32, ChangeVariableMap *> ChangeVariablesGroupMap;							///< Group id, struct
+			ChangeVariablesGroupMap m_ChangeVariablesGroups;
+
+
+			/*
+			
+			
+			c1 group 3
+
+			m_ChangeVariablesGroups[3] finns? Innehåller data?
+
+			Ta changed id och jämför med c1 senaste connection:changedvar(std::pair<entityId, VariableId>) = 5
+
+			Changed if för variabel är 6, Skicka nytt.
+
+			Hämta senaste ChangeVariableEntityPairMap.
+
+			*/
 
 		};
 

@@ -105,9 +105,9 @@ namespace Bit
 				/// \param p_MaxConnections Maximum number of connected clients at the same time.
 				/// \param p_LosingConnectionTimeout Amount of time without any contact with client until timeout.
 				/// \param p_EntityUpdatesPerSecond Entitiy updates per second, 22 is good. Can't be greater than p_MaxEntityUpdatesPerSecond.
-				/// \param p_MaxEntityUpdatesPerSecond Maximum of entity updates per second, too high will result in more memory usage.
+				/// \param p_MaxEntityUpdatesPerSecond	Maximum of entity updates per second.
+				///										Too high will result in more memory usage. Should be same as server update rate.
 				/// \param p_Identifier Identifier used at connection, like a plain text password.
-				/// \param p_ServerList Serverlist echo class.... THIS WILL BE REMOVED.............
 				///
 				////////////////////////////////////////////////////////////////
 				Properties(	const Uint16			p_Port,

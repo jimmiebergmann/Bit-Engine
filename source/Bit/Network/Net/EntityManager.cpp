@@ -471,11 +471,18 @@ namespace Bit
 						- ...
 			*/
 
+
+			return false;
+
+
+/*
 			// This is for server only.
 			if (m_pServer == NULL)
 			{
 				return false;
 			}
+
+			
 
 			// Delete entities in the delete queue.
 			DeleteEntitiesInDeletionQueue();
@@ -484,13 +491,15 @@ namespace Bit
 			SmartMutex mutex(m_Mutex);
 			mutex.Lock();
 
+			
+
 			// Check if any entities were changed
 			if( m_ChangedEntities.size( ) == 0 )
 			{
 				return false;
 			}
 
-		
+			
 
 			
 			// Clear the message
@@ -619,14 +628,19 @@ namespace Bit
 
 			}
 
+			
+
 			// Unlock the mutex.
 			mutex.Unlock();
 
 			// Clear the changed entities.
-			ClearChangedEntities();
-			
+			//ClearChangedEntities();
+
+		
 			// Succeeded
 			return true;
+			
+*/
 		}
 
 		Bool EntityManager::CreateFullEntityMessage(	std::vector<Uint8> & p_Message,
@@ -843,6 +857,8 @@ namespace Bit
 			SmartMutex mutex(m_Mutex);
 			mutex.Lock();
 			
+			
+
 			// Go throguh the changed entities
 			for (ChangedEntitiesMap::iterator	ceIt = m_ChangedEntities.begin();
 												ceIt != m_ChangedEntities.end();)
@@ -910,37 +926,10 @@ namespace Bit
 
 			}
 
+			
+
 			// Unlock mutex
 			mutex.Unlock();
-			
-			// OLD removal code.
-			/*
-			// Create a smart mutex.
-			SmartMutex mutex(m_Mutex);
-			mutex.Lock();
-
-			// Go through the changed entities, and delete them.
-			for( ChangedEntitiesMap::iterator it = m_ChangedEntities.begin( );
-				 it != m_ChangedEntities.end( );
-				 it++ )
-			{
-
-				for( ChangedVariablesMap::iterator it2 = it->second->begin( );
-				 it2 != it->second->end( );
-					 it2++ )
-				{
-
-
-					delete it2->second;
-				}
-				delete it->second;
-			}
-
-			m_ChangedEntities.clear( );
-
-
-			mutex.Unlock();
-			*/
 		}
 
 		Entity * EntityManager::CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id)
