@@ -36,7 +36,7 @@ ThreadValue<T>::ThreadValue( T p_Value ) :
 }
 
 template <typename T>
-T & ThreadValue<T>::Get( )
+T ThreadValue<T>::Get( )
 {
 	SmartMutex sm( Mutex );
 	sm.Lock( );

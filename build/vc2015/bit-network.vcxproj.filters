@@ -76,6 +76,9 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityManager.cpp">
       <Filter>Net</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\Private\PacketTransfer.cpp">
+      <Filter>Net\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -139,9 +142,6 @@
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\ServerEntityChanger.hpp">
       <Filter>Net\Private</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\Bit\Network\Net\Private\NetPacket.hpp">
-      <Filter>Net\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\HostMessage.hpp">
       <Filter>Net</Filter>
     </ClInclude>
@@ -171,6 +171,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\Bit\Network\Net\ServerEntityManager.hpp">
       <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\PacketTransfer.hpp">
+      <Filter>Net\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -39,7 +39,7 @@ namespace Bit
 
 		// Server properites class
 		Server::Properties::Properties() :
-			Port(0),
+			HostPort(0),
 			MaxConnections(255),
 			LosingConnectionTimeout(Seconds(3.0f)),
 			EntityUpdatesPerSecond(22),
@@ -48,13 +48,13 @@ namespace Bit
 		{
 		}
 
-		Server::Properties::Properties(const Uint16 p_Port,
+		Server::Properties::Properties(const Uint16 p_HostPort,
 										const Uint8 p_MaxConnections,
 										const Time & p_LosingConnectionTimeout,
 										const Uint8 p_EntityUpdatesPerSecond,
 										const Uint16 p_MaxEntities,
 										const std::string & p_Identifier) :
-			Port(p_Port),
+			HostPort(p_HostPort),
 			MaxConnections(p_MaxConnections),
 			LosingConnectionTimeout(p_LosingConnectionTimeout),
 			EntityUpdatesPerSecond(p_EntityUpdatesPerSecond),
@@ -67,7 +67,7 @@ namespace Bit
 			m_EntityManager(this),
 			m_MaxConnections(0),
 			m_EntityUpdatesPerSecond(0),
-			m_PacketMemoryPool(NULL),
+			m_pPacketMemoryPool(NULL),
 			m_MaxPacketSize(2048)
 		{
 
@@ -199,11 +199,11 @@ namespace Bit
 
 			// Add addresss to ban set
 			m_BanSet.Mutex.Lock();
-			m_BanSet.Value.insert(pConnection->GetAddress());
+			m_BanSet.Value.insert(pConnection->GetDestinationAddress());
 			m_BanSet.Mutex.Unlock();
 
-			Uint8 reason = DisconnectType::Banned;
-			pConnection->SendUnreliable(PacketType::Disconnect, &reason, sizeof(reason), false, false);
+			Uint8 reason = Private::DisconnectType::Banned;
+			pConnection->SendUnreliable(Private::PacketType::Disconnect, &reason, sizeof(reason));
 
 			// Add the connection for cleanup
 			AddConnectionForCleanup(pConnection);
@@ -245,14 +245,14 @@ namespace Bit
 		Bool Server::Start(const Properties & p_Properties)
 		{
 			// Open the udp socket.
-			if (m_Socket.Open(p_Properties.Port) == false)
+			if (m_Socket.Open(p_Properties.HostPort) == false)
 			{
 				return false;
 			}
 			m_Socket.SetBlocking(true);
 
 			// Set properties
-			m_Port = p_Properties.Port;
+			m_HostPort = p_Properties.HostPort;
 			m_MaxConnections = p_Properties.MaxConnections;
 			m_EntityUpdatesPerSecond = p_Properties.EntityUpdatesPerSecond;
 			m_LosingConnectionTimeout.Set(p_Properties.LosingConnectionTimeout);
@@ -268,7 +268,7 @@ namespace Bit
 			m_EntityManager.CreateEntityIdQueue(p_Properties.MaxEntities);
 
 			// Create the packet memory pool
-			m_PacketMemoryPool.Set(new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, m_MaxPacketSize, true));
+			m_pPacketMemoryPool = new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, m_MaxPacketSize, true);
 
 			// Start the server timer.
 			m_ServerTimer.Get().Start();
@@ -289,11 +289,7 @@ namespace Bit
 				while (IsRunning())
 				{
 					// Get item from memory pool
-
-					m_PacketMemoryPool.Mutex.Lock();
-					MemoryPool<Uint8>::Item *pItem = m_PacketMemoryPool.Get()->Get();
-					m_PacketMemoryPool.Mutex.Unlock();
-
+					MemoryPool<Uint8>::Item *pItem = m_pPacketMemoryPool->Get();
 
 					Uint8 * pBuffer = pItem->GetData();
 
@@ -339,15 +335,15 @@ namespace Bit
 					{
 						// This is not a packet from an already connected client,
 						// check if the client is tryin go connect.
-						if (pBuffer[0] == PacketType::Connect)
+						if (pBuffer[0] == Private::PacketType::Connect)
 						{
 							// Make sure that the identifier is right.
-							if (recvSize != m_Identifier.size() + ConnectPacketSize)
+							if (recvSize != m_Identifier.size() + Private::NetConnectPacketSize)
 							{
 								// Go to the return packet label.
 								break;
 							}
-							if (memcmp(pBuffer + ConnectPacketSize, m_Identifier.data(), m_Identifier.size()) != 0)
+							if (memcmp(pBuffer + Private::NetConnectPacketSize, m_Identifier.data(), m_Identifier.size()) != 0)
 							{
 								// Go to the return packet label.
 								break;
@@ -358,9 +354,9 @@ namespace Bit
 							if (m_BanSet.Value.find(address.GetAddress()) != m_BanSet.Value.end())
 							{
 								// Send ban packet
-								pBuffer[0] = PacketType::Reject;
-								pBuffer[1] = RejectType::Banned;
-								m_Socket.Send(pBuffer, RejectPacketSize, address, port);
+								pBuffer[0] = Private::PacketType::Reject;
+								pBuffer[1] = Private::RejectType::Banned;
+								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, address, port);
 
 								// Unlock the ban set mutex.
 								m_BanSet.Mutex.Unlock();
@@ -373,9 +369,9 @@ namespace Bit
 							// Send Deny packet if the server is full.
 							if (m_AddressConnections.size() == m_MaxConnections || m_FreeUserIds.size() == 0)
 							{
-								pBuffer[0] = PacketType::Reject;
-								pBuffer[1] = RejectType::Full;
-								m_Socket.Send(pBuffer, RejectPacketSize, address, port);
+								pBuffer[0] = Private::PacketType::Reject;
+								pBuffer[1] = Private::RejectType::Full;
+								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, address, port);
 
 								// Go to the return packet label.
 								break;
@@ -386,16 +382,16 @@ namespace Bit
 							if (OnPreConnection(address, port, groupVector) == false)
 							{
 								// SEND REJECT MESSAGE HERE PLEASE.
-								pBuffer[0] = PacketType::Reject;
-								pBuffer[1] = RejectType::Full;
-								m_Socket.Send(pBuffer, RejectPacketSize, address, port);
+								pBuffer[0] = Private::PacketType::Reject;
+								pBuffer[1] = Private::RejectType::Full;
+								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, address, port);
 
 								break;
 							}
 
 
 							// Answer the client with an accept packet.
-							pBuffer[0] = PacketType::Accept;
+							pBuffer[0] = Private::PacketType::Accept;
 
 							// Get server time
 							m_ServerTimer.Mutex.Lock();
@@ -405,7 +401,7 @@ namespace Bit
 							Uint64 nServerTime = Hton64(serverTime);
 							memcpy(&(pBuffer[3]), &nServerTime, sizeof(Uint64));
 
-							m_Socket.Send(pBuffer, AcceptPacketSize, address, port);
+							m_Socket.Send(pBuffer, Private::NetAcceptPacketSize, address, port);
 
 							// Get a user id for this connection
 							const Uint16 userId = m_FreeUserIds.front();
@@ -430,10 +426,10 @@ namespace Bit
 							m_ConnectionMutex.Lock();
 						}
 						// Ping packet.
-						else if (pBuffer[0] == PacketType::Ping && recvSize == PingPacketSize)
+						else if (pBuffer[0] == Private::PacketType::Ping && recvSize == Private::NetPingPacketSize)
 						{
 							// Send back the ping packet.
-							m_Socket.Send(pBuffer, PingPacketSize, address, port);
+							m_Socket.Send(pBuffer, Private::NetPingPacketSize, address, port);
 						}
 
 					} while (false);
@@ -442,9 +438,7 @@ namespace Bit
 					m_ConnectionMutex.Unlock();
 
 					// Return the item to the memory pool.
-					m_PacketMemoryPool.Mutex.Lock();
-					m_PacketMemoryPool.Value->Return(pItem);
-					m_PacketMemoryPool.Mutex.Unlock();
+					m_pPacketMemoryPool->Return(pItem);
 				}
 			}
 			);
@@ -486,14 +480,13 @@ namespace Bit
 						// Create a temporary client group struct.
 						struct ClientGroup
 						{
-							Thread										FactoryThread;
-							std::vector<Connection*>					Connections;
 							std::set<Uint32>							Groups;
 							ServerEntityManager::EntityMessageVector	UnreliableMessages;
 							ServerEntityManager::EntityMessageVector	ReliableMessages;
 						};
 
-						std::vector<ClientGroup> clientGroups;
+						typedef std::vector<ClientGroup*> ClientGroupVector;
+						ClientGroupVector clientGroups;
 
 						// Get temporary connection list
 						std::list<Connection*> tempConnections;
@@ -516,25 +509,22 @@ namespace Bit
 						// Continue until the temp connections are empty.
 						while(tempConnections.size())
 						{
-							std::list<Connection*>::iterator itFirst = tempConnections.begin();
+							Connection * curConnection = (*tempConnections.begin());
+							tempConnections.erase(tempConnections.begin());
 
+							clientGroups.push_back( new ClientGroup);
+							ClientGroup * pCurClientGroup = clientGroups[clientGroups.size() - 1];
+							pCurClientGroup->Groups = curConnection->m_Groups.Get();
+							curConnection->SetTempEntityMessagePtr(reinterpret_cast<void*>(pCurClientGroup));
 
-							clientGroups.push_back(ClientGroup());
-							ClientGroup & curClientGroup = clientGroups[clientGroups.size() - 1];
-							curClientGroup.Groups = (*itFirst)->m_Groups.Get();
-							curClientGroup.Connections.push_back((*itFirst));
-
-							for (std::list<Connection*>::iterator itLast = std::next(itFirst);
+							for (std::list<Connection*>::iterator itLast = tempConnections.begin();
 								itLast != tempConnections.end();)
 							{
 
 								// Found an match, Add to client groups and remove it from the temp connections list.
-								if ((*itFirst)->m_Groups.Value == (*itLast)->m_Groups.Value)
+								if (pCurClientGroup->Groups == (*itLast)->m_Groups.Get())
 								{
-									curClientGroup.Connections.push_back((*itLast));
-									(*itLast)->SetTempEntityMessagePtr(reinterpret_cast<void*>(&curClientGroup));
-
-
+									(*itLast)->SetTempEntityMessagePtr(reinterpret_cast<void*>(pCurClientGroup));
 									itLast = tempConnections.erase(itLast);
 								}
 								else
@@ -543,116 +533,79 @@ namespace Bit
 									itLast++;
 								}
 							}
-
-
-
 						}
-
+						
+						m_ConnectionMutex.Unlock();
 						
 
-						// The pre allocations are done...
 
+						// The pre allocations are done...
+						// Create the messages. Multithread.
+						const SizeType threadCount = clientGroups.size();
+						Thread * pMessageCreationThreads = new Thread[threadCount];
+						for (SizeType i = 0; i < threadCount; i++)
+						{
+							// Run thread.
+							ClientGroup * pCurClientGroup = clientGroups[i];
+							pMessageCreationThreads->Execute([this, pCurClientGroup]()
+							{
+								// Create the entity message.
+								m_EntityManager.CreateEntityMessage(pCurClientGroup->Groups, pCurClientGroup->ReliableMessages, pCurClientGroup->UnreliableMessages);
+							});
+						}
+
+						// Wait until all messages are created... then delete all threads as well.
+						for (SizeType i = 0; i < threadCount; i++)
+						{
+							pMessageCreationThreads[i].Finish();
+						}
+						delete[] pMessageCreationThreads;
 
 
 						// Send the messages to the clients.
 
-
-						/*
-							for(auto i = list.begin(); i != list.end();)
-							{
-								if(condition)
-									i = list.erase(i);
-								else
-									++i;
-							}
-						*/
-
-
-
-						// Find dublicates of group sets in connections
-						/*for (UserConnectionMap::iterator itFirst = m_UserConnections.begin();
-							itFirst != m_UserConnections.end();
-							itFirst++)
-						{
-
-							for (UserConnectionMap::iterator itLast = std::next(itFirst);
-								itLast != m_UserConnections.end();
-								itLast++)
-							{
-
-							}
-							
-						}*/
-
-						m_ConnectionMutex.Unlock();
-
-						/*
-
-						// Create a semaphore to wait for all threads.
-						Semaphore threadSemaphore;
-						threadSemaphore.Release(clientCount);
-
-						// Create a temporary struct.
-						struct MessageFactoryItem
-						{
-							Thread				FactoryThread;
-							std::set<Uint32>	Groups;
-						};
-
-
-						// Go through all the clients
-						for (UserConnectionMap::iterator it = m_UserConnections.begin();
-							it != m_UserConnections.end();
-							it++)
-						{
-
-							//ServerEntityManager::EntityMessageVector vec;
-
-							// Create the entity message
-							//m_EntityManager.CreateEntityMessage(it->second->m_Groups.Value, vec, vec);
-						
-
-						}
-
-						m_ConnectionMutex.Unlock();
-
-
-						// Wait for semaphore, all threads needs to terminate.
-						threadSemaphore.Wait();
-						*/
-
-
-						/*
-						// Create the entity message
-						std::vector<Uint8> message;
-						if (m_EntityManager.CreateEntityMessage(message, false) == false)
-						{
-							return;
-						}
-
-						// Error check the message
-						if (message.size() == 0)
-						{
-							return;
-						}
-
-						// Send the message to all the connections
 						m_ConnectionMutex.Lock();
 
 						for (UserConnectionMap::iterator it = m_UserConnections.begin();
-							it != m_UserConnections.end();
+						it != m_UserConnections.end();
 							it++)
 						{
-							// Should we send entity messages to this client?
-							if (it->second->m_SendEntityMessages.Get())
+							// Get current client group
+							ClientGroup * pCurClientGroup = reinterpret_cast<ClientGroup *>(it->second->m_pEntityMessageDataPtr);
+							if (pCurClientGroup == NULL)
 							{
-								// Send unrealiable message.
-								it->second->SendReliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true);
+								// Skip this client, no data were found to send.
+								continue;
+							}
+
+							// Set the temp entity message pointer to NULL.
+							it->second->SetTempEntityMessagePtr(NULL);
+
+							// Send unrealiable message.
+							for (ServerEntityManager::EntityMessageVector::size_type i = 0; i < pCurClientGroup->UnreliableMessages.size(); i++)
+							{
+								ServerEntityManager::EntityMessage message = pCurClientGroup->UnreliableMessages[i];
+								it->second->SendUnreliable(Private::PacketType::EntityMessage, reinterpret_cast<Uint8 *>(message.pData), message.Size);
+							}
+
+							// Send Realiable message.
+							for (ServerEntityManager::EntityMessageVector::size_type i = 0; i < pCurClientGroup->UnreliableMessages.size(); i++)
+							{
+								ServerEntityManager::EntityMessage message = pCurClientGroup->UnreliableMessages[i];
+								it->second->SendReliable(Private::PacketType::EntityMessage, reinterpret_cast<Uint8 *>(message.pData), message.Size);
 							}
 						}
 
 						m_ConnectionMutex.Unlock();
-						*/
+						
+
+
+						// Clean up client groups
+						for (SizeType i = 0; i < threadCount; i++)
+						{
+							delete clientGroups[i];
+						}
+						clientGroups.clear();
 					}
 					);
 
@@ -689,7 +642,7 @@ namespace Bit
 					}
 
 					// Get the packet address and user id.
-					const Uint64 packetAddress = pConnection->GetPackedAddress();
+					const Uint64 packetAddress = pConnection->GetDestinationPackedAddress();
 					const Uint16 userId = pConnection->GetUserId();
 
 					// Delete the connection
@@ -781,9 +734,9 @@ namespace Bit
 				m_ConnectionMutex.Unlock();
 
 				// Delete the packet memory pool
-				if (m_PacketMemoryPool.Get())
+				if (m_pPacketMemoryPool)
 				{
-					delete m_PacketMemoryPool.Get();
+					delete m_pPacketMemoryPool;
 				}
 
 				// Close the sockets
@@ -863,7 +816,7 @@ namespace Bit
 
 		Uint16 Server::GetHostPort()
 		{
-			return m_Port;
+			return m_HostPort;
 		}
 
 		SizeType Server::GetMaxConnectionsCount()

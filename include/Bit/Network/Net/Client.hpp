@@ -26,18 +26,12 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Network/Net/ClientEntityManager.hpp>
-#include <Bit/Network/Net/Private/NetPacket.hpp>
-#include <Bit/Network/Net/Private/SequenceManager.hpp>
-#include <Bit/Network/UdpSocket.hpp>
+#include <Bit/Network/Net/Private/PacketTransfer.hpp>
 #include <Bit/Network/Net/HostMessageListener.hpp>
 #include <Bit/Network/Net/UserMessage.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/ThreadValue.hpp>
 #include <Bit/System/Semaphore.hpp>
-#include <Bit/System/Timer.hpp>
-#include <queue>
-#include <map>
-#include <list>
 #include <set>
 
 namespace Bit
@@ -59,7 +53,7 @@ namespace Bit
 		///		- Banning clients
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API Client
+		class BIT_API Client : private Private::PacketTransfer
 		{
 
 		public:
@@ -84,8 +78,11 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor
 			///
+			/// \param p_SourcePort Source port, if 0, then the OS will pick one for you.
+			/// \param p_InitialPing DO WE EVEN NEED THIS?? Inital ping value.
+			///
 			////////////////////////////////////////////////////////////////
-			Client( const Uint16 p_Port = 0,
+			Client( const Uint16 p_SourcePort = 0,
 					const Time & p_InitialPing = Microseconds( 200000 ) );
 
 			////////////////////////////////////////////////////////////////
@@ -171,12 +168,6 @@ namespace Bit
 			virtual void OnEntityDestroyed(Entity * p_pEntity);
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Function to execute when the server destroyed an entity.
-			///
-			////////////////////////////////////////////////////////////////
-			//virtual void OnEntityDestruction(const Uint16 p_EntityId, const std::string p_EntityName);
-
-			////////////////////////////////////////////////////////////////
 			/// \brief Add listener to a host message.
 			///
 			////////////////////////////////////////////////////////////////
@@ -193,54 +184,24 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			UserMessage * CreateUserMessage( const std::string & p_Name, const Int32 p_MessageSize = -1 );
 
-			////////////////////////////////////////////////////////////////
-			/// \brief Get the time since last received packet, including heartbeats.
-			///
-			////////////////////////////////////////////////////////////////
-			Time TimeSinceLastRecvPacket( );
-
 			// Protected variables
 			ClientEntityManager		m_EntityManager;
 
 		private:
 
-			////////////////////////////////////////////////////////////////
-			/// \brief Received data structure
-			///
-			////////////////////////////////////////////////////////////////
-			struct ReceivedData
+			// Private structs
+			/*struct ReceivedUserMessage
 			{
-				ReceivedData( Uint8 * p_pData, const SizeType p_DataSize, const Uint16 p_Sequence );
-				~ReceivedData( );
-
-				Uint16		Sequence;
-				Uint8 *		pData;
-				SizeType	DataSize;
-			};
-
-			////////////////////////////////////////////////////////////////
-			/// \brief	Structure for reliable packets,
-			///			save them for later resend if needed.
-			///
-			////////////////////////////////////////////////////////////////
-			struct ReliablePacket
-			{
-				Uint16		Sequence;
-				Uint8 *		pData;
-				SizeType	DataSize;
-				Timer		SendTimer;
-				Timer		ResendTimer;
-				Bool		Resent;
-			};
+				Uint16 
+				MemoryPool<Uint8>::Item PoolData;
+			};*/
 
 			// Private  typedefs
-			typedef std::map<Uint16, ReliablePacket*>					ReliablePacketMap;
-			typedef std::pair<Uint16, ReliablePacket*>					ReliablePacketPair;
 			typedef std::list<Time>										TimeList;
 			typedef std::set<HostMessageListener*>						HostMessageListenerSet;
 			typedef std::map<std::string, HostMessageListenerSet *>		HostMessageListenerMap;
 			typedef std::pair<std::string, HostMessageListenerSet *>	HostMessageListenerPair;
-			typedef std::queue<ReceivedData*>							ReceivedDataQueue;
+			//typedef std::queue<ReceivedData*>							ReceivedDataQueue;
 
 			// Private functions
 			////////////////////////////////////////////////////////////////
@@ -250,34 +211,7 @@ namespace Bit
 			void InternalDisconnect(	const Bool p_CloseMainThread,
 										const Bool p_CloseTriggerThread,
 										const Bool p_CloseReliableThread,
-										const Bool p_CloseUserMessageThread );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Send unreliable packet to the server.
-			///
-			/// \param p_PacketType Type of the packet.
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
-			///
-			////////////////////////////////////////////////////////////////
-			void SendUnreliable(const PacketType::eType p_PacketType,
-								void * p_pData, 
-								const SizeType p_DataSize,
-								const bool p_AddSequence,
-								const bool p_AddReliableFlag);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Send reliable packet to the server.
-			///
-			/// \param p_PacketType Type of the packet.
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
-			///
-			////////////////////////////////////////////////////////////////
-			void SendReliable(	const PacketType::eType p_PacketType,
-								void * p_pData,
-								const SizeType p_DataSize,
-								const bool p_AddReliableFlag);
+										const Bool p_CloseHostMessageThread);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Calculate the new ping.
@@ -289,31 +223,23 @@ namespace Bit
 			/// \brief	Function for adding user messages to the function caller queue.
 			///
 			////////////////////////////////////////////////////////////////
-			void AddHostMessage(ReceivedData * p_ReceivedData);
+			//void AddHostMessage(ReceivedData * p_ReceivedData);
 
 
 			// Private variables
-			UdpSocket							m_Socket;					///< Udp socket.
-			Uint16								m_Port;						///< Udp and TCP port.
+			Uint16								m_SrcPort;					///< Source port of the data link.
 			Thread								m_Thread;					///< Thread created after the connection is established.
 			Thread								m_TriggerThread;			///< Thread for creating specific triggers.
 			Thread								m_ReliableThread;			///< Thread for checking reliable packets for resend.
-			Thread								m_UserMessageThread;		///< Thread for handling user messages.
-			Address								m_ServerAddress;			///< The server's address.
-			Uint16								m_ServerPort;				///< The server's port.
+			Thread								m_HostMessageHandleThread;	///< Thread for handling host messages.
 			ThreadValue<Time>					m_ServerStartTime;			///< The server's time at the state of connection.
 			ThreadValue<Timer>					m_ServerTimer;				///< Timer for checking how long time ago we connected to the server.
 			ThreadValue<Bool>					m_Connected;				///< Flag for checking if you are connected.
-			ThreadValue<Timer>					m_LastRecvTimer;			///< Time for checking when the last recv packet.
-			ThreadValue<Timer>					m_LastSendTimer;			///< Time for checking when the last sent reliable packet.
 			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Ammount of time without any packets before losing the connection.
-			ThreadValue<Uint16>					m_Sequence;					///< The sequence of the next packet being sent.
-			SequenceManager						m_SequenceManager;			///< Sequence manager.
-			ThreadValue<ReliablePacketMap>		m_ReliableMap;				///< Map of reliable packets.
 			ThreadValue<Time>					m_Ping;						///< Current network ping.
 			TimeList							m_PingList;					///< List of the last pings.
 			ThreadValue<HostMessageListenerMap>	m_HostMessageListeners;		///< Map of user message listeners and their message types.
-			ThreadValue<ReceivedDataQueue>		m_UserMessages;				///< Queue of user messages
+			//ThreadValue<ReceivedDataQueue>		m_UserMessages;				///< Queue of user messages
 			Semaphore							m_UserMessageSemaphore;		///< Semaphore for executing user message listeners.
 
 		};

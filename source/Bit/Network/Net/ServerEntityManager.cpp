@@ -24,7 +24,7 @@
 #include <Bit/Network/Net/ServerEntityManager.hpp>
 #include <Bit/Network/Net/Server.hpp>
 #include <Bit/Network/Socket.hpp>
-#include <Bit/Network/Net/Private/NetPacket.hpp>
+#include <Bit/Network/Net/Private/PacketTransfer.hpp>
 #include <Bit/System/Log.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 

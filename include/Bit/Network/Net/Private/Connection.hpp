@@ -25,17 +25,10 @@
 #define BIT_NETWORK_NET_CONNECTION_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Net/Private/NetPacket.hpp>
-#include <Bit/Network/Net/Private/SequenceManager.hpp>
-#include <Bit/Network/UdpSocket.hpp>
+#include <Bit/Network/Net/Private/PacketTransfer.hpp>
 #include <Bit/System/MemoryPool.hpp>
 #include <Bit/System/Thread.hpp>
-#include <Bit/System/ThreadValue.hpp>
 #include <Bit/System/Semaphore.hpp>
-#include <Bit/System/Timer.hpp>
-#include <queue>
-#include <map>
-#include <list>
 #include <set>
 
 namespace Bit
@@ -48,7 +41,7 @@ namespace Bit
 		/// \brief	Connection class.
 		///
 		////////////////////////////////////////////////////////////////
-		class BIT_API Connection
+		class BIT_API Connection : private Private::PacketTransfer
 		{
 
 		public:
@@ -97,24 +90,6 @@ namespace Bit
 			Uint16 GetUserId( ) const;
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Get the ip address 
-			///
-			////////////////////////////////////////////////////////////////
-			const Address & GetAddress( ) const;
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Get the port
-			///
-			////////////////////////////////////////////////////////////////
-			Uint16 GetPort( ) const;
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Get the packed address (ip * port + port )
-			///
-			////////////////////////////////////////////////////////////////
-			Uint64 GetPackedAddress( ) const;
-
-			////////////////////////////////////////////////////////////////
 			/// \brief Add entity to group.
 			///
 			////////////////////////////////////////////////////////////////
@@ -126,46 +101,22 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			void RemoveFromGroup(const Uint32 p_GroupIndex);
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Add received data to container.
+			///
+			////////////////////////////////////////////////////////////////
+			void AddReceivedData(MemoryPool<Uint8>::Item * p_pReceivedPacket);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Poll raw packet from queue.
+			///
+			////////////////////////////////////////////////////////////////
+			MemoryPool<Uint8>::Item * PollReceivedPackets();
+
 		private:
 
-			// Private structs
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Received data structure
-			///
-			////////////////////////////////////////////////////////////////
-			struct ReceivedData
-			{
-				ReceivedData( Uint8 * p_pData, const SizeType p_DataSize, const Uint16 p_Sequence );
-				~ReceivedData( );
-
-				Uint16		Sequence;
-				Uint8 *		pData;
-				SizeType	DataSize;
-			};
-
-			////////////////////////////////////////////////////////////////
-			/// \brief	Structure for reliable packets,
-			///			save them for later resend if needed.
-			///
-			////////////////////////////////////////////////////////////////
-			struct ReliablePacket
-			{
-				Uint16		Sequence;
-				Uint8 *		pData;
-				SizeType	DataSize;
-				Timer		SendTimer;
-				Timer		ResendTimer;
-				Bool		Resent;
-			};
-
-			// Private  typedefs
-			//typedef std::queue<ReceivedData*>	ReceivedDataQueue;
-			typedef std::queue<MemoryPool<Uint8>::Item*>	ReceiveDataQueue;
-			typedef std::map<Uint16, ReliablePacket*>		ReliablePacketMap;
-			typedef std::pair<Uint16, ReliablePacket*>		ReliablePacketPair;
-			typedef std::list<Time>							TimeList;
-			typedef std::queue<ReceivedData*>				ReceivedDataQueue;
+			// Private typedefs
+			typedef std::queue<MemoryPool<Uint8>::Item *> PacketPoolItemQueue;
 
 			// Private functions
 
@@ -174,24 +125,6 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			void StartThreads( Server * p_pServer );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Add raw packet to queue.
-			///
-			////////////////////////////////////////////////////////////////
-			void AddReceivedData( MemoryPool<Uint8>::Item * p_pItem );
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Poll raw packet from queue.
-			///
-			////////////////////////////////////////////////////////////////
-			MemoryPool<Uint8>::Item * PollReceivedData();
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Get the time since last received packet, including heartbeats.
-			///
-			////////////////////////////////////////////////////////////////
-			Time TimeSinceLastRecvPacket( );
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Internal function for disconnecting from the server.
@@ -203,41 +136,16 @@ namespace Bit
 										const Bool p_CloseUserMessageThread );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Send unreliable packet to the client.
-			///
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
-			///
-			////////////////////////////////////////////////////////////////
-			void SendUnreliable(const PacketType::eType p_PacketType,
-								void * p_pData, 
-								const Bit::SizeType p_DataSizeconst,
-								bool p_AddSequence,
-								const bool p_AddReliableFlag);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Send reliable packet to the client.
-			///
-			/// \param p_pData Pointer to the data to send.
-			/// \param p_DataSize Size of the data.
-			///
-			////////////////////////////////////////////////////////////////
-			void SendReliable(	const PacketType::eType p_PacketType,
-								void * p_pData,
-								const Bit::SizeType p_DataSize,
-								const bool p_AddReliableFlag);
-
-			////////////////////////////////////////////////////////////////
 			/// \brief	Calculate the new ping.
 			///
 			////////////////////////////////////////////////////////////////
 			void CalculateNewPing( const Time & p_LapsedTime );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief	Function for adding user messages to the function caller queue.
+			/// \brief	Function for adding user messages to the user message data container.
 			///
 			////////////////////////////////////////////////////////////////
-			void AddUserMessage( ReceivedData * p_ReceivedData );
+			void AddUserMessage(MemoryPool<Uint8> & p_UserMessageData);
 			
 			////////////////////////////////////////////////////////////////
 			/// \brief	Set temporary pointer to entity message data handled by the server.
@@ -252,27 +160,24 @@ namespace Bit
 			void * GetTempEntityMessagePtr();
 
 			// Private variables
+			Server *						m_pServer;					///< Pointer to the server.
 			Thread							m_Thread;					///< Thread for handling raw packets.
 			Thread							m_UserMessageThread;		///< Thread for handling user messages.
 			Thread							m_EventThread;				///< Thread for creating specific events.
 			Thread							m_ReliableThread;			///< Thread for checking reliable packets for resend.
-			Server *						m_pServer;					///< Pointer to the server.
-			const Address					m_Address;					///< The clients's address.
-			const Uint16					m_Port;						///< The client's port.
+			
 			const Uint16					m_UserId;					///< The client's user id.
-			Semaphore						m_ReceivedDataSemaphore;	///< Semaphore for received data.
-			ThreadValue<ReceiveDataQueue>	m_ReceivedData;				///< Queue of received data.
+			
+
+			ThreadValue<PacketPoolItemQueue>	m_ReceivedPacketQueue;				///< Queue of received packets from parent(server).
+			Semaphore							m_ReceivedPacketSemaphore;		///< Semaphore for executing user message listeners.
+
+			
+			//Semaphore						m_ReceivedDataSemaphore;	///< Semaphore for received data.
 			ThreadValue<Bool>				m_Connected;				///< Flag for checking if you are connected.
-			ThreadValue<Timer>				m_LastRecvTimer;			///< Time for checking when the last recv packet.
-			ThreadValue<Timer>				m_LastSendTimer;			///< Time for checking when the last sent packet.
-			ThreadValue<Uint16>				m_Sequence;					///< The sequence of the next packet being sent.
-			SequenceManager					m_SequenceManager;			///< Sequence manager.
-			ThreadValue<ReliablePacketMap>	m_ReliableMap;				///< Map of reliable packets.
 			ThreadValue<Time>				m_Ping;						///< Current network ping.
 			Time							m_LosingConnectionTimeout;	///< Ammount of time without any packets before losing the connection.
 			TimeList						m_PingList;					///< List of the last pings.
-			ThreadValue<ReceivedDataQueue>	m_UserMessages;				///< Queue of user messages.
-			Semaphore						m_UserMessageSemaphore;		///< Semaphore for executing user message listeners.
 			ThreadValue<GroupSet>			m_Groups;					///< Set of entity groups.
 			void *							m_pEntityMessageDataPtr;	///< Temporary pointer to entity message data handled by the server.
 		};

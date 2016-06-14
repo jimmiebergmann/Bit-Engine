@@ -162,13 +162,14 @@ namespace Bit
 
 			// Forward declarations
 			struct EntityMetaData;
+			struct EntityMessage;
 
 			// Private typedefs
 			typedef std::map<std::string, VariableBase Entity::*>	EntityVariableByNameMap;	///< Map of entity varibles, varaible name as key.
 			typedef std::map<Uint8, VariableBase Entity::*>			EntityVariableByIdMap;		///< Map of entity varibles, varaible id as key.
 			typedef std::map<std::string, EntityMetaData*>			EntityMetaDataMap;			///< Map of pointers for creating entities, entity name as key.
 			typedef std::map<Uint16, Entity*>						EntityMap;					///< Map of all entities, entity id as key.
-			typedef std::vector<std::pair<Uint16, Uint8*>>			EntityMessageVector;		///< Vector of entity messages.
+			typedef std::vector<EntityMessage>						EntityMessageVector;		///< Vector of entity messages.
 			typedef std::queue<Uint16>								EntityIdQueue;				///< Queue of Entity Ids.
 
 			////////////////////////////////////////////////////////////////
@@ -182,6 +183,17 @@ namespace Bit
 				EntityVariableByNameMap VariablesByName;	///< Map of all the variables for this entity. By Name.
 				EntityVariableByIdMap VariablesById;		///< Map of all the variables for this entity. By Id.
 					
+			};
+
+			////////////////////////////////////////////////////////////////
+			/// \brief	Entity message struct.
+			///			Contains the data, size and the type of entity message.
+			///
+			////////////////////////////////////////////////////////////////
+			struct EntityMessage
+			{
+				Uint16 Size;
+				Uint8 * pData;
 			};
 
 			////////////////////////////////////////////////////////////////

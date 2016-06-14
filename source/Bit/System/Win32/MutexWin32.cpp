@@ -36,7 +36,11 @@ namespace Bit
 		
 	MutexWin32::~MutexWin32( )
 	{
-		CloseHandle( m_Mutex );
+		if (m_Mutex)
+		{
+			CloseHandle(m_Mutex);
+			m_Mutex = NULL;
+		}
 	}
 
 	void MutexWin32::Lock( )

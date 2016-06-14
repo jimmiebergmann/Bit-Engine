@@ -168,6 +168,7 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\Entity.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\EntityManager.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\Connection.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\Private\PacketTransfer.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\SequenceManager.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\ServerEntityChanger.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\HostMessageDecoder.cpp" />
@@ -202,7 +203,7 @@
     <ClInclude Include="..\..\include\Bit\Network\Net\EntityManager.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\Connection.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\EntityChanger.hpp" />
-    <ClInclude Include="..\..\include\Bit\Network\Net\Private\NetPacket.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\Private\PacketTransfer.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\SequenceManager.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\ServerEntityChanger.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\HostMessageDecoder.hpp" />

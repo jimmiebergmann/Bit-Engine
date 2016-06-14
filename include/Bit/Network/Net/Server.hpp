@@ -26,15 +26,12 @@
 
 #include <Bit/Build.hpp>
 #include <Bit/Network/Net/ServerEntityManager.hpp>
-#include <Bit/Network/Net/Private/NetPacket.hpp>
+#include <Bit/Network/Net/Private/PacketTransfer.hpp>
 #include <Bit/Network/Net/Private/Connection.hpp>
 #include <Bit/Network/Net/UserMessageListener.hpp>
 #include <Bit/Network/Net/HostMessage.hpp>
-#include <Bit/Network/UdpSocket.hpp>
-#include <Bit/Network/TcpListener.hpp>
 #include <Bit/System/MemoryPool.hpp>
 #include <Bit/System/Thread.hpp>
-#include <Bit/System/ThreadValue.hpp>
 #include <Bit/System/Semaphore.hpp>
 #include <queue>
 #include <map>
@@ -110,7 +107,7 @@ namespace Bit
 				/// \param p_Identifier Identifier used at connection, like a plain text password.
 				///
 				////////////////////////////////////////////////////////////////
-				Properties(	const Uint16			p_Port,
+				Properties(	const Uint16			p_HostPort,
 							const Uint8				p_MaxConnections = 255,
 							const Time &			p_LosingConnectionTimeout = Seconds(3.0f),
 							const Uint8				p_EntityUpdatesPerSecond = 22,
@@ -118,7 +115,7 @@ namespace Bit
 							const std::string &		p_Identifier = "Bit Engine Network" );
 
 				// Public variables
-				Uint16			Port;
+				Uint16			HostPort;
 				Uint8			MaxConnections;
 				Time			LosingConnectionTimeout;
 				Uint8			EntityUpdatesPerSecond;
@@ -311,7 +308,7 @@ namespace Bit
 
 			// Private variables
 			UdpSocket							m_Socket;					///< Udp socket.
-			Uint16								m_Port;						///< Udp socket port.
+			Uint16								m_HostPort;					///< Udp socket port.
 			ThreadValue<Timer>					m_ServerTimer;				///< The server timer, time size the server started.
 			Thread								m_MainThread;				///< Thread for handling incoming packets.
 			Thread								m_EntityThread;				///< Thread for sending entity states to users.
@@ -329,7 +326,7 @@ namespace Bit
 			ThreadValue<AddressSet>				m_BanSet;					///< Set of banned addresses.
 			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;		///< Map of user message listeners and their message types.
 			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Amount of time until the connection timeout after not receiving any packets.
-			ThreadValue<MemoryPool<Uint8> *>	m_PacketMemoryPool;			///< Memory pool for packets, make less new, copy and delete operations.
+			MemoryPool<Uint8> *					m_pPacketMemoryPool;			///< Memory pool for packets, make less new, copy and delete operations.
 			const SizeType						m_MaxPacketSize;			///< Max size of a packet.
 
 		};

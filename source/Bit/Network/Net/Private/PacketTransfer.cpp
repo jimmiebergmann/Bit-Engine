@@ -1,0 +1,219 @@
+// Copyright (C) 2013 Jimmie Bergmann - jimmiebergmann@gmail.com
+//
+// This software is provided 'as-is', without any express or
+// implied warranty. In no event will the authors be held
+// liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute
+// it freely, subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+//    you must not claim that you wrote the original software.
+//    If you use this software in a product, an acknowledgment
+//    in the product documentation would be appreciated but
+//    is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+//    and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any
+//    source distribution.
+// ///////////////////////////////////////////////////////////////////////////
+
+#include <Bit/Network/Net/Private/PacketTransfer.hpp>
+#include <Bit/System/MemoryLeak.hpp>
+
+namespace Bit
+{
+
+	namespace Net
+	{
+
+		namespace Private
+		{
+
+			PacketTransfer::PacketTransfer( const Address & p_DestinationAddress,
+											const Uint16 p_DestinationPort) :
+				m_DstAddress(p_DestinationAddress),
+				m_DstPort(p_DestinationPort),
+				m_NextSequence(0)
+			{
+				
+			}
+
+			void PacketTransfer::SendUnreliable(const PacketType::eType p_PacketType,
+												void * p_pData,
+												const SizeType p_DataSize)
+			{
+				// Create the packet. Make space for the sequence in case.
+				const Bit::SizeType packetSize = NetHeaderSize + p_DataSize;
+
+				// Set packet header type byte.
+				Uint8 * pBuffer = new Uint8[packetSize];
+				pBuffer[0] = static_cast<Uint8>(p_PacketType);
+
+				// Set packet header sequence.
+				Bit::Uint16 sequence = Bit::Hton16(GetNextSequence());
+				memcpy(pBuffer + 1, &sequence, NetSequenceSize);
+
+				// Add the data to the new buffer
+				memcpy(pBuffer + NetHeaderSize, p_pData, p_DataSize);
+
+				// Send the packet.
+				if (m_Socket.Send(pBuffer, packetSize, m_DstAddress, m_DstPort) == packetSize)
+				{
+					RestartLastSentPacketTimer();
+				}
+
+				// Delete the packet
+				delete[] pBuffer;
+			}
+
+			
+			void PacketTransfer::SendReliable(	const PacketType::eType p_PacketType,
+												void * p_pData,
+												const SizeType p_DataSize)
+			{
+				// Create the packet. Make space for the sequence in case.
+				const Bit::SizeType packetSize = NetHeaderSize + p_DataSize;
+
+				// Set packet header type byte(also the reliable flag),
+				Uint8 * pBuffer = new Uint8[packetSize];
+				pBuffer[0] = static_cast<Uint8>(p_PacketType) & NetReliabeFlagMask;
+			
+				// Set packet header sequence.
+				Bit::Uint16 sequence = Bit::Hton16(GetNextSequence());
+				memcpy(pBuffer + 1, &sequence, NetSequenceSize);
+
+				// Add the data to the new buffer
+				memcpy(pBuffer + NetHeaderSize, p_pData, p_DataSize);
+
+				// Add the reliable packet.
+				AddReliablePacket(sequence, pBuffer, packetSize);
+
+				// Send the packet.
+				if (m_Socket.Send(pBuffer, packetSize, m_DstAddress, m_DstPort) == packetSize)
+				{
+					RestartLastSentPacketTimer();
+				}
+
+				// Do not delete the allocated buffer by purpose,
+				// since it's stored as a reliable packet and will be deleted later.
+			}
+
+			Uint16 PacketTransfer::GetNextSequence()
+			{
+				m_NextSequence.Mutex.Lock();
+				Uint16 nextSequence = m_NextSequence.Value;
+				m_NextSequence.Value = nextSequence + 1;
+				m_NextSequence.Mutex.Unlock();
+
+				return nextSequence;
+			}
+
+			Address PacketTransfer::GetDestinationAddress() const
+			{
+				return m_DstAddress;
+			}
+
+
+			Uint64 PacketTransfer::GetDestinationPackedAddress() const
+			{
+				return	static_cast<Uint64>(m_DstAddress.GetAddress()) *
+						static_cast<Uint64>(m_DstPort) +
+						static_cast<Uint64>(m_DstPort);
+			}
+
+			Uint16 PacketTransfer::GetDestinationPort() const
+			{
+				return m_DstPort;
+			}
+
+			void PacketTransfer::AddReliablePacket(	const Uint16 & p_Sequence,
+													Uint8 * p_pData,
+													const SizeType & p_DataSize)
+			{
+				ReliablePacket * pReliablePacket = new ReliablePacket;
+				pReliablePacket->Sequence = p_Sequence;
+				pReliablePacket->pData = p_pData;
+				pReliablePacket->DataSize = p_DataSize;
+				pReliablePacket->Resent = false;
+				pReliablePacket->SendTimer.Start();
+				pReliablePacket->ResendTimer.Start();
+
+				// Add the packet to the reliable map.
+				m_ReliablePackets.Mutex.Lock();
+				m_ReliablePackets.Value.insert(ReliablePacketPair(p_Sequence, pReliablePacket));
+				m_ReliablePackets.Mutex.Unlock();
+			}
+/*
+			void PacketTransfer::AddReceivedPacket(MemoryPool<Uint8>::Item * p_pItem)
+			{
+				// Lock the received data mutex.
+				m_ReceivedPackets.Mutex.Lock();
+
+				// Push the packet to the received data queue.
+				m_ReceivedPackets.Value.push(p_pItem);
+
+				// Release the semaphore if this is the very first packet in a while.
+				if (m_ReceivedPackets.Value.size() == 1)
+				{
+					//m_ReceivedDataSemaphore.Release();
+				}
+
+				m_ReceivedPackets.Mutex.Unlock();
+			}
+
+			MemoryPool<Uint8>::Item * PacketTransfer::PollReceivedPackets()
+			{
+				MemoryPool<Uint8>::Item * pItem = NULL;
+
+				m_ReceivedPackets.Mutex.Lock();
+				if (m_ReceivedPackets.Value.size())
+				{
+					pItem = m_ReceivedPackets.Value.front();
+					m_ReceivedPackets.Value.pop();
+				}
+				m_ReceivedPackets.Mutex.Unlock();
+
+				return pItem;
+			}
+*/
+			void PacketTransfer::RestartLastSentPacketTimer()
+			{
+				m_LastSendTimer.Mutex.Lock();
+				m_LastSendTimer.Value.Start();
+				m_LastSendTimer.Mutex.Unlock();
+			}
+
+			void PacketTransfer::RestartLastReceivedPacketTimer()
+			{
+				m_LastRecvTimer.Mutex.Lock();
+				m_LastRecvTimer.Value.Start();
+				m_LastRecvTimer.Mutex.Unlock();
+			}
+			
+			Time PacketTransfer::GetTimeSinceLastSentPacket()
+			{
+				m_LastSendTimer.Mutex.Lock();
+				Time time = m_LastSendTimer.Value.GetLapsedTime();
+				m_LastSendTimer.Mutex.Unlock();
+
+				return time;
+			}
+
+			Time PacketTransfer::GetTimeSinceLastReceivedPacket()
+			{
+				m_LastRecvTimer.Mutex.Lock();
+				Time time = m_LastRecvTimer.Value.GetLapsedTime();
+				m_LastRecvTimer.Mutex.Unlock();
+
+				return time;
+			}
+
+		}
+
+	}
+
+}

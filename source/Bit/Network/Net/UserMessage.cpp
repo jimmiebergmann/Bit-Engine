@@ -50,7 +50,7 @@ namespace Bit
 			}
 
 			// Add the message type and message name
-			m_Message.push_back( static_cast<Uint8>( eMessageType::UserMessageType ) );
+			m_Message.push_back( static_cast<Uint8>(Private::eMessageType::UserMessageType ) );
 			for( std::string::size_type i = 0; i < p_Name.size( ); i++ )
 			{
 				m_Message.push_back( static_cast<Uint8>( p_Name[ i ] ) );
@@ -106,11 +106,11 @@ namespace Bit
 			// Send the message
 			if( p_Reliable )
 			{
-				m_pClient->SendReliable( PacketType::UserMessage, reinterpret_cast<void*>( m_Message.data( ) ), m_Message.size( ), true );
+				m_pClient->SendReliable( Private::PacketType::UserMessage, reinterpret_cast<void*>( m_Message.data( ) ), m_Message.size( ) );
 			}
 			else
 			{
-				m_pClient->SendUnreliable(PacketType::UserMessage, reinterpret_cast<void*>(m_Message.data()), m_Message.size(), true, true);
+				m_pClient->SendUnreliable(Private::PacketType::UserMessage, reinterpret_cast<void*>(m_Message.data()), m_Message.size());
 			}
 
 			return true;

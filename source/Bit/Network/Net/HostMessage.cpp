@@ -50,7 +50,7 @@ namespace Bit
 			}
 
 			// Add the message type and message name
-			m_Message.push_back( static_cast<Uint8>( eMessageType::UserMessageType ) );
+			m_Message.push_back( static_cast<Uint8>(Private::eMessageType::UserMessageType ) ); // FIX THIS PLEASE; REMOVE THIS CODE /see NetPacket.hpp file.
 			for( std::string::size_type i = 0; i < p_Name.size( ); i++ )
 			{
 				m_Message.push_back( static_cast<Uint8>( p_Name[ i ] ) );
@@ -137,11 +137,11 @@ namespace Bit
 				// Send the message
 				if( p_pFilter->IsReliable( ) )
 				{
-					pConnection->SendReliable(PacketType::HostMessage, reinterpret_cast<void*>(m_Message.data()), m_Message.size(), true );
+					pConnection->SendReliable(Private::PacketType::HostMessage, reinterpret_cast<void*>(m_Message.data()), m_Message.size());
 				}
 				else
 				{
-					pConnection->SendUnreliable(PacketType::HostMessage, reinterpret_cast<void*>(m_Message.data()), m_Message.size(), true, true);
+					pConnection->SendUnreliable(Private::PacketType::HostMessage, reinterpret_cast<void*>(m_Message.data()), m_Message.size());
 				}
 			}
 

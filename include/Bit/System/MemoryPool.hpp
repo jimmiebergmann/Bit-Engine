@@ -193,6 +193,7 @@ namespace Bit
 		bool		m_AllocateNewIfEmpty;
 		ItemQueue	m_Items;
 		SizeType	m_DeleteAtReturnCount;
+		Mutex		m_Mutex;
 
 	};
 

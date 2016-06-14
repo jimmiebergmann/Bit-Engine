@@ -89,16 +89,20 @@ inline MemoryPool<T>::MemoryPool(	const SizeType p_PoolSize,
 template <typename T>
 inline MemoryPool<T>::~MemoryPool()
 {
+	m_Mutex.Lock();
 	while (!m_Items.empty())
 	{
 		delete m_Items.front();
 		m_Items.pop();
 	}
+	m_Mutex.Unlock();
 }
 
 template <typename T>
 typename inline MemoryPool<T>::Item * MemoryPool<T>::Get()
 {
+	SmartMutex mutex(m_Mutex);
+	mutex.Lock();
 	if (m_Items.size() == 0)
 	{
 		if (m_AllocateNewIfEmpty)
@@ -120,6 +124,9 @@ typename inline MemoryPool<T>::Item * MemoryPool<T>::Get()
 template <typename T>
 inline bool MemoryPool<T>::Return(Item * p_pItem)
 {
+	SmartMutex mutex(m_Mutex);
+	mutex.Lock();
+
 	// Validate the item.
 	if (p_pItem == NULL || p_pItem->m_pParent != this)
 	{
@@ -152,12 +159,16 @@ inline bool MemoryPool<T>::Return(Item * p_pItem)
 template <typename T>
 inline SizeType MemoryPool<T>::GetItemCount() const
 {
+	SmartMutex mutex(m_Mutex);
+	mutex.Lock();
 	return m_Items.size();
 }
 
 template <typename T>
 inline void MemoryPool<T>::Add(const SizeType p_Count = 1)
 {
+	m_Mutex.Lock();
+
 	// Create new pool items and add them to the pool
 	for (SizeType i = 0; i < p_Count; i++)
 	{
@@ -166,11 +177,15 @@ inline void MemoryPool<T>::Add(const SizeType p_Count = 1)
 
 	// Increment the pool size.
 	m_PoolSize += p_Count;
+
+	m_Mutex.Unlock();
 }
 
 template <typename T>
 inline void MemoryPool<T>::SetPoolSize(const SizeType p_Size)
 {
+	m_Mutex.Lock();
+
 	// Add items.
 	if (p_Size > m_PoolSize)
 	{
@@ -203,10 +218,15 @@ inline void MemoryPool<T>::SetPoolSize(const SizeType p_Size)
 
 	// Set pool size
 	m_PoolSize = p_Size;
+
+	m_Mutex.Unlock();
 }
 
 template <typename T>
 inline SizeType MemoryPool<T>::GetPoolSize() const
 {
+	SmartMutex mutex(m_Mutex);
+	mutex.Lock();
+
 	return m_PoolSize;
 }
