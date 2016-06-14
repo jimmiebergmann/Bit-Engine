@@ -59,7 +59,8 @@ namespace Bit
 
 			// Friend classes
 			template <typename T> friend class Variable;
-			friend class EntityManager;
+			friend class ServerEntityManager;
+			friend class ClientEntityManager;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Constructor.

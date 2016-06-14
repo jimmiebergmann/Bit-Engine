@@ -25,7 +25,7 @@
 #define BIT_NETWORK_NET_SERVER_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Net/EntityManager.hpp>
+#include <Bit/Network/Net/ServerEntityManager.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/Net/Private/Connection.hpp>
 #include <Bit/Network/Net/UserMessageListener.hpp>
@@ -69,7 +69,7 @@ namespace Bit
 
 			// friend classes
 			friend class Connection;
-			friend class EntityManager;
+			friend class ServerEntityManager;
 			friend class HostMessage;
 			friend class HostRecipientFilter;
 
@@ -114,7 +114,7 @@ namespace Bit
 							const Uint8				p_MaxConnections = 255,
 							const Time &			p_LosingConnectionTimeout = Seconds(3.0f),
 							const Uint8				p_EntityUpdatesPerSecond = 22,
-							const Uint8				p_MaxEntityUpdatesPerSecond = 30,
+							const Uint16			p_MaxEntities = 2048,
 							const std::string &		p_Identifier = "Bit Engine Network" );
 
 				// Public variables
@@ -122,7 +122,7 @@ namespace Bit
 				Uint8			MaxConnections;
 				Time			LosingConnectionTimeout;
 				Uint8			EntityUpdatesPerSecond;
-				Uint8			MaxEntityUpdatesPerSecond;
+				Uint16			MaxEntities;
 				std::string		Identifier;
 
 			};
@@ -283,22 +283,8 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			SizeType GetConnectionCount();
 
-			////////////////////////////////////////////////////////////////
-			/// \brief Whether or not to initialy send entity messages to the clients.
-			///
-			/// You'll have to activate each client for sending entity messages if you disable this at startup.
-			///
-			////////////////////////////////////////////////////////////////
-			void SetDefaultSendEntityMessages(const Bool p_Status);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Whether or not to send entity messages to a specific user.
-			///
-			////////////////////////////////////////////////////////////////
-			void SetSendEntityMessages(const Uint16 p_UserId, const Bool p_Status);
-
 			// Protected variables
-			EntityManager		m_EntityManager;
+			ServerEntityManager		m_EntityManager; ///< Entity manager
 
 		private:
 
@@ -334,14 +320,12 @@ namespace Bit
 			ThreadValue<ConnectionList>			m_CleanupConnections;		///< Queue of connections to cleanup.
 			std::string							m_Identifier;				///< Connection identifier string.
 			Uint8								m_MaxConnections;			///< Maximum amount of connections.
-			Uint8								m_DefaultEntityTicks;		///< Number of updates per second for the entities.
-			Uint8								m_MaxEntityTicks;			///< Maximum number of updates per second for the entities.
+			Uint8								m_EntityUpdatesPerSecond;	///< Number of updates per second for the entities.
 			FreeUserIdMap						m_FreeUserIds;				///< Queue of free user Ids.
 			AddressConnectionMap				m_AddressConnections;		///< Map of all the connections via their addresses.
 			UserConnectionMap					m_UserConnections;			///< Map of all the connections via their user IDs.
 			Mutex								m_ConnectionMutex;			///< Mutex for the address and user connections.
 			ThreadValue<Bool>					m_Running;					///< Flag for checking if the server is running.
-			ThreadValue<Bool>					m_DefaultSendEntityMessages;///< Default value for new connection, whether or not to send entity messages.
 			ThreadValue<AddressSet>				m_BanSet;					///< Set of banned addresses.
 			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;		///< Map of user message listeners and their message types.
 			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Amount of time until the connection timeout after not receiving any packets.

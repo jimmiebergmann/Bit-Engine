@@ -53,8 +53,8 @@ void Variable<T>::Set( const T & p_Value )
 		m_pParent->m_pEntityManager/* &&
 		m_pParent->m_pEntityManager->m_pEntityChanger*/)
 	{
-		m_pEntityManager->AddChangedVariable(m_pParent, this);
-		//m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange( m_pParent, this );
+		//m_pEntityManager->AddChangedVariable(m_pParent, this);
+		m_pParent->m_pEntityManager->OnVariableChange( m_pParent, this );
 	}
 }
 
@@ -142,8 +142,7 @@ void InterpolatedVariable<T>::Set(const T & p_Value)
 	// Server only.
 	// Call the on variable function for the entity changer
 	if (m_pParent &&
-		m_pParent->m_pEntityManager &&
-		m_pParent->m_pEntityManager->m_pEntityChanger)
+		m_pParent->m_pEntityManager)
 	{
 		// Set the variable.
 		m_Mutex.Lock();
@@ -154,7 +153,7 @@ void InterpolatedVariable<T>::Set(const T & p_Value)
 
 		//if (isNewValue)
 		{
-			m_pParent->m_pEntityManager->m_pEntityChanger->OnVariableChange(m_pParent, this);
+			m_pParent->m_pEntityManager->OnVariableChange(m_pParent, this);
 		}
 	}
 }

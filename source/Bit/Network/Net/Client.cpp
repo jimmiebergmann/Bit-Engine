@@ -37,7 +37,7 @@ namespace Bit
 
 		Client::Client(const Uint16 p_Port,
 			const Time & p_InitialPing) :
-			m_EntityManager(NULL, NULL, this),
+			m_EntityManager(this),
 			m_Port(p_Port),
 			m_Connected(false),
 			m_ServerAddress(0),
@@ -322,7 +322,6 @@ namespace Bit
 
 			// Reset sequences
 			m_Sequence.Set(0);
-			m_EntityUpdateSequence.Set(0);
 
 			// Set lost connection timeout
 			m_LosingConnectionTimeout.Set(p_LosingConnectionTimeout);
@@ -456,7 +455,7 @@ namespace Bit
 					case PacketType::EntityUpdate:
 					{
 						// Error check the recv size
-						if (recvSize <= EntityUpdatePacketSize)
+						/*if (recvSize <= EntityUpdatePacketSize)
 						{
 							continue;
 						}
@@ -480,14 +479,14 @@ namespace Bit
 						if (m_SequenceManager.AddSequence(sequence) && AddEntityUpdateSequence(sequence))
 						{
 							m_EntityManager.ParseEntityMessage(sequence, buffer + EntityUpdatePacketSize, recvSize - EntityUpdatePacketSize);
-						}
+						}*/
 
 					}
 					break;
 					case PacketType::EntityDestroyed:
 					{
 						// Error check the recv size
-						if (recvSize < EntityDestroyedPacketSize)
+						/*if (recvSize < EntityDestroyedPacketSize)
 						{
 							continue;
 						}
@@ -529,7 +528,7 @@ namespace Bit
 
 						// Destroy the entity.
 						m_EntityManager.DestroyEntity(pEntity, true);
-
+						*/
 
 					}
 					break;
@@ -1045,24 +1044,6 @@ namespace Bit
 			m_UserMessages.Mutex.Unlock();
 
 			m_UserMessageSemaphore.Release();
-		}
-
-		bool Client::AddEntityUpdateSequence(const Uint16 p_Sequence)
-		{
-			// Store the return value for later
-			bool ret = false;
-
-			m_EntityUpdateSequence.Mutex.Lock();
-			if	(p_Sequence >= m_EntityUpdateSequence.Value ||
-				(m_EntityUpdateSequence.Value > 49152 &&  p_Sequence < 16384 ))
-			{
-				m_EntityUpdateSequence.Value = p_Sequence;
-				ret = true;
-			}
-			m_EntityUpdateSequence.Mutex.Unlock();
-			
-			// Return the return value.
-			return ret;
 		}
 
 	}

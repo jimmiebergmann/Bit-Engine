@@ -25,17 +25,8 @@
 #define BIT_NETWORK_NET_ENTITY_MANAGER_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Socket.hpp>
 #include <Bit/Network/Net/Variable.hpp>
 #include <Bit/Network/Net/Entity.hpp>
-#include <Bit/Network/Net/Private/NetPacket.hpp>
-#include <Bit/System/Log.hpp>
-#include <string>
-#include <vector> 
-#include <map>
-#include <set>
-#include <queue>
-#include <typeinfo>
 
 namespace Bit
 {
@@ -43,14 +34,12 @@ namespace Bit
 	namespace Net
 	{
 
-		// Forward declarations
-		class Client;
-		class Server;
-		class ServerEntityChanger;
-
 		////////////////////////////////////////////////////////////////
 		/// \ingroup Network
 		/// \brief Entity manager class.
+		///
+		/// TODO:
+		/// * Fix "currentID" to pick free IDs, right now, the ids will not be reused...
 		///
 		/// Supports up to 65536 entities, 256 variables each.
 		///
@@ -89,68 +78,75 @@ namespace Bit
 		///				- Variable Id(1)
 		///				- Data size(1)
 		///				- Data(..)
+
+
+		// 100 entities, pos 12, dir 4, 6 x 4 = 24, total = 12+4+24 = 40
+		///			- Time(8)
+		///			- Entity count(1)
+		///			* Entity:
+		///				- Entity Id(2)
+		///				- VariableCount(1)
+		///				- Variable:
+		///					- Variable Id(1)
+		///					- Data size(1)
+		///					- Data(..)
 		///
 		////////////////////////////////////////////////////////////////
-		/*
-		Message structure:
-		- Time
-		- Entity count(2)
-		-Entity:
-		- Block size(2)
-		- Name length(1)
-		- Name(...)
-		- Variable count(2)
-		- Variable:
-		- Block Size (2)
-		- Name length (1)
-		- Name (...)
-		- ID count (2)
-		- Data size (1)
-		- Data:
-		- ID	(2)
-		- Data	(..)
-		- ...
-		- ...
-		- ...
-		*/
-		
 		class BIT_API EntityManager
 		{
 
 		public:
 
+
 			// Friend classes
-			friend class ServerEntityChanger;
+/*			friend class ServerEntityChanger;
 			friend class VariableBase;
 			template<typename T> friend class Variable;
 			template<typename T> friend class InterpolatedVariable;
+*/
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Default constructor.
+			/// \brief Entity manager enum type.
 			///
 			////////////////////////////////////////////////////////////////
-			EntityManager(	EntityChanger * p_pEntityChanger,
-							Server * p_pServer,
-							Client * p_pClient);
+			enum eType
+			{
+				ServerType,
+				ClientType
+			};
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Destructor.
 			///
 			////////////////////////////////////////////////////////////////
-			~EntityManager( );
+			virtual ~EntityManager( );
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the type of entity manager.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual eType GetType() = 0;
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Function called by variable class when a variable is being changed.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void OnVariableChange(Entity * p_pEntity, VariableBase * p_VariableBase) = 0;
+
+// CLIENT			
+/*
 			////////////////////////////////////////////////////////////////
 			/// \brief Set interpolation time.
 			///
 			////////////////////////////////////////////////////////////////
-			void SetInterpolationTime(const Time & p_Time);
+			void SetInterpolationTime(const Time & p_Time); ///< CLIENT
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Set extrapolation time.
 			///
 			////////////////////////////////////////////////////////////////
-			void SetExtrapolationTime(const Time & p_Time);
-
+			void SetExtrapolationTime(const Time & p_Time); ///<  CLIENT
+*/
 			////////////////////////////////////////////////////////////////
 			/// \brief Link entity to a certain key.
 			///
@@ -159,8 +155,8 @@ namespace Bit
 			/// \return True if the key is valid and not already in use, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			template<typename T>
-			bool LinkEntity( const std::string & p_Key );
+		/*	template<typename T>
+			bool LinkEntity( const std::string & p_Key ); ///< SERVER / CLIENT
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Register entity variable.
@@ -172,10 +168,10 @@ namespace Bit
 			/// \return Pointer to the created entity, NULL if error.
 			///
 			////////////////////////////////////////////////////////////////
-			template < typename Type, typename Class>
+			template < typename Type, typename Class> 
 			bool RegisterVariable(	const std::string & p_Class,
 									const std::string & p_Variable,
-									Variable<Type> Class::* p_pPointer);
+									Variable<Type> Class::* p_pPointer); ///< SERVER / CLIENT
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Register entity interpolated variable.
@@ -190,8 +186,11 @@ namespace Bit
 			template < typename Type, typename Class>
 			bool RegisterVariable(	const std::string & p_Class,
 									const std::string & p_Variable,
-									InterpolatedVariable<Type> Class::* p_pPointer);
+									InterpolatedVariable<Type> Class::* p_pPointer); ///< SERVER / CLIENT
 
+			*/
+// REMOVE?
+/*
 			////////////////////////////////////////////////////////////////
 			/// \brief Set entity variable by variable name.
 			///
@@ -205,8 +204,11 @@ namespace Bit
 			template<typename T>
 			bool SetVariable(	const Uint16 p_EntityId,
 								const std::string & p_Variable,
-								const T & p_Value );
+								const T & p_Value );  ///< NONE
+*/
 
+// CLIENT?
+/*
 			////////////////////////////////////////////////////////////////
 			/// \brief Take a snapshot for a specific entity group.
 			///
@@ -214,7 +216,10 @@ namespace Bit
 			/// \param p_Time The time of the snapshot data, this is for interpolated variables only.
 			///
 			////////////////////////////////////////////////////////////////
-			void TakeSnapshot(const Uint32 p_GroupId, const Bit::Time & p_Time);
+			void TakeSnapshot(const Uint32 p_GroupId, const Bit::Time & p_Time); ///<  CLIENT
+*/
+
+
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create a new entity.
@@ -227,7 +232,7 @@ namespace Bit
 			/// \see DestroyEntity
 			///
 			////////////////////////////////////////////////////////////////
-			Entity * CreateEntityByName( const std::string & p_Key );
+//			Entity * CreateEntityByName( const std::string & p_Key ); ///< SERVER
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Destroy entity.
@@ -236,7 +241,7 @@ namespace Bit
 			/// \param p_Unallocate	Unallocate the memory.
 			///
 			////////////////////////////////////////////////////////////////
-			void DestroyEntity( Entity * p_pEntity, const Bool & p_Unallocate = true );
+//			void DestroyEntity( Entity * p_pEntity, const Bool & p_Unallocate = true ); ///< SERVER / CLIENT
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Get entity.
@@ -246,7 +251,7 @@ namespace Bit
 			/// \return Pointer to the entity, NULL if error.
 			///
 			////////////////////////////////////////////////////////////////
-			Entity * GetEntity( const Uint16 p_EntityId );
+		//	virtual Entity * GetEntity( const Uint16 p_EntityId ) = 0; ///< SERVER / CLIENT
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Parse a entity message from the server.
@@ -255,7 +260,7 @@ namespace Bit
 			/// \return True if succeeded, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			bool ParseEntityMessage( const Uint16 p_Sequence, void * p_pMessage, const SizeType p_MessageSize );
+//			bool ParseEntityMessage( const Uint16 p_Sequence, void * p_pMessage, const SizeType p_MessageSize ); ///< CLIENT
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Create a entity message for a single entity, varaible and Id.
@@ -263,34 +268,34 @@ namespace Bit
 			/// \return Pointer to the message data.
 			///
 			////////////////////////////////////////////////////////////////
-			template<typename T>
+	/*		template<typename T>
 			void * CreateSingleEntityMessage(	const std::string & p_Class,
 												const std::string & p_Variable,
 												const Uint16 p_Id,
 												const T & p_Data,
-												SizeType & p_MessageSize );
+												SizeType & p_MessageSize ); ///< NONE
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Create a entity message from all the changed entities.
 			///
 			////////////////////////////////////////////////////////////////
 			Bool CreateEntityMessage(	std::vector<Uint8> & p_Message,
-										const Bool p_ClearMessage = false );
+										const Bool p_ClearMessage = false ); ///< SERVER
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Create a entity message from all the entities.
 			///
 			////////////////////////////////////////////////////////////////
 			Bool CreateFullEntityMessage(	std::vector<Uint8> & p_Message,
-											const Bool p_ClearMessage = false );
+											const Bool p_ClearMessage = false ); ///< NONE
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Clear the list of all changed entities.
 			///
 			////////////////////////////////////////////////////////////////
-			void ClearChangedEntities();
-
-		private:
+			void ClearChangedEntities(); ///< SERVER
+*/
+	/*	protected:
 
 			// Forward declarations
 			struct EntityMetaData;
@@ -298,19 +303,19 @@ namespace Bit
 			
 			// Private typedefs
 			typedef std::map<std::string, VariableBase Entity::*>		EntityVariableMap;			///< Map of entity varibles, varaible name as key.
-			typedef std::map<std::string, EntityMetaData*>				EntityMetaDataMap;			///< Map of pointers for creating entities, entity name as key.
-			typedef std::map<Uint16, EntityLink*>						EntityMap;					///< Map of all entities, entity id as key.
-			typedef std::map<Entity *, VariableBase *>					ChangedEntityVariableMap;	///< Mapping entities to variables
-			typedef std::map<std::string, ChangedEntityVariableMap *>	ChangedVariablesMap;		///< Set of changed variables
-			typedef std::map<std::string, ChangedVariablesMap *>		ChangedEntitiesMap;			///< Map of changed entities.
-			typedef std::set<Entity *>									EntitySet;					///< Set of entities.
+			typedef std::map<std::string, EntityMetaData*>				EntityMetaDataMap;			///< Map of pointers for creating entities, entity name as key.*/
+			//typedef std::map<Uint16, EntityLink*>						EntityMap;					///< Map of all entities, entity id as key.
+			//typedef std::map<Entity *, VariableBase *>					ChangedEntityVariableMap;	///< Mapping entities to variables
+			//typedef std::map<std::string, ChangedEntityVariableMap *>	ChangedVariablesMap;		///< Set of changed variables
+			//typedef std::map<std::string, ChangedVariablesMap *>		ChangedEntitiesMap;			///< Map of changed entities.
+			//typedef std::set<Entity *>									EntitySet;					///< Set of entities.
 			
 			////////////////////////////////////////////////////////////////
 			/// \brief	Entity meta data structure. Holding the entity variables
 			///			and pointer to the entitiy creating function.
 			///
 			////////////////////////////////////////////////////////////////
-			struct EntityMetaData
+		/*	struct EntityMetaData
 			{
 
 				size_t TypeHash;
@@ -318,19 +323,19 @@ namespace Bit
 				Entity*(*CreationPointer)();		///< Pointer to function for creating entity.
 				EntityVariableMap EntityVariables;	///< Map of all the variables for this entity.
 			};
-
+			*/
 			////////////////////////////////////////////////////////////////
 			/// \brief	Structure for connecting entity with it's name.
 			///
 			////////////////////////////////////////////////////////////////
-			struct EntityLink
+			/*struct EntityLink
 			{
 				std::string Class;	///< Name of the entity's class.
 				Entity * pEntity;	///< Pointer to the entity.
-			};
+			};*/
 
 			// Private functions
-
+/*
 			////////////////////////////////////////////////////////////////
 			/// \brief This function is being called when a network variable is changed.
 			///
@@ -339,6 +344,9 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			void OnVariableChange(Entity * p_pEntity, VariableBase * p_VariableBase);
+*/
+
+
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Create a new entity at the given id.
@@ -350,18 +358,18 @@ namespace Bit
 			/// \return Pointer to the created entity, NULL if error.
 			///
 			////////////////////////////////////////////////////////////////
-			Entity * CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id);
+			//virtual Entity * CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id) = 0;
 
-			////////////////////////////////////////////////////////////////
+
+
+
+			/*////////////////////////////////////////////////////////////////
 			/// \brief Delete all the entities in the deletion queue.
 			///
 			////////////////////////////////////////////////////////////////
 			void DeleteEntitiesInDeletionQueue();
 		
 			// Private variable
-			EntityChanger *			m_pEntityChanger;		///< Poiter to entity changer base class
-			Client *				m_pClient;				///< Null for server owner.
-			Server *				m_pServer;				///< Null for client owner.
 			EntityMetaDataMap		m_EntityMetaDataMap;	///< Map of entity class meta data.
 			ChangedEntitiesMap		m_ChangedEntities;		///< Map of changed entitites
 			EntityMap				m_Entities;				///< Map of all entities.
@@ -370,52 +378,13 @@ namespace Bit
 			Time					m_InterpolationTime;	///< Interpolation time(delay).
 			Time					m_ExtrapolationTime;	///< Extrapolation time( for how long we should extra interpolate).
 			Mutex					m_Mutex;				///< Mutex for making sure we're not destroying entities at the same time we create entity messages.
-
-			/// NEW!
-
-			/*
-				typedef std::map<std::string, VariableBase Entity::*>		EntityVariableMap;			///< Map of entity varibles, varaible name as key.
-				typedef std::map<std::string, EntityMetaData*>				EntityMetaDataMap;			///< Map of pointers for creating entities, entity name as key.
-				typedef std::map<Uint16, EntityLink*>						EntityMap;					///< Map of all entities, entity id as key.
-				typedef std::map<Entity *, VariableBase *>					ChangedEntityVariableMap;	///< Mapping entities to variables
-				typedef std::map<std::string, ChangedEntityVariableMap *>	ChangedVariablesMap;		///< Set of changed variables
-				typedef std::map<std::string, ChangedVariablesMap *>		ChangedEntitiesMap;			///< Map of changed entities.
-				typedef std::set<Entity *>									EntitySet;					///< Set of entities.
 			*/
-
-			struct ChangedVariableStruct
-			{
-				VariableBase Entity::* pVariableBase;
-				Entity * pEntity;
-			};
-
-			//typedef std::map< std::pair<Uint16, Uint8>, ChangedVariableStruct> ChangeVariableEntityPairMap; ///< Pair of var and entity id to link them, struct.
-			typedef std::map< Uint16, ChangedVariableStruct> ChangeVariableMap;						///< Changed Id, struct
-			typedef std::map<Uint32, ChangeVariableMap *> ChangeVariablesGroupMap;							///< Group id, struct
-			ChangeVariablesGroupMap m_ChangeVariablesGroups;
-
-
-			/*
-			
-			
-			c1 group 3
-
-			m_ChangeVariablesGroups[3] finns? Innehåller data?
-
-			Ta changed id och jämför med c1 senaste connection:changedvar(std::pair<entityId, VariableId>) = 5
-
-			Changed if för variabel är 6, Skicka nytt.
-
-			Hämta senaste ChangeVariableEntityPairMap.
-
-			*/
-
 		};
 
 		////////////////////////////////////////////////////////////////
 		// Include the inline file.
 		////////////////////////////////////////////////////////////////
-		#include <Bit/Network/Net/EntityManager.inl>
+		//#include <Bit/Network/Net/EntityManager.inl>
 
 	}
 

@@ -22,11 +22,11 @@
 // ///////////////////////////////////////////////////////////////////////////
 
 #include <Bit/Network/Net/EntityManager.hpp>
-#include <Bit/Network/Net/Client.hpp>
+/*#include <Bit/Network/Net/Client.hpp>
 #include <Bit/Network/Net/Server.hpp>
 #include <Bit/System/Vector2.hpp>
 #include <Bit/System/Log.hpp>
-#include <set>
+#include <set>*/
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -34,19 +34,18 @@ namespace Bit
 
 	namespace Net
 	{
-
-		EntityManager::EntityManager(	EntityChanger * p_pEntityChanger,
-										Server * p_pServer,
-										Client * p_pClient) :
-			m_pEntityChanger( p_pEntityChanger ),
-			m_pServer(p_pServer),
-			m_pClient(p_pClient),
+/*
+		EntityManager::EntityManager() :
 			m_CurrentId( 0 )
 		{
-		}
+		}*/
+
 
 		EntityManager::~EntityManager( )
 		{
+		}
+
+			/*
 			// Delete entities in the delete queue.
 			DeleteEntitiesInDeletionQueue();
 
@@ -71,7 +70,11 @@ namespace Bit
 
 			// Destroy the enetity changer
 			delete m_pEntityChanger;
+
+			
 		}
+
+
 
 		void EntityManager::SetInterpolationTime(const Time & p_Time)
 		{
@@ -171,6 +174,8 @@ namespace Bit
 
 		bool EntityManager::ParseEntityMessage(const Uint16 p_Sequence, void * p_pMessage, const SizeType p_MessageSize)
 		{
+
+*/
 			
 			/*
 				Message structure:
@@ -194,6 +199,8 @@ namespace Bit
 							- ...
 						- ...
 			*/
+
+/*
 
 			// This is for clients only.
 			if (m_pClient == NULL)
@@ -447,7 +454,7 @@ namespace Bit
 		Bool EntityManager::CreateEntityMessage(std::vector<Uint8> & p_Message,
 												const Bool p_ClearMessage)
 		{
-			
+*/			
 			/*
 				Message structure:
 				- Time
@@ -472,7 +479,7 @@ namespace Bit
 			*/
 
 
-			return false;
+//			return false;
 
 
 /*
@@ -641,7 +648,7 @@ namespace Bit
 			return true;
 			
 */
-		}
+/*	}
 
 		Bool EntityManager::CreateFullEntityMessage(	std::vector<Uint8> & p_Message,
 														const Bool p_ClearMessage )
@@ -649,7 +656,7 @@ namespace Bit
 			// Create a smart mutex.
 			SmartMutex mutex(m_Mutex);
 			mutex.Lock();
-
+*/
 			/*
 				Message structure:
 				- Time
@@ -672,7 +679,7 @@ namespace Bit
 							- ...
 						- ...
 			*/
-
+/*
 			// Clear the message
 			if( p_ClearMessage )
 			{
@@ -934,8 +941,8 @@ namespace Bit
 
 		void EntityManager::OnVariableChange(Entity * p_pEntity, VariableBase * p_VariableBase)
 		{
-		}
-
+		}*/
+/*
 		Entity * EntityManager::CreateEntityAtId(const std::string & p_Key, const Bit::SizeType p_Id)
 		{
 			// Create a smart mutex.
@@ -951,7 +958,7 @@ namespace Bit
 			}
 
 			// Make sure that the id isn't already in use
-			EntityMap::iterator it2 = m_Entities.find(p_Id);
+			EntityMap::iterator it2 = m_EntitiesCreateEntityAtId.find(p_Id);
 			if (it2 != m_Entities.end())
 			{
 				bitLogNetErr(  "Id already in use." );
@@ -996,6 +1003,8 @@ namespace Bit
 
 		}
 
+		*/
+		/*
 		void EntityManager::DeleteEntitiesInDeletionQueue()
 		{
 			// Create a smart mutex.
@@ -1113,6 +1122,9 @@ namespace Bit
 			mutex.Unlock();
 
 		}
+
+
+		*/
 	}
 
 }

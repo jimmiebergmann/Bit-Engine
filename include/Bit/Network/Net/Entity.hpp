@@ -43,6 +43,8 @@ namespace Bit
 		/// \ingroup Network
 		/// \brief Network entity base class.
 		///
+		/// The default entity group is set to 0.
+		///
 		////////////////////////////////////////////////////////////////
 		class Entity
 		{
@@ -50,12 +52,11 @@ namespace Bit
 		public:
 
 			// Friend classes
-			friend class EntityManager;
+			friend class ServerEntityManager;
+			friend class ClientEntityManager;
 			template <typename T> friend class Variable;
 			template <typename T> friend class InterpolatedVariable;
 
-			// Public typdefs
-			typedef std::set<Uint32> GroupSet;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Default constructor.
@@ -79,19 +80,13 @@ namespace Bit
 			/// \brief Add entity to group.
 			///
 			////////////////////////////////////////////////////////////////
-			void AddToGroup(const Uint32 p_GroupIndex);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Remove entity from group.
-			///
-			////////////////////////////////////////////////////////////////
-			void RemoveFromGroup(const Uint32 p_GroupIndex);
+			void SetGroup(const Uint32 p_GroupIndex);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Att entity to group.
 			///
 			////////////////////////////////////////////////////////////////
-			GroupSet GetGroups();
+			Uint32 GetGroup();
 
 		protected:
 
@@ -106,7 +101,7 @@ namespace Bit
 			// Private variables
 			Uint16					m_Id;				///< Entity id.
 			std::string				m_Name;				///< Entity name.
-			ThreadValue<GroupSet>	m_Groups;			///< Set of entity groups for this entity.
+			ThreadValue<Uint32>		m_Group;			///< Entity group this entity is assigned to.
 			EntityManager *			m_pEntityManager;	///< Entity changer class.
 
 		};

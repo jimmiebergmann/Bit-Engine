@@ -21,6 +21,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+/*
+
 #ifndef BIT_NETWORK_NET_ENTITY_CHANGER_HPP
 #define BIT_NETWORK_NET_ENTITY_CHANGER_HPP
 
@@ -59,3 +61,5 @@ namespace Bit
 }
 
 #endif
+
+*/

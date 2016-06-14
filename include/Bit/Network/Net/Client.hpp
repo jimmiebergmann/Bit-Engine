@@ -25,7 +25,7 @@
 #define BIT_NETWORK_NET_CLIENT_HPP
 
 #include <Bit/Build.hpp>
-#include <Bit/Network/Net/EntityManager.hpp>
+#include <Bit/Network/Net/ClientEntityManager.hpp>
 #include <Bit/Network/Net/Private/NetPacket.hpp>
 #include <Bit/Network/Net/Private/SequenceManager.hpp>
 #include <Bit/Network/UdpSocket.hpp>
@@ -200,7 +200,7 @@ namespace Bit
 			Time TimeSinceLastRecvPacket( );
 
 			// Protected variables
-			EntityManager		m_EntityManager;
+			ClientEntityManager		m_EntityManager;
 
 		private:
 
@@ -291,11 +291,6 @@ namespace Bit
 			////////////////////////////////////////////////////////////////
 			void AddHostMessage(ReceivedData * p_ReceivedData);
 
-			////////////////////////////////////////////////////////////////
-			/// \brief	Add entity update sequence, makes sure we're not handling old entity updates.
-			///
-			////////////////////////////////////////////////////////////////
-			bool AddEntityUpdateSequence(const Uint16 p_Sequence);
 
 			// Private variables
 			UdpSocket							m_Socket;					///< Udp socket.
@@ -313,7 +308,6 @@ namespace Bit
 			ThreadValue<Timer>					m_LastSendTimer;			///< Time for checking when the last sent reliable packet.
 			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Ammount of time without any packets before losing the connection.
 			ThreadValue<Uint16>					m_Sequence;					///< The sequence of the next packet being sent.
-			ThreadValue<Uint16>					m_EntityUpdateSequence;		///< Last received entitiy update sequence.
 			SequenceManager						m_SequenceManager;			///< Sequence manager.
 			ThreadValue<ReliablePacketMap>		m_ReliableMap;				///< Map of reliable packets.
 			ThreadValue<Time>					m_Ping;						///< Current network ping.

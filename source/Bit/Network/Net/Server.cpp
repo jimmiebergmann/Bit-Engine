@@ -42,7 +42,8 @@ namespace Bit
 			Port(0),
 			MaxConnections(255),
 			LosingConnectionTimeout(Seconds(3.0f)),
-			EntityUpdatesPerSecond(20),
+			EntityUpdatesPerSecond(22),
+			MaxEntities(2048),
 			Identifier("Bit Engine Network")
 		{
 		}
@@ -51,24 +52,21 @@ namespace Bit
 										const Uint8 p_MaxConnections,
 										const Time & p_LosingConnectionTimeout,
 										const Uint8 p_EntityUpdatesPerSecond,
-										const Uint8 p_MaxEntityUpdatesPerSecond,
+										const Uint16 p_MaxEntities,
 										const std::string & p_Identifier) :
 			Port(p_Port),
 			MaxConnections(p_MaxConnections),
 			LosingConnectionTimeout(p_LosingConnectionTimeout),
 			EntityUpdatesPerSecond(p_EntityUpdatesPerSecond),
-			MaxEntityUpdatesPerSecond(p_MaxEntityUpdatesPerSecond),
 			Identifier(p_Identifier)
 		{
 		}
 
 		// Server class
 		Server::Server() :
-			m_EntityManager(new ServerEntityChanger(&m_EntityManager), this, NULL),
+			m_EntityManager(this),
 			m_MaxConnections(0),
-			m_DefaultEntityTicks(0),
-			m_MaxEntityTicks(0),
-			m_DefaultSendEntityMessages( true ),
+			m_EntityUpdatesPerSecond(0),
 			m_PacketMemoryPool(NULL),
 			m_MaxPacketSize(2048)
 		{
@@ -145,6 +143,8 @@ namespace Bit
 			// Add the entity index to the connection.
 			it->second->AddToGroup(p_GroupIndex);
 
+
+			/*
 			// Create the entity message
 			std::vector<Uint8> message;
 			if (m_EntityManager.CreateFullEntityMessage(message, false) == false)
@@ -160,6 +160,7 @@ namespace Bit
 
 			// Send realiable message.
 			it->second->SendReliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true);
+			*/
 		}
 
 		void Server::RemoveUserFromGroup(const Uint16 p_UserId, const Uint32 p_GroupIndex)
@@ -250,15 +251,12 @@ namespace Bit
 			}
 			m_Socket.SetBlocking(true);
 
-			// Set host port
+			// Set properties
 			m_Port = p_Properties.Port;
-
-			// Set max connections.
 			m_MaxConnections = p_Properties.MaxConnections;
-
-			// Set entity updates per second
-			m_DefaultEntityTicks = p_Properties.EntityUpdatesPerSecond;
-			m_MaxEntityTicks = p_Properties.MaxEntityUpdatesPerSecond;
+			m_EntityUpdatesPerSecond = p_Properties.EntityUpdatesPerSecond;
+			m_LosingConnectionTimeout.Set(p_Properties.LosingConnectionTimeout);
+			m_Identifier = p_Properties.Identifier;
 
 			// Add the free user IDs to the queue
 			for (Uint16 i = 0; i < static_cast<Uint16>(m_MaxConnections); i++)
@@ -266,11 +264,8 @@ namespace Bit
 				m_FreeUserIds.push(i);
 			}
 
-			// Set the lost connection timeout
-			m_LosingConnectionTimeout.Set(p_Properties.LosingConnectionTimeout);
-
-			// Set the identifier
-			m_Identifier = p_Properties.Identifier;
+			// Create entity id queue.
+			m_EntityManager.CreateEntityIdQueue(p_Properties.MaxEntities);
 
 			// Create the packet memory pool
 			m_PacketMemoryPool.Set(new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, m_MaxPacketSize, true));
@@ -417,7 +412,7 @@ namespace Bit
 							m_FreeUserIds.pop();
 
 							// Create the connection
-							Connection * pConnection = new Connection(address, port, userId, m_DefaultSendEntityMessages.Get(), m_LosingConnectionTimeout.Value);
+							Connection * pConnection = new Connection(address, port, userId, m_LosingConnectionTimeout.Value);
 
 							// Add the client to the address connection map
 							m_AddressConnections.insert(AddressConnectionMapPair(clientAddress, pConnection));
@@ -463,18 +458,171 @@ namespace Bit
 				// Run the 
 				while (IsRunning())
 				{
-					if (m_DefaultEntityTicks == 0)
+					if (m_EntityUpdatesPerSecond == 0)
 					{
 						Sleep(Microseconds(1000));
 						continue;
 					}
 
 					// Calculate the timestep time
-					Time time = Seconds(1.0f / static_cast<Float32>(m_DefaultEntityTicks));
+					Time time = Seconds(1.0f / static_cast<Float32>(m_EntityUpdatesPerSecond));
 
 					// Execute the timestep
 					timestep.Execute(time, [this]()
 					{
+						// Get client count.
+						m_ConnectionMutex.Lock();
+						SizeType clientCount = m_UserConnections.size();
+
+						// Exit the timestep.
+						if (clientCount == 0)
+						{
+							m_ConnectionMutex.Unlock();
+							return;
+						}
+
+
+						// Do pre entity message allocations
+						// Create a temporary client group struct.
+						struct ClientGroup
+						{
+							Thread										FactoryThread;
+							std::vector<Connection*>					Connections;
+							std::set<Uint32>							Groups;
+							ServerEntityManager::EntityMessageVector	UnreliableMessages;
+							ServerEntityManager::EntityMessageVector	ReliableMessages;
+						};
+
+						std::vector<ClientGroup> clientGroups;
+
+						// Get temporary connection list
+						std::list<Connection*> tempConnections;
+						for (UserConnectionMap::iterator itFirst = m_UserConnections.begin();
+							itFirst != m_UserConnections.end();
+							itFirst++)
+						{
+							if (itFirst->second->m_Groups.Get().size())
+							{
+								tempConnections.push_back(itFirst->second);
+							}
+						}
+
+						if (tempConnections.size() == 0)
+						{
+							m_ConnectionMutex.Unlock();
+							return;
+						}
+
+						// Continue until the temp connections are empty.
+						while(tempConnections.size())
+						{
+							std::list<Connection*>::iterator itFirst = tempConnections.begin();
+
+
+							clientGroups.push_back(ClientGroup());
+							ClientGroup & curClientGroup = clientGroups[clientGroups.size() - 1];
+							curClientGroup.Groups = (*itFirst)->m_Groups.Get();
+							curClientGroup.Connections.push_back((*itFirst));
+
+							for (std::list<Connection*>::iterator itLast = std::next(itFirst);
+								itLast != tempConnections.end();)
+							{
+
+								// Found an match, Add to client groups and remove it from the temp connections list.
+								if ((*itFirst)->m_Groups.Value == (*itLast)->m_Groups.Value)
+								{
+									curClientGroup.Connections.push_back((*itLast));
+									(*itLast)->SetTempEntityMessagePtr(reinterpret_cast<void*>(&curClientGroup));
+
+
+									itLast = tempConnections.erase(itLast);
+								}
+								else
+								{
+									// Keep on searching.
+									itLast++;
+								}
+							}
+
+
+
+						}
+
+						
+
+						// The pre allocations are done...
+
+
+
+						// Send the messages to the clients.
+
+
+						/*
+							for(auto i = list.begin(); i != list.end();)
+							{
+								if(condition)
+									i = list.erase(i);
+								else
+									++i;
+							}
+						*/
+
+
+
+						// Find dublicates of group sets in connections
+						/*for (UserConnectionMap::iterator itFirst = m_UserConnections.begin();
+							itFirst != m_UserConnections.end();
+							itFirst++)
+						{
+
+							for (UserConnectionMap::iterator itLast = std::next(itFirst);
+								itLast != m_UserConnections.end();
+								itLast++)
+							{
+
+							}
+							
+						}*/
+
+						m_ConnectionMutex.Unlock();
+
+						/*
+
+						// Create a semaphore to wait for all threads.
+						Semaphore threadSemaphore;
+						threadSemaphore.Release(clientCount);
+
+						// Create a temporary struct.
+						struct MessageFactoryItem
+						{
+							Thread				FactoryThread;
+							std::set<Uint32>	Groups;
+						};
+
+
+						// Go through all the clients
+						for (UserConnectionMap::iterator it = m_UserConnections.begin();
+							it != m_UserConnections.end();
+							it++)
+						{
+
+							//ServerEntityManager::EntityMessageVector vec;
+
+							// Create the entity message
+							//m_EntityManager.CreateEntityMessage(it->second->m_Groups.Value, vec, vec);
+						
+
+						}
+
+						m_ConnectionMutex.Unlock();
+
+
+						// Wait for semaphore, all threads needs to terminate.
+						threadSemaphore.Wait();
+						*/
+
+
+						/*
 						// Create the entity message
 						std::vector<Uint8> message;
 						if (m_EntityManager.CreateEntityMessage(message, false) == false)
@@ -504,6 +652,7 @@ namespace Bit
 						}
 
 						m_ConnectionMutex.Unlock();
+						*/
 					}
 					);
 
@@ -731,28 +880,6 @@ namespace Bit
 
 			// Return the count.
 			return count;
-		}
-
-		void Server::SetDefaultSendEntityMessages(const Bool p_Status)
-		{
-			m_DefaultSendEntityMessages.Set(p_Status);
-		}
-
-		void Server::SetSendEntityMessages(const Uint16 p_UserId, const Bool p_Status)
-		{
-			// Find the client.
-			m_ConnectionMutex.Lock();
-
-			UserConnectionMap::iterator it = m_UserConnections.find(p_UserId);
-			if (it == m_UserConnections.end())
-			{
-				m_ConnectionMutex.Unlock();
-				return;
-			}
-
-			it->second->m_SendEntityMessages.Set(p_Status);
-
-			m_ConnectionMutex.Unlock();
 		}
 
 		void Server::AddConnectionForCleanup( Connection * p_pConnection )

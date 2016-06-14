@@ -20,7 +20,7 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-
+/*
 #include <Bit/Network/Net/Private/ServerEntityChanger.hpp>
 #include <Bit/Network/Net/EntityManager.hpp>
 #include <Bit/System/MemoryLeak.hpp>
@@ -47,7 +47,7 @@ namespace Bit
 			// Add changed variable
 			//m_pEntityManager->AddChangedVariable(p_pEntity, p_pVariableBase);
 
-			/*
+			
 			// Lock the entity manager mutex.
 			SmartMutex mutex(m_pEntityManager->m_Mutex);
 			mutex.Lock();
@@ -91,7 +91,7 @@ namespace Bit
 
 			// Unlock the mutex.
 			mutex.Unlock();
-			*/
+			
 
 		}
 
@@ -99,3 +99,5 @@ namespace Bit
 	}
 
 }
+
+*/

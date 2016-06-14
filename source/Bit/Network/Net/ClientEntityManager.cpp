@@ -21,8 +21,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
-#include <Bit/Network/Net/Entity.hpp>
-#include <Bit/Network/Net/EntityManager.hpp>
+#include <Bit/Network/Net/ClientEntityManager.hpp>
+#include <Bit/Network/Net/Client.hpp>
 #include <Bit/System/MemoryLeak.hpp>
 
 namespace Bit
@@ -31,33 +31,38 @@ namespace Bit
 	namespace Net
 	{
 
-		Entity::Entity( ) :
-			m_pEntityManager( NULL )
+		ClientEntityManager::ClientEntityManager(Client * p_pClient) :
+			m_pClient(p_pClient)
 		{
 		}
 
-		Uint16 Entity::GetId( ) const
+		EntityManager::eType ClientEntityManager::GetType()
 		{
-			return m_Id;
+			return EntityManager::ClientType;
 		}
 
-		const std::string & Entity::GetName( ) const
+		void ClientEntityManager::OnVariableChange(Entity * p_pEntity, VariableBase * p_VariableBase)
 		{
-			return m_Name;
+
 		}
 
-		void Entity::SetGroup(const Uint32 p_GroupIndex)
+		void ClientEntityManager::SetInterpolationTime(const Time & p_Time)
 		{
-			m_Group.Set(p_GroupIndex);
+			m_InterpolationTime = p_Time;
 		}
 
-		Uint32 Entity::GetGroup()
+		void ClientEntityManager::SetExtrapolationTime(const Time & p_Time)
 		{
-			return m_Group.Get();
+			m_ExtrapolationTime = p_Time;
 		}
 
-		Entity::~Entity()
+		void ClientEntityManager::TakeSnapshot(const Uint32 p_GroupId, const Bit::Time & p_Time)
 		{
+		}
+
+		bool ClientEntityManager::ParseEntityMessage(void * p_pMessage, const SizeType p_MessageSize)
+		{
+			return false;
 		}
 
 	}

@@ -21,11 +21,18 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+/*
+
 #ifndef BIT_NETWORK_NET_SERVER_ENTITY_CHANGER_HPP
 #define BIT_NETWORK_NET_SERVER_ENTITY_CHANGER_HPP
 
+
+
 #include <Bit/Build.hpp>
 #include <Bit/Network/Net/Private/EntityChanger.hpp>
+
+
+
 
 namespace Bit
 {
@@ -70,3 +77,5 @@ namespace Bit
 }
 
 #endif
+
+*/

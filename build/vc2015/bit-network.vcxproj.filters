@@ -70,6 +70,12 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\SequenceManager.cpp">
       <Filter>Net\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\ClientEntityManager.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityManager.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
@@ -160,6 +166,12 @@
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\SequenceManager.hpp">
       <Filter>Net\Private</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\ClientEntityManager.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\Bit\Network\Net\ServerEntityManager.hpp">
+      <Filter>Net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Win32">
@@ -180,6 +192,12 @@
       <Filter>Net</Filter>
     </None>
     <None Include="..\..\include\Bit\Network\Net\EntityManager.inl">
+      <Filter>Net</Filter>
+    </None>
+    <None Include="..\..\include\Bit\Network\Net\ClientEntityManager.inl">
+      <Filter>Net</Filter>
+    </None>
+    <None Include="..\..\include\Bit\Network\Net\ServerEntityManager.inl">
       <Filter>Net</Filter>
     </None>
   </ItemGroup>

@@ -69,7 +69,6 @@ namespace Bit
 			Connection(	const Address & p_Address, 
 						const Uint16 & p_Port,
 						const Uint16 & p_UserId,
-						const Bool	p_SendEntityMessages,
 						const Time & p_LosingConnectionTimeout,
 						const Time & p_InitialPing = Microseconds( 200000 ) );
 		
@@ -239,6 +238,18 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			void AddUserMessage( ReceivedData * p_ReceivedData );
+			
+			////////////////////////////////////////////////////////////////
+			/// \brief	Set temporary pointer to entity message data handled by the server.
+			///
+			////////////////////////////////////////////////////////////////
+			void SetTempEntityMessagePtr(void * p_pEntityMessageDataPtr);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief	Get temporary pointer to entity message data handled by the server.
+			///
+			////////////////////////////////////////////////////////////////
+			void * GetTempEntityMessagePtr();
 
 			// Private variables
 			Thread							m_Thread;					///< Thread for handling raw packets.
@@ -249,7 +260,6 @@ namespace Bit
 			const Address					m_Address;					///< The clients's address.
 			const Uint16					m_Port;						///< The client's port.
 			const Uint16					m_UserId;					///< The client's user id.
-			ThreadValue<Bool>				m_SendEntityMessages;		///< Whether or not to send entity messages to the client.
 			Semaphore						m_ReceivedDataSemaphore;	///< Semaphore for received data.
 			ThreadValue<ReceiveDataQueue>	m_ReceivedData;				///< Queue of received data.
 			ThreadValue<Bool>				m_Connected;				///< Flag for checking if you are connected.
@@ -264,7 +274,7 @@ namespace Bit
 			ThreadValue<ReceivedDataQueue>	m_UserMessages;				///< Queue of user messages.
 			Semaphore						m_UserMessageSemaphore;		///< Semaphore for executing user message listeners.
 			ThreadValue<GroupSet>			m_Groups;					///< Set of entity groups.
-
+			void *							m_pEntityMessageDataPtr;	///< Temporary pointer to entity message data handled by the server.
 		};
 
 	}

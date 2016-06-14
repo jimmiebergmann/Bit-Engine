@@ -20,7 +20,7 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-
+/*
 // Function for creating entity
 template <typename T>
 Entity * CreateEntityT( )
@@ -124,7 +124,7 @@ bool EntityManager::RegisterVariable(	const std::string & p_Class,
 	// Succeeded
 	return true;
 }
-
+/*
 // Function for setting entity variables
 template<typename T>
 bool EntityManager::SetVariable( const Uint16 p_EntityId, const std::string & p_Variable, const T & p_Value )
@@ -242,3 +242,6 @@ void * EntityManager::CreateSingleEntityMessage(	const std::string & p_Class,
 	p_MessageSize = messageSize;
 	return reinterpret_cast<void *>( pData );
 }
+
+
+*/

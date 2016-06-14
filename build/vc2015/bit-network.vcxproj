@@ -164,6 +164,7 @@
     <ClCompile Include="..\..\source\Bit\Network\Address.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Http.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Client.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\ClientEntityManager.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Entity.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\EntityManager.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Private\Connection.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="..\..\source\Bit\Network\Net\HostRecipientFilter.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\Server.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\HostMessage.cpp" />
+    <ClCompile Include="..\..\source\Bit\Network\Net\ServerEntityManager.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\UserMessage.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageDecoder.cpp" />
     <ClCompile Include="..\..\source\Bit\Network\Net\UserMessageListener.cpp" />
@@ -195,6 +197,7 @@
     <ClInclude Include="..\..\include\Bit\Network\Address.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Http.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Client.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\ClientEntityManager.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Entity.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\EntityManager.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Private\Connection.hpp" />
@@ -207,6 +210,7 @@
     <ClInclude Include="..\..\include\Bit\Network\Net\HostRecipientFilter.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\Server.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\HostMessage.hpp" />
+    <ClInclude Include="..\..\include\Bit\Network\Net\ServerEntityManager.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\UserMessage.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageDecoder.hpp" />
     <ClInclude Include="..\..\include\Bit\Network\Net\UserMessageListener.hpp" />
@@ -238,7 +242,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\include\Bit\Network\Net\ClientEntityManager.inl" />
     <None Include="..\..\include\Bit\Network\Net\EntityManager.inl" />
+    <None Include="..\..\include\Bit\Network\Net\ServerEntityManager.inl" />
     <None Include="..\..\include\Bit\Network\Net\Variable.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
