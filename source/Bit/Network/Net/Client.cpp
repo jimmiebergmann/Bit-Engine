@@ -154,6 +154,16 @@ namespace Bit
 			// Set blocking and return true.
 			m_Socket.SetBlocking(true);
 
+			// Internally try to connect
+			m_DstAddress = p_Address;
+			m_DstPort = p_Port;
+			m_ServerIdentifier = p_Identifier;
+			eStatus connectStatus = eStatus::Unknown;
+			if (InternalConnect(p_ConnectionTimeout, connectStatus) == false)
+			{
+				return connectStatus;
+			}
+
 			// Create a data buffer.
 			Uint8 buffer[Private::NetBufferSize];
 
@@ -161,161 +171,6 @@ namespace Bit
 			for (SizeType i = 0; i < 5; i++)
 			{
 				m_PingList.push_front(m_Ping.Value);
-			}
-
-			// Keep on receiving until we get the right packet message from the host
-			Int32 recvSize = 0;
-			Address recvAddress;
-			Uint16 recvPort = 0;
-			Time timeout = p_ConnectionTimeout;
-			const Time sendTime = Seconds(0.2f); ///< How often to check for received packets.
-			const SizeType connectPacketSize = Private::NetConnectPacketSize + p_Identifier.size(); ///< Connect packet length
-			bool recvSynAck = false;
-
-
-			// Create a timer vector
-			std::vector<Timer> timerVector;
-			Timer tempTimer;
-			
-
-			
-
-			// Create a connect packet
-			std::string connectionPacket;
-			connectionPacket.push_back(Private::PacketType::Connect);
-			connectionPacket.push_back('A');
-			connectionPacket.push_back('A');
-			connectionPacket.append(p_Identifier);
-
-
-
-			// Start the timer for timeout.
-			Timer timeoutTimer;
-			timeoutTimer.Start();
-
-			// Start the timer for roundtime
-			Timer roundTimer;
-
-			// Keep on sending and receiving connect / accept packets.
-			while (timeout.AsMicroseconds() > 0)
-			{
-				// Add new timer
-				timerVector.push_back(tempTimer);
-
-				// Create "sequence" for the connect message
-				Uint16 connectSequence = Hton16(timerVector.size() - 1);
-
-				connectionPacket[1] = static_cast<Uint8>(connectSequence);
-				connectionPacket[2] = static_cast<Uint8>(connectSequence >> 8);
-
-				// Start round time timer
-				timerVector[timerVector.size() - 1].Start();
-
-				// Send SYN packet, tell the server that we would like to connect.
-				if (m_Socket.Send(connectionPacket.data(), connectionPacket.size(), p_Address, p_Port) != connectPacketSize)
-				{
-					// Error sending connection packet.
-					return Unknown;
-				}
-
-				// Receive message
-				recvSize = m_Socket.Receive(buffer, Private::NetBufferSize, recvAddress, recvPort, sendTime);
-
-				// Decrease the timeout time
-				timeout = p_ConnectionTimeout - timeoutTimer.GetLapsedTime();
-
-				// Get "sequence".
-				const Uint16 recvConnectSequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
-															static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
-				
-				// Error check recv size and connection sequence.
-				if (recvSize <= 0 || recvConnectSequence >= static_cast<Uint16>(timerVector.size()))
-				{
-					continue;
-				}
-				
-				// Stop round time timer
-				timerVector[recvConnectSequence].Stop();
-
-
-				// Check the address and port, ignore packets that's not from the host.
-				if (recvAddress != p_Address || recvPort != p_Port)
-				{
-					continue;
-				}
-
-				// Make sure that we received a packet type byte.
-				if (recvSize < Private::NetAcceptPacketSize)
-				{
-					continue;
-				}
-
-				// Check if this is a SYN-ACK packet, the server wants us to connect.
-				if (buffer[0] == Private::PacketType::Accept)
-				{
-					// Get half round time
-					Uint64 roundTimeHalf = timerVector[recvConnectSequence].GetTime().AsMicroseconds() / 2;
-
-					//bitLogNetErr( "%i   %i", timerVector[recvConnectSequence].GetTime().AsMicroseconds() );
-					
-					// Get server time
-					Uint64 serverTime = 0;
-					memcpy(&serverTime, &(buffer[3]), sizeof(Uint64));
-					serverTime = Ntoh64(serverTime) + roundTimeHalf;
-
-					// Set server time and setart server timer.
-					m_ServerStartTime.Get() = Microseconds(serverTime);
-					m_ServerTimer.Get().Start();
-
-					// We now connected, we assume that the server receive the UDP_ACCEPT packet,
-					// resend the packet in client thread if we get another accept packet later.
-					m_DstAddress = p_Address;
-					m_DstPort = p_Port;
-					recvSynAck = true;
-					break;
-
-				}
-				// The server answered with a disconnect packet, we are denied. 
-				else if (buffer[0] == Private::PacketType::Reject)
-				{
-					// Make sure we get the reject type
-					if (recvSize < Private::NetRejectPacketSize)
-					{
-						continue;
-					}
-
-					// Check the cause of the rejection.
-					if (buffer[1] == Private::RejectType::Banned)
-					{
-						return eStatus::Banned;
-					}
-					else if (buffer[1] == Private::RejectType::Full)
-					{
-						return eStatus::Full;
-					}
-					else if (buffer[1] == Private::RejectType::Denied)
-					{
-						return eStatus::Denied;
-					}
-					else
-					{
-						return eStatus::Unknown;
-					}
-
-				}
-				else // Unexpected packet from the server.
-				{
-					// Ignore unexpected oacket from the server.
-					continue;
-				}
-			}
-
-
-			// Did not receive any valid packet from the server.
-			if (recvSynAck == false)
-			{
-				// The connection timeouted
-				return TimedOut;
 			}
 
 			// Set lost connection timeout
@@ -809,6 +664,145 @@ namespace Bit
 		UserMessage * Client::CreateUserMessage(const std::string & p_Name, const Int32 p_MessageSize)
 		{
 			return new UserMessage(p_Name, this, p_MessageSize);
+		}
+
+		Bool Client::InternalConnect(const Time & p_ConnectionTimeout, eStatus & p_Status)
+		{
+			// Keep on receiving until we get the right packet message from the host
+			Uint8 buffer[Private::NetBufferSize];
+			Int32 recvSize = 0;
+			Address recvAddress;
+			Uint16 recvPort = 0;
+			Time timeout = p_ConnectionTimeout;
+			const Time recvCheckTime = Seconds(0.2f); ///< How often to check for received packets.
+			bool recvConnectionPacket = false;
+
+			// Create identifier data
+			const SizeType identifierDataSize = m_ServerIdentifier.size() + 1;
+			std::unique_ptr<Uint8[]> identifierData(new Uint8[identifierDataSize]);
+			identifierData[0] = static_cast<Uint8>(m_ServerIdentifier.size());
+			memcpy((&identifierData[0]) + 1, m_ServerIdentifier.data(), identifierDataSize);
+
+			// Create a timer vector for checking roundtime
+			// Store each timer for each try to connect, sequence number as key.
+			typedef std::map<Uint16, Timer> TimerMap;
+			TimerMap timerMap;
+			Timer tempTimer;
+
+			// Start the timer for timeout.
+			Timer timeoutTimer;
+			timeoutTimer.Start();
+
+			// Keep on sending and receiving connect / accept packets.
+			while (timeout.AsMicroseconds() > 0)
+			{
+				// Add new timer to the map and start the timer.
+				Uint16 nextSequence = CheckNextSequence();
+				TimerMap::iterator itNewTimer = timerMap.insert(std::pair<Uint16, Timer>(nextSequence, tempTimer)).first;
+				itNewTimer->second.Start();
+
+				// Send connect packet, tell the server that we would like to connect.
+				if (SendUnreliable(Private::PacketType::Connect, reinterpret_cast<const void*>(identifierData.get()), identifierDataSize))
+				{
+					// Error sending connection packet.
+					p_Status = SocketError;
+					return false;
+				}
+
+				// Receive message.
+				// Expect maximum NetAcceptPacketSize size to receive. Minimum NetRejectPacketSize
+				recvSize = m_Socket.Receive(buffer, Private::NetAcceptPacketSize, recvAddress, recvPort, recvCheckTime);
+
+				// Decrease the timeout time
+				timeout = p_ConnectionTimeout - timeoutTimer.GetLapsedTime();
+
+
+				// Check the recv size
+				if (recvSize <= 0)
+				{
+					continue;
+				}
+
+				// Error check the packet.
+				if (recvSize < Private::NetRejectPacketSize || buffer[0] != Private::PacketType::Connect ||
+					buffer[3] >= Private::NetConnectStatusTypeCount ||
+					recvAddress != m_DstAddress || recvPort != m_DstPort)
+				{
+					continue;
+				}
+
+				// Get the sequence answered by the server.
+				const Uint16 answerSequence = Private::ReadNtoh16FromBuffer(buffer + 1);
+
+				// Find the answered sequence in the timer map, make sure that this is a valid sequence.
+				TimerMap::iterator itCurTimer = timerMap.find(answerSequence);
+				if (itCurTimer == timerMap.end())
+				{
+					continue;
+				}
+
+				// Stop round timer
+				itCurTimer->second.Stop();
+
+				// Get the accept status
+				Private::ConnectStatusType::eType acceptStatus = static_cast<Private::ConnectStatusType::eType>(buffer[3]);
+
+				// Check the connect status from the server.
+				if (acceptStatus == Private::ConnectStatusType::Accepted)
+				{
+					// Check for accept packet size
+					if (recvSize != Private::NetAcceptPacketSize)
+					{
+						timerMap.erase(itCurTimer);
+						continue;
+					}
+
+					// Get half round time
+					Uint64 roundTimeHalf = itCurTimer->second.GetTime().AsMicroseconds() / 2;
+
+					// Get server time
+					Uint64 serverTime = Private::ReadNtoh64FromBuffer(buffer + 4);
+
+					// Set server time and setart server timer.
+					m_ServerStartTime.Set(Microseconds(serverTime));
+					m_ServerTimer.Mutex.Lock();
+					m_ServerTimer.Value.Start();
+					m_ServerTimer.Mutex.Unlock();
+
+					// We are connected.
+					p_Status = Succeeded;
+					return true;
+
+				}
+				// The server denied us for some reason.
+				else
+				{
+					switch (acceptStatus)
+					{
+					case Private::ConnectStatusType::Denied:
+						p_Status = Denied;
+						return false;
+						break;
+					case Private::ConnectStatusType::Banned:
+						p_Status = Banned;
+						return false;
+						break;
+					case Private::ConnectStatusType::Full:
+						p_Status = Full;
+						return false;
+						break;
+					default:
+						break;
+					};
+				}
+
+			}
+
+
+			// Did not receive any valid packet from the server.
+			// The connection timeouted
+			p_Status = TimedOut;
+			return false;
 		}
 
 		void Client::InternalDisconnect(const Bool p_CloseMainThread,

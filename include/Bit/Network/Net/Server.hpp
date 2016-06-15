@@ -150,8 +150,7 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			virtual Bool OnPreConnection(	const Address & p_Address,
-											const Uint16 p_Port,
-											std::vector<Uint32> & p_EntityGroups);
+											const Uint16 p_Port);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Function to execute when an user has connected.
@@ -318,7 +317,7 @@ namespace Bit
 			std::string							m_Identifier;				///< Connection identifier string.
 			Uint8								m_MaxConnections;			///< Maximum amount of connections.
 			Uint8								m_EntityUpdatesPerSecond;	///< Number of updates per second for the entities.
-			FreeUserIdMap						m_FreeUserIds;				///< Queue of free user Ids.
+			ThreadValue<FreeUserIdMap>			m_FreeUserIds;				///< Queue of free user Ids.
 			AddressConnectionMap				m_AddressConnections;		///< Map of all the connections via their addresses.
 			UserConnectionMap					m_UserConnections;			///< Map of all the connections via their user IDs.
 			Mutex								m_ConnectionMutex;			///< Mutex for the address and user connections.
@@ -326,8 +325,7 @@ namespace Bit
 			ThreadValue<AddressSet>				m_BanSet;					///< Set of banned addresses.
 			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;		///< Map of user message listeners and their message types.
 			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Amount of time until the connection timeout after not receiving any packets.
-			MemoryPool<Uint8> *					m_pPacketMemoryPool;			///< Memory pool for packets, make less new, copy and delete operations.
-			const SizeType						m_MaxPacketSize;			///< Max size of a packet.
+			MemoryPool<Uint8> *					m_pPacketMemoryPool;		///< Memory pool for packets, make less new, copy and delete operations.
 
 		};
 

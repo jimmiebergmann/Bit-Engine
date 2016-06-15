@@ -67,8 +67,7 @@ namespace Bit
 			m_EntityManager(this),
 			m_MaxConnections(0),
 			m_EntityUpdatesPerSecond(0),
-			m_pPacketMemoryPool(NULL),
-			m_MaxPacketSize(2048)
+			m_pPacketMemoryPool(NULL)
 		{
 
 		}
@@ -80,8 +79,7 @@ namespace Bit
 		}
 
 		Bool Server::OnPreConnection(	const Address & p_Address,
-										const Uint16 p_Port,
-										std::vector<Uint32> & p_EntityGroups)
+										const Uint16 p_Port)
 		{
 			return true;
 		}
@@ -142,25 +140,6 @@ namespace Bit
 
 			// Add the entity index to the connection.
 			it->second->AddToGroup(p_GroupIndex);
-
-
-			/*
-			// Create the entity message
-			std::vector<Uint8> message;
-			if (m_EntityManager.CreateFullEntityMessage(message, false) == false)
-			{
-				return;
-			}
-
-			// Error check the message
-			if (message.size() == 0)
-			{
-				return;
-			}
-
-			// Send realiable message.
-			it->second->SendReliable(PacketType::EntityUpdate, reinterpret_cast<Uint8 *>(message.data()), message.size(), true);
-			*/
 		}
 
 		void Server::RemoveUserFromGroup(const Uint16 p_UserId, const Uint32 p_GroupIndex)
@@ -239,6 +218,8 @@ namespace Bit
 			m_BanSet.Mutex.Lock();
 			m_BanSet.Value.insert(p_Address);
 			m_BanSet.Mutex.Unlock();
+
+			// Go through users with this address.
 		}
 
 
@@ -259,16 +240,18 @@ namespace Bit
 			m_Identifier = p_Properties.Identifier;
 
 			// Add the free user IDs to the queue
+			m_FreeUserIds.Mutex.Lock();
 			for (Uint16 i = 0; i < static_cast<Uint16>(m_MaxConnections); i++)
 			{
-				m_FreeUserIds.push(i);
+				m_FreeUserIds.Value.push(i);
 			}
+			m_FreeUserIds.Mutex.Unlock();
 
 			// Create entity id queue.
 			m_EntityManager.CreateEntityIdQueue(p_Properties.MaxEntities);
 
 			// Create the packet memory pool
-			m_pPacketMemoryPool = new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, m_MaxPacketSize, true);
+			m_pPacketMemoryPool = new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, Private::NetBufferSize, true);
 
 			// Start the server timer.
 			m_ServerTimer.Get().Start();
@@ -276,14 +259,12 @@ namespace Bit
 			// Start the server thread.
 			m_MainThread.Execute([this]()
 			{
-				Address address;
-				Uint16 port = 0;
+				Address recvAddress;
+				Uint16 recvPort = 0;
 				Int16 recvSize = 0;
 
 				// Set the running flag to true.
-				m_Running.Mutex.Lock();
-				m_Running.Value = true;
-				m_Running.Mutex.Unlock();
+				m_Running.Set(true);
 
 				// Receive packets as long as the server is running.
 				while (IsRunning())
@@ -291,12 +272,18 @@ namespace Bit
 					// Get item from memory pool
 					MemoryPool<Uint8>::Item *pItem = m_pPacketMemoryPool->Get();
 
+					if (pItem == NULL)
+					{
+						bitLogNetErr("Null memory pool item.");
+						continue;
+					}
+
 					Uint8 * pBuffer = pItem->GetData();
 
 					// Error check the item and it's data.
-					if (pItem == NULL || pBuffer == NULL)
+					if (pBuffer == NULL)
 					{
-						bitLogNetErr(  "Null memory pool item." );
+						bitLogNetErr( "Null memory pool item data." );
 						continue;
 					}
 
@@ -304,16 +291,22 @@ namespace Bit
 					// Loop while the server is running and until we receive a valid packet.
 					while (IsRunning())
 					{
-						if ((recvSize = m_Socket.Receive(pBuffer, m_MaxPacketSize, address, port, Milliseconds(5))) > 0)
+						if ((recvSize = m_Socket.Receive(pBuffer, Private::NetBufferSize, recvAddress, recvPort, Milliseconds(5))) > Private::NetHeaderSize)
 						{
 							break;
 						}
 					}
 
+					// Error check the packet type byte
+					if (pBuffer[0] >= Private::NetPacketTypeCount)
+					{
+						continue;
+					}
+
 					// get the client address as an index.
-					Uint64 clientAddress = static_cast<Uint64>(address.GetAddress()) *
-						static_cast<Uint64>(port)+
-						static_cast<Uint64>(port);
+					Uint64 clientAddress = static_cast<Uint64>(recvAddress.GetAddress()) *
+						static_cast<Uint64>(recvPort)+
+						static_cast<Uint64>(recvPort);
 
 					// Lock the connection mutex.
 					m_ConnectionMutex.Lock();
@@ -328,6 +321,10 @@ namespace Bit
 						m_ConnectionMutex.Unlock();
 						continue;
 					}
+					m_ConnectionMutex.Unlock();
+
+					// Get the packet type
+					const Private::PacketType::eType packetType = static_cast<Private::PacketType::eType>(pBuffer[0]);
 
 					// Use a do while loop with false condition in order to 
 					// jump over and skip code later.
@@ -335,28 +332,40 @@ namespace Bit
 					{
 						// This is not a packet from an already connected client,
 						// check if the client is tryin go connect.
-						if (pBuffer[0] == Private::PacketType::Connect)
+						if (packetType == Private::PacketType::Connect)
 						{
-							// Make sure that the identifier is right.
-							if (recvSize != m_Identifier.size() + Private::NetConnectPacketSize)
+							// Error check the recv size, see if it's a connect packet.
+							if (recvSize < Private::NetConnectPacketSize)
 							{
-								// Go to the return packet label.
 								break;
 							}
-							if (memcmp(pBuffer + Private::NetConnectPacketSize, m_Identifier.data(), m_Identifier.size()) != 0)
+
+							// Are we using an identifier?
+							if(m_Identifier.size())
 							{
-								// Go to the return packet label.
-								break;
+								SizeType identifierLength = static_cast<SizeType>(pBuffer[3]);
+
+								if (identifierLength)
+								{
+									// Make sure that the identifier is right.
+									if (identifierLength == m_Identifier.size() &&
+										memcmp(pBuffer + Private::NetConnectPacketSize, m_Identifier.data(), m_Identifier.size()) != 0)
+									{
+										// Send denied packet
+										pBuffer[3] = Private::ConnectStatusType::Denied;
+										m_Socket.Send(pBuffer, Private::NetRejectPacketSize, recvAddress, recvPort);
+										break;
+									}
+								}
 							}
 
 							// Check if the address is banned
 							m_BanSet.Mutex.Lock();
-							if (m_BanSet.Value.find(address.GetAddress()) != m_BanSet.Value.end())
+							if (m_BanSet.Value.find(recvAddress.GetAddress()) != m_BanSet.Value.end())
 							{
 								// Send ban packet
-								pBuffer[0] = Private::PacketType::Reject;
-								pBuffer[1] = Private::RejectType::Banned;
-								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, address, port);
+								pBuffer[3] = Private::ConnectStatusType::Banned;
+								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, recvAddress, recvPort);
 
 								// Unlock the ban set mutex.
 								m_BanSet.Mutex.Unlock();
@@ -367,57 +376,59 @@ namespace Bit
 							m_BanSet.Mutex.Unlock();
 
 							// Send Deny packet if the server is full.
-							if (m_AddressConnections.size() == m_MaxConnections || m_FreeUserIds.size() == 0)
+							m_FreeUserIds.Mutex.Lock();
+							SizeType freeUserIdsCount = m_FreeUserIds.Value.size();
+							m_FreeUserIds.Mutex.Unlock();
+
+							m_ConnectionMutex.Lock();
+							const SizeType connectionCount = static_cast<SizeType>(m_AddressConnections.size());
+							m_ConnectionMutex.Unlock();
+
+							if (connectionCount == m_MaxConnections || freeUserIdsCount == 0)
 							{
-								pBuffer[0] = Private::PacketType::Reject;
-								pBuffer[1] = Private::RejectType::Full;
-								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, address, port);
+								pBuffer[3] = Private::ConnectStatusType::Full;
+								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, recvAddress, recvPort);
 
 								// Go to the return packet label.
 								break;
 							}
 
 							// Run the on pre connection function
-							std::vector<Uint32> groupVector;
-							if (OnPreConnection(address, port, groupVector) == false)
+							if (OnPreConnection(recvAddress, recvPort) == false)
 							{
-								// SEND REJECT MESSAGE HERE PLEASE.
-								pBuffer[0] = Private::PacketType::Reject;
-								pBuffer[1] = Private::RejectType::Full;
-								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, address, port);
+								pBuffer[3] = Private::ConnectStatusType::Denied;
+								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, recvAddress, recvPort);
 
 								break;
 							}
 
-
-							// Answer the client with an accept packet.
-							pBuffer[0] = Private::PacketType::Accept;
-
-							// Get server time
+							// Get server time and send accept response
 							m_ServerTimer.Mutex.Lock();
-							Uint64 serverTime = m_ServerTimer.Value.GetLapsedTime().AsMicroseconds();
+							const Uint64 serverTime = m_ServerTimer.Value.GetLapsedTime().AsMicroseconds();
 							m_ServerTimer.Mutex.Unlock();
-
-							Uint64 nServerTime = Hton64(serverTime);
-							memcpy(&(pBuffer[3]), &nServerTime, sizeof(Uint64));
-
-							m_Socket.Send(pBuffer, Private::NetAcceptPacketSize, address, port);
+							const Uint64 nServerTime = Hton64(serverTime);
+							pBuffer[3] = Private::ConnectStatusType::Accepted;
+							memcpy(&(pBuffer[4]), &nServerTime, sizeof(Uint64));
+							m_Socket.Send(pBuffer, Private::NetAcceptPacketSize, recvAddress, recvPort);
 
 							// Get a user id for this connection
-							const Uint16 userId = m_FreeUserIds.front();
-							m_FreeUserIds.pop();
+							m_FreeUserIds.Mutex.Lock();
+							const Uint16 userId = m_FreeUserIds.Value.front();
+							m_FreeUserIds.Value.pop();
+							m_FreeUserIds.Mutex.Unlock();
 
 							// Create the connection
-							Connection * pConnection = new Connection(address, port, userId, m_LosingConnectionTimeout.Value);
+							Connection * pConnection = new Connection(recvAddress, recvPort, userId, m_LosingConnectionTimeout.Value);
 
-							// Add the client to the address connection map
+							// Add the client to the connection maps
+							m_ConnectionMutex.Lock();
 							m_AddressConnections.insert(AddressConnectionMapPair(clientAddress, pConnection));
-
-							// Add the client to the user connection map
 							m_UserConnections.insert(UserConnectionMapPair(userId, pConnection));
+							m_ConnectionMutex.Unlock();
 
 							// Start client thread.
 							pConnection->StartThreads(this);
+				
 
 							// Run the on post connection function.
 							// Release the connection mutex as well to let the user send messages and such.
@@ -426,16 +437,13 @@ namespace Bit
 							m_ConnectionMutex.Lock();
 						}
 						// Ping packet.
-						else if (pBuffer[0] == Private::PacketType::Ping && recvSize == Private::NetPingPacketSize)
+						else if (packetType == Private::PacketType::Ping && recvSize == Private::NetPingPacketSize)
 						{
 							// Send back the ping packet.
-							m_Socket.Send(pBuffer, Private::NetPingPacketSize, address, port);
+							m_Socket.Send(pBuffer, Private::NetPingPacketSize, recvAddress, recvPort);
 						}
 
 					} while (false);
-
-					// Unlock the connection mutex.
-					m_ConnectionMutex.Unlock();
 
 					// Return the item to the memory pool.
 					m_pPacketMemoryPool->Return(pItem);
@@ -672,7 +680,9 @@ namespace Bit
 					}
 
 					// Restore the user id to the free user id queue
-					m_FreeUserIds.push(userId);
+					m_FreeUserIds.Mutex.Lock();
+					m_FreeUserIds.Value.push(userId);
+					m_FreeUserIds.Mutex.Unlock();
 
 					// Unlock the connection mutex
 					m_ConnectionMutex.Unlock();

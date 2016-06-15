@@ -57,32 +57,34 @@ namespace Bit
 			*/
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Constants
-			///
+			/// Constants
 			////////////////////////////////////////////////////////////////
-			static const SizeType NetBufferSize = 512;
-			static const SizeType NetPacketTypeSize = 1;
-			static const SizeType NetSequenceSize = 2;
+			const SizeType NetBufferSize = 512;
+			const SizeType NetPacketTypeSize = 1;
+			const SizeType NetSequenceSize = 2;
+			const Uint8	   NetReliableFlagMask = 0x80;
+			const Uint8	   NetTypeMask = 0x7F;
 
-			///< Packet type count.
-			const SizeType	NetPacketTypeCount = 11;
-			const Uint8		NetReliabeFlagMask = 0x80;
+			/// Type count constants
+			const SizeType NetPacketTypeCount = 8;
+			const SizeType NetConnectStatusTypeCount = 4;
+			const SizeType NetDisconnectTypeCount = 4;
+			const SizeType NetEntityMessageTypeCount = 3;
 
-			///< Packet sizes, excluding data // UPDATE OLD VALUES, THOSE ARE OLD!
-			const SizeType NetHeaderSize = 3;
-			const SizeType NetConnectPacketSize = 3;
-			const SizeType NetDisconnectPacketSize = 1;
-			const SizeType NetAcceptPacketSize = 11;
-			const SizeType NetRejectPacketSize = 2;
+			// Packet size constants.
+			const SizeType NetHeaderSize = 3;				///< Packet type + Sequence number
+			const SizeType NetConnectPacketSize = 4;		///< Header + Identifier length + Identifier
+			const SizeType NetDisconnectPacketSize = 4;		///< Header + Reason
+			const SizeType NetAcceptPacketSize = 12;		///< Header + Connect status + Server time
+			const SizeType NetRejectPacketSize = 4;			///< Header + Connect status
+
 			const SizeType NetAcknowledgementPacketSize = 3;
 			const SizeType NetAlivePacketSize = 3;
 			const SizeType NetEntityUpdatePacketSize = 4;
 			const SizeType NetEntityDestroyedPacketSize = 6;
 			const SizeType NetUserMessagePacketSize = 4;
 			const SizeType NetHostMessagePacketSize = 4;
-			const SizeType NetCommandPacketSize = 3;
 			const SizeType NetPingPacketSize = 2;
-
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Packet type.
@@ -96,34 +98,31 @@ namespace Bit
 				{
 					///							| Reliable  |	Sender	| 
 					/// -------------------------------------------------
-					Connect = 1,			//	|	No		|	Client	|
-					Disconnect = 2,			//	|	No		|	Both	|
-					Accept = 3,				//	|	No		|	Server	|
-					Reject = 4,				//	|	No		|	Server	|
-					Acknowledgement = 5,	//	|	No		|	Both	|
-					Alive = 6,				//	|	No		|	Both	|
-					EntityMessage = 7,		//	|	Both	|	Server	|
-					UserMessage = 8,		//	|	Both	|	Client	|
-					HostMessage = 9,		//	|	Both	|	Server	|
-					Command = 10,			//	|	Yes		|	Client	|
-					Ping = 11				//	|	No		|	Both	|
+					Connect			= 0,	//	|	No		|	Both	|
+					Disconnect		= 1,	//	|	No		|	Both	|
+					Acknowledgement = 2,	//	|	No		|	Both	|
+					Alive			= 3,	//	|	No		|	Both	|
+					EntityMessage	= 4,	//	|	Both	|	Server	|
+					UserMessage		= 5,	//	|	Both	|	Client	|
+					HostMessage		= 6,	//	|	Both	|	Server	|
+					Ping			= 7,	//	|	No		|	Both	|
+					Unknown			= 8		// Unknow type, received corrupt packet.
 					/// -------------------------------------------------
 				};
 			};
 
-
-
 			////////////////////////////////////////////////////////////////
-			/// \brief Reject type
+			/// \brief Connect status type
 			///
 			////////////////////////////////////////////////////////////////
-			struct RejectType
+			struct ConnectStatusType
 			{
 				enum eType
 				{
-					Denied = 0,	///< Denied by server.
-					Banned = 1,	///< The client is banned.
-					Full = 2		///< The server is full.
+					Accepted = 0,	///< Accepted by server
+					Denied = 1,		///< Denied by server.
+					Banned = 2,		///< The client is banned.
+					Full = 3		///< The server is full.
 				};
 			};
 
@@ -156,19 +155,34 @@ namespace Bit
 				};
 			};
 
+
+			// Global functions
+
 			////////////////////////////////////////////////////////////////
-			/// \brief Reliability type
+			/// \brief Read network order 16 bit value from buffer and convert it to host order.
 			///
 			////////////////////////////////////////////////////////////////
-			struct ReliabilityType
-			{
-				enum eType
-				{
-					Unreliable = 0,	///< Reliable packet.
-					Reliable = 1		///< Reliable packet.
-				};
-			};
+			static Uint16 ReadNtoh16FromBuffer(const Uint8 * p_pBuffer);
 
+			////////////////////////////////////////////////////////////////
+			/// \brief Read network order 64 bit value from buffer and convert it to host order.
+			///
+			////////////////////////////////////////////////////////////////
+			static Uint16 ReadNtoh64FromBuffer(const Uint8 * p_pBuffer);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Parse packet type from byte, the first byte of a packet
+			///		   contains both the type and reliable flag.
+			///
+			////////////////////////////////////////////////////////////////
+			static PacketType::eType ParsePacketType(const Uint8 p_Byte);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Parse packet reliable frag from byte, the first byte of a packet
+			///		   contains both the type and reliable flag.
+			///
+			////////////////////////////////////////////////////////////////
+			static Bool ParseReliableFlag(const Uint8 p_Byte);
 
 
 			////////////////////////////////////////////////////////////////
@@ -196,8 +210,8 @@ namespace Bit
 				/// \param p_DataSize Size of the data.
 				///
 				////////////////////////////////////////////////////////////////
-				void SendUnreliable(const PacketType::eType p_PacketType,
-									void * p_pData,
+				Bool SendUnreliable(const PacketType::eType p_PacketType,
+									const void * p_pData,
 									const SizeType p_DataSize);
 
 				////////////////////////////////////////////////////////////////
@@ -208,8 +222,8 @@ namespace Bit
 				/// \param p_DataSize Size of the data.
 				///
 				////////////////////////////////////////////////////////////////
-				void SendReliable(	const PacketType::eType p_PacketType,
-									void * p_pData,
+				Bool SendReliable(	const PacketType::eType p_PacketType,
+									const void * p_pData,
 									const SizeType p_DataSize);
 
 			protected:
@@ -251,14 +265,16 @@ namespace Bit
 
 
 				////////////////////////////////////////////////////////////////
-				/// \brief Send reliable packet to the server.
-				///
-				/// \param p_PacketType Type of the packet.
-				/// \param p_pData Pointer to the data to send.
-				/// \param p_DataSize Size of the data.
+				/// \brief Get the next sequence number. Increment to the next as well.
 				///
 				////////////////////////////////////////////////////////////////
 				Uint16 GetNextSequence();
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Check what the next sequence number is.
+				///
+				////////////////////////////////////////////////////////////////
+				Uint16 CheckNextSequence();
 
 				////////////////////////////////////////////////////////////////
 				/// \brief Get destination address.
@@ -325,7 +341,7 @@ namespace Bit
 				///
 				///////////////////////////////////////////////////////////////
 				Time GetTimeSinceLastReceivedPacket();
-				
+
 
 				// Protected variables
 				UdpSocket							m_Socket;			///< Socket of the data link.

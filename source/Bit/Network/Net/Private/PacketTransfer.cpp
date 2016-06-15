@@ -33,6 +33,38 @@ namespace Bit
 		namespace Private
 		{
 
+			Uint16 ReadNtoh16FromBuffer(const Uint8 * p_pBuffer)
+			{
+				Uint16 value = 0;
+				memcpy(&value, p_pBuffer, sizeof(Uint16));
+				return Ntoh16(value);
+			}
+
+			Uint16 ReadNtoh64FromBuffer(const Uint8 * p_pBuffer)
+			{
+				Uint64 value = 0;
+				memcpy(&value, p_pBuffer, sizeof(Uint64));
+				return Ntoh64(value);
+			}
+
+			PacketType::eType ParsePacketType(const Uint8 p_Byte)
+			{
+				const Uint8 typeByte = p_Byte & NetTypeMask;
+
+				if (typeByte >= NetPacketTypeCount)
+				{
+					return PacketType::Unknown;
+				}
+
+				return static_cast<PacketType::eType>(typeByte);
+			}
+
+			Bool ParseReliableFlag(const Uint8 p_Byte)
+			{
+				return static_cast<Bool>(p_Byte & NetReliableFlagMask);
+			}
+
+
 			PacketTransfer::PacketTransfer( const Address & p_DestinationAddress,
 											const Uint16 p_DestinationPort) :
 				m_DstAddress(p_DestinationAddress),
@@ -42,8 +74,8 @@ namespace Bit
 				
 			}
 
-			void PacketTransfer::SendUnreliable(const PacketType::eType p_PacketType,
-												void * p_pData,
+			Bool PacketTransfer::SendUnreliable(const PacketType::eType p_PacketType,
+												const void * p_pData,
 												const SizeType p_DataSize)
 			{
 				// Create the packet. Make space for the sequence in case.
@@ -61,18 +93,22 @@ namespace Bit
 				memcpy(pBuffer + NetHeaderSize, p_pData, p_DataSize);
 
 				// Send the packet.
+				Bool status = false;
 				if (m_Socket.Send(pBuffer, packetSize, m_DstAddress, m_DstPort) == packetSize)
 				{
 					RestartLastSentPacketTimer();
+					status = true;
 				}
 
 				// Delete the packet
 				delete[] pBuffer;
+
+				return status;
 			}
 
 			
-			void PacketTransfer::SendReliable(	const PacketType::eType p_PacketType,
-												void * p_pData,
+			Bool PacketTransfer::SendReliable(	const PacketType::eType p_PacketType,
+												const void * p_pData,
 												const SizeType p_DataSize)
 			{
 				// Create the packet. Make space for the sequence in case.
@@ -80,7 +116,7 @@ namespace Bit
 
 				// Set packet header type byte(also the reliable flag),
 				Uint8 * pBuffer = new Uint8[packetSize];
-				pBuffer[0] = static_cast<Uint8>(p_PacketType) & NetReliabeFlagMask;
+				pBuffer[0] = static_cast<Uint8>(p_PacketType) & NetReliableFlagMask;
 			
 				// Set packet header sequence.
 				Bit::Uint16 sequence = Bit::Hton16(GetNextSequence());
@@ -96,10 +132,12 @@ namespace Bit
 				if (m_Socket.Send(pBuffer, packetSize, m_DstAddress, m_DstPort) == packetSize)
 				{
 					RestartLastSentPacketTimer();
+					return true;
 				}
 
 				// Do not delete the allocated buffer by purpose,
 				// since it's stored as a reliable packet and will be deleted later.
+				return false;
 			}
 
 			Uint16 PacketTransfer::GetNextSequence()
@@ -110,6 +148,11 @@ namespace Bit
 				m_NextSequence.Mutex.Unlock();
 
 				return nextSequence;
+			}
+
+			Uint16 PacketTransfer::CheckNextSequence()
+			{
+				return m_NextSequence.Get();
 			}
 
 			Address PacketTransfer::GetDestinationAddress() const

@@ -205,13 +205,19 @@ namespace Bit
 
 			// Private functions
 			////////////////////////////////////////////////////////////////
+			/// \brief	Internal function for connecting to the server.
+			///
+			////////////////////////////////////////////////////////////////
+			Bool InternalConnect(const Time & p_ConnectionTimeout, eStatus & p_Status);
+
+			////////////////////////////////////////////////////////////////
 			/// \brief	Internal function for disconnecting from the server.
 			///
 			////////////////////////////////////////////////////////////////
-			void InternalDisconnect(	const Bool p_CloseMainThread,
-										const Bool p_CloseTriggerThread,
-										const Bool p_CloseReliableThread,
-										const Bool p_CloseHostMessageThread);
+			void InternalDisconnect(const Bool p_CloseMainThread,
+									const Bool p_CloseTriggerThread,
+									const Bool p_CloseReliableThread,
+									const Bool p_CloseHostMessageThread);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Calculate the new ping.
@@ -228,6 +234,7 @@ namespace Bit
 
 			// Private variables
 			Uint16								m_SrcPort;					///< Source port of the data link.
+			std::string							m_ServerIdentifier;			///< Identifier string of server.
 			Thread								m_Thread;					///< Thread created after the connection is established.
 			Thread								m_TriggerThread;			///< Thread for creating specific triggers.
 			Thread								m_ReliableThread;			///< Thread for checking reliable packets for resend.
@@ -239,7 +246,7 @@ namespace Bit
 			ThreadValue<Time>					m_Ping;						///< Current network ping.
 			TimeList							m_PingList;					///< List of the last pings.
 			ThreadValue<HostMessageListenerMap>	m_HostMessageListeners;		///< Map of user message listeners and their message types.
-			//ThreadValue<ReceivedDataQueue>		m_UserMessages;				///< Queue of user messages
+			//ThreadValue<ReceivedDataQueue>	m_UserMessages;				///< Queue of user messages
 			Semaphore							m_UserMessageSemaphore;		///< Semaphore for executing user message listeners.
 
 		};

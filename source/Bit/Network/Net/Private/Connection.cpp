@@ -172,7 +172,7 @@ namespace Bit
 									}
 
 									// Answer the client with a SYNACK packet.
-									pData[0] = Private::PacketType::Accept;
+									pData[3] = Private::PacketType::Accept;
 									m_pServer->m_Socket.Send(pData, 1, m_DstAddress, m_DstPort);
 								}
 								break;
