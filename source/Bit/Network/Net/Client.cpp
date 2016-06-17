@@ -702,7 +702,7 @@ namespace Bit
 				itNewTimer->second.Start();
 
 				// Send connect packet, tell the server that we would like to connect.
-				if (SendUnreliable(Private::PacketType::Connect, reinterpret_cast<const void*>(identifierData.get()), identifierDataSize))
+				if (SendUnreliable(Private::PacketType::Connect, reinterpret_cast<const void*>(identifierData.get()), identifierDataSize) == false)
 				{
 					// Error sending connection packet.
 					p_Status = SocketError;

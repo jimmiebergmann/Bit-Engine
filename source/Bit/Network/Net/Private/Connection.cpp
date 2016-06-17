@@ -311,9 +311,9 @@ namespace Bit
 			{
 				while( IsConnected( ) )
 				{
-					/*
+					Sleep(Bit::Seconds(0.05f));
 					// Wait for the semaphore to release
-					m_UserMessageSemaphore.Wait( );
+					/*m_UserMessageSemaphore.Wait( );
 
 					// Go throguh the user messages.
 					m_UserMessages.Mutex.Lock( );

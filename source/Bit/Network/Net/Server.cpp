@@ -298,9 +298,9 @@ namespace Bit
 					// Loop while the server is running and until we receive a valid packet.
 					while (running = IsRunning())
 					{
-						if ((recvSize = m_Socket.Receive(pBuffer, Private::NetBufferSize, recvAddress, recvPort, Milliseconds(5))) < Private::NetHeaderSize)
+						if ((recvSize = m_Socket.Receive(pBuffer, Private::NetBufferSize, recvAddress, recvPort, Milliseconds(5))) >= Private::NetHeaderSize)
 						{
-							continue;
+							break;
 						}
 					}
 
@@ -416,7 +416,7 @@ namespace Bit
 								if (identifierLength)
 								{
 									// Make sure that the identifier is right.
-									if (identifierLength != m_Identifier.size() ||
+									if (identifierLength != m_Identifier.size() &&
 										memcmp(pBuffer + Private::NetConnectPacketSize, m_Identifier.data(), m_Identifier.size()) != 0)
 									{
 										// Send denied packet
@@ -481,7 +481,18 @@ namespace Bit
 							pBuffer[3] = Private::ConnectStatusType::Accepted;
 							memcpy(&(pBuffer[4]), &nServerTime, sizeof(Uint64));
 							m_Socket.Send(pBuffer, Private::NetAcceptPacketSize, recvAddress, recvPort);
-
+							
+							// Add the client to the connection maps
+							m_ConnectionMutex.Lock();
+							
+							// Ignore already created connections.
+							AddressConnectionMap::iterator conFindIt = m_AddressConnections.find(recvPackedAddress);
+							if (conFindIt != m_AddressConnections.end())
+							{
+								m_ConnectionMutex.Unlock();
+								return;
+							}
+							
 							// Get a user id for this connection
 							m_FreeUserIds.Mutex.Lock();
 							const Uint16 userId = m_FreeUserIds.Value.front();
@@ -490,21 +501,15 @@ namespace Bit
 
 							// Create the connection
 							Connection * pConnection = new Connection(recvAddress, recvPort, userId, m_LosingConnectionTimeout.Value);
-
-							// Add the client to the connection maps
-							m_ConnectionMutex.Lock();
 							m_AddressConnections.insert(AddressConnectionMapPair(recvPackedAddress, pConnection));
 							m_UserConnections.insert(UserConnectionMapPair(userId, pConnection));
 							m_ConnectionMutex.Unlock();
 
 							// Start client thread.
-							pConnection->StartThreads(this);
+						///	pConnection->StartThreads(this);
 
-							// Run the on post connection function.
-							// Release the connection mutex as well to let the user send messages and such.
-							m_ConnectionMutex.Unlock();
+							// Run the on post connection function.				
 							OnPostConnection(userId);
-							m_ConnectionMutex.Lock();
 						}
 						// Handle disconnect packet.
 						else
