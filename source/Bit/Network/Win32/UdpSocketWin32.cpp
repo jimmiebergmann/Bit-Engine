@@ -179,7 +179,7 @@ namespace Bit
 
 		// Reset the blocking status and return false
 		SetBlocking( blocking );
-		return -1;
+		return status;
 	}
 
 }
