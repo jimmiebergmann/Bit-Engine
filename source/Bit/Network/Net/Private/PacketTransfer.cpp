@@ -33,21 +33,21 @@ namespace Bit
 		namespace Private
 		{
 
-			Uint16 ReadNtoh16FromBuffer(const Uint8 * p_pBuffer)
+			Uint16 PacketTransfer::ReadNtoh16FromBuffer(const Uint8 * p_pBuffer)
 			{
 				Uint16 value = 0;
 				memcpy(&value, p_pBuffer, sizeof(Uint16));
 				return Ntoh16(value);
 			}
 
-			Uint16 ReadNtoh64FromBuffer(const Uint8 * p_pBuffer)
+			Uint16 PacketTransfer::ReadNtoh64FromBuffer(const Uint8 * p_pBuffer)
 			{
 				Uint64 value = 0;
 				memcpy(&value, p_pBuffer, sizeof(Uint64));
 				return Ntoh64(value);
 			}
 
-			PacketType::eType ParsePacketType(const Uint8 p_Byte)
+			PacketType::eType PacketTransfer::ParsePacketType(const Uint8 p_Byte)
 			{
 				const Uint8 typeByte = p_Byte & NetTypeMask;
 
@@ -59,11 +59,10 @@ namespace Bit
 				return static_cast<PacketType::eType>(typeByte);
 			}
 
-			Bool ParseReliableFlag(const Uint8 p_Byte)
+			Bool PacketTransfer::ParseReliableFlag(const Uint8 p_Byte)
 			{
 				return static_cast<Bool>(p_Byte & NetReliableFlagMask);
 			}
-
 
 			PacketTransfer::PacketTransfer( const Address & p_DestinationAddress,
 											const Uint16 p_DestinationPort) :

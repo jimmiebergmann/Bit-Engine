@@ -105,13 +105,13 @@ namespace Bit
 			/// \brief Add received data to container.
 			///
 			////////////////////////////////////////////////////////////////
-			void AddReceivedData(MemoryPool<Uint8>::Item * p_pReceivedPacket);
+			void AddMessage(MemoryPool<Uint8>::Item * p_pReceivedPacket);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Poll raw packet from queue.
 			///
 			////////////////////////////////////////////////////////////////
-			MemoryPool<Uint8>::Item * PollReceivedPackets();
+			MemoryPool<Uint8>::Item * PollMessages();
 
 		private:
 
@@ -131,7 +131,7 @@ namespace Bit
 			///
 			////////////////////////////////////////////////////////////////
 			void InternalDisconnect(	const Bool p_CloseMainThread,
-										const Bool p_CloseEventThread,
+										const Bool p_CloseTimeoutThread,
 										const Bool p_CloseReliableThread,
 										const Bool p_CloseUserMessageThread );
 
@@ -163,7 +163,7 @@ namespace Bit
 			Server *						m_pServer;					///< Pointer to the server.
 			Thread							m_Thread;					///< Thread for handling raw packets.
 			Thread							m_UserMessageThread;		///< Thread for handling user messages.
-			Thread							m_EventThread;				///< Thread for creating specific events.
+			Thread							m_TimeoutThread;				///< Thread for creating specific events.
 			Thread							m_ReliableThread;			///< Thread for checking reliable packets for resend.
 			
 			const Uint16					m_UserId;					///< The client's user id.

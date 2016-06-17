@@ -71,15 +71,16 @@ namespace Bit
 			const SizeType NetDisconnectTypeCount = 4;
 			const SizeType NetEntityMessageTypeCount = 3;
 
-			// Packet size constants.
-			const SizeType NetHeaderSize = 3;				///< Packet type + Sequence number
-			const SizeType NetConnectPacketSize = 4;		///< Header + Identifier length + Identifier
-			const SizeType NetDisconnectPacketSize = 4;		///< Header + Reason
-			const SizeType NetAcceptPacketSize = 12;		///< Header + Connect status + Server time
-			const SizeType NetRejectPacketSize = 4;			///< Header + Connect status
-
-			const SizeType NetAcknowledgementPacketSize = 3;
-			const SizeType NetAlivePacketSize = 3;
+			// Packet size(minimum) constants.
+			// * = extra data, required but of unknwon size.
+			const SizeType NetHeaderSize = 3;					///< Packet type + Sequence number
+			const SizeType NetConnectPacketSize = 4;			///< Header + Identifier length + *Identifier*
+			const SizeType NetDisconnectPacketSize = 4;			///< Header + Reason
+			const SizeType NetAcceptPacketSize = 12;			///< Header + Connect status + Server time
+			const SizeType NetRejectPacketSize = 4;				///< Header + Connect status
+			const SizeType NetAlivePacketSize = 3;				///< Header
+			const SizeType NetAcknowledgementPacketSize = 3;	///< Header, sender: sequence in header is the packet to acknowledge.
+			
 			const SizeType NetEntityUpdatePacketSize = 4;
 			const SizeType NetEntityDestroyedPacketSize = 6;
 			const SizeType NetUserMessagePacketSize = 4;
@@ -134,9 +135,9 @@ namespace Bit
 			{
 				enum eType
 				{
-					Closed = 0,	///< The client/server closed the connection.
-					Banned = 1,	///< The server banned the client.
-					Kicked = 2,	///< The server kicked the client.
+					Closed = 0,				///< The client/server closed the connection.
+					Banned = 1,				///< The server banned the client.
+					Kicked = 2,				///< The server kicked the client.
 					LostConnection = 3		///< The connection was lost.
 				};
 			};
@@ -156,35 +157,6 @@ namespace Bit
 			};
 
 
-			// Global functions
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Read network order 16 bit value from buffer and convert it to host order.
-			///
-			////////////////////////////////////////////////////////////////
-			static Uint16 ReadNtoh16FromBuffer(const Uint8 * p_pBuffer);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Read network order 64 bit value from buffer and convert it to host order.
-			///
-			////////////////////////////////////////////////////////////////
-			static Uint16 ReadNtoh64FromBuffer(const Uint8 * p_pBuffer);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Parse packet type from byte, the first byte of a packet
-			///		   contains both the type and reliable flag.
-			///
-			////////////////////////////////////////////////////////////////
-			static PacketType::eType ParsePacketType(const Uint8 p_Byte);
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Parse packet reliable frag from byte, the first byte of a packet
-			///		   contains both the type and reliable flag.
-			///
-			////////////////////////////////////////////////////////////////
-			static Bool ParseReliableFlag(const Uint8 p_Byte);
-
-
 			////////////////////////////////////////////////////////////////
 			/// \brief Packet transfer helper function
 			///
@@ -193,6 +165,34 @@ namespace Bit
 			{
 
 			public:
+
+				// Static functions
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Read network order 16 bit value from buffer and convert it to host order.
+				///
+				////////////////////////////////////////////////////////////////
+				static Uint16 ReadNtoh16FromBuffer(const Uint8 * p_pBuffer);
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Read network order 64 bit value from buffer and convert it to host order.
+				///
+				////////////////////////////////////////////////////////////////
+				static Uint16 ReadNtoh64FromBuffer(const Uint8 * p_pBuffer);
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Parse packet type from byte, the first byte of a packet
+				///		   contains both the type and reliable flag.
+				///
+				////////////////////////////////////////////////////////////////
+				static PacketType::eType ParsePacketType(const Uint8 p_Byte);
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Parse packet reliable frag from byte, the first byte of a packet
+				///		   contains both the type and reliable flag.
+				///
+				////////////////////////////////////////////////////////////////
+				static Bool ParseReliableFlag(const Uint8 p_Byte);
 
 
 				////////////////////////////////////////////////////////////////

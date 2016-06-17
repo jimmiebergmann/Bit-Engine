@@ -89,7 +89,7 @@ namespace Bit
 			m_Groups.Mutex.Unlock();
 		}
 
-		void Connection::AddReceivedData(MemoryPool<Uint8>::Item * p_pReceivedPacket)
+		void Connection::AddMessage(MemoryPool<Uint8>::Item * p_pReceivedPacket)
 		{
 			m_ReceivedPacketQueue.Mutex.Lock();
 			m_ReceivedPacketQueue.Value.push(p_pReceivedPacket);
@@ -98,7 +98,7 @@ namespace Bit
 			m_ReceivedPacketSemaphore.Release();
 		}
 
-		MemoryPool<Uint8>::Item * Connection::PollReceivedPackets()
+		MemoryPool<Uint8>::Item * Connection::PollMessages()
 		{
 			MemoryPool<Uint8>::Item * pItem = NULL;
 
@@ -146,7 +146,7 @@ namespace Bit
 						m_ReceivedPacketSemaphore.Wait();
 
 						// Go throguh the packets.
-						while (IsConnected() && (pItem = PollReceivedPackets()) != NULL)
+						while (IsConnected() && (pItem = PollMessages()) != NULL)
 						{
 							Uint8 * pData = pItem->GetData();
 							SizeType recvSize = pItem->GetUsedSize();
@@ -154,26 +154,38 @@ namespace Bit
 							// Reset the time for checking last time a packet arrived
 							RestartLastReceivedPacketTimer();
 
+							const Private::PacketType::eType packetType = Private::PacketTransfer::ParsePacketType(pData[0]);
+
 							// Check the packet type
-							switch (pData[0])
+							switch (packetType)
 							{
 								// Connect packet from client, we should get the packet here if
 								// the client resent the connection packet.
 								case Private::PacketType::Connect:
 								{
-									// Make sure that the identifier is right.
-									if (recvSize != m_pServer->m_Identifier.size() + 1)
-									{
-										break;
-									}
-									if (memcmp(pData + 1, m_pServer->m_Identifier.data(), m_pServer->m_Identifier.size()) != 0)
-									{
-										break;
-									}
+									SizeType identifierLength = static_cast<SizeType>(pData[3]);
 
-									// Answer the client with a SYNACK packet.
-									pData[3] = Private::PacketType::Accept;
-									m_pServer->m_Socket.Send(pData, 1, m_DstAddress, m_DstPort);
+									if (identifierLength)
+									{
+										// Make sure that the identifier is right.
+										if (identifierLength != m_pServer->m_Identifier.size() ||
+											memcmp(pData + Private::NetConnectPacketSize, m_pServer->m_Identifier.data(), m_pServer->m_Identifier.size()) != 0)
+										{
+											// Send denied packet
+											pData[3] = Private::ConnectStatusType::Denied;
+											m_Socket.Send(pData, Private::NetRejectPacketSize, m_DstAddress, m_DstPort);
+											break;
+										}
+
+										// Get server time and send accept response
+										m_pServer->m_ServerTimer.Mutex.Lock();
+										const Uint64 serverTime = m_pServer->m_ServerTimer.Value.GetLapsedTime().AsMicroseconds();
+										m_pServer->m_ServerTimer.Mutex.Unlock();
+										const Uint64 nServerTime = Hton64(serverTime);
+										pData[3] = Private::ConnectStatusType::Accepted;
+										memcpy(&(pData[4]), &nServerTime, sizeof(Uint64));
+										m_Socket.Send(pData, Private::NetAcceptPacketSize, m_DstAddress, m_DstPort);
+									}
 								}
 								break;
 								// Disconnect packet from client.
@@ -199,19 +211,12 @@ namespace Bit
 								// Alive packet from client.
 								case Private::PacketType::Alive:
 								{
-									// Ignore "corrupt" alive packet.
-									if (recvSize != 3)
+									if (recvSize != Private::NetAlivePacketSize)
 									{
 										break;
 									}
 
-									Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(pData[1])) |
-																static_cast<Uint16>(static_cast<Uint8>(pData[2]) << 8));
-
-									// Use the already allocated packet, change the type
 									pData[0] = Private::PacketType::Acknowledgement;
-
-									// Send the ack packet
 									m_pServer->m_Socket.Send(pData, 3, m_DstAddress, m_DstPort);
 								}
 								break;
@@ -225,8 +230,7 @@ namespace Bit
 									}
 
 									// Get the sequence
-									Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(pData[1])) |
-																static_cast<Uint16>(static_cast<Uint8>(pData[2]) << 8));
+									const Uint16 sequence = Private::PacketTransfer::ReadNtoh16FromBuffer(pData + 1);
 
 									// Find the sequence in the reliable map
 									m_ReliablePackets.Mutex.Lock( );
@@ -294,7 +298,7 @@ namespace Bit
 									break;
 							};
 
-							// Destroy the packet.
+							// Return the packet to the memory pool.
 							m_pServer->m_pPacketMemoryPool->Return(pItem);
 						}
 
@@ -395,7 +399,7 @@ namespace Bit
 
 
 			// Execute the event thread
-			m_EventThread.Execute( [ this ] ( )
+			m_TimeoutThread.Execute( [ this ] ( )
 				{
 					while( IsConnected( ) )
 					{
@@ -406,6 +410,9 @@ namespace Bit
 						const Bit::Time timesinceLastPacket = GetTimeSinceLastReceivedPacket();
 						if (timesinceLastPacket >= m_LosingConnectionTimeout)
 						{
+							// Call on disconnect function
+							m_pServer->OnDisconnection(m_UserId);
+
 							// Set the connection flag to false
 							m_Connected.Mutex.Lock( );
 							m_Connected.Value = false;
@@ -416,9 +423,6 @@ namespace Bit
 
 							// Increase the semaphore for cleanups
 							m_pServer->m_CleanupSemaphore.Release( );
-
-							// Call on disconnect function
-							m_pServer->OnDisconnection( m_UserId );
 
 							return;
 						}
@@ -489,7 +493,7 @@ namespace Bit
 
 
 		void Connection::InternalDisconnect(	const Bool p_CloseMainThread,
-												const Bool p_CloseEventThread,
+												const Bool p_CloseTimeoutThread,
 												const Bool p_CloseReliableThread,
 												const Bool p_CloseUserMessageThread )
 		{
@@ -512,9 +516,9 @@ namespace Bit
 				m_ReceivedPacketSemaphore.Release();
  				m_Thread.Finish( );
 			}
-			if( p_CloseEventThread )
+			if( p_CloseTimeoutThread )
 			{
-				m_EventThread.Finish( );
+				m_TimeoutThread.Finish( );
 			}
 			if( p_CloseReliableThread )
 			{

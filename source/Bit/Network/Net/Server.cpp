@@ -261,21 +261,24 @@ namespace Bit
 			{
 				Address recvAddress;
 				Uint16 recvPort = 0;
-				Int16 recvSize = 0;
+				Int32 recvSize = 0;
+				MemoryPool<Uint8>::Item * pItem = NULL;
 
 				// Set the running flag to true.
 				m_Running.Set(true);
 
+
 				// Receive packets as long as the server is running.
 				while (IsRunning())
 				{
-					// Get item from memory pool
-					MemoryPool<Uint8>::Item *pItem = m_pPacketMemoryPool->Get();
-
+					// Get item from memory pool if needed.
 					if (pItem == NULL)
 					{
-						bitLogNetErr("Null memory pool item.");
-						continue;
+						if ((pItem = m_pPacketMemoryPool->Get()) == NULL)
+						{
+							bitLogNetErr("Null memory pool item.");
+							continue;
+						}
 					}
 
 					Uint8 * pBuffer = pItem->GetData();
@@ -284,6 +287,8 @@ namespace Bit
 					if (pBuffer == NULL)
 					{
 						bitLogNetErr( "Null memory pool item data." );
+						m_pPacketMemoryPool->Return(pItem);
+						pItem = NULL; // Indicate to generate get a new item next loop.
 						continue;
 					}
 
@@ -297,14 +302,17 @@ namespace Bit
 						}
 					}
 
-					// Error check the packet type byte
-					if (pBuffer[0] >= Private::NetPacketTypeCount)
+					// Get the packet type
+					const Private::PacketType::eType packetType = Private::PacketTransfer::ParsePacketType(pBuffer[0]);
+
+					// Error check the packet type, ignore unknown packets.
+					if (packetType == Private::PacketType::Unknown)
 					{
 						continue;
 					}
 
-					// get the client address as an index.
-					Uint64 clientAddress = static_cast<Uint64>(recvAddress.GetAddress()) *
+					// Get the packed address.
+					Uint64 packedAddress = static_cast<Uint64>(recvAddress.GetAddress()) *
 						static_cast<Uint64>(recvPort)+
 						static_cast<Uint64>(recvPort);
 
@@ -312,52 +320,99 @@ namespace Bit
 					m_ConnectionMutex.Lock();
 
 					// Check if we received a packet from a connected client.
-					AddressConnectionMap::iterator it = m_AddressConnections.find(clientAddress);
-					if (it != m_AddressConnections.end())
+					AddressConnectionMap::iterator it = m_AddressConnections.find(packedAddress);
+					if (it != m_AddressConnections.end() && 
+						packetType != Private::PacketType::Disconnect)
 					{
 						// Send the packet to the client thread.
 						pItem->SetUsedSize(recvSize);
-						it->second->AddReceivedData(pItem);
+						it->second->AddMessage(pItem);
 						m_ConnectionMutex.Unlock();
-						continue;
+
+						pItem = NULL; // Indicate to generate get a new item next loop.
+						continue; // Continue to next loop.
 					}
 					m_ConnectionMutex.Unlock();
 
-					// Get the packet type
-					const Private::PacketType::eType packetType = static_cast<Private::PacketType::eType>(pBuffer[0]);
-
-					// Use a do while loop with false condition in order to 
-					// jump over and skip code later.
-					do
+					// Handle connections and disconnection messages.
+					if (packetType == Private::PacketType::Connect ||
+						packetType == Private::PacketType::Disconnect)
 					{
-						// This is not a packet from an already connected client,
-						// check if the client is tryin go connect.
+						// We got a connection message. Add it to the queue.
+						ConnectionMessage * pConnectionMessage = new ConnectionMessage;
+						pConnectionMessage->pDataItem = pItem;
+						pConnectionMessage->Address = recvAddress;
+						pConnectionMessage->PackedAddress = packedAddress;
+						pConnectionMessage->Port = recvPort;
+						pConnectionMessage->PacketType = packetType;
+
+						AddConnectionMessage(pConnectionMessage);
+						pItem = NULL;
+					}
+
+					// The server's main loop is done here...
+				}
+			}
+			);
+
+
+			// Start the connection thread
+			m_ConnectionThread.Execute([this]()
+			{
+				ConnectionMessage * pConnectionMessage = NULL;
+				
+
+				// Run as long the server is running.
+				while (IsRunning())
+				{
+					
+					// Poll message.
+					if ((pConnectionMessage = PollConnectionMessage()) == NULL)
+					{
+						continue;
+					}
+
+					// Function for internally handling con/dis-connection messages.
+					// We do this in order to make sure to return the memory pool item and delete message.
+					std::function<void()> InternalHandleConnection = [this, pConnectionMessage]()
+					{
+						MemoryPool<Uint8>::Item * pItem = pConnectionMessage->pDataItem;
+						Uint8 * pBuffer = pItem->GetData();
+						Int32 recvSize = pItem->GetDataSize();
+						Private::PacketType::eType packetType = pConnectionMessage->PacketType;
+						Address recvAddress = pConnectionMessage->Address;
+						Uint64 recvPackedAddress = pConnectionMessage->PackedAddress;
+						Uint16 recvPort = pConnectionMessage->Port;
+
+						// Handle connection packet.
 						if (packetType == Private::PacketType::Connect)
 						{
 							// Error check the recv size, see if it's a connect packet.
 							if (recvSize < Private::NetConnectPacketSize)
 							{
-								break;
+								return;
 							}
 
-							// Are we using an identifier?
-							if(m_Identifier.size())
+							// Check identifier.
+							if (m_Identifier.size())
 							{
 								SizeType identifierLength = static_cast<SizeType>(pBuffer[3]);
 
 								if (identifierLength)
 								{
 									// Make sure that the identifier is right.
-									if (identifierLength == m_Identifier.size() &&
+									if (identifierLength != m_Identifier.size() ||
 										memcmp(pBuffer + Private::NetConnectPacketSize, m_Identifier.data(), m_Identifier.size()) != 0)
 									{
 										// Send denied packet
 										pBuffer[3] = Private::ConnectStatusType::Denied;
 										m_Socket.Send(pBuffer, Private::NetRejectPacketSize, recvAddress, recvPort);
-										break;
+										
+										return;
 									}
 								}
 							}
+
 
 							// Check if the address is banned
 							m_BanSet.Mutex.Lock();
@@ -370,10 +425,10 @@ namespace Bit
 								// Unlock the ban set mutex.
 								m_BanSet.Mutex.Unlock();
 
-								// Go to the return packet label.
-								break;
+								return;
 							}
 							m_BanSet.Mutex.Unlock();
+
 
 							// Send Deny packet if the server is full.
 							m_FreeUserIds.Mutex.Lock();
@@ -389,9 +444,9 @@ namespace Bit
 								pBuffer[3] = Private::ConnectStatusType::Full;
 								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, recvAddress, recvPort);
 
-								// Go to the return packet label.
-								break;
+								return;
 							}
+
 
 							// Run the on pre connection function
 							if (OnPreConnection(recvAddress, recvPort) == false)
@@ -399,8 +454,9 @@ namespace Bit
 								pBuffer[3] = Private::ConnectStatusType::Denied;
 								m_Socket.Send(pBuffer, Private::NetRejectPacketSize, recvAddress, recvPort);
 
-								break;
+								return;
 							}
+
 
 							// Get server time and send accept response
 							m_ServerTimer.Mutex.Lock();
@@ -422,13 +478,12 @@ namespace Bit
 
 							// Add the client to the connection maps
 							m_ConnectionMutex.Lock();
-							m_AddressConnections.insert(AddressConnectionMapPair(clientAddress, pConnection));
+							m_AddressConnections.insert(AddressConnectionMapPair(recvPackedAddress, pConnection));
 							m_UserConnections.insert(UserConnectionMapPair(userId, pConnection));
 							m_ConnectionMutex.Unlock();
 
 							// Start client thread.
 							pConnection->StartThreads(this);
-				
 
 							// Run the on post connection function.
 							// Release the connection mutex as well to let the user send messages and such.
@@ -436,20 +491,50 @@ namespace Bit
 							OnPostConnection(userId);
 							m_ConnectionMutex.Lock();
 						}
-						// Ping packet.
-						else if (packetType == Private::PacketType::Ping && recvSize == Private::NetPingPacketSize)
+						// Handle disconnect packet.
+						else
 						{
-							// Send back the ping packet.
-							m_Socket.Send(pBuffer, Private::NetPingPacketSize, recvAddress, recvPort);
+							// Error check the recv size, see if it's a disconnect packet.
+							if (recvSize < Private::NetDisconnectPacketSize)
+							{
+								return;
+							}
+
+							// Find the connection via user id.
+							m_ConnectionMutex.Lock();
+							AddressConnectionMap::iterator it = m_AddressConnections.find(recvPackedAddress);
+							if (it == m_AddressConnections.end())
+							{
+								// Unlock the connection mutex.
+								m_ConnectionMutex.Unlock();
+								return;
+							}
+
+							// Get the connection
+							Connection * pConnection = it->second;
+
+							// Unlock the connection mutex.
+							m_ConnectionMutex.Unlock();
+
+							// Add the connection for cleanup
+							AddConnectionForCleanup(pConnection);
 						}
 
-					} while (false);
+					};
 
-					// Return the item to the memory pool.
-					m_pPacketMemoryPool->Return(pItem);
+
+					// Handle the connection.
+					InternalHandleConnection();
+
+					// Cleanup
+					m_pPacketMemoryPool->Return(pConnectionMessage->pDataItem);
+					delete pConnectionMessage;
 				}
+			
 			}
 			);
+			
+
 
 			// Start the entity thread
 			m_EntityThread.Execute([this]()
@@ -866,6 +951,33 @@ namespace Bit
 
 			// Increase the semaphore for cleanups
 			m_CleanupSemaphore.Release( );
+		}
+
+		void Server::AddConnectionMessage(ConnectionMessage * p_pConnectionMessage)
+		{
+			m_ConnectionMessages.Mutex.Lock();
+			m_ConnectionMessages.Value.push(p_pConnectionMessage);
+			m_ConnectionMessages.Mutex.Unlock();
+			m_ConnectionSemaphore.Release();
+		}
+
+		Server::ConnectionMessage * Server::PollConnectionMessage()
+		{
+			m_ConnectionSemaphore.Wait();
+
+			m_ConnectionMessages.Mutex.Lock();
+
+			if (m_ConnectionMessages.Value.size() == 0)
+			{
+				m_ConnectionMessages.Mutex.Unlock();
+				return NULL;
+			}
+
+			ConnectionMessage * pMessage = m_ConnectionMessages.Value.front();
+			m_ConnectionMessages.Value.pop();
+
+			m_ConnectionMessages.Mutex.Unlock();
+			return pMessage;
 		}
 
 	}

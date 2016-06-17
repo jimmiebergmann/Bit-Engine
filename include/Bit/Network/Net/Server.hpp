@@ -284,13 +284,16 @@ namespace Bit
 
 		private:
 
-			// Private functions
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Add a client to the cleanup vector.
-			///
-			////////////////////////////////////////////////////////////////
-			void AddConnectionForCleanup( Connection * p_pConnection );
+			
+			// Private structs
+			struct ConnectionMessage
+			{
+				MemoryPool<Uint8>::Item *		pDataItem;
+				Address							Address;
+				Uint64							PackedAddress;
+				Uint16							Port;
+				Private::PacketType::eType		PacketType;
+			};
 
 			// Private  typedefs
 			typedef std::map<Uint64,	Connection*>					AddressConnectionMap;
@@ -303,13 +306,37 @@ namespace Bit
 			typedef std::set<UserMessageListener*>						UserMessageListenerSet;
 			typedef std::map<std::string, UserMessageListenerSet *>		UserMessageListenerMap;
 			typedef std::pair<std::string, UserMessageListenerSet *>	UserMessageListenerPair;
-			
+			typedef std::queue<ConnectionMessage*>						ConnectionMessageQueue;
+
+			// Private functions
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Add a client to the cleanup vector.
+			///
+			////////////////////////////////////////////////////////////////
+			void AddConnectionForCleanup(Connection * p_pConnection);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Add a message to the connection message queue.
+			///
+			////////////////////////////////////////////////////////////////
+			void AddConnectionMessage(ConnectionMessage * p_pConnectionMessage);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Get the oldest connection message.
+			///
+			/// \return NULL if no messages are available,
+			///			else pointer to oldest message.
+			///
+			////////////////////////////////////////////////////////////////
+			ConnectionMessage * PollConnectionMessage();
 
 			// Private variables
 			UdpSocket							m_Socket;					///< Udp socket.
 			Uint16								m_HostPort;					///< Udp socket port.
 			ThreadValue<Timer>					m_ServerTimer;				///< The server timer, time size the server started.
 			Thread								m_MainThread;				///< Thread for handling incoming packets.
+			Thread								m_ConnectionThread;			///< Thread for handling incoming connections and disconnections.
 			Thread								m_EntityThread;				///< Thread for sending entity states to users.
 			Thread								m_CleanupThread;			///< Thread for cleaning up connections.
 			Semaphore							m_CleanupSemaphore;			///< Semaphore for cleanups.
@@ -325,6 +352,8 @@ namespace Bit
 			ThreadValue<AddressSet>				m_BanSet;					///< Set of banned addresses.
 			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;		///< Map of user message listeners and their message types.
 			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Amount of time until the connection timeout after not receiving any packets.
+			ThreadValue<ConnectionMessageQueue> m_ConnectionMessages;		///< Queue of connection messages.
+			Semaphore							m_ConnectionSemaphore;		///< Semaphore for polling connection messages;
 			MemoryPool<Uint8> *					m_pPacketMemoryPool;		///< Memory pool for packets, make less new, copy and delete operations.
 
 		};

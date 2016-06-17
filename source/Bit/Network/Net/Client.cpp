@@ -732,7 +732,7 @@ namespace Bit
 				}
 
 				// Get the sequence answered by the server.
-				const Uint16 answerSequence = Private::ReadNtoh16FromBuffer(buffer + 1);
+				const Uint16 answerSequence = Private::PacketTransfer::ReadNtoh16FromBuffer(buffer + 1);
 
 				// Find the answered sequence in the timer map, make sure that this is a valid sequence.
 				TimerMap::iterator itCurTimer = timerMap.find(answerSequence);
@@ -761,7 +761,7 @@ namespace Bit
 					Uint64 roundTimeHalf = itCurTimer->second.GetTime().AsMicroseconds() / 2;
 
 					// Get server time
-					Uint64 serverTime = Private::ReadNtoh64FromBuffer(buffer + 4);
+					Uint64 serverTime = Private::PacketTransfer::ReadNtoh64FromBuffer(buffer + 4);
 
 					// Set server time and setart server timer.
 					m_ServerStartTime.Set(Microseconds(serverTime));
