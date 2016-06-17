@@ -146,7 +146,7 @@ namespace Bit
 			m_Socket.SetBlocking(true);
 
 			// Open the socket.
-			if (m_Socket.Open(p_Port) == false)
+			if (m_Socket.Open(m_SrcPort) == false)
 			{
 				return SocketError;
 			}
@@ -678,10 +678,10 @@ namespace Bit
 			bool recvConnectionPacket = false;
 
 			// Create identifier data
-			const SizeType identifierDataSize = m_ServerIdentifier.size() + 1;
-			std::unique_ptr<Uint8[]> identifierData(new Uint8[identifierDataSize]);
+			const SizeType identifierDataSize = m_ServerIdentifier.size();
+			std::unique_ptr<Uint8[]> identifierData(new Uint8[identifierDataSize + 1]);
 			identifierData[0] = static_cast<Uint8>(m_ServerIdentifier.size());
-			memcpy((&identifierData[0]) + 1, m_ServerIdentifier.data(), identifierDataSize);
+			memcpy((&identifierData[1]), m_ServerIdentifier.data(), identifierDataSize);
 
 			// Create a timer vector for checking roundtime
 			// Store each timer for each try to connect, sequence number as key.

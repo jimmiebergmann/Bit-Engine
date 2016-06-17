@@ -259,7 +259,9 @@ namespace Bit
 			// Start the server thread.
 			m_MainThread.Execute([this]()
 			{
+				Bool running = true;
 				Address recvAddress;
+				Uint64 recvPackedAddress = 0;
 				Uint16 recvPort = 0;
 				Int32 recvSize = 0;
 				MemoryPool<Uint8>::Item * pItem = NULL;
@@ -294,12 +296,18 @@ namespace Bit
 
 					// Receive a packet.
 					// Loop while the server is running and until we receive a valid packet.
-					while (IsRunning())
+					while (running = IsRunning())
 					{
-						if ((recvSize = m_Socket.Receive(pBuffer, Private::NetBufferSize, recvAddress, recvPort, Milliseconds(5))) > Private::NetHeaderSize)
+						if ((recvSize = m_Socket.Receive(pBuffer, Private::NetBufferSize, recvAddress, recvPort, Milliseconds(5))) < Private::NetHeaderSize)
 						{
-							break;
+							continue;
 						}
+					}
+
+					// Break if the server stopped running.
+					if (running == false)
+					{
+						break;
 					}
 
 					// Get the packet type
@@ -312,19 +320,25 @@ namespace Bit
 					}
 
 					// Get the packed address.
-					Uint64 packedAddress = static_cast<Uint64>(recvAddress.GetAddress()) *
-						static_cast<Uint64>(recvPort)+
+					recvPackedAddress = static_cast<Uint64>(recvAddress.GetAddress()) *
+						static_cast<Uint64>(recvPort) +
 						static_cast<Uint64>(recvPort);
 
 					// Lock the connection mutex.
 					m_ConnectionMutex.Lock();
 
 					// Check if we received a packet from a connected client.
-					AddressConnectionMap::iterator it = m_AddressConnections.find(packedAddress);
+					AddressConnectionMap::iterator it = m_AddressConnections.find(recvPackedAddress);
 					if (it != m_AddressConnections.end() && 
 						packetType != Private::PacketType::Disconnect)
 					{
-						// Send the packet to the client thread.
+						// Send acknowledgement if needed
+						if (Private::PacketTransfer::ParseReliableFlag(pBuffer[0]))
+						{
+							m_Socket.Send(pBuffer, Private::NetAcknowledgementPacketSize, recvAddress, recvPort);
+						}
+
+						// Move the packet to the client thread.
 						pItem->SetUsedSize(recvSize);
 						it->second->AddMessage(pItem);
 						m_ConnectionMutex.Unlock();
@@ -342,12 +356,13 @@ namespace Bit
 						ConnectionMessage * pConnectionMessage = new ConnectionMessage;
 						pConnectionMessage->pDataItem = pItem;
 						pConnectionMessage->Address = recvAddress;
-						pConnectionMessage->PackedAddress = packedAddress;
+						pConnectionMessage->PackedAddress = recvPackedAddress;
 						pConnectionMessage->Port = recvPort;
 						pConnectionMessage->PacketType = packetType;
 
 						AddConnectionMessage(pConnectionMessage);
 						pItem = NULL;
+						continue;
 					}
 
 					// The server's main loop is done here...
@@ -568,7 +583,6 @@ namespace Bit
 							return;
 						}
 
-
 						// Do pre entity message allocations
 						// Create a temporary client group struct.
 						struct ClientGroup
@@ -785,58 +799,63 @@ namespace Bit
 		{
 			if (IsRunning())
 			{
-				// Set the running flag to false.
+				/// Set the running flag to false.
 				m_Running.Mutex.Lock();
 				m_Running.Value = false;
 				m_Running.Mutex.Unlock();
 
-				// Wait for the entity thread to finish
+				/// Wait For the threads to finish...
+				m_MainThread.Finish();
 				m_EntityThread.Finish();
 
-				// Wait for the cleanup thread to finish
+				m_ConnectionSemaphore.Release();
+				m_ConnectionThread.Finish();
+
 				m_CleanupSemaphore.Release();
 				m_CleanupThread.Finish();
 
-				// Clean up the cleanup connections
+				/// Cleanup data
+
+				// Connection message queue.
+				m_ConnectionMessages.Mutex.Lock();
+				while (m_ConnectionMessages.Value.size())
+				{
+					ConnectionMessage * pMessage = m_ConnectionMessages.Value.front();
+					m_pPacketMemoryPool->Return(pMessage->pDataItem);
+					delete pMessage;
+					m_ConnectionMessages.Value.pop();
+				}
+				m_ConnectionMessages.Mutex.Unlock();
+
+				// Cleanup connection queue.
 				m_CleanupConnections.Mutex.Lock();
 				m_CleanupConnections.Value.clear();
 				m_CleanupConnections.Mutex.Unlock();
 
 
-				// Wait for the main thread to finish
-				m_MainThread.Finish();
+				
 
 				// Disconnect all the connections
 				m_ConnectionMutex.Lock();
-				AddressConnectionMap::iterator it = m_AddressConnections.begin();
-				while (it != m_AddressConnections.end())
+				for(AddressConnectionMap::iterator it = m_AddressConnections.begin();
+					it != m_AddressConnections.end();
+					it++)
 				{
-					// Disconnect and delete the connection.
-					Connection * pConnection = it->second;
-					delete pConnection;
-
-					// Erase the connection
-					m_AddressConnections.erase(it);
-
-					// Get the beginning again.
-					it = m_AddressConnections.begin();
+					delete it->second;
 				}
 
-				// Remove all the user connections
+				// Clean connection connections
+				m_AddressConnections.clear();
 				m_UserConnections.clear();
 
 				// Unlock the mutex
 				m_ConnectionMutex.Unlock();
 
 				// Delete the packet memory pool
-				if (m_pPacketMemoryPool)
-				{
-					delete m_pPacketMemoryPool;
-				}
+				delete m_pPacketMemoryPool;
 
-				// Close the sockets
+				// Close the host socket
 				m_Socket.Close();
-
 			}
 		}
 
@@ -845,15 +864,14 @@ namespace Bit
 			m_Running.Mutex.Lock();
 			Bool running = m_Running.Value;
 			m_Running.Mutex.Unlock();
+
 			return running;
 		}
 
 		Time Server::GetServerTime()
 		{
-			Time serverTime;
-
 			m_ServerTimer.Mutex.Lock();
-			serverTime = m_ServerTimer.Value.GetLapsedTime();
+			Time serverTime = m_ServerTimer.Value.GetLapsedTime();
 			m_ServerTimer.Mutex.Unlock();
 
 			return serverTime;
@@ -942,6 +960,7 @@ namespace Bit
 			{
 				if( p_pConnection == (*it) )
 				{
+					m_CleanupConnections.Mutex.Unlock();
 					return;
 				}
 			}

@@ -78,9 +78,9 @@ namespace Bit
 			const SizeType NetDisconnectPacketSize = 4;			///< Header + Reason
 			const SizeType NetAcceptPacketSize = 12;			///< Header + Connect status + Server time
 			const SizeType NetRejectPacketSize = 4;				///< Header + Connect status
-			const SizeType NetAlivePacketSize = 3;				///< Header
-			const SizeType NetAcknowledgementPacketSize = 3;	///< Header, sender: sequence in header is the packet to acknowledge.
+			const SizeType NetAcknowledgementPacketSize = 3;	///< Header, sequence in header is the packet to acknowledge.
 			
+			const SizeType NetAlivePacketSize = 3;				///< Header
 			const SizeType NetEntityUpdatePacketSize = 4;
 			const SizeType NetEntityDestroyedPacketSize = 6;
 			const SizeType NetUserMessagePacketSize = 4;

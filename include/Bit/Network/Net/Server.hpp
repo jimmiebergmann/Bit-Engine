@@ -33,8 +33,6 @@
 #include <Bit/System/MemoryPool.hpp>
 #include <Bit/System/Thread.hpp>
 #include <Bit/System/Semaphore.hpp>
-#include <queue>
-#include <map>
 
 #ifdef BIT_PLATFORM_WINDOWS
 #undef CreateEvent

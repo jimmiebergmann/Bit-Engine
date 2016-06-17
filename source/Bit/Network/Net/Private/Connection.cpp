@@ -421,9 +421,6 @@ namespace Bit
 							// Add the connection to the cleanup thread.
 							m_pServer->AddConnectionForCleanup( this );
 
-							// Increase the semaphore for cleanups
-							m_pServer->m_CleanupSemaphore.Release( );
-
 							return;
 						}
 
