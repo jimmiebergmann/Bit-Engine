@@ -335,7 +335,10 @@ namespace Bit
 						// Send acknowledgement if needed
 						if (Private::PacketTransfer::ParseReliableFlag(pBuffer[0]))
 						{
+							const Uint8 oldTypeByte = pBuffer[0];
+							pBuffer[0] = Private::PacketType::Acknowledgement;
 							m_Socket.Send(pBuffer, Private::NetAcknowledgementPacketSize, recvAddress, recvPort);
+							pBuffer[0] = oldTypeByte;
 						}
 
 						// Move the packet to the client thread.
@@ -474,12 +477,9 @@ namespace Bit
 
 
 							// Get server time and send accept response
-							m_ServerTimer.Mutex.Lock();
-							const Uint64 serverTime = m_ServerTimer.Value.GetLapsedTime().AsMicroseconds();
-							m_ServerTimer.Mutex.Unlock();
-							const Uint64 nServerTime = Hton64(serverTime);
+							const Uint64 serverTime = Hton64(GetServerTime().AsMicroseconds());
 							pBuffer[3] = Private::ConnectStatusType::Accepted;
-							memcpy(&(pBuffer[4]), &nServerTime, sizeof(Uint64));
+							memcpy(&(pBuffer[4]), &serverTime, sizeof(Uint64));
 							m_Socket.Send(pBuffer, Private::NetAcceptPacketSize, recvAddress, recvPort);
 							
 							// Add the client to the connection maps
@@ -535,6 +535,9 @@ namespace Bit
 
 							// Unlock the connection mutex.
 							m_ConnectionMutex.Unlock();
+
+							// Run the on disconnection function
+							OnDisconnection(pConnection->GetUserId());
 
 							// Add the connection for cleanup
 							AddConnectionForCleanup(pConnection);
@@ -726,12 +729,12 @@ namespace Bit
 			);
 
 			// Start the cleanup thread.
-			m_CleanupThread.Execute([this]()
+			m_CleanupConnectionThread.Execute([this]()
 			{
 				while (IsRunning())
 				{
 					// Wait for semaphore to trigger
-					m_CleanupSemaphore.Wait();
+					m_CleanupConnectionSemaphore.Wait();
 
 					// Lock the cleanup connections mutex
 					m_CleanupConnections.Mutex.Lock();
@@ -816,10 +819,8 @@ namespace Bit
 				m_ConnectionSemaphore.Release();
 				m_ConnectionThread.Finish();
 
-				m_CleanupSemaphore.Release();
-				m_CleanupThread.Finish();
-
-				/// Cleanup data
+				m_CleanupConnectionSemaphore.Release();
+				m_CleanupConnectionThread.Finish();
 
 				// Connection message queue.
 				m_ConnectionMessages.Mutex.Lock();
@@ -837,15 +838,24 @@ namespace Bit
 				m_CleanupConnections.Value.clear();
 				m_CleanupConnections.Mutex.Unlock();
 
-
-				
-
 				// Disconnect all the connections
+				Uint8 closedMessage = static_cast<Uint8>(Private::DisconnectType::Closed);
 				m_ConnectionMutex.Lock();
 				for(AddressConnectionMap::iterator it = m_AddressConnections.begin();
 					it != m_AddressConnections.end();
 					it++)
 				{
+					// Send disconnect message.
+					it->second->SendUnreliable(Private::PacketType::Disconnect, &closedMessage, 1);
+
+					// Run the on disconnection function
+					const Uint16 userId = it->second->GetUserId();
+					m_ConnectionMutex.Unlock(); // Unlock the connection mutex to prevent locks.
+					OnDisconnection(userId);
+					m_ConnectionMutex.Lock();// Lock the connection mutex again
+
+					// Delete the connection pointer.
+					// The destructor will cleanup and return all the data for us.
 					delete it->second;
 				}
 
@@ -974,7 +984,7 @@ namespace Bit
 			m_CleanupConnections.Mutex.Unlock( );
 
 			// Increase the semaphore for cleanups
-			m_CleanupSemaphore.Release( );
+			m_CleanupConnectionSemaphore.Release( );
 		}
 
 		void Server::AddConnectionMessage(ConnectionMessage * p_pConnectionMessage)

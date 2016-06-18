@@ -189,39 +189,59 @@ namespace Bit
 				m_ReliablePackets.Value.insert(ReliablePacketPair(p_Sequence, pReliablePacket));
 				m_ReliablePackets.Mutex.Unlock();
 			}
-/*
-			void PacketTransfer::AddReceivedPacket(MemoryPool<Uint8>::Item * p_pItem)
+
+			Bool PacketTransfer::RemoveReliablePacket(	const Uint16 & p_Sequence,
+														Bool & p_WasResent,
+														Time & p_TimeSinceSent)
 			{
-				// Lock the received data mutex.
-				m_ReceivedPackets.Mutex.Lock();
-
-				// Push the packet to the received data queue.
-				m_ReceivedPackets.Value.push(p_pItem);
-
-				// Release the semaphore if this is the very first packet in a while.
-				if (m_ReceivedPackets.Value.size() == 1)
+				// Find the sequence in the reliable map
+				m_ReliablePackets.Mutex.Lock();
+				ReliablePacketMap::iterator it = m_ReliablePackets.Value.find(p_Sequence);
+				// Remove the packet from the map if it's found and calculate the ping.
+				if (it != m_ReliablePackets.Value.end())
 				{
-					//m_ReceivedDataSemaphore.Release();
+					// Set out parameters
+					p_WasResent = it->second->Resent;
+					p_TimeSinceSent = it->second->SendTimer.GetLapsedTime();
+
+					// Clean up the data
+					delete[] it->second->pData;
+					delete it->second;
+
+					// Erase the reliable packet
+					m_ReliablePackets.Value.erase(it);
+
+					m_ReliablePackets.Mutex.Unlock();
+					return true;
 				}
 
-				m_ReceivedPackets.Mutex.Unlock();
+				m_ReliablePackets.Mutex.Unlock();
+				return false;
 			}
 
-			MemoryPool<Uint8>::Item * PacketTransfer::PollReceivedPackets()
+			void PacketTransfer::ClearReliablePackets()
 			{
-				MemoryPool<Uint8>::Item * pItem = NULL;
+				// Find the sequence in the reliable map
+				m_ReliablePackets.Mutex.Lock();
 
-				m_ReceivedPackets.Mutex.Lock();
-				if (m_ReceivedPackets.Value.size())
+				// Remove the packet from the map if it's found and calculate the ping.
+				for (	ReliablePacketMap::iterator it = m_ReliablePackets.Value.begin();
+						it != m_ReliablePackets.Value.end();
+						it++)
 				{
-					pItem = m_ReceivedPackets.Value.front();
-					m_ReceivedPackets.Value.pop();
-				}
-				m_ReceivedPackets.Mutex.Unlock();
+					// Clean up the data
+					delete[] it->second->pData;
+					delete it->second;
 
-				return pItem;
+					// Erase the reliable packet
+					m_ReliablePackets.Value.erase(it);
+				}
+
+				m_ReliablePackets.Value.clear();
+				m_ReliablePackets.Mutex.Unlock();
+
 			}
-*/
+
 			void PacketTransfer::RestartLastSentPacketTimer()
 			{
 				m_LastSendTimer.Mutex.Lock();

@@ -130,10 +130,7 @@ namespace Bit
 			/// \brief	Internal function for disconnecting from the server.
 			///
 			////////////////////////////////////////////////////////////////
-			void InternalDisconnect(	const Bool p_CloseMainThread,
-										const Bool p_CloseTimeoutThread,
-										const Bool p_CloseReliableThread,
-										const Bool p_CloseUserMessageThread );
+			void InternalDisconnect();
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Calculate the new ping.

@@ -330,29 +330,29 @@ namespace Bit
 			ConnectionMessage * PollConnectionMessage();
 
 			// Private variables
-			UdpSocket							m_Socket;					///< Udp socket.
-			Uint16								m_HostPort;					///< Udp socket port.
-			ThreadValue<Timer>					m_ServerTimer;				///< The server timer, time size the server started.
-			Thread								m_MainThread;				///< Thread for handling incoming packets.
-			Thread								m_ConnectionThread;			///< Thread for handling incoming connections and disconnections.
-			Thread								m_EntityThread;				///< Thread for sending entity states to users.
-			Thread								m_CleanupThread;			///< Thread for cleaning up connections.
-			Semaphore							m_CleanupSemaphore;			///< Semaphore for cleanups.
-			ThreadValue<ConnectionList>			m_CleanupConnections;		///< Queue of connections to cleanup.
-			std::string							m_Identifier;				///< Connection identifier string.
-			Uint8								m_MaxConnections;			///< Maximum amount of connections.
-			Uint8								m_EntityUpdatesPerSecond;	///< Number of updates per second for the entities.
-			ThreadValue<FreeUserIdMap>			m_FreeUserIds;				///< Queue of free user Ids.
-			AddressConnectionMap				m_AddressConnections;		///< Map of all the connections via their addresses.
-			UserConnectionMap					m_UserConnections;			///< Map of all the connections via their user IDs.
-			Mutex								m_ConnectionMutex;			///< Mutex for the address and user connections.
-			ThreadValue<Bool>					m_Running;					///< Flag for checking if the server is running.
-			ThreadValue<AddressSet>				m_BanSet;					///< Set of banned addresses.
-			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;		///< Map of user message listeners and their message types.
-			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Amount of time until the connection timeout after not receiving any packets.
-			ThreadValue<ConnectionMessageQueue> m_ConnectionMessages;		///< Queue of connection messages.
-			Semaphore							m_ConnectionSemaphore;		///< Semaphore for polling connection messages;
-			MemoryPool<Uint8> *					m_pPacketMemoryPool;		///< Memory pool for packets, make less new, copy and delete operations.
+			UdpSocket							m_Socket;						///< Udp socket.
+			Uint16								m_HostPort;						///< Udp socket port.
+			ThreadValue<Timer>					m_ServerTimer;					///< The server timer, time size the server started.
+			Thread								m_MainThread;					///< Thread for handling incoming packets.
+			Thread								m_ConnectionThread;				///< Thread for handling incoming connections and disconnections.
+			Thread								m_EntityThread;					///< Thread for sending entity states to users.
+			Thread								m_CleanupConnectionThread;		///< Thread for cleaning up connections.
+			Semaphore							m_CleanupConnectionSemaphore;	///< Semaphore for cleanups.
+			ThreadValue<ConnectionList>			m_CleanupConnections;			///< Queue of connections to cleanup.
+			std::string							m_Identifier;					///< Connection identifier string.
+			Uint8								m_MaxConnections;				///< Maximum amount of connections.
+			Uint8								m_EntityUpdatesPerSecond;		///< Number of updates per second for the entities.
+			ThreadValue<FreeUserIdMap>			m_FreeUserIds;					///< Queue of free user Ids.
+			AddressConnectionMap				m_AddressConnections;			///< Map of all the connections via their addresses.
+			UserConnectionMap					m_UserConnections;				///< Map of all the connections via their user IDs.
+			Mutex								m_ConnectionMutex;				///< Mutex for the address and user connections.
+			ThreadValue<Bool>					m_Running;						///< Flag for checking if the server is running.
+			ThreadValue<AddressSet>				m_BanSet;						///< Set of banned addresses.
+			ThreadValue<UserMessageListenerMap>	m_UserMessageListeners;			///< Map of user message listeners and their message types.
+			ThreadValue<Time>					m_LosingConnectionTimeout;		///< Amount of time until the connection timeout after not receiving any packets.
+			ThreadValue<ConnectionMessageQueue> m_ConnectionMessages;			///< Queue of connection messages.
+			Semaphore							m_ConnectionSemaphore;			///< Semaphore for polling connection messages;
+			MemoryPool<Uint8> *					m_pPacketMemoryPool;			///< Memory pool for packets, make less new, copy and delete operations.
 
 		};
 

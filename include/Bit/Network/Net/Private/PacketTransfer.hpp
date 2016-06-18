@@ -85,7 +85,7 @@ namespace Bit
 			const SizeType NetEntityDestroyedPacketSize = 6;
 			const SizeType NetUserMessagePacketSize = 4;
 			const SizeType NetHostMessagePacketSize = 4;
-			const SizeType NetPingPacketSize = 2;
+			//const SizeType NetPingPacketSize = 2;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Packet type.
@@ -243,22 +243,7 @@ namespace Bit
 					Bool		Resent;
 				};
 
-				////////////////////////////////////////////////////////////////
-				/// \brief Received data structure
-				///
-				////////////////////////////////////////////////////////////////
-/*				struct ReceivedData
-				{
-					ReceivedData(Uint8 * p_pData, const SizeType p_DataSize, const Uint16 p_Sequence);
-					~ReceivedData();
-
-					Uint16		Sequence;
-					Uint8 *		pData;
-					SizeType	DataSize;
-				};
-*/
 				// Protected types
-//				typedef std::queue<MemoryPool<Uint8>::Item*>	PacketPoolItemQueue;
 				typedef std::map<Uint16, ReliablePacket*>		ReliablePacketMap;
 				typedef std::pair<Uint16, ReliablePacket*>		ReliablePacketPair;
 				typedef std::list<Time>							TimeList;
@@ -305,19 +290,27 @@ namespace Bit
 				void AddReliablePacket(	const Uint16 & p_Sequence,
 										Uint8 * p_pData,
 										const SizeType & p_DataSize);
-/*
-				////////////////////////////////////////////////////////////////
-				/// \brief Add raw packet to queue.
-				///
-				////////////////////////////////////////////////////////////////
-				void AddReceivedPacket(MemoryPool<Uint8>::Item * p_pItem);
 
 				////////////////////////////////////////////////////////////////
-				/// \brief Poll raw packet from queue.
+				/// \brief Remove reliable packet from container.
+				///
+				/// \param p_Sequence Sequence of the reliable packet to remove.
+				/// \param p_WasResent Flag for checking if packet has been resent.
+				/// \param p_TimeSinceSent Time since the original packet was sent.
+				///
+				/// \return true if packet is removed(found), else false.
 				///
 				////////////////////////////////////////////////////////////////
-				MemoryPool<Uint8>::Item * PollReceivedPackets();
-*/
+				Bool RemoveReliablePacket(	const Uint16 & p_Sequence,
+											Bool & p_WasResent,
+											Time & p_TimeSinceSent);
+
+				////////////////////////////////////////////////////////////////
+				/// \brief Clear all reliable packets.
+				///
+				////////////////////////////////////////////////////////////////
+				void ClearReliablePackets();
+
 				////////////////////////////////////////////////////////////////
 				/// \brief Restart the last sent packet timer.
 				///
@@ -349,7 +342,6 @@ namespace Bit
 				Uint16								m_DstPort;			///< Port of the data link destination.
 				ThreadValue<ReliablePacketMap>		m_ReliablePackets;	///< Reliable packets waiting for resending if needed.
 				SequenceManager						m_SequenceManager;	///< Sequence manager.
-//				ThreadValue<PacketPoolItemQueue>	m_ReceivedPackets;	///< Received data waiting for being handled.
 				TimeList							m_PingList;			///< List of the last ping values.
 
 			private:

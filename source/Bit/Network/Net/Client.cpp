@@ -65,7 +65,7 @@ namespace Bit
 
 		}
 
-		Bool Client::PingServer(	const Address & p_ServerAddress,
+/*		Bool Client::PingServer(	const Address & p_ServerAddress,
 									const Uint16 p_ServerPort,
 									Time & p_PingTime,
 									const Time & p_Timeout)
@@ -130,7 +130,7 @@ namespace Bit
 			// Succeeded.
 			return received;
 		}
-
+*/
 		Client::eStatus Client::Connect(const Address & p_Address,
 			const Uint16 p_Port,
 			const Time & p_ConnectionTimeout,
@@ -139,11 +139,11 @@ namespace Bit
 			const Time & p_ExtrapolationTime,
 			const std::string & p_Identifier)
 		{
-			// make sure to be disconnected.
-			InternalDisconnect(true, true, true, true);
-
-			// Open the udp socket.
-			m_Socket.SetBlocking(true);
+			// Do not try to connect again if we already are connected to a server.
+			if (m_Connected.Get())
+			{
+				return AlreadyConnected;
+			}
 
 			// Open the socket.
 			if (m_Socket.Open(m_SrcPort) == false)
@@ -164,9 +164,6 @@ namespace Bit
 				return connectStatus;
 			}
 
-			// Create a data buffer.
-			Uint8 buffer[Private::NetBufferSize];
-
 			// Initialize the ping list
 			for (SizeType i = 0; i < 5; i++)
 			{
@@ -186,10 +183,9 @@ namespace Bit
 			// Start the client thread.
 			m_Thread.Execute([this]()
 			{
-				const SizeType bufferSize = 2048;
-				Uint8 buffer[bufferSize];
-				Address address;
-				Uint16 port = 0;
+				Uint8 buffer[Private::NetBufferSize];
+				Address recvAddress;
+				Uint16 recvPort = 0;
 				Int32 recvSize = 0;
 
 				// Start the timer for the last recv packet.
@@ -200,219 +196,213 @@ namespace Bit
 				while (IsConnected())
 				{
 					// Receive any packet.
-					recvSize = m_Socket.Receive(buffer, bufferSize, address, port, Microseconds(1000));
-
-					// Make sure that the packet is from the server
-					if (address != m_DstAddress || port != m_DstPort)
+					// Ignore too small packets.
+					if ((recvSize = m_Socket.Receive(buffer, Private::NetBufferSize, recvAddress, recvPort, Microseconds(1000))) < Private::NetHeaderSize)
 					{
 						continue;
 					}
 
-					// Check the packet size.
-					if (recvSize < 1)
+					// Make sure that the packet is from the server
+					if (recvAddress != m_DstAddress || recvPort != m_DstPort)
 					{
 						continue;
 					}
 
 					// Reset the time for checking last time a packet arrived
-					RestartLastSentPacketTimer();
+					RestartLastReceivedPacketTimer();
+
+					// Get the packet type
+					const Private::PacketType::eType packetType = Private::PacketTransfer::ParsePacketType(buffer[0]);
+
+					// Error check the packet type, ignore unknown packets.
+					if (packetType == Private::PacketType::Unknown)
+					{
+						continue;
+					}
+
+					// Get reliable flag and send acknowledgement if needed.
+					const Bool reliableType = Private::PacketTransfer::ParseReliableFlag(buffer[0]);
+					if (reliableType)
+					{
+						const Uint8 oldTypeByte = buffer[0];
+						buffer[0] = Private::PacketType::Acknowledgement;
+						m_Socket.Send(buffer, Private::NetAcknowledgementPacketSize, recvAddress, recvPort);
+						buffer[0] = oldTypeByte;
+					}
+
 
 					// Check the packet type
-					switch (buffer[0])
+					switch (packetType)
 					{
 						// The server disconnected.
-					case Private::PacketType::Disconnect:
-					{
-						// Set connected to false.
-						m_Connected.Mutex.Lock();
-						m_Connected.Value = false;
-						m_Connected.Mutex.Unlock();
-
-						// Wait for the threads to finish.
-						m_TriggerThread.Finish();
-						m_ReliableThread.Finish();
-
-						// Reset the sequence.
-						/*m_Sequence.Mutex.Lock();
-						m_Sequence.Value = 0;
-						m_Sequence.Mutex.Unlock();
-						*/
-						return;
-					}
-					break;
-					// ACK packet from server.
-					case Private::PacketType::Acknowledgement:
-					{
-						// Ignore "corrupt" ack packet.
-						if (recvSize != Private::NetAcknowledgementPacketSize)
+						case Private::PacketType::Disconnect:
 						{
-							continue;
+							// Set connected to false.
+/*							m_Connected.Set(false);
+
+							// Wait for the threads to finish.
+							m_TriggerThread.Finish();
+							m_ReliableThread.Finish();
+*/
+							return;
 						}
-
-						// Get the sequence
-						Uint16 sequence = Ntoh16(static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
-							static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
-
-						// Find the sequence in the reliable map
-						m_ReliablePackets.Mutex.Lock();
-						ReliablePacketMap::iterator it = m_ReliablePackets.Value.find(sequence);
-						// Remove the packet from the map if it's found and calculate the ping.
-						if (it != m_ReliablePackets.Value.end())
+						break;
+/*						// Alive packet from server. WE ARE ALREADY SENDING ACKNOWLEDGEMENT PACKETS.
+						case Private::PacketType::Alive:
 						{
-							// Calculate the new ping from the lapsed time if it's not a resent packet
-							if (it->second->Resent == false)
+							if (recvSize != Private::NetAlivePacketSize)
 							{
-								CalculateNewPing(it->second->SendTimer.GetLapsedTime());
+								break;
 							}
 
-							// Clean up the data
-							delete[] it->second->pData;
-							delete it->second;
-
-							// Erase the reliable packet
-							m_ReliablePackets.Value.erase(it);
+							// Send acknowledgement packet.
+							// We're not using the SendUnreliable function here in order to speed things up.
+							buffer[0] = Private::PacketType::Acknowledgement;
+							m_Socket.Send(buffer, Private::NetAcknowledgementPacketSize, m_DstAddress, m_DstPort);
 						}
-						m_ReliablePackets.Mutex.Unlock();
-					}
-					break;
-					// Alive packet from server.
-					case Private::PacketType::Alive:
-					{
-						// Ignore "corrupt" alive packet.
-						if (recvSize != Private::NetAlivePacketSize)
+						break;*/
+						// ACK packet from server.
+						case Private::PacketType::Acknowledgement:
 						{
-							continue;
+							if (recvSize != Private::NetAcknowledgementPacketSize)
+							{
+								break;
+							}
+
+							// Remove the reliable packet.
+							const Uint16 sequence = Private::PacketTransfer::ReadNtoh16FromBuffer(buffer + 1);
+							Bool wasResent = false;
+							Time timeSinceSent;
+							if (RemoveReliablePacket(sequence, wasResent, timeSinceSent))
+							{
+								// Calculate the new ping from the lapsed time if it's not a resent packet
+								if (wasResent == false)
+								{
+									CalculateNewPing(timeSinceSent);
+								}
+							}
 						}
-
-						Uint16 sequence = Ntoh16(static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
-							static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
-
-						// Use the already allocated packet, change the type
-						buffer[0] = Private::PacketType::Acknowledgement;
-
-						// Send the ack packet
-						m_Socket.Send(buffer, Private::NetAcknowledgementPacketSize, m_DstAddress, m_DstPort);
-					}
-					break;
-					/*case PacketType::EntityUpdate:
-					{
-						// Error check the recv size
-						if (recvSize <= EntityUpdatePacketSize)
-						{
-							continue;
-						}
-
-						// Check the reliable flag
-						if (buffer[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
-						{
-							// Use the already allocated packet, change the type
-							buffer[0] = PacketType::Acknowledgement;
-
-							// Send the ack packet
-							m_Socket.Send(buffer, AcknowledgementPacketSize, m_ServerAddress, m_ServerPort);
-						}
-
-						// Get the sequence
-						const Uint16 sequence = Ntoh16(static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
-							static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
-
-						// Add the packets sequence to the sequence manager, do not handle the packet
-						// if we've already received a packet with the same sequence.
-						if (m_SequenceManager.AddSequence(sequence) && AddEntityUpdateSequence(sequence))
-						{
-							m_EntityManager.ParseEntityMessage(sequence, buffer + EntityUpdatePacketSize, recvSize - EntityUpdatePacketSize);
-						}
-
-					}
-					break;
-					case PacketType::EntityDestroyed:
-					{
-						// Error check the recv size
-						/*if (recvSize < EntityDestroyedPacketSize)
-						{
-							continue;
-						}
-
-						if (buffer[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
-						{
-							// Use the already allocated packet, change the type
-							buffer[0] = PacketType::Acknowledgement;
-
-							// Send the ack packet
-							m_Socket.Send(buffer, AcknowledgementPacketSize, m_ServerAddress, m_ServerPort);
-						}
-
-						// Get the sequence
-						const Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
-														static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
-
-						// Error check the sequence and add it to the sequence manager.
-						if (m_SequenceManager.AddSequence(sequence) == false)
-						{
-							continue;
-						}
-
-
-						// Get entity id
-						Uint16 entityId = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[4])) |
-													static_cast<Uint16>(static_cast<Uint8>(buffer[5]) << 8));
-
-						// Get entity
-						Entity * pEntity = m_EntityManager.GetEntity(entityId);
-						if (pEntity == NULL)
-						{
-							bitLogNetErr(  "Trying to destroy NULL entity." );
-							continue;
-						}
-
-						// Call entity destroyed function.
-						OnEntityDestroyed(pEntity);
-
-						// Destroy the entity.
-						m_EntityManager.DestroyEntity(pEntity, true);
-						
-
-					}
-					break;
-					case Private::PacketType::HostMessage:
-					{
-						// Error check the recv size
-						if (recvSize <= HostMessagePacketSize)
-						{
-							continue;
-						}
-
-						// Check the reliable flag
-						if (buffer[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
-						{
-							// Use the already allocated packet, change the type
-							buffer[0] = PacketType::Acknowledgement;
-
-							// Send the ack packet
-							m_Socket.Send(buffer, AcknowledgementPacketSize, m_ServerAddress, m_ServerPort);
-						}
-
-						// Get the sequence
-						const Uint16 sequence = Ntoh16(static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
-							static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
-
-						// Add the packets sequence to the sequence manager, do not handle the packet
-						// if we've already received a packet with the same sequence.
-						if (m_SequenceManager.AddSequence(sequence))
-						{
-
-							// Add the unreliable packet to the received data queue.	
-							ReceivedData * pReceivedData = new ReceivedData(buffer + UserMessagePacketSize,
-								recvSize - UserMessagePacketSize,
-								sequence);
-
-							// Add the host message.
-							AddHostMessage(pReceivedData);
-						}
-					}
-					break;*/
-					default:
 						break;
+						
+						/*case PacketType::EntityUpdate:
+						{
+							// Error check the recv size
+							if (recvSize <= EntityUpdatePacketSize)
+							{
+								continue;
+							}
+
+							// Check the reliable flag
+							if (buffer[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
+							{
+								// Use the already allocated packet, change the type
+								buffer[0] = PacketType::Acknowledgement;
+
+								// Send the ack packet
+								m_Socket.Send(buffer, AcknowledgementPacketSize, m_ServerAddress, m_ServerPort);
+							}
+
+							// Get the sequence
+							const Uint16 sequence = Ntoh16(static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
+								static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
+
+							// Add the packets sequence to the sequence manager, do not handle the packet
+							// if we've already received a packet with the same sequence.
+							if (m_SequenceManager.AddSequence(sequence) && AddEntityUpdateSequence(sequence))
+							{
+								m_EntityManager.ParseEntityMessage(sequence, buffer + EntityUpdatePacketSize, recvSize - EntityUpdatePacketSize);
+							}
+
+						}
+						break;
+						case PacketType::EntityDestroyed:
+						{
+							// Error check the recv size
+							/*if (recvSize < EntityDestroyedPacketSize)
+							{
+								continue;
+							}
+
+							if (buffer[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
+							{
+								// Use the already allocated packet, change the type
+								buffer[0] = PacketType::Acknowledgement;
+
+								// Send the ack packet
+								m_Socket.Send(buffer, AcknowledgementPacketSize, m_ServerAddress, m_ServerPort);
+							}
+
+							// Get the sequence
+							const Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
+															static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
+
+							// Error check the sequence and add it to the sequence manager.
+							if (m_SequenceManager.AddSequence(sequence) == false)
+							{
+								continue;
+							}
+
+
+							// Get entity id
+							Uint16 entityId = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(buffer[4])) |
+														static_cast<Uint16>(static_cast<Uint8>(buffer[5]) << 8));
+
+							// Get entity
+							Entity * pEntity = m_EntityManager.GetEntity(entityId);
+							if (pEntity == NULL)
+							{
+								bitLogNetErr(  "Trying to destroy NULL entity." );
+								continue;
+							}
+
+							// Call entity destroyed function.
+							OnEntityDestroyed(pEntity);
+
+							// Destroy the entity.
+							m_EntityManager.DestroyEntity(pEntity, true);
+
+
+						}
+						break;
+						case Private::PacketType::HostMessage:
+						{
+							// Error check the recv size
+							if (recvSize <= HostMessagePacketSize)
+							{
+								continue;
+							}
+
+							// Check the reliable flag
+							if (buffer[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
+							{
+								// Use the already allocated packet, change the type
+								buffer[0] = PacketType::Acknowledgement;
+
+								// Send the ack packet
+								m_Socket.Send(buffer, AcknowledgementPacketSize, m_ServerAddress, m_ServerPort);
+							}
+
+							// Get the sequence
+							const Uint16 sequence = Ntoh16(static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
+								static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
+
+							// Add the packets sequence to the sequence manager, do not handle the packet
+							// if we've already received a packet with the same sequence.
+							if (m_SequenceManager.AddSequence(sequence))
+							{
+
+								// Add the unreliable packet to the received data queue.
+								ReceivedData * pReceivedData = new ReceivedData(buffer + UserMessagePacketSize,
+									recvSize - UserMessagePacketSize,
+									sequence);
+
+								// Add the host message.
+								AddHostMessage(pReceivedData);
+							}
+						}
+						break;*/
+						default:
+							break;
 					}
 
 				}

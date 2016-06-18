@@ -69,10 +69,11 @@ namespace Bit
 				Unknown,
 				SocketError,
 				TimedOut,
+				AlreadyConnected,
 				Succeeded,
 				Denied,
 				Banned,
-				Full
+				Full,
 			};
 
 			////////////////////////////////////////////////////////////////
@@ -102,10 +103,11 @@ namespace Bit
 			/// \return true if successfully pinged, else false.
 			///
 			////////////////////////////////////////////////////////////////
-			static Bool PingServer(	const Address & p_ServerAddress,
+/*			static Bool PingServer(	const Address & p_ServerAddress,
 									const Uint16 p_ServerPort,
 									Time & p_PingTime,
 									const Time & p_Timeout = Seconds( 3.0f ));
+*/
 
 		protected:
 
