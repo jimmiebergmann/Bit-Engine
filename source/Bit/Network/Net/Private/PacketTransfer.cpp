@@ -232,9 +232,6 @@ namespace Bit
 					// Clean up the data
 					delete[] it->second->pData;
 					delete it->second;
-
-					// Erase the reliable packet
-					m_ReliablePackets.Value.erase(it);
 				}
 
 				m_ReliablePackets.Value.clear();
