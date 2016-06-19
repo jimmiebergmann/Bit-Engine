@@ -98,6 +98,73 @@ namespace Bit
             m_ReceivedPacketSemaphore.Release();
         }
 
+		Bool Connection::SendUnreliable(const Private::PacketType::eType p_PacketType,
+			const void * p_pData,
+			const SizeType p_DataSize)
+		{
+			// Create the packet. Make space for the sequence in case.
+			const Bit::SizeType packetSize = Private::NetHeaderSize + p_DataSize;
+
+			// Set packet header type byte.
+			Uint8 * pBuffer = new Uint8[packetSize];
+			pBuffer[0] = static_cast<Uint8>(p_PacketType);
+
+			// Set packet header sequence.
+			Bit::Uint16 sequence = Bit::Hton16(GetNextSequence());
+			memcpy(pBuffer + 1, &sequence, Private::NetSequenceSize);
+
+			// Add the data to the new buffer
+			memcpy(pBuffer + Private::NetHeaderSize, p_pData, p_DataSize);
+
+			// Send the packet.
+			Bool status = false;
+			if (m_pServer->m_Socket.Send(pBuffer, packetSize, m_DstAddress, m_DstPort) == packetSize)
+			{
+				RestartLastSentPacketTimer();
+				status = true;
+			}
+
+			// Delete the packet
+			delete[] pBuffer;
+
+			return status;
+		}
+
+
+		Bool Connection::SendReliable(const Private::PacketType::eType p_PacketType,
+			const void * p_pData,
+			const SizeType p_DataSize)
+		{
+			// Create the packet. Make space for the sequence in case.
+			const Bit::SizeType packetSize = Private::NetHeaderSize + p_DataSize;
+
+			// Set packet header type byte(also the reliable flag),
+			Uint8 * pBuffer = new Uint8[packetSize];
+			pBuffer[0] = static_cast<Uint8>(p_PacketType) | Private::NetReliableFlagMask;
+
+			// Set packet header sequence.
+			Bit::Uint16 sequence = Bit::Hton16(GetNextSequence());
+			memcpy(pBuffer + 1, &sequence, Private::NetSequenceSize);
+
+			// Add the data to the new buffer
+			memcpy(pBuffer + Private::NetHeaderSize, p_pData, p_DataSize);
+
+			// Add the reliable packet.
+			AddReliablePacket(sequence, pBuffer, packetSize);
+
+			// Send the packet.
+			if (m_pServer->m_Socket.Send(pBuffer, packetSize, m_DstAddress, m_DstPort) == packetSize)
+			{
+				RestartLastSentPacketTimer();
+				return true;
+			}
+
+			// Do not delete the allocated buffer by purpose,
+			// since it's stored as a reliable packet and will be deleted later.
+			return false;
+		}
+
+
         MemoryPool<Uint8>::Item * Connection::PollMessages()
         {
             MemoryPool<Uint8>::Item * pItem = NULL;
@@ -154,117 +221,97 @@ namespace Bit
                             // Reset the time for checking last time a packet arrived
                             RestartLastReceivedPacketTimer();
 
+							// Get packet type and sequence.
                             const Private::PacketType::eType packetType = Private::PacketTransfer::ParsePacketType(pData[0]);
+							const Uint16 sequence = Private::PacketTransfer::ReadNtoh16FromBuffer(pData + 1);
 
-                            // Check the packet type
-                            switch (packetType)
-                            {
-                                // Connect packet from client, we should get the packet here if
-                                // the client resent the connection packet.
-                                case Private::PacketType::Connect:
-                                {
-                                    SizeType identifierLength = static_cast<SizeType>(pData[3]);
-
-                                    if (identifierLength)
-                                    {
-                                        // Make sure that the identifier is right.
-                                        if (identifierLength != m_pServer->m_Identifier.size() ||
-                                            memcmp(pData + Private::NetConnectPacketSize, m_pServer->m_Identifier.data(), m_pServer->m_Identifier.size()) != 0)
-                                        {
-                                            // Send denied packet
-                                            pData[3] = Private::ConnectStatusType::Denied;
-                                            m_Socket.Send(pData, Private::NetRejectPacketSize, m_DstAddress, m_DstPort);
-                                            break;
-                                        }
-
-                                        // Get server time and send accept response
-										// We're not using the SendUnreliable function here in order to speed things up.
-										const Uint64 serverTime = Hton64(m_pServer->GetServerTime().AsMicroseconds());
-                                        pData[3] = Private::ConnectStatusType::Accepted;
-                                        memcpy(&(pData[4]), &serverTime, sizeof(Uint64));
-                                        m_Socket.Send(pData, Private::NetAcceptPacketSize, m_DstAddress, m_DstPort);
-                                    }
-                                }
-                                break;
-                               /* // Alive packet from client. WE ARE ALREADY SENDING ACKNOWLEDGEMENT PACKETS.
-                                case Private::PacketType::Alive:
-                                {
-                                    if (recvSize != Private::NetAlivePacketSize)
-                                    {
-                                        break;
-                                    }
-
-									// Send acknowledgement packet.
-									// We're not using the SendUnreliable function here in order to speed things up.
-                                    pData[0] = Private::PacketType::Acknowledgement;
-                                    m_pServer->m_Socket.Send(pData, Private::NetAcknowledgementPacketSize, m_DstAddress, m_DstPort);
-                                }
-                                break;*/
-                                // ACK packet from client.
-                                case Private::PacketType::Acknowledgement:
-                                {
-                                    if (recvSize != Private::NetAcknowledgementPacketSize)
-                                    {
-                                        break;
-                                    }
-
-                                    // Remove the reliable packet.
-                                    const Uint16 sequence = Private::PacketTransfer::ReadNtoh16FromBuffer(pData + 1);
-									Bool wasResent = false;
-									Time timeSinceSent;
-									if(RemoveReliablePacket(sequence, wasResent, timeSinceSent))
+							// Add sequence to sequence manager,
+							// ignore the packet if it's already received...
+							if (m_SequenceManager.AddSequence(sequence))
+							{
+								// Check the packet type
+								switch (packetType)
+								{
+									// Connect packet from client, we should get the packet here if
+									// the client resent the connection packet.
+									case Private::PacketType::Connect:
 									{
-										// Calculate the new ping from the lapsed time if it's not a resent packet
-										if (wasResent == false)
+										SizeType identifierLength = static_cast<SizeType>(pData[3]);
+
+										if (identifierLength)
 										{
-											CalculateNewPing(timeSinceSent);
+											// Make sure that the identifier is right.
+											if (identifierLength != m_pServer->m_Identifier.size() ||
+												memcmp(pData + Private::NetConnectPacketSize, m_pServer->m_Identifier.data(), m_pServer->m_Identifier.size()) != 0)
+											{
+												// Send denied packet
+												pData[3] = Private::ConnectStatusType::Denied;
+												m_Socket.Send(pData, Private::NetRejectPacketSize, m_DstAddress, m_DstPort);
+												break;
+											}
+
+											// Get server time and send accept response
+											// We're not using the SendUnreliable function here in order to speed things up.
+											const Uint64 serverTime = Hton64(m_pServer->GetServerTime().AsMicroseconds());
+											pData[3] = Private::ConnectStatusType::Accepted;
+											memcpy(&(pData[4]), &serverTime, sizeof(Uint64));
+											m_Socket.Send(pData, Private::NetAcceptPacketSize, m_DstAddress, m_DstPort);
 										}
 									}
-                                }
-                                break;
-                                case Private::PacketType::UserMessage:
-                                {
-                                    /*
-                                    // Error check the recv size
-                                    if (recvSize <= NetUserMessagePacketSize)
-                                    {
-                                        break;
-                                    }
+									break;
+								   /* // Alive packet from client. WE ARE ALREADY SENDING ACKNOWLEDGEMENT PACKETS.
+									case Private::PacketType::Alive:
+									{
+										if (recvSize != Private::NetAlivePacketSize)
+										{
+											break;
+										}
 
-                                    // Get the sequence
-                                    const Uint16 sequence = Ntoh16(	static_cast<Uint16>(static_cast<Uint8>(pData[1])) |
-                                                                    static_cast<Uint16>(static_cast<Uint8>(pData[2]) << 8));
+										// Send acknowledgement packet.
+										// We're not using the SendUnreliable function here in order to speed things up.
+										pData[0] = Private::PacketType::Acknowledgement;
+										m_pServer->m_Socket.Send(pData, Private::NetAcknowledgementPacketSize, m_DstAddress, m_DstPort);
+									}
+									break;*/
+									// ACK packet from client.
+									case Private::PacketType::Acknowledgement:
+									{
+										if (recvSize != Private::NetAcknowledgementPacketSize)
+										{
+											break;
+										}
 
+										// Remove the reliable packet.
+										const Uint16 sequence = Private::PacketTransfer::ReadNtoh16FromBuffer(pData + 1);
+										Bool wasResent = false;
+										Time timeSinceSent;
+										if(RemoveReliablePacket(sequence, wasResent, timeSinceSent))
+										{
+											// Calculate the new ping from the lapsed time if it's not a resent packet
+											if (wasResent == false)
+											{
+												CalculateNewPing(timeSinceSent);
+											}
+										}
+									}
+									break;
+									case Private::PacketType::UserMessage:
+									{
+                                    
+										if (recvSize <= Private::NetUserMessagePacketSize)
+										{
+											break;
+										}
 
-                                    // Check the reliable flag
-                                    if (pData[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
-                                    {
-                                        // Use the already allocated packet, change the type
-                                        pData[0] = PacketType::Acknowledgement;
-
-                                        // Send the ack packet
-                                        m_pServer->m_Socket.Send(pData, AcknowledgementPacketSize, m_Address, m_Port);
-                                    }
-
-                                    // Add the packets sequence to the sequence manager, do not handle the packet
-                                    // if we've already received a packet with the same sequence.
-                                    if (m_SequenceManager.AddSequence(sequence))
-                                    {
-
-                                        // Add the unreliable packet to the received data queue.	
-                                        ReceivedData * pReceivedData = new ReceivedData(pData + UserMessagePacketSize,
-                                                                                        recvSize - UserMessagePacketSize,
-                                                                                        sequence);
-
-                                        // Add the host message.
-                                        AddUserMessage(pReceivedData);
-                                    }
-                                    */
-                                }
-                                break;
-                                default:
-                                    break;
-                            };
+										// Add user message to queue
+										AddUserMessage(pItem);
+										continue;
+									}
+									break;
+									default:
+										break;
+								};
+							}
 
                             // Return the packet to the memory pool.
                             m_pServer->m_pPacketMemoryPool->Return(pItem);
@@ -279,88 +326,88 @@ namespace Bit
             {
                 while( IsConnected( ) )
                 {
-                    Sleep(Bit::Seconds(0.05f));
+                   
                     // Wait for the semaphore to release
-                    /*m_UserMessageSemaphore.Wait( );
+                    m_UserMessageSemaphore.Wait( );
+
+					if (IsConnected() == false)
+					{
+						return;
+					}
 
                     // Go throguh the user messages.
                     m_UserMessages.Mutex.Lock( );
 
                     while( m_UserMessages.Value.size( ) )
                     {
-                        // Ge the received data
-                        ReceivedData * pReceivedData = m_UserMessages.Value.front( );
+                        // Get the current user message
+						MemoryPool<Uint8>::Item * pItem = m_UserMessages.Value.front( );
+						m_UserMessages.Value.pop();
 
-                        // Pop the message
-                        m_UserMessages.Value.pop( );
+						// Run a do loop once, to return the data at any breakage.
+						do
+						{
+							const SizeType dataSize = pItem->GetUsedSize();
+							Uint8 * data = pItem->GetData();
 
-                        // Get the message name
-                        SizeType nameEnd = 1;
-                        for( SizeType i = 1; i < pReceivedData->DataSize; i++ )
-                        {
-                            if( pReceivedData->pData[ i ] == 0 )
-                            {
-                                nameEnd = i;
-                                break;
-                            }
-                        }
+							SizeType messageLength = 0;
 
-                        // Error check the name length
-                        if( nameEnd == 1 )
-                        {
-                            // Delete the received data pointer
-                            delete pReceivedData;
-                            continue;
-                        }
 
-                        // Copy the name.
-                        std::string name;
-                        name.assign( reinterpret_cast<char*>(pReceivedData->pData + 1), nameEnd - 1 );
+							// Get message name length.
+							std::string messageName = "";
+							SizeType messageNameLength = static_cast<SizeType>(data[3]);
 
-                        // Check if there is any message left(including empty)
-                        if( name.size( ) + 2 > pReceivedData->DataSize )
-                        {
-                            // Delete the received data pointer
-                            delete pReceivedData;
-                            continue;
-                        }
+							// Error check data length
+							if (messageNameLength)
+							{
+								// Make sure there are space for the message name.
+								if (dataSize < Private::NetUserMessagePacketSize + messageNameLength)
+								{
+									break;
+								}
 
-                        // Find the listeners for this user message
-                        m_pServer->m_UserMessageListeners.Mutex.Lock( );
-                        Server::UserMessageListenerMap::iterator it = m_pServer->m_UserMessageListeners.Value.find( name );
-                        if( it == m_pServer->m_UserMessageListeners.Value.end( ) )
-                        {
-                            // Delete the received data pointer
-                            delete pReceivedData;
-                            continue;
-                        }
+								// Get the message name
+								messageName.assign(reinterpret_cast<char*>(data + Private::NetUserMessagePacketSize), messageNameLength);
+							}
 
-                        Server::UserMessageListenerSet * pMessageSet = it->second;
 
-                        // Go through the listeners and call the listener function
-                        for( Server::UserMessageListenerSet::iterator it2 = pMessageSet->begin( ); it2 != pMessageSet->end( ); it2++ )
-                        {
-                            // Get the listener.
-                            UserMessageListener * pListener = *it2;
+							// Find the listeners for this user message
+							m_pServer->m_UserMessageListeners.Mutex.Lock();
+							Server::UserMessageListenerMap::iterator it = m_pServer->m_UserMessageListeners.Value.find(messageName);
+							if (it == m_pServer->m_UserMessageListeners.Value.end())
+							{
+								m_pServer->m_UserMessageListeners.Mutex.Unlock();
+								break;
+							}
 
-                            // Create a message decoder
-                            Uint8 * pDataPointer =  pReceivedData->pData + name.size( ) + 2;
-                            const SizeType dataSize = pReceivedData->DataSize - name.size( ) - 2;
-                            UserMessageDecoder messageDecoder( name, m_UserId, pDataPointer, dataSize ) ;
+							Server::UserMessageListenerSet * pMessageSet = it->second;
 
-                            // Use threads????
-                            // Handle the message.
-                            pListener->HandleMessage( messageDecoder );
-                        }
+							// Go through the listeners and call the listener function
+							for (Server::UserMessageListenerSet::iterator it2 = pMessageSet->begin(); it2 != pMessageSet->end(); it2++)
+							{
+								// Get the listener.
+								UserMessageListener * pListener = *it2;
 
-                        m_pServer->m_UserMessageListeners.Mutex.Unlock( );
+								// Create a message decoder
+								Uint8 * pMessageDataPtr = data + Private::NetUserMessagePacketSize + messageNameLength;
+								SizeType messageDataSize = dataSize - Private::NetUserMessagePacketSize - messageNameLength;
+								UserMessageDecoder messageDecoder(messageName, m_UserId, pMessageDataPtr, dataSize);
 
-                        // Delete the received data pointer
-                        delete pReceivedData;
+								// Use threads????
+								// Handle the message.
+								pListener->HandleMessage(messageDecoder);
+							}
+
+							m_pServer->m_UserMessageListeners.Mutex.Unlock();
+						}
+						while (false);
+
+						// Return the packet to the memory pool.
+						m_pServer->m_pPacketMemoryPool->Return(pItem);
                     }
 
                     m_UserMessages.Mutex.Unlock( );
-                    */
+                    
                 }
             }
             );
@@ -465,7 +512,7 @@ namespace Bit
             m_Thread.Finish( );
             m_TimeoutThread.Finish( );
             m_ReliableThread.Finish( );
-            //m_UserMessageSemaphore.Release( );
+            m_UserMessageSemaphore.Release( );
             m_UserMessageThread.Finish( );
 
             // Clear the reliable packets
@@ -494,14 +541,14 @@ namespace Bit
             m_Ping.Mutex.Unlock( ); 
         }
 
-        void Connection::AddUserMessage(MemoryPool<Uint8> & p_UserMessageData)
-        {
-            /*m_UserMessages.Mutex.Lock( );
-            m_UserMessages.Value.push( p_pReceivedData );
-            m_UserMessages.Mutex.Unlock( );
-            
-            m_UserMessageSemaphore.Release( );*/
-        }
+		void Connection::AddUserMessage(MemoryPool<Uint8>::Item * p_UserMessageData)
+		{
+			m_UserMessages.Mutex.Lock();
+			m_UserMessages.Value.push(p_UserMessageData);
+			m_UserMessages.Mutex.Unlock();
+
+			m_UserMessageSemaphore.Release();
+		}
 
         void Connection::SetTempEntityMessagePtr(void * p_pEntityMessageDataPtr)
         {

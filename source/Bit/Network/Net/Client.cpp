@@ -42,7 +42,8 @@ namespace Bit
 			m_SrcPort(p_SourcePort),
 			m_Connected(false),
 			m_LosingConnectionTimeout(Seconds(3.0f)),
-			m_Ping(p_InitialPing)
+			m_Ping(p_InitialPing),
+			m_pPacketMemoryPool(NULL)
 		{
 
 		}
@@ -50,7 +51,7 @@ namespace Bit
 		Client::~Client()
 		{
 			// Disconnect the client.
-			InternalDisconnect(true, true, true, true);
+			InternalDisconnect();
 
 			// Clear the user message listeners
 			m_HostMessageListeners.Mutex.Lock();
@@ -131,6 +132,11 @@ namespace Bit
 			return received;
 		}
 */
+
+		void Client::OnDisconnection(DisconnectReason::eReason p_Reason)
+		{
+		}
+
 		Client::eStatus Client::Connect(const Address & p_Address,
 			const Uint16 p_Port,
 			const Time & p_ConnectionTimeout,
@@ -177,16 +183,22 @@ namespace Bit
 			m_EntityManager.SetInterpolationTime(p_InterpolationTime);
 			m_EntityManager.SetExtrapolationTime(p_ExtrapolationTime);
 
+			m_DisconnectReason.Set(DisconnectReason::DisconnectByClient);
+
+			// Create the packet memory pool
+			m_pPacketMemoryPool = new MemoryPool<Uint8>(128, Private::NetBufferSize, true);
+
 			// Set the connected flag to true.
 			m_Connected.Set(true);
 
 			// Start the client thread.
 			m_Thread.Execute([this]()
 			{
-				Uint8 buffer[Private::NetBufferSize];
+				MemoryPool<Uint8>::Item * pItem = NULL;
 				Address recvAddress;
 				Uint16 recvPort = 0;
 				Int32 recvSize = 0;
+
 
 				// Start the timer for the last recv packet.
 				RestartLastSentPacketTimer();
@@ -195,12 +207,21 @@ namespace Bit
 				// Receive packets as long as we are connected.
 				while (IsConnected())
 				{
+					if (pItem == NULL)
+					{
+						pItem = m_pPacketMemoryPool->Get();
+					}
+					Uint8 * pBuffer = pItem->GetData();
+
 					// Receive any packet.
 					// Ignore too small packets.
-					if ((recvSize = m_Socket.Receive(buffer, Private::NetBufferSize, recvAddress, recvPort, Microseconds(1000))) < Private::NetHeaderSize)
+					if ((recvSize = m_Socket.Receive(pBuffer, Private::NetBufferSize, recvAddress, recvPort, Microseconds(1000))) < Private::NetHeaderSize)
 					{
 						continue;
 					}
+
+					// Set used data size.
+					pItem->SetUsedSize(recvSize);
 
 					// Make sure that the packet is from the server
 					if (recvAddress != m_DstAddress || recvPort != m_DstPort)
@@ -212,7 +233,7 @@ namespace Bit
 					RestartLastReceivedPacketTimer();
 
 					// Get the packet type
-					const Private::PacketType::eType packetType = Private::PacketTransfer::ParsePacketType(buffer[0]);
+					const Private::PacketType::eType packetType = Private::PacketTransfer::ParsePacketType(pBuffer[0]);
 
 					// Error check the packet type, ignore unknown packets.
 					if (packetType == Private::PacketType::Unknown)
@@ -221,15 +242,22 @@ namespace Bit
 					}
 
 					// Get reliable flag and send acknowledgement if needed.
-					const Bool reliableType = Private::PacketTransfer::ParseReliableFlag(buffer[0]);
+					const Bool reliableType = Private::PacketTransfer::ParseReliableFlag(pBuffer[0]);
 					if (reliableType)
 					{
-						const Uint8 oldTypeByte = buffer[0];
-						buffer[0] = Private::PacketType::Acknowledgement;
-						m_Socket.Send(buffer, Private::NetAcknowledgementPacketSize, recvAddress, recvPort);
-						buffer[0] = oldTypeByte;
+						const Uint8 oldTypeByte = pBuffer[0];
+						pBuffer[0] = Private::PacketType::Acknowledgement;
+						m_Socket.Send(pBuffer, Private::NetAcknowledgementPacketSize, recvAddress, recvPort);
+						pBuffer[0] = oldTypeByte;
 					}
 
+					// Add sequence to sequence manager,
+					// ignore the packet if it's already received...
+					const Uint16 sequence = Private::PacketTransfer::ReadNtoh16FromBuffer(pBuffer + 1);
+					if (m_SequenceManager.AddSequence(sequence) == false)
+					{
+						continue;
+					}
 
 					// Check the packet type
 					switch (packetType)
@@ -237,14 +265,43 @@ namespace Bit
 						// The server disconnected.
 						case Private::PacketType::Disconnect:
 						{
-							// Set connected to false.
-/*							m_Connected.Set(false);
+							if (recvSize != Private::NetDisconnectPacketSize)
+							{
+								break;
+							}
 
-							// Wait for the threads to finish.
-							m_TriggerThread.Finish();
-							m_ReliableThread.Finish();
-*/
-							return;
+
+							const Uint8 reasonByte = pBuffer[3];
+							if (reasonByte >= Private::NetDisconnectTypeCount)
+							{
+								m_DisconnectReason.Set(DisconnectReason::Unknown);
+								break;
+							}
+							else
+							{
+								const Private::DisconnectType::eType disconnectType = static_cast<Private::DisconnectType::eType>(reasonByte);
+
+								switch (disconnectType)
+								{
+								case Private::DisconnectType::Closed:
+									m_DisconnectReason.Set(DisconnectReason::Closed);
+									break;
+								case Private::DisconnectType::Kicked:
+									m_DisconnectReason.Set(DisconnectReason::Kicked);
+									break;
+								case Private::DisconnectType::LostConnection:
+									m_DisconnectReason.Set(DisconnectReason::LostConnection);
+									break;
+								case Private::DisconnectType::Banned:
+									m_DisconnectReason.Set(DisconnectReason::Banned);
+									break;
+								default:
+									break;
+								};
+							}
+
+							// Set connected to false.
+							m_Connected.Set(false);
 						}
 						break;
 /*						// Alive packet from server. WE ARE ALREADY SENDING ACKNOWLEDGEMENT PACKETS.
@@ -270,7 +327,6 @@ namespace Bit
 							}
 
 							// Remove the reliable packet.
-							const Uint16 sequence = Private::PacketTransfer::ReadNtoh16FromBuffer(buffer + 1);
 							Bool wasResent = false;
 							Time timeSinceSent;
 							if (RemoveReliablePacket(sequence, wasResent, timeSinceSent))
@@ -363,49 +419,28 @@ namespace Bit
 
 
 						}
-						break;
+						break;*/
 						case Private::PacketType::HostMessage:
 						{
-							// Error check the recv size
-							if (recvSize <= HostMessagePacketSize)
+							if (recvSize <= Private::NetHostMessagePacketSize)
 							{
-								continue;
+								break;
 							}
 
-							// Check the reliable flag
-							if (buffer[PacketTypeSize + SequenceSize] == ReliabilityType::Reliable)
-							{
-								// Use the already allocated packet, change the type
-								buffer[0] = PacketType::Acknowledgement;
-
-								// Send the ack packet
-								m_Socket.Send(buffer, AcknowledgementPacketSize, m_ServerAddress, m_ServerPort);
-							}
-
-							// Get the sequence
-							const Uint16 sequence = Ntoh16(static_cast<Uint16>(static_cast<Uint8>(buffer[1])) |
-								static_cast<Uint16>(static_cast<Uint8>(buffer[2]) << 8));
-
-							// Add the packets sequence to the sequence manager, do not handle the packet
-							// if we've already received a packet with the same sequence.
-							if (m_SequenceManager.AddSequence(sequence))
-							{
-
-								// Add the unreliable packet to the received data queue.
-								ReceivedData * pReceivedData = new ReceivedData(buffer + UserMessagePacketSize,
-									recvSize - UserMessagePacketSize,
-									sequence);
-
-								// Add the host message.
-								AddHostMessage(pReceivedData);
-							}
+							// Add user message to queue
+							AddHostMessage(pItem);
+							pItem = NULL; ///< Indicate to get a new item.
+							continue;
 						}
-						break;*/
+						break;
 						default:
 							break;
 					}
 
 				}
+
+				// Internally disconnect.
+				InternalDisconnect();
 			}
 
 			);
@@ -421,7 +456,8 @@ namespace Bit
 					// Disconnect you've not heard anything from the server in a while.
 					if (GetTimeSinceLastReceivedPacket() >= m_LosingConnectionTimeout.Get())
 					{
-						InternalDisconnect(true, false, true, true);
+						m_DisconnectReason.Set(DisconnectReason::LostConnection);
+						m_Connected.Set(false);
 						return;
 					}
 
@@ -481,7 +517,7 @@ namespace Bit
 							m_Ping.Mutex.Unlock();
 						}
 					}
-						m_ReliablePackets.Mutex.Unlock();
+					m_ReliablePackets.Mutex.Unlock();
 
 				}
 			}
@@ -490,90 +526,93 @@ namespace Bit
 			// Execute user message
 			m_HostMessageHandleThread.Execute([this]()
 			{
-				/*while (IsConnected())
+				while (IsConnected())
 				{
+
 					// Wait for the semaphore to release
-					m_UserMessageSemaphore.Wait();
+					m_HostMessageSemaphore.Wait();
 
-					// Go throguh the user messages.
-					m_UserMessages.Mutex.Lock();
-
-					while (m_UserMessages.Value.size())
+					if (IsConnected() == false)
 					{
-						// Ge the received data
-						ReceivedData * pReceivedData = m_UserMessages.Value.front();
-
-						// Pop the message
-						m_UserMessages.Value.pop();
-
-						// Get the message name
-						SizeType nameEnd = 1;
-						for (SizeType i = 1; i < pReceivedData->DataSize; i++)
-						{
-							if (pReceivedData->pData[i] == 0)
-							{
-								nameEnd = i;
-								break;
-							}
-						}
-
-						// Error check the name length
-						if (nameEnd == 1)
-						{
-							// Delete the received data pointer
-							delete pReceivedData;
-							continue;
-						}
-
-						// Copy the name.
-						std::string name;
-						name.assign(reinterpret_cast<char*>(pReceivedData->pData + 1), nameEnd - 1);
-
-						// Check if there is any message left(including empty)
-						if (name.size() + 2 > pReceivedData->DataSize)
-						{
-							// Delete the received data pointer
-							delete pReceivedData;
-							continue;
-						}
-
-						// Find the listeners for this user message
-						m_HostMessageListeners.Mutex.Lock();
-						HostMessageListenerMap::iterator it = m_HostMessageListeners.Value.find(name);
-						if (it == m_HostMessageListeners.Value.end())
-						{
-							// Delete the received data pointer
-							delete pReceivedData;
-							continue;
-						}
-
-						HostMessageListenerSet * pMessageSet = it->second;
-
-						// Go through the listeners and call the listener function
-						for (HostMessageListenerSet::iterator it2 = pMessageSet->begin(); it2 != pMessageSet->end(); it2++)
-						{
-							// Get the listener.
-							HostMessageListener * pListener = *it2;
-
-							// Create a message decoder
-							Uint8 * pDataPointer = pReceivedData->pData + name.size() + 2;
-							const SizeType dataSize = pReceivedData->DataSize - name.size() - 2;
-							HostMessageDecoder messageDecoder(name, pDataPointer, dataSize);
-
-							// Use threads????
-							// Handle the message.
-							pListener->HandleMessage(messageDecoder);
-						}
-
-						m_HostMessageListeners.Mutex.Unlock();
-
-						// Delete the received data pointer
-						delete pReceivedData;
-
+						return;
 					}
 
-					m_UserMessages.Mutex.Unlock();
-				}*/
+					// Go throguh the host messages.
+					m_HostMessages.Mutex.Lock();
+
+					while (m_HostMessages.Value.size())
+					{
+						// Get the current host message
+						MemoryPool<Uint8>::Item * pItem = m_HostMessages.Value.front();
+						m_HostMessages.Value.pop();
+
+						// Run a do loop once, to return the data at any breakage.
+						do
+						{
+							const SizeType dataSize = pItem->GetUsedSize();
+							Uint8 * data = pItem->GetData();
+
+							SizeType messageLength = 0;
+
+
+							// Get message name length.
+							std::string messageName = "";
+							SizeType messageNameLength = static_cast<SizeType>(data[3]);
+
+							// Error check data length
+							if (messageNameLength)
+							{
+								// Make sure there are space for the message name.
+								if (dataSize < Private::NetUserMessagePacketSize + messageNameLength)
+								{
+									break;
+								}
+
+								// Get the message name
+								messageName.assign(reinterpret_cast<char*>(data + Private::NetUserMessagePacketSize), messageNameLength);
+							}
+
+
+							// Find the listeners for this host message
+							m_HostMessageListeners.Mutex.Lock();
+							HostMessageListenerMap::iterator it = m_HostMessageListeners.Value.find(messageName);
+							if (it == m_HostMessageListeners.Value.end())
+							{
+								m_HostMessageListeners.Mutex.Unlock();
+								break;
+							}
+
+							HostMessageListenerSet * pMessageSet = it->second;
+
+							// Go through the listeners and call the listener function
+							for (HostMessageListenerSet::iterator it2 = pMessageSet->begin(); it2 != pMessageSet->end(); it2++)
+							{
+								// Get the listener.
+								HostMessageListener * pListener = *it2;
+
+								// Create a message decoder
+								Uint8 * pMessageDataPtr = data + Private::NetUserMessagePacketSize + messageNameLength;
+								SizeType messageDataSize = dataSize - Private::NetUserMessagePacketSize - messageNameLength;
+								HostMessageDecoder messageDecoder(messageName, pMessageDataPtr, dataSize);
+
+								// Use threads????
+								// Handle the message.
+								pListener->HandleMessage(messageDecoder);
+							}
+
+							m_HostMessageListeners.Mutex.Unlock();
+						} while (false);
+
+						// Return the packet to the memory pool.
+						m_pPacketMemoryPool->Return(pItem);
+					}
+
+					m_HostMessages.Mutex.Unlock();
+
+				}
+
+				
+
 			}
 			);
 
@@ -583,7 +622,8 @@ namespace Bit
 
 		void Client::Disconnect()
 		{
-			InternalDisconnect(true, true, true, true);
+			m_DisconnectReason.Set(DisconnectReason::DisconnectByClient);
+			m_Connected.Set(false);
 		}
 
 		Bool Client::IsConnected()
@@ -795,68 +835,38 @@ namespace Bit
 			return false;
 		}
 
-		void Client::InternalDisconnect(const Bool p_CloseMainThread,
-			const Bool p_CloseTriggerThread,
-			const Bool p_CloseReliableThread,
-			const Bool p_CloseHostMessageThread)
+		void Client::InternalDisconnect()
 		{
-			// Get status and set connected to false.
-			m_Connected.Mutex.Lock();
-			Bool connected = m_Connected.Value;
-			m_Connected.Value = false;
-			m_Connected.Mutex.Unlock();
+			m_DisconnectMutex.Lock();
+			
+			m_Connected.Set(false);
+			
+			// Wait for threads to finish.
+			m_TriggerThread.Finish();
+			m_ReliableThread.Finish();
+			m_HostMessageSemaphore.Release();
+			m_HostMessageHandleThread.Finish();
 
-			if (connected)
+			// Send disconnect packet if client disconnect by purpose or timed out.
+			if (m_DisconnectReason.Get() == DisconnectReason::DisconnectByClient)
 			{
-				// Send close packet.
-				SendUnreliable(Private::PacketType::Disconnect, NULL, 0);
-			}
-
-			// Wait for the threads to finish.
-			if (p_CloseMainThread)
-			{
-				m_Thread.Finish();
-			}
-			if (p_CloseTriggerThread)
-			{
-				m_TriggerThread.Finish();
-			}
-			if (p_CloseReliableThread)
-			{
-				m_ReliableThread.Finish();
-			}
-			if (p_CloseHostMessageThread)
-			{
-				m_UserMessageSemaphore.Release();
-				m_HostMessageHandleThread.Finish();
+				const Uint8 reason = Private::DisconnectType::Closed;
+				SendUnreliable(Private::PacketType::Disconnect, &reason, 1);
 			}
 
-			// Clear the reliable packets
-			m_ReliablePackets.Mutex.Lock();
-			for (ReliablePacketMap::iterator it = m_ReliablePackets.Value.begin();
-				it != m_ReliablePackets.Value.end();
-				it++)
-			{
-				delete[] it->second->pData;
-				delete it->second;
-			}
-			m_ReliablePackets.Value.clear();
-			m_ReliablePackets.Mutex.Unlock();
-
-			// Clear user messages
-			/*m_UserMessages.Mutex.Lock();
-			while (m_UserMessages.Value.size())
-			{
-				ReceivedData * pReceivedData = m_UserMessages.Value.front();
-				m_UserMessages.Value.pop();
-
-				delete pReceivedData;
-			}
-			m_UserMessages.Mutex.Unlock();
-			*/
-
-			// Clear the ping list.
+			// Cleanup data.
+			ClearReliablePackets();
 			m_PingList.clear();
+
+			m_DisconnectReason.Set(DisconnectReason::Unknown);
+
+			if (m_pPacketMemoryPool)
+			{
+				delete m_pPacketMemoryPool;
+				m_pPacketMemoryPool = NULL;
+			}
+
+			m_DisconnectMutex.Unlock();
 		}
 
 		void Client::CalculateNewPing(const Time & p_LapsedTime)
@@ -878,14 +888,14 @@ namespace Bit
 			m_Ping.Mutex.Unlock();
 		}
 
-		/*void Client::AddHostMessage(ReceivedData * p_pReceivedData)
+		void Client::AddHostMessage(MemoryPool<Uint8>::Item * p_pItem)
 		{
-			m_UserMessages.Mutex.Lock();
-			m_UserMessages.Value.push(p_pReceivedData);
-			m_UserMessages.Mutex.Unlock();
-
-			m_UserMessageSemaphore.Release();
-		}*/
+			m_HostMessages.Mutex.Lock();
+			m_HostMessages.Value.push(p_pItem);
+			m_HostMessages.Mutex.Unlock();
+			
+			m_HostMessageSemaphore.Release();
+		}
 
 	}
 

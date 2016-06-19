@@ -39,23 +39,22 @@ namespace Bit
 			m_Name( p_Name ),
 			m_pServer( p_pServer )
 		{
-			if( p_MessageSize > 0 )
+			if (p_MessageSize > 0)
 			{
-				m_Message.reserve( static_cast<MessageVector::size_type>( p_MessageSize ) +
-								   static_cast<MessageVector::size_type>( p_Name.size( ) ) + 2 );
+				m_Message.reserve(static_cast<MessageVector::size_type>(p_MessageSize) +
+					static_cast<MessageVector::size_type>(p_Name.size()) + 1);
 			}
 			else
 			{
-				m_Message.reserve( static_cast<MessageVector::size_type>( p_Name.size( ) ) + 2  );
+				m_Message.reserve(static_cast<MessageVector::size_type>(p_Name.size()) + 1);
 			}
 
 			// Add the message type and message name
-			m_Message.push_back( static_cast<Uint8>(Private::eMessageType::UserMessageType ) ); // FIX THIS PLEASE; REMOVE THIS CODE /see NetPacket.hpp file.
-			for( std::string::size_type i = 0; i < p_Name.size( ); i++ )
+			m_Message.push_back(static_cast<Uint8>(p_Name.size()));
+			for (std::string::size_type i = 0; i < p_Name.size(); i++)
 			{
-				m_Message.push_back( static_cast<Uint8>( p_Name[ i ] ) );
+				m_Message.push_back(static_cast<Uint8>(p_Name[i]));
 			}
-			m_Message.push_back( 0 );
 		}
 
 		void HostMessage::WriteByte( const Uint8 p_Byte )

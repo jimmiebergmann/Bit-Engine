@@ -250,8 +250,11 @@ namespace Bit
 			// Create entity id queue.
 			m_EntityManager.CreateEntityIdQueue(p_Properties.MaxEntities);
 
-			// Create the packet memory pool
+			// Create the packet memory poolu
 			m_pPacketMemoryPool = new MemoryPool<Uint8>(p_Properties.MaxConnections * 64, Private::NetBufferSize, true);
+
+			// Set the running flag to true.
+			m_Running.Set(true);
 
 			// Start the server timer.
 			m_ServerTimer.Get().Start();
@@ -265,9 +268,6 @@ namespace Bit
 				Uint16 recvPort = 0;
 				Int32 recvSize = 0;
 				MemoryPool<Uint8>::Item * pItem = NULL;
-
-				// Set the running flag to true.
-				m_Running.Set(true);
 
 
 				// Receive packets as long as the server is running.
@@ -303,6 +303,9 @@ namespace Bit
 							break;
 						}
 					}
+
+					// Set used data size.
+					pItem->SetUsedSize(recvSize);
 
 					// Break if the server stopped running.
 					if (running == false)
@@ -342,7 +345,6 @@ namespace Bit
 						}
 
 						// Move the packet to the client thread.
-						pItem->SetUsedSize(recvSize);
 						it->second->AddMessage(pItem);
 						m_ConnectionMutex.Unlock();
 
@@ -506,7 +508,7 @@ namespace Bit
 							m_ConnectionMutex.Unlock();
 
 							// Start client thread.
-						///	pConnection->StartThreads(this);
+							pConnection->StartThreads(this);
 
 							// Run the on post connection function.				
 							OnPostConnection(userId);
@@ -564,7 +566,7 @@ namespace Bit
 			{
 				// Create an instance of a timestep
 				Timestep timestep;
-
+/*
 				// Run the 
 				while (IsRunning())
 				{
@@ -725,6 +727,7 @@ namespace Bit
 					);
 
 				}
+*/
 			}
 			);
 
@@ -867,7 +870,11 @@ namespace Bit
 				m_ConnectionMutex.Unlock();
 
 				// Delete the packet memory pool
-				delete m_pPacketMemoryPool;
+				if (m_pPacketMemoryPool)
+				{
+					delete m_pPacketMemoryPool;
+					m_pPacketMemoryPool = NULL;
+				}
 
 				// Close the host socket
 				m_Socket.Close();

@@ -70,10 +70,24 @@ namespace Bit
 				SocketError,
 				TimedOut,
 				AlreadyConnected,
+
 				Succeeded,
 				Denied,
 				Banned,
 				Full,
+			};
+
+			struct DisconnectReason
+			{
+				enum eReason
+				{
+					Closed,				///< Client/server closed the connection.
+					Banned,				///< Server banned the client.
+					Kicked,				///< Server kicked the client.
+					LostConnection,		///< Lost connection to server.
+					DisconnectByClient,	///< The client itself disconnect.
+					Unknown
+				};
 			};
 
 			////////////////////////////////////////////////////////////////
@@ -110,6 +124,12 @@ namespace Bit
 */
 
 		protected:
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Function to execute when disconnecting.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual void OnDisconnection(DisconnectReason::eReason p_Reason);
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Connect to a UDP server.
@@ -192,18 +212,18 @@ namespace Bit
 		private:
 
 			// Private structs
-			/*struct ReceivedUserMessage
+			struct HostMessageData
 			{
-				Uint16 
-				MemoryPool<Uint8>::Item PoolData;
-			};*/
+				SizeType DataSize;
+				Uint8 * pData;
+			};
 
 			// Private  typedefs
 			typedef std::list<Time>										TimeList;
 			typedef std::set<HostMessageListener*>						HostMessageListenerSet;
 			typedef std::map<std::string, HostMessageListenerSet *>		HostMessageListenerMap;
 			typedef std::pair<std::string, HostMessageListenerSet *>	HostMessageListenerPair;
-			//typedef std::queue<ReceivedData*>							ReceivedDataQueue;
+			typedef std::queue<MemoryPool<Uint8>::Item *>				PacketPoolItemQueue;
 
 			// Private functions
 			////////////////////////////////////////////////////////////////
@@ -216,10 +236,7 @@ namespace Bit
 			/// \brief	Internal function for disconnecting from the server.
 			///
 			////////////////////////////////////////////////////////////////
-			void InternalDisconnect(const Bool p_CloseMainThread,
-									const Bool p_CloseTriggerThread,
-									const Bool p_CloseReliableThread,
-									const Bool p_CloseHostMessageThread);
+			void InternalDisconnect();
 
 			////////////////////////////////////////////////////////////////
 			/// \brief	Calculate the new ping.
@@ -228,28 +245,31 @@ namespace Bit
 			void CalculateNewPing( const Time & p_LapsedTime );
 
 			////////////////////////////////////////////////////////////////
-			/// \brief	Function for adding user messages to the function caller queue.
+			/// \brief	Function for adding host messages to the user message data container.
 			///
 			////////////////////////////////////////////////////////////////
-			//void AddHostMessage(ReceivedData * p_ReceivedData);
+			void AddHostMessage(MemoryPool<Uint8>::Item * p_pItem);
 
 
 			// Private variables
-			Uint16								m_SrcPort;					///< Source port of the data link.
-			std::string							m_ServerIdentifier;			///< Identifier string of server.
-			Thread								m_Thread;					///< Thread created after the connection is established.
-			Thread								m_TriggerThread;			///< Thread for creating specific triggers.
-			Thread								m_ReliableThread;			///< Thread for checking reliable packets for resend.
-			Thread								m_HostMessageHandleThread;	///< Thread for handling host messages.
-			ThreadValue<Time>					m_ServerStartTime;			///< The server's time at the state of connection.
-			ThreadValue<Timer>					m_ServerTimer;				///< Timer for checking how long time ago we connected to the server.
-			ThreadValue<Bool>					m_Connected;				///< Flag for checking if you are connected.
-			ThreadValue<Time>					m_LosingConnectionTimeout;	///< Ammount of time without any packets before losing the connection.
-			ThreadValue<Time>					m_Ping;						///< Current network ping.
-			TimeList							m_PingList;					///< List of the last pings.
-			ThreadValue<HostMessageListenerMap>	m_HostMessageListeners;		///< Map of user message listeners and their message types.
-			//ThreadValue<ReceivedDataQueue>	m_UserMessages;				///< Queue of user messages
-			Semaphore							m_UserMessageSemaphore;		///< Semaphore for executing user message listeners.
+			Uint16									m_SrcPort;					///< Source port of the data link.
+			std::string								m_ServerIdentifier;			///< Identifier string of server.
+			Thread									m_Thread;					///< Thread created after the connection is established.
+			Thread									m_TriggerThread;			///< Thread for creating specific triggers.
+			Thread									m_ReliableThread;			///< Thread for checking reliable packets for resend.
+			Thread									m_HostMessageHandleThread;	///< Thread for handling host messages.
+			ThreadValue<Time>						m_ServerStartTime;			///< The server's time at the state of connection.
+			ThreadValue<Timer>						m_ServerTimer;				///< Timer for checking how long time ago we connected to the server.
+			ThreadValue<Bool>						m_Connected;				///< Flag for checking if you are connected.
+			Mutex									m_DisconnectMutex;			///< Mutex for locking internal disconnect function.
+			ThreadValue<Time>						m_LosingConnectionTimeout;	///< Ammount of time without any packets before losing the connection.
+			ThreadValue<Time>						m_Ping;						///< Current network ping.
+			TimeList								m_PingList;					///< List of the last pings.
+			ThreadValue<HostMessageListenerMap>		m_HostMessageListeners;		///< Map of user message listeners and their message types.
+			ThreadValue<PacketPoolItemQueue>		m_HostMessages;				///< Queue of user messages
+			Semaphore								m_HostMessageSemaphore;		///< Semaphore for executing user message listeners.
+			ThreadValue<DisconnectReason::eReason>	m_DisconnectReason;			///< Reason of disconnection.
+			MemoryPool<Uint8> *						m_pPacketMemoryPool;		///< Memory pool for packets, make less new, copy and delete operations.
 
 		};
 

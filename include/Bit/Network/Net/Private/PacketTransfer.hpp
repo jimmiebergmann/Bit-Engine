@@ -72,19 +72,20 @@ namespace Bit
 			const SizeType NetEntityMessageTypeCount = 3;
 
 			// Packet size(minimum) constants.
-			// * = extra data, required but of unknwon size.
+			// *...* = extra data, required but of unknwon size.
 			const SizeType NetHeaderSize = 3;					///< Packet type + Sequence number
 			const SizeType NetConnectPacketSize = 4;			///< Header + Identifier length + *Identifier*
 			const SizeType NetDisconnectPacketSize = 4;			///< Header + Reason
 			const SizeType NetAcceptPacketSize = 12;			///< Header + Connect status + Server time
 			const SizeType NetRejectPacketSize = 4;				///< Header + Connect status
 			const SizeType NetAcknowledgementPacketSize = 3;	///< Header, sequence in header is the packet to acknowledge.
-			
+			const SizeType NetUserMessagePacketSize = 4;		///< Header + name length + *message name* + *message data*
+			const SizeType NetHostMessagePacketSize = 4;		///< Header + name length + *message name* + *message data*
+
 			const SizeType NetAlivePacketSize = 3;				///< Header
 			const SizeType NetEntityUpdatePacketSize = 4;
 			const SizeType NetEntityDestroyedPacketSize = 6;
-			const SizeType NetUserMessagePacketSize = 4;
-			const SizeType NetHostMessagePacketSize = 4;
+			
 			//const SizeType NetPingPacketSize = 2;
 
 			////////////////////////////////////////////////////////////////
@@ -166,6 +167,10 @@ namespace Bit
 
 			public:
 
+				// Friend classes
+				friend class Server;
+				friend class Client;
+
 				// Static functions
 
 				////////////////////////////////////////////////////////////////
@@ -210,9 +215,9 @@ namespace Bit
 				/// \param p_DataSize Size of the data.
 				///
 				////////////////////////////////////////////////////////////////
-				Bool SendUnreliable(const PacketType::eType p_PacketType,
-									const void * p_pData,
-									const SizeType p_DataSize);
+				virtual Bool SendUnreliable(const PacketType::eType p_PacketType,
+											const void * p_pData,
+											const SizeType p_DataSize);
 
 				////////////////////////////////////////////////////////////////
 				/// \brief Send reliable packet to the server.
@@ -222,9 +227,9 @@ namespace Bit
 				/// \param p_DataSize Size of the data.
 				///
 				////////////////////////////////////////////////////////////////
-				Bool SendReliable(	const PacketType::eType p_PacketType,
-									const void * p_pData,
-									const SizeType p_DataSize);
+				virtual Bool SendReliable(	const PacketType::eType p_PacketType,
+											const void * p_pData,
+											const SizeType p_DataSize);
 
 			protected:
 

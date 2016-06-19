@@ -115,7 +115,7 @@ namespace Bit
 
 				// Set packet header type byte(also the reliable flag),
 				Uint8 * pBuffer = new Uint8[packetSize];
-				pBuffer[0] = static_cast<Uint8>(p_PacketType) & NetReliableFlagMask;
+				pBuffer[0] = static_cast<Uint8>(p_PacketType) | NetReliableFlagMask;
 			
 				// Set packet header sequence.
 				Bit::Uint16 sequence = Bit::Hton16(GetNextSequence());

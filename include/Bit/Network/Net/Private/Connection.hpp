@@ -108,17 +108,42 @@ namespace Bit
 			void AddMessage(MemoryPool<Uint8>::Item * p_pReceivedPacket);
 
 			////////////////////////////////////////////////////////////////
-			/// \brief Poll raw packet from queue.
+			/// \brief Send unreliable packet to the server.
+			///
+			/// \param p_PacketType Type of the packet.
+			/// \param p_pData Pointer to the data to send.
+			/// \param p_DataSize Size of the data.
 			///
 			////////////////////////////////////////////////////////////////
-			MemoryPool<Uint8>::Item * PollMessages();
+			virtual Bool SendUnreliable(	const Private::PacketType::eType p_PacketType,
+											const void * p_pData,
+											const SizeType p_DataSize);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Send reliable packet to the server.
+			///
+			/// \param p_PacketType Type of the packet.
+			/// \param p_pData Pointer to the data to send.
+			/// \param p_DataSize Size of the data.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual Bool SendReliable(	const Private::PacketType::eType p_PacketType,
+										const void * p_pData,
+										const SizeType p_DataSize);
+			
 
 		private:
 
 			// Private typedefs
 			typedef std::queue<MemoryPool<Uint8>::Item *> PacketPoolItemQueue;
-
+			
 			// Private functions
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Poll raw packet from queue.
+			///
+			////////////////////////////////////////////////////////////////
+			MemoryPool<Uint8>::Item * PollMessages();
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Start the threads
@@ -142,8 +167,8 @@ namespace Bit
 			/// \brief	Function for adding user messages to the user message data container.
 			///
 			////////////////////////////////////////////////////////////////
-			void AddUserMessage(MemoryPool<Uint8> & p_UserMessageData);
-			
+			void AddUserMessage(MemoryPool<Uint8>::Item * p_UserMessageData);
+
 			////////////////////////////////////////////////////////////////
 			/// \brief	Set temporary pointer to entity message data handled by the server.
 			///
@@ -160,15 +185,17 @@ namespace Bit
 			Server *						m_pServer;					///< Pointer to the server.
 			Thread							m_Thread;					///< Thread for handling raw packets.
 			Thread							m_UserMessageThread;		///< Thread for handling user messages.
-			Thread							m_TimeoutThread;				///< Thread for creating specific events.
+			Thread							m_TimeoutThread;			///< Thread for creating specific events.
 			Thread							m_ReliableThread;			///< Thread for checking reliable packets for resend.
 			
 			const Uint16					m_UserId;					///< The client's user id.
 			
 
-			ThreadValue<PacketPoolItemQueue>	m_ReceivedPacketQueue;				///< Queue of received packets from parent(server).
+			ThreadValue<PacketPoolItemQueue>	m_ReceivedPacketQueue;			///< Queue of received packets from parent(server).
 			Semaphore							m_ReceivedPacketSemaphore;		///< Semaphore for executing user message listeners.
 
+			ThreadValue<PacketPoolItemQueue>	m_UserMessages;
+			Semaphore							m_UserMessageSemaphore;
 			
 			//Semaphore						m_ReceivedDataSemaphore;	///< Semaphore for received data.
 			ThreadValue<Bool>				m_Connected;				///< Flag for checking if you are connected.
