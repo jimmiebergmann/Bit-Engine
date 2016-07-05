@@ -27,6 +27,8 @@
 #include <Bit/Build.hpp>
 #include <Bit/Network/Net/Variable.hpp>
 #include <Bit/Network/Net/Entity.hpp>
+#include <map>
+#include <string>
 
 namespace Bit
 {
@@ -45,8 +47,8 @@ namespace Bit
 		///
 		/// There are 3 types of entity messages:
 		///		1 - New entities.
-		///		2 - Removed entities.
-		///		3 - Updated entities.
+		///		2 - Updated entities.
+		///		3 - Destroyed entities.
 		/// 
 		/// Structure of each message type:
 		///		1 - New entities:
@@ -79,7 +81,7 @@ namespace Bit
 		///				- Data size(1)
 		///				- Data(..)
 
-
+		// Example(NOT RIGHT AT THE MOMENT).
 		// 100 entities, pos 12, dir 4, 6 x 4 = 24, total = 12+4+24 = 40
 		///			- Time(8)
 		///			- Entity count(1)
@@ -97,13 +99,64 @@ namespace Bit
 
 		public:
 
-
 			// Friend classes
-/*			friend class ServerEntityChanger;
 			friend class VariableBase;
 			template<typename T> friend class Variable;
 			template<typename T> friend class InterpolatedVariable;
-*/
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Destructor.
+			///
+			////////////////////////////////////////////////////////////////
+			virtual ~EntityManager( );
+
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Link entity to a certain key.
+			///
+			/// \param p_Key Name of the entity, or key value.
+			///
+			/// \return True if the key is valid and not already in use, else false.
+			///
+			////////////////////////////////////////////////////////////////
+			template<typename T>
+			bool LinkEntity(const std::string & p_Key);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Register entity variable.
+			///
+			/// \param p_Class Key of an already linked entity class.
+			/// \param p_Class Key of the entity variable.
+			/// \param p_Pointer Pointer to the variable.
+			///
+			/// \return Pointer to the created entity, NULL if error.
+			///
+			////////////////////////////////////////////////////////////////
+			template < typename Type, typename Class>
+			bool RegisterVariable(	const std::string & p_Class,
+									const std::string & p_Variable,
+									Variable<Type> Class::* p_pPointer);
+
+			////////////////////////////////////////////////////////////////
+			/// \brief Register entity interpolated variable.
+			///
+			/// \param p_Class Key of an already linked entity class.
+			/// \param p_Class Key of the entity variable.
+			/// \param p_Pointer Pointer to the interpolated variable.
+			///
+			/// \return Pointer to the created entity, NULL if error.
+			///
+			////////////////////////////////////////////////////////////////
+			template < typename Type, typename Class>
+			bool RegisterVariable(	const std::string & p_Class,
+									const std::string & p_Variable,
+									InterpolatedVariable<Type> Class::* p_pPointer);
+
+		
+		protected:
+
+			// Forward declarations
+			struct EntityMetaData;
 
 			////////////////////////////////////////////////////////////////
 			/// \brief Entity manager enum type.
@@ -114,24 +167,59 @@ namespace Bit
 				ServerType,
 				ClientType
 			};
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Destructor.
-			///
-			////////////////////////////////////////////////////////////////
-			virtual ~EntityManager( );
-
+			
+			
 			////////////////////////////////////////////////////////////////
 			/// \brief Get the type of entity manager.
 			///
 			////////////////////////////////////////////////////////////////
 			virtual eType GetType() = 0;
-
+			
 			////////////////////////////////////////////////////////////////
 			/// \brief Function called by variable class when a variable is being changed.
 			///
 			////////////////////////////////////////////////////////////////
 			virtual void OnVariableChange(Entity * p_pEntity, VariableBase * p_VariableBase) = 0;
+
+			// Private typedefs
+			typedef std::map<std::string, VariableBase Entity::*>	EntityVariableByNameMap;	///< Map of entity varibles, varaible name as key.
+			typedef std::map<Uint8, VariableBase Entity::*>			EntityVariableByIdMap;		///< Map of entity varibles, varaible id as key.
+			typedef std::map<std::string, EntityMetaData*>			EntityMetaDataMap;			///< Map of pointers for creating entities, entity name as key.
+
+			////////////////////////////////////////////////////////////////
+			/// \brief	Entity meta data structure. Holding the entity variables
+			///			and pointer to the entitiy creating function.
+			///
+			////////////////////////////////////////////////////////////////
+			struct EntityMetaData
+			{
+				//size_t TypeHash;
+				//std::string RawName;
+				Entity*(*CreationPointer)();				///< Pointer to function for creating entity.
+				EntityVariableByNameMap VariablesByName;	///< Map of all the variables for this entity. By Name.
+				EntityVariableByIdMap VariablesById;		///< Map of all the variables for this entity. By Id.
+
+			};
+
+
+			// Protected variables.
+			EntityMetaDataMap			m_EntityMetaDataMap;	///< Map of entity class meta data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // CLIENT			
 /*
@@ -384,7 +472,7 @@ namespace Bit
 		////////////////////////////////////////////////////////////////
 		// Include the inline file.
 		////////////////////////////////////////////////////////////////
-		//#include <Bit/Network/Net/EntityManager.inl>
+		#include <Bit/Network/Net/EntityManager.inl>
 
 	}
 

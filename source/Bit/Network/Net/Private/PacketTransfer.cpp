@@ -40,7 +40,7 @@ namespace Bit
 				return Ntoh16(value);
 			}
 
-			Uint16 PacketTransfer::ReadNtoh64FromBuffer(const Uint8 * p_pBuffer)
+			Uint64 PacketTransfer::ReadNtoh64FromBuffer(const Uint8 * p_pBuffer)
 			{
 				Uint64 value = 0;
 				memcpy(&value, p_pBuffer, sizeof(Uint64));

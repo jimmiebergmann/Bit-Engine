@@ -151,9 +151,9 @@ namespace Bit
 			{
 				enum eType
 				{
-					Create = 0,		///< Entity creation message type.
-					Update = 1,		///< Entity variable update message type.
-					Destory = 2,	///< Entity destruction message type.
+					CreateEntities = 0,		///< Entity creation message type.
+					UpdateEntities = 1,		///< Entity variable update message type.
+					DestoryEntities = 2,	///< Entity destruction message type.
 				};
 			};
 
@@ -183,7 +183,7 @@ namespace Bit
 				/// \brief Read network order 64 bit value from buffer and convert it to host order.
 				///
 				////////////////////////////////////////////////////////////////
-				static Uint16 ReadNtoh64FromBuffer(const Uint8 * p_pBuffer);
+				static Uint64 ReadNtoh64FromBuffer(const Uint8 * p_pBuffer);
 
 				////////////////////////////////////////////////////////////////
 				/// \brief Parse packet type from byte, the first byte of a packet
@@ -358,34 +358,6 @@ namespace Bit
 
 			};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			////////////////////////////////////////////////////////////////
-			/// \brief Message type enumerator (OLD) REMOVE SOON PLEASE! NOT NEEDED ANYMORE!
-			///
-			////////////////////////////////////////////////////////////////
-			enum eMessageType
-			{
-				EntityMessageTypeOLD = 0,
-				UserMessageType = 1
-			};
 
 		}
 

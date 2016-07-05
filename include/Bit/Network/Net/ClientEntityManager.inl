@@ -21,6 +21,8 @@
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
 
+
+/*
 // Function for creating entity
 template <typename T>
 Entity * CreateEntityT()
@@ -130,4 +132,4 @@ bool ClientEntityManager::RegisterVariable(const std::string & p_Class,
 
 	// Succeeded
 	return true;
-}
+}*/

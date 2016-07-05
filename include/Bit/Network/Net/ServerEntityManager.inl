@@ -20,7 +20,7 @@
 // 3. This notice may not be removed or altered from any
 //    source distribution.
 // ///////////////////////////////////////////////////////////////////////////
-
+/*
 // Function for creating entity
 template <typename T>
 Entity * CreateEntityT()
@@ -130,4 +130,4 @@ bool ServerEntityManager::RegisterVariable(	const std::string & p_Class,
 
 	// Succeeded
 	return true;
-}
+}*/

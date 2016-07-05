@@ -566,7 +566,7 @@ namespace Bit
 			{
 				// Create an instance of a timestep
 				Timestep timestep;
-/*
+
 				// Run the 
 				while (IsRunning())
 				{
@@ -727,7 +727,7 @@ namespace Bit
 					);
 
 				}
-*/
+
 			}
 			);
 
